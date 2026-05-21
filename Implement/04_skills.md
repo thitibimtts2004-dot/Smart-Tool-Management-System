@@ -36,14 +36,20 @@ Orchestrator skill. Handles two responsibilities:
 4. If still no match → ask user to clarify intent
 \```
 
-## Orchestration Protocol (R4 Parallel fan-out)
+## Orchestration Protocol (R4 Cycle fan-out)
 \```
-1. Receive MECE plan sections from Phase 2
-2. Build dependency graph: does section A output feed section B?
-3. Independent sections → spawn parallel agents (all in one message)
-4. Dependent sections → sequential or chain output
-5. Wait for all agents → aggregate structured outputs
-6. Run Completion Gate on combined result → report to user
+1. Receive MECE plan from Phase 2 → read Cycle grouping
+2. Build dependency graph from Cycle declarations:
+   - Sections in same Cycle = no dependency → parallel
+   - Sections in Cycle N+1 declare context-input from Cycle N
+3. For Cycle N: spawn all sections in parallel (one message) → emit [cycle N]
+4. Each section agent writes → `.sessions/cycle_N_<section_id>.json`
+5. After all Cycle N agents done:
+   a. Read all cycle_N_*.json → check every status = done
+   b. Any status = blocked → HALT all remaining Cycles → BLOCKED flow
+   c. All done → aggregate results → build context payload for Cycle N+1
+6. Spawn Cycle N+1 agents — inject cycle_N results as `cycle_context:` in prompt
+7. Repeat until all Cycles done → Completion Gate
 \```
 
 **Delegation Contract — every sub-agent prompt must include:**
@@ -51,6 +57,20 @@ Orchestrator skill. Handles two responsibilities:
 - `constraints:` relevant rules from CLAUDE.md (R5, R6, R8)
 - `output_format:` exact structure expected (JSON schema or table)
 - `context_files:` only files the sub-agent needs (no full index)
+- `cycle_context:` structured results from prior Cycle(s) — omit if Cycle 1
+
+**Sub-agent result file** — every spawned agent must write before returning:
+\```json
+{
+  "cycle": N,
+  "section": "S<id>-<name>",
+  "status": "done | blocked",
+  "verify_result": "<output of Verify command>",
+  "artifacts": ["path/to/file"],
+  "notes": ""
+}
+\```
+Path: `.sessions/cycle_N_<section_id>.json`
 
 ## Skill Delegation Rules
 - Creating new files/features → `coder` skill
@@ -444,6 +464,16 @@ Section 2 — <name from Skill sections[1]>:
   Rollback: <what to undo>
 
 Independent (any section): [X] · [Y]
+
+Cycle grouping (add when plan has ≥ 2 sections):
+  Cycle 1: [S1, S2]          ← sections with no dependencies between them
+  Cycle 2: [S3]              ← depends on output of S1 or S2
+  S3 context-input: cycle_1_S1.json, cycle_1_S2.json
+\```
+Rules:
+- Sections in the same Cycle are spawned in parallel
+- Sections in Cycle N+1 declare which `cycle_N_*.json` files they need
+- Single-section plans have no Cycle grouping (omit Cycle block)
 \```
 
 Rules:
@@ -543,9 +573,10 @@ Section 3 — Sync & Close:
 
 ## Trace Format
 \```
-**[✓ MECE]**  Plan covers <N> sections · user confirmed · roadmap entries added
-**[MECE]**    ✓ Section <N> done · → Section <N+1> next
-**[MECE]**    ✓ All done · Roadmap updated · Thread: done
+**[✓ MECE]**   Plan covers <N> sections in <M> Cycles · user confirmed · roadmap entries added
+**[MECE]**     ✓ Section <N> done · → Section <N+1> next
+**[cycle N]**  All <X> sections done · results: .sessions/cycle_N_*.json · spawning Cycle <N+1>
+**[MECE]**     ✓ All Cycles done · Roadmap updated · Thread: done
 \```
 
 ## Context Gate
@@ -645,7 +676,9 @@ Triggered from Loop Phase 3 when verify or observe fails twice.
 
 \```
 1. HALT all remaining sections immediately
-2. Write .sessions/session_handoff.md with status "blocked"
+2. Write .sessions/session_handoff.md with status "blocked":
+   blocked_cycle: N
+   cycle_results_available: [.sessions/cycle_N_S1.json, ...]   ← list completed result files
 3. Show user:
    "ติดปัญหาที่: Section <S> step <name>
     สาเหตุ: <cause>
@@ -660,6 +693,8 @@ Triggered from Loop Phase 3 when verify or observe fails twice.
 ### Resume Flow
 \```
 1. Read .sessions/session_handoff.md → load sections_done + sections_pending + last_step
+1b. Read `.sessions/cycle_N_*.json` for the last completed Cycle (N = current_cycle from handoff)
+    → inject as `cycle_context:` before spawning Cycle N+1 agents
 2. Reload config: Read target Skill SKILL.md context_files
 3. MECE: load existing plan from handoff → reuse if valid · rebuild if scope changed
 4. Emit [resume] trace
