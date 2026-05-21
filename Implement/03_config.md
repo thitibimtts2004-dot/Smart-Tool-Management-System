@@ -61,7 +61,7 @@ Max 5 tool calls/turn. Retry max 2×; diagnose on 2nd fail.
 ## R3 · Session Pause
 | SESSION_TOTAL | Action |
 |---|---|
-| >60k | finish current loop step → TOKEN PAUSE → load `token_auditor` skill |
+| >60k | finish current loop step → TOKEN PAUSE |
 | >90k | HALT immediately → save state → report to user |
 
 ---
@@ -75,21 +75,47 @@ Run 1 Bash scope probe before any task.
 |---|---|---|
 | **Explore** | scope ≥ 5 files / ≥ 300 lines | `Agent(subagent_type=Explore)` → summary ≤500 tokens → act on summary only |
 | **Execution** | single section > 8 steps + isolated output | `Agent(task)` → pass goal + constraints + output format → receive structured result |
-| **Parallel fan-out** | ≥ 2 sections in same Cycle (no dependency) | spawn all at once → each writes `.sessions/cycle_N_<section_id>.json` → read all results → pass as context to next Cycle |
+| **Parallel fan-out** | ≥ 2 sections in same Cycle (no dependency) | spawn all at once → each writes `.sessions/cycle_N_<section_id>.json` → read all results → pass as context to next Cycle → single Completion Gate after all Cycles |
 
 **Hard limits:**
 - Max depth: 1 level only — worker agents may NOT spawn further agents
 - Sub-agent output: structured (JSON or table) — never prose
 - Token budget: sub-agent tokens count toward SESSION_TOTAL (no separate budget)
-- Parallel spawn: send all Cycle agents in one message (not sequentially)
+- Parallel spawn: send all independent agents in one message (not sequentially)
 
 ---
 
 ## R5 · Index-First Lookup
-Before editing any file:
-- grep knowledge/index_variables.json for symbol → get line → Read with offset+limit
-- grep knowledge/index_files.json for file path → check backlinks before changing imports
-- NEVER Read full file >60 lines without grep first
+
+**Pre-Read Gate — emit BEFORE every Read call:**
+```
+**[pre-read]** Target: `<symbol>` · Tier: T<1|2|3> · Line: <N> · Will read: offset=<N> limit=60
+```
+Cannot fill Line? → grep not done yet → run grep first.
+
+**Pre-Edit Gate — emit BEFORE every Edit/Write on a named symbol:**
+```
+**[pre-edit]** Symbol: `<name>` · index_variables lookup: T1 done · used_in: <N files> · safe to edit: <yes|needs review>
+```
+→ `grep -A 8 '"SymbolName"' knowledge/index_variables.json` → check `used_in` → review all dependents
+
+**Lookup tiers (stop at first that yields line number):**
+- T1: `grep -A 8 '"Symbol"' knowledge/index_variables.json` or `index_files.json`
+- T2: `grep -B 2 -A 20 '"Symbol"' knowledge/index_variables.json`
+- T3: `grep -n "Symbol" src/path/to/file.ts`
+
+T1 partial match (path found but no line number) → proceed to T2. Still no line? → T3.
+
+**Config files load ONCE at Boot (B1–B3) — never re-read mid-session:**
+CLAUDE.md · index_files.json · index_variables.json → in working memory after Boot.
+Re-read only after TOKEN PAUSE + resume.
+
+| Prohibited | Required instead |
+|---|---|
+| Read without offset+limit | grep first → get line N → Read offset=N-5 limit=60 |
+| Read >60 lines per call | Split into multiple targeted reads |
+| Read knowledge/*.json in full | grep specific key only |
+| Re-read CLAUDE.md mid-session | Already in working memory |
 
 ---
 

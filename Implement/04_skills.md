@@ -81,11 +81,11 @@ Path: `.sessions/cycle_N_<section_id>.json`
 - Sub-agents MUST NOT spawn further agents (max depth = 1)
 
 ## Environment & Paths
-- Libraries: `[PROJECT_ROOT]/Libraries`
-- IDE Context: `[PROJECT_ROOT]/IDE`
-- Python install: `pip install <pkg> --target=[PROJECT_ROOT]/Libraries/python`
-- NPM install: `npm install <pkg> --prefix=[PROJECT_ROOT]/Libraries/npm`
-- Execution: `export PYTHONPATH=$PYTHONPATH:[PROJECT_ROOT]/Libraries/python`
+- Libraries: `[WORKSPACE_ROOT]/Libraries`
+- IDE Context: `[WORKSPACE_ROOT]/IDE`
+- Python install: `pip install <pkg> --target=[WORKSPACE_ROOT]/Libraries/python`
+- NPM install: `npm install <pkg> --prefix=[WORKSPACE_ROOT]/Libraries/npm`
+- Execution: `export PYTHONPATH=$PYTHONPATH:[WORKSPACE_ROOT]/Libraries/python`
 
 ## Context Gate
 If during this task a new hard constraint was discovered → add to INVARIANTS.md §I2 before closing task
