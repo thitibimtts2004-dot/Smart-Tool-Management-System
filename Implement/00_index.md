@@ -11,7 +11,7 @@
 | [03_config.md](03_config.md) | CLAUDE.md, AGENTS.md, INVARIANTS.md, REPO_MAP.md templates | When writing config files |
 | [04_skills.md](04_skills.md) | All 10 skill SKILL.md templates (file_manager, variable_manager, mece, coder, editor, session_manager, token_auditor, token_tracker, identity, agent) | When writing skill files |
 | [05_scripts.md](05_scripts.md) | symbol_indexer.py spec | When writing the indexer script |
-| [06_orchestrator.md](06_orchestrator.md) | Dual-mode execution, mece_plan.md schema, sub-agent loop logic, token budget | When setting up orchestration |
+| [06_orchestrator.md](06_orchestrator.md) | Dual-mode execution, mece_plan.md schema, Cycle orchestration, cycle_N_*.json result files, sub-agent loop logic, token budget | When setting up orchestration or sub-agent spawn patterns (R4) |
 
 ## Agent Reading Order
 
@@ -59,3 +59,4 @@ These files are updated automatically by agent skills — no manual refresh need
 | `INVARIANTS.md §I2` | Any skill — when new hard constraint discovered (Context Gate) |
 | `CODING_FAILURE_PATTERNS.md` | editor skill — when bug fix requires ≥2 attempts |
 | `AGENTS.md §Critical Rules` | coder + editor — when new library added |
+| `.sessions/cycle_N_<section_id>.json` | agent skill — written by each sub-agent after completing its section |

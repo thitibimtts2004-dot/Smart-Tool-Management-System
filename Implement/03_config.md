@@ -68,10 +68,20 @@ Max 5 tool calls/turn. Retry max 2×; diagnose on 2nd fail.
 
 ## R4 · Sub-agent Decision
 Run 1 Bash scope probe before any task.
-| Probe Result | Action |
-|---|---|
-| < 5 files / < 300 lines | Proceed in main context |
-| ≥ 5 files / ≥ 300 lines | Spawn sub-agent → summary ≤500 tokens |
+
+**Spawn patterns (3 types):**
+
+| Pattern | When | How |
+|---|---|---|
+| **Explore** | scope ≥ 5 files / ≥ 300 lines | `Agent(subagent_type=Explore)` → summary ≤500 tokens → act on summary only |
+| **Execution** | single section > 8 steps + isolated output | `Agent(task)` → pass goal + constraints + output format → receive structured result |
+| **Parallel fan-out** | ≥ 2 sections in same Cycle (no dependency) | spawn all at once → each writes `.sessions/cycle_N_<section_id>.json` → read all results → pass as context to next Cycle |
+
+**Hard limits:**
+- Max depth: 1 level only — worker agents may NOT spawn further agents
+- Sub-agent output: structured (JSON or table) — never prose
+- Token budget: sub-agent tokens count toward SESSION_TOTAL (no separate budget)
+- Parallel spawn: send all Cycle agents in one message (not sequentially)
 
 ---
 
@@ -216,7 +226,7 @@ Reply line 1: `**[Boot]** Thread: <done|in_progress> · Tasks: <N open> · Skill
 |---|---|
 | 1 Info Gather | Repeat: identify missing context → index-first → assess → emit [✓ gather] |
 | 2 MECE Plan | Build plan (1:1 Skill sections) → Verify-N per section → user confirms → roadmap |
-| 3 Execution | REACT LOOP: Select → Execute → Observe → Verify → Decide |
+| 3 | Execution | Cycle Gate → group sections into Cycles → CYCLE LOOP: spawn Cycle N parallel → await → read cycle_N_*.json → spawn Cycle N+1 → Completion Gate |
 
 **Phases 1–2 run ONCE per task. On resume: skip to Phase 3 at pending section.**
 
@@ -451,7 +461,7 @@ Copy to `.agents/skills/skill-manifest.json`. Add or remove skills to match your
     },
     "agent": {
       "path": ".agents/skills/agent/SKILL.md",
-      "keywords": ["orchestrate", "multi-step", "coordinate", "spawn", "จัดการหลายขั้นตอน"]
+      "keywords": ["orchestrate", "multi-step", "coordinate", "spawn", "จัดการหลายขั้นตอน", "cycle", "fan-out", "orchestrate cycles"]
     },
     "identity": {
       "path": ".agents/skills/identity/SKILL.md",
@@ -499,6 +509,7 @@ No match → load `editor` skill.
 - MECE plan required for tasks >3 steps or any irreversible action
 - token_auditor gates: >60k warn · >90k halt
 - session_manager completes 6 steps on close: Step 0 R19 self-eval + session JSON + active_thread.md + session_tokens.md + session_handoff.md + mece_plan.md (clear)
+- On close: enumerate any `.sessions/cycle_N_*.json` files written this session in the confirmation reply
 
 ## Learned Routes (auto-updated — fast match before skill lookup)
 
