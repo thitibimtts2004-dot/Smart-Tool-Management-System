@@ -13,6 +13,7 @@
 | [05_scripts.md](05_scripts.md) | symbol_indexer.py spec | When writing the indexer script |
 | [06_orchestrator.md](06_orchestrator.md) | Dual-mode execution, mece_plan.md schema, Cycle orchestration, cycle_N_*.json result files, sub-agent loop logic, token budget | When setting up orchestration or sub-agent spawn patterns (R4) |
 | [07_platform.md](07_platform.md) | Platform adapter — auto-detection, known platform mappings, co-development dialogue for unknown platforms | When deploying on a new platform or when [platform-unknown] is emitted |
+| [08_checklist.md](08_checklist.md) | Post-installation verification — 22 required files, per-file section checks, summary script | After completing Track A or Track B setup |
 
 ## Agent Reading Order
 
@@ -24,6 +25,7 @@
 5. `05_scripts.md` → write symbol_indexer.py
 6. `07_platform.md` → run Platform Probe → write .agents/platform/detected.md
 7. `02_setup.md §9` → run verification checklist
+8. `08_checklist.md` → run summary verification script → fix any gaps
 
 ### Track B — Existing Project (has source code already)
 1. `01_overview.md` → understand structure
@@ -35,6 +37,7 @@
 7. `05_scripts.md` → write symbol_indexer.py
 8. `07_platform.md` → run Platform Probe → write .agents/platform/detected.md
 9. `02_setup.md §9` → run verification checklist
+10. `08_checklist.md` → run summary verification script → fix any gaps
 
 > **Key difference:** Track B runs auto-discovery (Step 2.5) before writing any config files,
 > so REPO_MAP.md and INVARIANTS.md §I2 are filled automatically from the actual codebase.
