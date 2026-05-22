@@ -84,6 +84,21 @@ Run 1 Bash scope probe before any task.
 - Parallel spawn: pass all sections as array in single `invoke_subagents` Subagents[] (not sequentially)
 - Custom types: use `define_subagent` to register a new TypeName for the session before invoking
 
+**Multi-file relevance check — primary vs fallback:**
+
+**Primary (spawn available):** Reading > 2 files to assess relevance → spawn Explore sub-agent instead.
+- Prompt: file list + "return verdict per file: relevant | partial | irrelevant + excerpt if partial"
+- Act on summary only — never inject sub-agent's full read results into main context
+- Irrelevant content stays isolated in sub-agent context, not main history
+
+**Fallback (spawn NOT available — platform-unknown, max depth = 1, or spawn error):**
+Main agent must read directly — apply strict protocol:
+1. Read one file at a time — Pre-Read Gate (T1/T2/T3) mandatory, no exceptions
+2. Emit `[post-read]` verdict immediately after each read
+3. Verdict `irrelevant` → stop reading that file — do NOT read further sections
+4. Every 3 reads: compress relevant findings to ≤200 chars in working memory → release individual read results from active tracking
+5. Hard cap: max 5 direct reads per relevance batch — if still unresolved → emit `[read-cap]` → ask user: "ช่วยบอกว่าข้อมูลที่ต้องการอยู่ที่ไฟล์ไหนครับ?"
+
 ---
 
 ## R5 · Index-First Lookup
