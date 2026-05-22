@@ -254,6 +254,12 @@ Reply line 1: `**[Boot]** Thread: <done|in_progress> · Tasks: <N open> · Skill
 
 **Same session ≠ same skill.** Always check intent → re-read SKILL.md if skill changes.
 
+**Re-route guard (prevents A→B→A cycle):**
+- Before re-routing: compare target skill against the skill active in the PREVIOUS section
+- Same as previous? → skip re-route → continue with current skill → emit `[route-guard] same skill, skipping re-route`
+- Different? → allow re-route as normal
+- If re-route count for this task reaches 3 → HALT re-routing → stay on current skill → emit `[route-limit]`
+
 ---
 
 ## Loop Architecture
@@ -262,6 +268,14 @@ Reply line 1: `**[Boot]** Thread: <done|in_progress> · Tasks: <N open> · Skill
 |---|---|
 | 1 Info Gather | Repeat: identify missing context → index-first → assess → emit [✓ gather] |
 | 2 MECE Plan | Build plan (1:1 Skill sections) → Verify-N per section → user confirms → roadmap |
+
+**Gather iteration cap — hard limit:**
+Max 3 gather-read iterations per Phase 1 run. Count resets only at task start (not per turn).
+After 3 iterations without `[✓ gather]`:
+→ HALT gather loop
+→ Emit `[gather-stalled]` Missing: `<list what's still needed>`
+→ Ask user: "ขาด context: <list> — ช่วยระบุหรือให้ข้อมูลเพิ่มเติมได้ไหมครับ?"
+→ Do NOT proceed to Phase 2 until user provides context or explicitly says "proceed anyway"
 | 3 | Execution | Cycle Gate → group sections into Cycles → CYCLE LOOP: spawn Cycle N parallel → await → read cycle_N_*.json → spawn Cycle N+1 → Completion Gate |
 
 **Phases 1–2 run ONCE per task. On resume: skip to Phase 3 at pending section.**

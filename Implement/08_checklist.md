@@ -31,6 +31,10 @@ Expected: ≥ 10 matches
 | R5 Post-Read Gate | `grep -c "post-read\|Post-Read Verdict" CLAUDE.md` | ≥ 1 |
 
 - [ ] `[post-read]` verdict emitted after every Read call (relevant | partial | irrelevant)
+- [ ] Phase 1 gather cap enforced: max 3 iterations → `[gather-stalled]` if exceeded
+- [ ] `attempt_count` written to session_handoff.md before any session pause mid-retry
+- [ ] Re-route guard active: target skill checked against previous section skill before re-routing
+- [ ] Verify command is checkable (not self-assessed): non-empty ≠ pass
 
 Fix if missing: `Implement/03_config.md` → CLAUDE.md template → copy missing section.
 

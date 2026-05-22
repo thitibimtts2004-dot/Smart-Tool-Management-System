@@ -34,6 +34,10 @@ Orchestrator skill. Handles two responsibilities:
 2. Re-evaluate user intent against all skill keywords[]
 3. Load matched skill SKILL.md → hand off to Phase 1 (Info Gather Loop)
 4. If still no match → ask user to clarify intent
+5. Re-route guard: track `last_skill` and `reroute_count` in working memory
+   - If target skill = `last_skill` from previous section → skip re-route (guard fires)
+   - If `reroute_count` ≥ 3 → stay on current skill → emit [route-limit]
+   - Reset `reroute_count` to 0 at each new task start
 \```
 
 ## Orchestration Protocol (R4 Cycle fan-out)
@@ -520,6 +524,13 @@ Rules:
 - Verify must be executable — never "looks right"
 - Independent steps have no section dependency
 
+**Verify pass criteria (explicit):**
+- Pass = command output matches the expected pattern exactly (grep finds target string, exit code = 0, etc.)
+- Non-empty output ≠ pass — must match the defined condition
+- Ambiguous output (command ran but result is unclear) → treat as FAIL → enter retry flow
+- Self-assessed "looks correct" → NOT a valid verify result — must use a checkable command
+- If no checkable verify exists for a section → flag at MECE plan creation time, do not leave undefined
+
 ---
 
 ## Execution Protocol
@@ -699,6 +710,7 @@ Triggered from Loop Phase 3 when token threshold hit.
    sections_done: [list]
    sections_pending: [list]
    last_step: <step name>
+   attempt_count: <0|1>    ← attempts used on last_step (0 = first try, 1 = one retry done)
    latest_result: <last tool output summary>
 3. Append to active session History with status "paused_token_limit"
 4. Show user:
@@ -713,6 +725,10 @@ Triggered from Loop Phase 3 when token threshold hit.
 
 ### BLOCKED (step failed after 2× retry)
 Triggered from Loop Phase 3 when verify or observe fails twice.
+
+**Retry state persistence:** When writing session_handoff.md mid-retry, set `attempt_count: 1`.
+On resume: read `attempt_count` from handoff → if `1`, next failure = BLOCKED immediately (no extra retry).
+If `attempt_count` missing from handoff → default to `0` (fresh budget for that step).
 
 \```
 1. HALT all remaining sections immediately
@@ -733,6 +749,10 @@ Triggered from Loop Phase 3 when verify or observe fails twice.
 ### Resume Flow
 \```
 1. Read .sessions/session_handoff.md → load sections_done + sections_pending + last_step
+- Load `attempt_count` from handoff:
+  - `attempt_count: 1` → this step already used 1 retry → next failure = BLOCKED immediately
+  - `attempt_count: 0` or missing → full retry budget (1 retry allowed)
+  - Emit `[resume-attempt] count=<N>` so agent knows remaining budget
 1b. Read `.sessions/cycle_N_*.json` for the last completed Cycle (N = current_cycle from handoff)
     → inject as `cycle_context:` before spawning Cycle N+1 agents
 **Resume Context Gate (run before injecting `cycle_context:`):**
