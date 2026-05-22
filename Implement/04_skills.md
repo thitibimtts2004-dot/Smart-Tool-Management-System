@@ -54,7 +54,10 @@ Orchestrator skill. Handles two responsibilities:
       - status value in ["done", "blocked"] — if missing/invalid → treat as blocked
       - Invalid JSON or missing file → treat as blocked, log in notes
    b. Any status = blocked → HALT all remaining Cycles → BLOCKED flow
-   c. All done → aggregate results → build context payload for Cycle N+1
+   c. All done → aggregate results → build **trimmed** context payload for Cycle N+1:
+      - Include per result: `status`, `verify_result`, `artifacts` (paths only), `notes`
+      - Exclude: raw file content read during the cycle (content stays in artifacts on disk)
+      - Apply Context Trim to any `context_files:` passed forward (see Delegation Contract)
 6. Call `<spawn_tool>` for Cycle N+1 — inject cycle_N results as `cycle_context:` in each Subagent Prompt
 7. Repeat until all Cycles done → Completion Gate
 \```
@@ -64,6 +67,11 @@ Orchestrator skill. Handles two responsibilities:
 - `constraints:` relevant rules from CLAUDE.md (R5, R6, R8)
 - `output_format:` exact structure expected (JSON schema or table)
 - `context_files:` only files the sub-agent needs (no full index)
+- **Context Trim** (run before setting `context_files:`):
+  1. For each candidate file: check its `[post-read]` verdict from this session
+  2. `irrelevant` verdict → exclude from `context_files:` entirely
+  3. `partial` verdict → pass excerpt reference only (`<file>` L<N>–L<N>), not full path
+  4. No `[post-read]` verdict yet → include (sub-agent will read as needed)
 - `cycle_context:` structured results from prior Cycle(s) — omit if Cycle 1
 
 **Spawn call structure — varies by platform (read from `[PROJECT_ROOT]/.agents/platform/detected.md`):**
@@ -167,6 +175,10 @@ You are the "Builder". When the Agent delegates a new feature task to you, focus
 3. **Self-Correction (Linter)**: If you notice a TypeScript error or Linter warning while writing, fix it immediately before finishing your execution.
 4. **Aesthetics & UI**: Use TailwindCSS standard utility classes. Strive for a minimalist, modern enterprise look.
 5. **Local Staging**: When generating large files or major architectural components, write them to a temporary staging area (e.g., `/tmp/` or local `temp/` inside the project) first using your creation tools, verify their structure, and then move them to their final destination. This prevents token waste on failed direct file injections.
+
+**Staged file cleanup:** If a staged write fails or is abandoned mid-task:
+- Delete the staged file immediately
+- Emit `[staged-drop] <path>` to signal that this content must not appear in subsequent context or `context_files:`
 
 ## Limitations
 - Do **NOT** manipulate `.agents/` or `*.json` index files directly — call `file_manager` + `variable_manager` skills after creating files.
@@ -668,6 +680,8 @@ If History has ≥ 5 items:
 2. Summarize as: `"[Before: X] | [Added: Y]"` → append to `summary_context`
 3. Delete old items → keep only 4 most recent in History
 History never exceeds 5 items — reduces context fed to AI by ~70%.
+**Hard enforcement before sub-agent spawn:** History MUST NOT exceed 5 items at spawn time.
+If History count = 5 when about to spawn → compact first → then spawn. No exceptions.
 
 ### Smart Output Truncation
 Tool outputs > 1,000 chars → keep first + last 20 lines, separated by `\n...[Truncated]...\n`
@@ -721,6 +735,10 @@ Triggered from Loop Phase 3 when verify or observe fails twice.
 1. Read .sessions/session_handoff.md → load sections_done + sections_pending + last_step
 1b. Read `.sessions/cycle_N_*.json` for the last completed Cycle (N = current_cycle from handoff)
     → inject as `cycle_context:` before spawning Cycle N+1 agents
+**Resume Context Gate (run before injecting `cycle_context:`):**
+- Count total chars across all `cycle_N_*.json` files to be injected
+- If total > 3,000 chars: summarize each file to key fields only (`status`, `artifacts`, `notes`)
+- Never inject raw file content from artifact paths — pass paths only
 2. Reload config: Read target Skill SKILL.md context_files
 3. MECE: load existing plan from handoff → reuse if valid · rebuild if scope changed
 4. Emit [resume] trace
@@ -814,6 +832,12 @@ Check for Bash commands without `| grep | tail` filter → flag as violation of 
 
 **Check 3 — Low-Overhead Tooling:**
 Check for full-file edits when only a small targeted change was needed → flag as violation of R5 (index-first).
+
+**Check 4 — Context Payload Size:**
+Before each sub-agent spawn: verify `context_files:` + `cycle_context:` combined < 2,000 chars. Flag if exceeded.
+
+**Check 5 — Post-Read Verdicts:**
+Confirm `[post-read]` verdict was emitted for every Read call this session. Flag missing verdicts.
 
 ## Actions
 

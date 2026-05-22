@@ -94,6 +94,15 @@ Run 1 Bash scope probe before any task.
 ```
 Cannot fill Line? → grep not done yet → run grep first.
 
+**Post-Read Verdict — emit AFTER every Read result is processed:**
+
+**[post-read]** Target: `<file>` · Verdict: `relevant | partial | irrelevant` · Action: `keep | excerpt(L<N>–L<N>) | drop`
+- `relevant` → include as-is in `context_files:` or `cycle_context:`
+- `partial` → include only the stated excerpt range — not the full file
+- `irrelevant` → drop immediately; do NOT include in `context_files:`, `cycle_context:`, or any sub-agent prompt
+- Failure to emit `[post-read]` = treat content as `irrelevant` → drop
+- See CFP-004 in CODING_FAILURE_PATTERNS.md
+
 **Pre-Edit Gate — emit BEFORE every Edit/Write on a named symbol:**
 ```
 **[pre-edit]** Symbol: `<name>` · index_variables lookup: T1 done · used_in: <N files> · safe to edit: <yes|needs review>

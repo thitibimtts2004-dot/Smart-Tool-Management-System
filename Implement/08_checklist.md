@@ -28,6 +28,9 @@ Expected: ≥ 10 matches
 | R4 platform-agnostic | `grep -c "spawn_tool\|detected.md\|platform-unknown" CLAUDE.md` | ≥ 3 |
 | Cycle Gate | `grep -c "Cycle Gate\|cycle_N_" CLAUDE.md` | ≥ 2 |
 | Completion Gate | `grep -c "Completion Gate" CLAUDE.md` | ≥ 1 |
+| R5 Post-Read Gate | `grep -c "post-read\|Post-Read Verdict" CLAUDE.md` | ≥ 1 |
+
+- [ ] `[post-read]` verdict emitted after every Read call (relevant | partial | irrelevant)
 
 Fix if missing: `Implement/03_config.md` → CLAUDE.md template → copy missing section.
 
