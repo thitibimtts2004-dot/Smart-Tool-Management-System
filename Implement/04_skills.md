@@ -62,6 +62,11 @@ Orchestrator skill. Handles two responsibilities:
       - Include per result: `status`, `verify_result`, `artifacts` (paths only), `notes`
       - Exclude: raw file content read during the cycle (content stays in artifacts on disk)
       - Apply Context Trim to any `context_files:` passed forward (see Delegation Contract)
+**Token Check before spawning Cycle N+1:**
+- Read SESSION_TOTAL from .sessions/session_tokens.md
+- > 50k AND compact not yet run this transition? → run Mid-Session Compact → emit [compact] → then spawn
+- > 60k? → TOKEN PAUSE (do not spawn next cycle until user confirms resume)
+- ≤ 50k? → spawn immediately
 6. Call `<spawn_tool>` for Cycle N+1 — inject cycle_N results as `cycle_context:` in each Subagent Prompt
 7. Repeat until all Cycles done → Completion Gate
 \```
@@ -624,7 +629,27 @@ Section 3 — Sync & Close:
 \```
 **[✓ MECE]**   Plan covers <N> sections in <M> Cycles · user confirmed · roadmap entries added
 **[MECE]**     ✓ Section <N> done · → Section <N+1> next
+**Token Check — mandatory before starting any new Cycle or Section:**
+```
+TOKEN CHECK before Cycle/Section N+1:
+- Read SESSION_TOTAL from .sessions/session_tokens.md
+- > 50k AND compact not yet run this cycle? → run Mid-Session Compact (see CLAUDE.md R3) → emit [compact] → then proceed
+- > 60k? → TOKEN PAUSE immediately (do not start next cycle)
+- ≤ 50k? → proceed to next Cycle/Section
+```
 **[cycle N]**  All <X> sections done · results: .sessions/cycle_N_*.json · spawning Cycle <N+1>
+**Final Step — Feedback & Error Summary (MANDATORY before closing task):**
+```
+1. Error summary: list all steps that were retried, blocked, or degraded during this task
+   - Format: "Section <S> step <name>: <what failed> → <how resolved>"
+   - If none: "No errors or retries this session"
+2. Ask user for feedback:
+   "งานเสร็จแล้วครับ ✓
+    Errors/retries: <list or 'none'>
+    มีส่วนไหนที่ควรปรับปรุงไหมครับ? หรือมี pattern ใหม่ที่ควรเพิ่มใน CODING_FAILURE_PATTERNS.md?"
+3. If user identifies a new failure pattern → route to file_manager to add CFP entry
+4. Write final summary_context to active session JSON before marking phase: done
+```
 **[MECE]**     ✓ All Cycles done · Roadmap updated · Thread: done
 \```
 

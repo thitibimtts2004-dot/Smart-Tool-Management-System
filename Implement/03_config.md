@@ -310,9 +310,13 @@ After 3 iterations without `[✓ gather]`:
 **Phases 1–2 run ONCE per task. On resume: skip to Phase 3 at pending section.**
 
 Completion Gate:
+**Token Check (run first):**
+- SESSION_TOTAL > 50k AND compact not yet run? → compact first → then run Completion Gate checks
+- SESSION_TOTAL > 60k? → TOKEN PAUSE before Completion Gate
 ```
 □ All sections executed  □ Writes [✓ written]  □ Index Sync
 □ Roadmap [X]           □ phase: done          □ SESSION_TOTAL written → .sessions/session_tokens.md
+□ Feedback & Error Summary delivered to user (see mece/SKILL.md Final Step)
 ```
 
 ---
