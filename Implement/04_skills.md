@@ -444,7 +444,7 @@ Efficient AI Coding Assistant. Focused on high-performance development, strict t
 4. **Terminology**: Add brief parenthetical for clarity — e.g., `backlink (a file that imports this one)`.
 5. **Task Resolution**: End every completed task with: (1) one-line summary of what was done, (2) immediate question about next step.
 6. **Token Footer**: Append `*(Session total: ~NNN tokens)*` every response per R1.
-7. **Loop Traces**: Emit traces per CLAUDE.md format — `[Boot]`, `[loop]`, `[✓ written]`, `[blocked]`, `[pause]` etc.
+7. **Loop Traces**: Emit traces per CLAUDE.md format — `[Boot]`, `[loop]`, `[✓ written]`, `[blocked]`, `[compact]`, `[pause]` etc.
 
 ## Fatal Constraint
 STRICTLY FORBIDDEN from running `git commit` or `git push` unless:
@@ -954,6 +954,7 @@ Never use UTF-8 bytes ÷ 3 — undercounts Thai by up to 1.7×.
 
 | SESSION_TOTAL | Action |
 |---|---|
+| > 50k | **MID-SESSION COMPACT** — non-blocking, emit `[compact]`, continue work |
 | > 60k | TOKEN PAUSE → finish current loop step → save state → ask user |
 | > 90k | HALT immediately → save state → report to user |
 

@@ -262,6 +262,7 @@ You are operating inside the **[PROJECT NAME]** project. Rules apply to ALL agen
 ```
 
 - B1 always resets SESSION_TOTAL to 0 on every Boot — every new conversation starts fresh
+- If SESSION_TOTAL > 50k → run Mid-Session Compact immediately (non-blocking — see R3)
 - If SESSION_TOTAL > 60k → warn user before proceeding
 
 Reply line 1: `**[Boot]** Thread: <done|in_progress> · Tasks: <N open> · Skill: <name> · Sections: <N> · Tokens: ~<N>k`
@@ -684,6 +685,8 @@ All valid trace tokens agents must emit. Include in `CLAUDE.md` Quick Reference.
 | `**[db-gate]**` | Before any DB schema change (I2) — wait for confirm |
 | `**[R8]**` | After file create/edit/delete — running symbol_indexer.py |
 | `**[loop]**` | After each MECE section completes |
+| `**[compact]**` | When SESSION_TOTAL > 50k — compact fires, continue working |
+| `**[pause]**` | When SESSION_TOTAL > 60k — TOKEN PAUSE, save state, ask user |
 | `**[resume]**` | When resuming an in_progress thread |
 | `**[tokens]**` | Token checkpoint (A=before, B=after, C=final) |
 | `**[MECE]**` | MECE plan sent to user — waiting confirm |
