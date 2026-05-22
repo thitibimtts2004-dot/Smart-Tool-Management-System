@@ -37,6 +37,8 @@ Expected: ≥ 10 matches
 - [ ] Verify command is checkable (not self-assessed): non-empty ≠ pass
 - [ ] Multi-file relevance check: >2 files → Explore sub-agent first; fallback strict protocol active (cap 5, `[read-cap]`)
 - [ ] Mid-session compact active: SESSION_TOTAL >50k → `[compact]` non-blocking, keeps last 6 loops
+- [ ] `mece/SKILL.md` has Token Check block before `[cycle N]` emit (mandatory before every new Cycle/Section)
+- [ ] `mece/SKILL.md` has Feedback & Error Summary as Final Step before `[MECE]` done emit
 
 Fix if missing: `Implement/03_config.md` → CLAUDE.md template → copy missing section.
 
@@ -98,7 +100,7 @@ Expected: 10
 | `editor` | `Roadmap Protocol\|3-Tier\|Edit\|Sections\|Responsibilities` | 5 |
 | `file_manager` | `Backlink\|Triggers\|Pre-Analysis\|Sections` | 4 |
 | `identity` | `Fatal Constraint\|session_compactor\|git.*commit\|push` | 3 |
-| `mece` | `Plan Format\|Execution Protocol\|Templates\|Sections` | 4 |
+| `mece` | `Plan Format\|Execution Protocol\|Token Check\|Feedback.*Error Summary` | 6 |
 | `session_manager` | `BLOCKED\|Resume Flow\|mandatory\|blocked_cycle` | 4 |
 | `token_auditor` | `Self-Heal\|inject\|offending\|Audit` | 3 |
 | `token_tracker` | `SESSION_TOTAL\|TOKEN PAUSE\|Completion Gate` | 3 |
