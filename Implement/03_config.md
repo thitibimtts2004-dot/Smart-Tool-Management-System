@@ -61,8 +61,21 @@ Max 5 tool calls/turn. Retry max 2×; diagnose on 2nd fail.
 ## R3 · Session Pause
 | SESSION_TOTAL | Action |
 |---|---|
+| >50k | **MID-SESSION COMPACT** — non-blocking, continue work after compact |
 | >60k | finish current loop step → TOKEN PAUSE |
 | >90k | HALT immediately → save state → report to user |
+
+**Mid-Session Compact (>50k) — runs without interrupting work:**
+```
+1. Write .sessions/context_compact_<N>.md:
+   summary:    <what was done so far — key decisions, artifacts, state> (≤300 tokens)
+   keep_loops: <last 6 loop interactions verbatim>
+   compacted:  <everything older than last 6 loops → summarized into `summary` field above>
+2. Emit [compact] Context: ~<N>k → compacted · keeping last 6 loops
+3. Treat `summary` as the new context anchor — do NOT re-read old tool results
+4. Continue current task from where it left off (no TOKEN PAUSE, no user prompt)
+```
+Compact fires once per 10k window — next compact at SESSION_TOTAL > 60k if still running (before TOKEN PAUSE check).
 
 ---
 

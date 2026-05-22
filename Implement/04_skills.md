@@ -697,6 +697,22 @@ If History count = 5 when about to spawn → compact first → then spawn. No ex
 ### Smart Output Truncation
 Tool outputs > 1,000 chars → keep first + last 20 lines, separated by `\n...[Truncated]...\n`
 
+### Mid-Session Compact (SESSION_TOTAL > 50k) — NON-BLOCKING
+Triggered automatically. Does NOT pause work or ask user.
+```
+1. Identify last 6 loop interactions (keep verbatim)
+2. Summarize everything older than last 6 loops → ≤300 tokens
+3. Write .sessions/context_compact_<N>.md:
+   Fields:
+     summary:    <key decisions, artifacts created, current state>
+     keep_loops: <last 6 loop interactions>
+     compacted_at: <SESSION_TOTAL at time of compact>
+4. Emit [compact] Context: ~<N>k → compacted · keeping last 6 loops
+5. Treat summary as new context anchor — old tool results no longer re-referenced
+6. Continue task immediately — no interruption
+```
+**Compact cadence:** fires at >50k, then again at >60k (before TOKEN PAUSE check), then TOKEN PAUSE takes over at >60k if compact alone is insufficient.
+
 ---
 
 ## Section 2 — Pause / Blocked Handling
