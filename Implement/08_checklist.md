@@ -35,6 +35,8 @@ Expected: ≥ 10 matches
 - [ ] `attempt_count` written to session_handoff.md before any session pause mid-retry
 - [ ] Re-route guard active: target skill checked against previous section skill before re-routing
 - [ ] Verify command is checkable (not self-assessed): non-empty ≠ pass
+- [ ] Multi-file relevance check: >2 files → Explore sub-agent first; fallback strict protocol active (cap 5, `[read-cap]`)
+- [ ] Mid-session compact active: SESSION_TOTAL >50k → `[compact]` non-blocking, keeps last 6 loops
 
 Fix if missing: `Implement/03_config.md` → CLAUDE.md template → copy missing section.
 
@@ -251,6 +253,10 @@ Fix: create `CODING_FAILURE_PATTERNS.md` with CFP-001 as a placeholder:
 ## CFP-001: Placeholder
 Added by setup. Replace with first real pattern when a bug requires ≥2 attempts.
 ```
+
+**Required baseline patterns to include (copy from source harness):**
+- CFP-004 · Read Without Post-Read Verdict → Context Bloat
+- CFP-006 · Unbounded Loop → Token Exhaustion
 
 ---
 
