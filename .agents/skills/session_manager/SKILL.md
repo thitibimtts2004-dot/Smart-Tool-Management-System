@@ -229,13 +229,20 @@ Step 4 — Write session_handoff.md (ALWAYS — even if task is complete)
     cfp_dismissed: <merged list from Step 3.5>
     last_self_improve_session: <session_id if §4 ran, else carry from Step 3.5>
 
-Step 5 — Confirm to user (list every file written)
+Step 5 — Sync session index
+  Bash: python scripts/session_indexer.py
+  → updates knowledge/index_sessions.json with this session's keywords + summary
+  → enables future lookup.py --session queries to find this session by topic or task ID
+  Verify: grep -c "session_<NNN>" knowledge/index_sessions.json → ≥1
+
+Step 6 — Confirm to user (list every file written)
   Reply format:
     ✅ Session ปิดแล้วครับ — ไฟล์ที่บันทึก:
     · .sessions/session_<NNN>_<topic>.json → status: completed
     · .sessions/session_tokens.md → SESSION_TOTAL: ~<N>k
     · .sessions/active_thread.md → phase: done
     · .sessions/session_handoff.md → next: <summary>
+    · knowledge/index_sessions.json → session indexed
 ```
 
-**Never report "session closed" before all 4 files are written.** Summary text alone = incomplete close.
+**Never report "session closed" before all 5 files are written.** Summary text alone = incomplete close.

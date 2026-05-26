@@ -1,25 +1,27 @@
 """
 lookup.py — Pre-read oracle for agent R5 tier lookups.
 
-Returns ranked matches (file + line + read_hint) before any Read call.
-Agents use this as T0 BEFORE the T1/T2/T3 grep tiers in editor/SKILL.md.
+Searches symbols, files, AND sessions in one call.
+Agents use this as T0 BEFORE T1/T2/T3 grep tiers (editor/SKILL.md).
 
 Usage:
     python scripts/lookup.py "JobDashboard"            # exact symbol
-    python scripts/lookup.py "job dashboard"           # keyword search
-    python scripts/lookup.py --file "SiteJobDashboard" # file search
-    python scripts/lookup.py --raw "job"               # all matches, no ranking
+    python scripts/lookup.py "job dashboard"           # keyword search (symbols+files+sessions)
+    python scripts/lookup.py "T-055"                   # task ID → session history
+    python scripts/lookup.py --file "SiteJobDashboard" # file search only
+    python scripts/lookup.py --session "harness"       # session search only
 
 Output: JSON array sorted by score desc, each item:
   {
-    "type":      "symbol" | "file",
-    "name":      "<symbol or filename>",
-    "file":      "src/components/...",
-    "line":      42,
-    "line_end":  98,
-    "read_hint": {"offset": 37, "limit": 60},
-    "keywords":  [...],
-    "score":     3
+    "type":       "symbol" | "file" | "session",
+    "name":       "<symbol | filepath | session_id>",
+    "file":       "src/components/... | .sessions/session_NNN.json",
+    "line":       42,           # null for sessions
+    "read_hint":  {"offset": 37, "limit": 60},   # null for sessions
+    "tasks":      ["T-055"],    # session only
+    "summary":    "...",        # session only (200-char excerpt)
+    "keywords":   [...],
+    "score":      3
   }
 """
 
@@ -28,9 +30,10 @@ import re
 import sys
 from pathlib import Path
 
-PROJECT_ROOT = Path("/Volumes/BriteBrain/Projects/Asset Plan")
-INDEX_VARS = PROJECT_ROOT / "knowledge/index_variables.json"
-INDEX_FILES = PROJECT_ROOT / "knowledge/index_files.json"
+PROJECT_ROOT   = Path("/Volumes/BriteBrain/Projects/Asset Plan")
+INDEX_VARS     = PROJECT_ROOT / "knowledge/index_variables.json"
+INDEX_FILES    = PROJECT_ROOT / "knowledge/index_files.json"
+INDEX_SESSIONS = PROJECT_ROOT / "knowledge/index_sessions.json"
 
 CAMEL_RE = re.compile(r"(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])")
 
@@ -191,19 +194,95 @@ def search_files(query: str, top_n: int = 5) -> list[dict]:
     return out
 
 
+def score_session(session_id: str, entry: dict, tokens: list[str], query_exact: str) -> int:
+    """Score a session entry against query tokens."""
+    score = 0
+    sid_lower   = session_id.lower()
+    kw          = [k.lower() for k in entry.get("keywords", [])]
+    tasks       = [t.lower() for t in entry.get("tasks", [])]
+    summary     = entry.get("summary", "").lower()
+
+    # Exact task ID match (e.g. "T-055", "t055")
+    q_lower = query_exact.lower()
+    if q_lower in tasks or q_lower.replace("-", "") in [t.replace("-", "") for t in tasks]:
+        score += 12
+
+    # Session ID contains query
+    if q_lower in sid_lower:
+        score += 6
+
+    for t in tokens:
+        if t in sid_lower:
+            score += 3
+        if t in kw:
+            score += 2
+        if t in summary:
+            score += 1
+        # Task token match
+        for task in tasks:
+            if t in task:
+                score += 2
+
+    return score
+
+
+def search_sessions(query: str, top_n: int = 5) -> list[dict]:
+    data = load_index(INDEX_SESSIONS)
+    sessions_dict = data.get("sessions", {}) if isinstance(data, dict) else {}
+    tokens  = tokenize(query)
+    results = []
+
+    for sid, entry in sessions_dict.items():
+        if not isinstance(entry, dict):
+            continue
+        s = score_session(sid, entry, tokens, query)
+        if s > 0:
+            results.append((s, sid, entry))
+
+    results.sort(key=lambda x: -x[0])
+    out = []
+    for score, sid, entry in results[:top_n]:
+        out.append({
+            "type":      "session",
+            "name":      sid,
+            "file":      entry.get("path", f".sessions/{sid}.json"),
+            "line":      None,
+            "line_end":  None,
+            "read_hint": None,
+            "tasks":     entry.get("tasks", []),
+            "status":    entry.get("status", "unknown"),
+            "date":      entry.get("date", ""),
+            "summary":   entry.get("summary", ""),
+            "keywords":  entry.get("keywords", []),
+            "score":     score,
+        })
+    return out
+
+
 def format_human(results: list[dict]) -> str:
     if not results:
         return "No matches found."
     lines = []
     for r in results:
-        rh = r.get("read_hint") or {}
-        hint = f"offset={rh.get('offset','?')} limit={rh.get('limit','?')}" if rh else "no hint"
-        sec = f" [{r['best_section']}]" if r.get("best_section") else ""
-        lines.append(
-            f"[score={r['score']}] {r['type'].upper()} `{r['name']}`{sec}\n"
-            f"  file: {r['file']}\n"
-            f"  line: {r.get('line','?')}  read_hint: {hint}"
-        )
+        t = r["type"]
+        if t == "session":
+            tasks = ", ".join(r.get("tasks", [])) or "none"
+            summary = r.get("summary", "")[:100]
+            lines.append(
+                f"[score={r['score']}] SESSION `{r['name']}`\n"
+                f"  file: {r['file']}\n"
+                f"  tasks: {tasks}  status: {r.get('status','')}  date: {r.get('date','')}\n"
+                f"  summary: {summary}…"
+            )
+        else:
+            rh  = r.get("read_hint") or {}
+            hint = f"offset={rh.get('offset','?')} limit={rh.get('limit','?')}" if rh else "no hint"
+            sec  = f" [{r['best_section']}]" if r.get("best_section") else ""
+            lines.append(
+                f"[score={r['score']}] {t.upper()} `{r['name']}`{sec}\n"
+                f"  file: {r['file']}\n"
+                f"  line: {r.get('line','?')}  read_hint: {hint}"
+            )
     return "\n\n".join(lines)
 
 
@@ -213,20 +292,22 @@ def main():
         print(__doc__)
         sys.exit(0)
 
-    file_only = "--file" in args
-    raw = "--raw" in args
-    json_out = "--json" in args
-    flags = {"--file", "--raw", "--json"}
+    file_only    = "--file" in args
+    session_only = "--session" in args
+    json_out     = "--json" in args
+    flags = {"--file", "--session", "--raw", "--json"}
     query_parts = [a for a in args if a not in flags]
     query = " ".join(query_parts)
 
     if not query:
-        print("Usage: python scripts/lookup.py <query> [--file] [--raw] [--json]")
+        print("Usage: python scripts/lookup.py <query> [--file] [--session] [--json]")
         sys.exit(1)
 
-    sym_results = [] if file_only else search_symbols(query)
-    file_results = search_files(query)
-    combined = sym_results + file_results
+    sym_results     = [] if (file_only or session_only) else search_symbols(query)
+    file_results    = [] if session_only else search_files(query)
+    session_results = search_sessions(query)
+
+    combined = sym_results + file_results + session_results
     combined.sort(key=lambda x: -x["score"])
 
     if json_out:

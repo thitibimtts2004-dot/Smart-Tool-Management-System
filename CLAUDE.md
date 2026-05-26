@@ -148,6 +148,7 @@ Default: table/bullet > prose. Comparison → table · Steps → numbered list �
 | Create/delete/move file | Update `knowledge/index_files.json` + backlinks |
 | Edit file (add/remove imports) | Update backlinks in `knowledge/index_files.json` |
 | Create/delete/rename symbol | Update `knowledge/index_variables.json` + `python scripts/symbol_indexer.py` |
+| Session close (session_manager §3) | `python scripts/session_indexer.py` → updates `knowledge/index_sessions.json` |
 
 ---
 
