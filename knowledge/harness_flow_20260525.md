@@ -46,8 +46,14 @@
 │                                                                      │
 │  knowledge/index_files.json      ← backlinks (imported_by, imports) │
 │  knowledge/index_variables.json  ← symbols + line numbers (used_in) │
+│  knowledge/index_sessions.json   ← session history index ★★         │
 │  knowledge/error_index.md        ← ERR-XXX codes (search first)     │
 │  docs/master_roadmap.md          ← task checklist [ ]→[/]→[X]       │
+│                                                                      │
+│  INDEX MAINTENANCE SCRIPTS (rebuild knowledge layer):               │
+│  scripts/symbol_indexer.py  ← scans src/ → updates index_variables  │
+│  scripts/lookup.py          ← T0 oracle: file+line+hint in one call ★★│
+│  scripts/session_indexer.py ← scans .sessions/ → index_sessions ★★  │
 └────────────────────────────┬─────────────────────────────────────────┘
                              ↓
 ┌──────────────────────────────────────────────────────────────────────┐
@@ -529,6 +535,10 @@ Gate                    Trigger                               Source file
 [recurring]             R9 Step 0 detects prior failed attempt  CLAUDE.md §R9 Step 0
                         → read Failed Approaches → choose different approach
 [failed-approach]       R12 verify fails → write Failed Approaches before R13 escalate  CLAUDE.md §R9
+[index T0] ★★           T0 lookup.py oracle call              CLAUDE.md §R5, editor/SKILL.md §T0
+                        → runs before any grep/Read · returns file+line+read_hint
+[session-lookup] ★★     lookup.py --session result used       session_manager §2 Step 1a, coder §1
+                        → found prior session → inject as bullet context
 [pre-read]              before EVERY Read call                CLAUDE.md §R5
 [post-read] ★           after EVERY Read result              CLAUDE.md §R5, editor/coder SKILL.md
 [pre-edit]              before EVERY Edit/Write on symbol     CLAUDE.md §R5
@@ -571,6 +581,7 @@ Gate                    Trigger                               Source file
 ✦ = added in 2026-05-25 self-improvement + topic-switch patches
 ◆ = added in 2026-05-25 vulnerability audit fixes (V-Audit + Round 2)
 ◈ = added in 2026-05-25 token efficiency improvements (T-078–T-082)
+★★ = added in 2026-05-26 index enrichment + session lookup (session_086)
 ```
 
 ---
@@ -663,6 +674,7 @@ New failure patterns documented: `CFP-008` (MECE staleness), `CFP-009` (parallel
 | Q10 | CFP-011: skipped mece_plan.md and created implementation_plan.md directly | Extended MECE Plan Constraint description in CLAUDE.md to halt and create mece_plan.md first | `CLAUDE.md §Loop Architecture` |
 | Q11 | Agent full-reads index JSONs + CLAUDE.md in Phase 1 G2 (~14k wasted tokens) | Never-Full-Load list + Full-Read whitelist added; gather_complete.md + mece_plan.md session-date hook | `CLAUDE.md §R5`, `AGENTS.md §Never-Full-Load`, `~/.claude/settings.json` |
 | Q12 | No precomputed read_hint in indexes — agents grep-hunt before every Read | Enrich indexes with `line_end`, `read_hint`, `keywords` via `symbol_indexer.py`; add T0 `lookup.py` oracle before T1–T3 grep tiers | `scripts/symbol_indexer.py`, `scripts/lookup.py`, `editor/SKILL.md §T0`, `CLAUDE.md §R5` |
+| Q13 | No session history searchable — agents can't find prior fix attempts for same feature/bug | `session_indexer.py` builds `index_sessions.json`; `lookup.py --session` searches it; wired into editor R9 Step 2.5, coder §1, session_manager §2 Step 1a, self_improve §2 Step 4.5 | `scripts/session_indexer.py`, `scripts/lookup.py`, `knowledge/index_sessions.json`, `editor/SKILL.md §R9`, `coder/SKILL.md §1`, `session_manager/SKILL.md §2`, `self_improve/SKILL.md §2` |
 
 
 ---
