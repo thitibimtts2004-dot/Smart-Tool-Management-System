@@ -100,19 +100,17 @@ def scan_symbols() -> dict[str, dict]:
 
 
 def update_files_index(symbols_by_file: dict[str, list[dict]]) -> None:
-    """Add key_sections to each file entry in index_files.json."""
+    """Add key_sections and keywords to each file entry in index_files.json."""
     if not INDEX_FILES_PATH.exists():
         return
     with open(INDEX_FILES_PATH, "r", encoding="utf-8") as f:
         index = json.load(f)
 
+    # Support {"files": {...}} wrapper (actual structure) or flat dict
+    files_dict = index.get("files", index) if isinstance(index, dict) else index
+
     for file_path, syms in symbols_by_file.items():
-        entry = None
-        # index_files.json may be flat or nested — search for the file key
-        for key, val in index.items():
-            if key == file_path or (isinstance(val, dict) and val.get("path") == file_path):
-                entry = val
-                break
+        entry = files_dict.get(file_path)
         if entry is None:
             continue
         entry["key_sections"] = [
@@ -123,7 +121,6 @@ def update_files_index(symbols_by_file: dict[str, list[dict]]) -> None:
             }
             for s in sorted(syms, key=lambda x: x["line"])
         ]
-        # Add keywords from path tokens
         path_tokens = split_camel(Path(file_path).stem)
         existing_kw = set(entry.get("keywords", []))
         existing_kw.update(path_tokens)

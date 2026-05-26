@@ -143,10 +143,12 @@ def score_file(key: str, entry: dict, tokens: list[str], query_exact: str) -> in
 
 def search_files(query: str, top_n: int = 5) -> list[dict]:
     data = load_index(INDEX_FILES)
+    # Support {"files": {...}} wrapper (actual structure) or flat dict
+    files_dict = data.get("files", data) if isinstance(data, dict) and "files" in data else data
     tokens = tokenize(query)
     results = []
 
-    for key, entry in data.items():
+    for key, entry in files_dict.items():
         if not isinstance(entry, dict):
             continue
         s = score_file(key, entry, tokens, query)

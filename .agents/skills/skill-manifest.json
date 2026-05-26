@@ -37,23 +37,33 @@
       "path": ".agents/skills/coder/SKILL.md",
       "trigger": "Creating new files, scaffolding features, adding new pages or API routes",
       "keywords": ["create", "new file", "scaffold", "add page", "add component", "new api", "new route", "build", "implement"],
+      "lookup_oracle": {
+        "script": "python scripts/lookup.py \"<query>\" --json",
+        "when": "T0 — run before creating to check if symbol/file already exists",
+        "note": "High score match = file may already exist · prevents duplicate scaffolding"
+      },
       "on_demand_files": [
-        { "path": "knowledge/index_files.json",  "when": "checking file exists or backlinks before creating", "how": "grep_only" },
-        { "path": "docs/master_roadmap.md",       "when": "assigning new T-ID (check for duplicates)",        "how": "grep_only" },
-        { "path": "INVARIANTS.md",                "when": "R14/R15 gate fires (DB change or destructive op)",  "how": "targeted" },
-        { "path": "REPO_MAP.md",                  "when": "determining correct directory for new file",        "how": "full_ok" }
+        { "path": "knowledge/index_files.json",  "when": "T1 fallback — checking file exists or backlinks before creating", "how": "grep_only" },
+        { "path": "docs/master_roadmap.md",       "when": "assigning new T-ID (check for duplicates)",                      "how": "grep_only" },
+        { "path": "INVARIANTS.md",                "when": "R14/R15 gate fires (DB change or destructive op)",                "how": "targeted" },
+        { "path": "REPO_MAP.md",                  "when": "determining correct directory for new file",                      "how": "full_ok" }
       ]
     },
     "editor": {
       "path": ".agents/skills/editor/SKILL.md",
       "trigger": "Modifying, debugging, or fixing existing files",
       "keywords": ["fix", "bug", "error", "broken", "edit", "modify", "update", "change", "debug", "not working", "issue", "wrong", "fail"],
+      "lookup_oracle": {
+        "script": "python scripts/lookup.py \"<query>\" --json",
+        "when": "T0 — ALWAYS run before any grep or Read · returns file+line+read_hint+keywords",
+        "note": "T0 result gives offset+limit directly — skip to Read immediately, no T1-T3 needed"
+      },
       "on_demand_files": [
-        { "path": "knowledge/index_variables.json",  "when": "looking up symbol line number or used_in list",   "how": "grep_only" },
-        { "path": "knowledge/index_files.json",      "when": "checking backlinks before editing a file",        "how": "grep_only" },
-        { "path": "INVARIANTS.md",                   "when": "R14/R15 gate fires (DB change or destructive op)","how": "targeted" },
-        { "path": "REPO_MAP.md",                     "when": "checking directory structure rules",              "how": "full_ok" },
-        { "path": "CODING_FAILURE_PATTERNS.md",      "when": "writing a new CFP entry only",                   "how": "grep_headers_then_append" }
+        { "path": "knowledge/index_variables.json",  "when": "T1/T2 fallback if lookup.py returns empty — grep symbol name or used_in list", "how": "grep_only" },
+        { "path": "knowledge/index_files.json",      "when": "T1/T2 fallback — checking backlinks before editing a file",                   "how": "grep_only" },
+        { "path": "INVARIANTS.md",                   "when": "R14/R15 gate fires (DB change or destructive op)",                            "how": "targeted" },
+        { "path": "REPO_MAP.md",                     "when": "checking directory structure rules",                                          "how": "full_ok" },
+        { "path": "CODING_FAILURE_PATTERNS.md",      "when": "writing a new CFP entry only",                                               "how": "grep_headers_then_append" }
       ]
     },
     "file_manager": {
