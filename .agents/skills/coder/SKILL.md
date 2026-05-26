@@ -25,10 +25,15 @@ You are the "Builder". When the Agent delegates a new feature task to you, focus
 
 **Before writing any code:**
 ```
-1. grep docs/master_roadmap.md for existing task matching this work
+1. python scripts/lookup.py "<feature topic>" --session --json
+   → check if a prior session already built or attempted this feature
+   → High-score match: Read that session JSON → review files_changed[] and History[]
+     to understand what was built, what approach was used, what was left incomplete
+   → No match or irrelevant: proceed to step 2
+2. grep docs/master_roadmap.md for existing task matching this work
    → Found: note the Task ID (e.g. T-017) → set status [/] (in progress)
    → Not found: assign next T-<N> → add [ ] T-<N>: <description> to roadmap
-2. Note the Task ID — all work in this session is under that ID
+3. Note the Task ID — all work in this session is under that ID
 ```
 
 **After completing code:**

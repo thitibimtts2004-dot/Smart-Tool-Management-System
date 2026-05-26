@@ -71,11 +71,17 @@ Step 3: Identify top pattern using PRIORITY QUEUE (NH2 + V13 fix ◆):
 Step 4: [pre-read] top pattern entry
          grep -n "^## CFP-<N>" CODING_FAILURE_PATTERNS.md → line L
          Read CODING_FAILURE_PATTERNS.md offset=L limit=30
+Step 4.5: Session context lookup for top pattern (optional — run if CFP entry has Session: field)
+         grep "Session:" from CFP entry → extract session_id
+         Read .sessions/<session_id>.json → check History[] for what triggered the violation
+         → adds concrete context: "This happened during <task> when agent <action>"
+         → if session file missing or no Session: field → skip, use CFP text only
 Step 5: Emit:
   [cfp-analysis]
   · New this session: <N> entries (CFP-<list>)
   · Top pattern: CFP-<N> "<title>" — seen <K> time(s)
   · Root cause: <one-line summary from Prevention section>
+  · Session context: <what task + action triggered it> (if found in Step 4.5)
   · Other patterns: <list remaining titles briefly>
 ```
 

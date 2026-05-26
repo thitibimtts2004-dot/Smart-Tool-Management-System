@@ -143,6 +143,12 @@ Triggered from Loop Phase 3 when verify or observe fails twice.
   - `attempt_count: 1` → this step already used 1 retry → next failure = BLOCKED immediately
   - `attempt_count: 0` or missing → full retry budget (1 retry allowed)
   - Emit `[resume-attempt] count=<N>` so agent knows remaining budget
+1a. Session history lookup (run if session_id is in handoff):
+    python scripts/lookup.py "<task from handoff>" --session --json
+    → find the session JSON that matches this task
+    → Read that .sessions/session_NNN.json → check `files_changed[]` and `History[]`
+    → inject as brief bullet context: "Prior session changed: <file list> · Last action: <action>"
+    → skip if lookup returns empty or session file missing
 1b. Read `.sessions/cycle_N_*.json` for the last completed Cycle (N = current_cycle from handoff)
     → inject as `cycle_context:` before spawning Cycle N+1 agents
 **Resume Context Gate (run before injecting `cycle_context:`):**

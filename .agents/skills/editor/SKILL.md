@@ -215,7 +215,13 @@ OR: same ERR-XXX already `[X]` in roadmap · same T-N-BugID referenced
 Step 1: grep -n "T-{N}-{BugID}" docs/master_roadmap.md → find last AttemptID used
 Step 2: grep -n "^## ERR-XXX" knowledge/error_index.md → Read offset=N limit=50
          → find "### Failed Approaches:" section → read all listed approaches
-Step 3: DO NOT repeat any listed approach
+Step 2.5 (session history lookup):
+  python scripts/lookup.py "T-{N}-{BugID}" --session --json
+  → lists all sessions that worked on this task
+  → for each result: Read .sessions/<session_id>.json → check History[] and files_changed[]
+  → extract: what was tried, what file was changed, what the outcome was
+  → add any NEW approaches found here to "DO NOT repeat" list
+Step 3: DO NOT repeat any approach found in Step 2 or Step 2.5
 Step 4: New roadmap entry with incremented AttemptID
 Step 5: Emit [recurring] ERR-XXX · Prior attempts: N · Previous approach: <summary> · New approach: <what's different>
 ```
