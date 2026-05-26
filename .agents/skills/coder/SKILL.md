@@ -7,7 +7,7 @@ description: Focused skill for implementing new features and creating applicatio
 ```
 - id: 1
   name: "Scope & Index"
-  steps: ["R4 Sub-agent Decision (scope probe)", "check index_files + index_variables for conflicts", "confirm no duplicates"]
+  steps: ["R4 scope probe", "check index_files + index_variables for conflicts", "confirm no duplicates"]
 - id: 2
   name: "Build"
   steps: ["create files to standards", "write code", "self-correct linter errors", "[✓ written] verify each file"]
@@ -42,11 +42,33 @@ You are the "Builder". When the Agent delegates a new feature task to you, focus
 2. **Database Integrity**: When creating Drizzle schemas, ensure they match the Technical Requirements Document carefully.
 3. **Self-Correction (Linter)**: If you notice a TypeScript error or Linter warning while writing, fix it immediately before finishing your execution.
 4. **Aesthetics & UI**: Use TailwindCSS standard utility classes. Strive for a minimalist, modern enterprise look.
-5. **Local Staging**: When generating large files or major architectural components, use a project-local `temp/` directory (project root only — **never `/tmp/`**, **never `.gemini/`**, **never any path outside the project root**, which bypasses all index gates and I1). After verifying structure, move to final destination and call `file_manager` to update indexes. This prohibition includes app-internal memory paths (e.g. `.gemini/antigravity/brain/`) — those are off-limits for project artifacts.
+5. **Local Staging**: When generating large files or major architectural components, write them to a temporary staging area (e.g., `/tmp/` or local `temp/` inside the project) first using your creation tools, verify their structure, and then move them to their final destination. This prevents token waste on failed direct file injections.
 
-6. **Verification Matrix**: If task involves any of — API route, DB operation, auth/session, CSV parsing, new component — load `TESTING.md` (per CLAUDE.md §R19 Reference Docs) before writing code. Skip for config-only or scaffold-only tasks.
+**Staged file cleanup:** If a staged write fails or is abandoned mid-task:
+- Delete the staged file immediately
+- Emit `[staged-drop] <path>` to signal that this content must not appear in subsequent context or `context_files:`
+
+## Read Protocol
+
+For every file read during task execution: follow R5 (grep → [pre-read] → offset+limit).
+After each Read result, emit verdict immediately:
+```
+**[post-read]** File: `<path>` · Verdict: relevant|partial|irrelevant
+```
+- `irrelevant` → drop from context · do NOT include in `context_files:` when spawning sub-agents
+- `partial` → keep excerpt only (note line range) · discard remaining content
+- `relevant` → keep in working context
+
+Skipping verdict = CFP-004 violation. Every Read needs a verdict.
 
 ## Limitations
 - Do **NOT** manipulate `.agents/` or `*.json` index files directly — call `file_manager` + `variable_manager` skills after creating files.
 - **DO** update `docs/master_roadmap.md` — roadmap entries are mandatory (see Roadmap Protocol above).
 - Source work scope: `src/`, `wrangler.toml`, `package.json`, `next.config.ts`.
+
+## Flow Diagram Rule
+Creating any `.md` file that contains a flow diagram or architecture chart → **load `ascii_flow` skill first**.
+```
+[→ ascii_flow] Before drawing any box diagram in <file>
+```
+Style reference: `knowledge/harness_flow_20260525.md` · Skill: `.agents/skills/ascii_flow/SKILL.md`

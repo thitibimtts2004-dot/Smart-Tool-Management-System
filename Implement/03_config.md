@@ -7,13 +7,39 @@ Copy this into `CLAUDE.md` at project root. Adjust token thresholds to match you
 
 > Read first. Hard constraints.
 
-## Boot
-1. Check .sessions/active_thread.md → if phase: in_progress → resume; if done/missing → fresh start
-2. Check .sessions/session_handoff.md for pending task
-3. Read .sessions/session_tokens.md → load SESSION_TOTAL
-4. Load .agents/skills/skill-manifest.json → route to correct skill
-5. If SESSION_TOTAL >60k → warn user before starting
-6. Reply line 1: **[Boot]** Thread · Tasks · Skill · Loaded
+## Boot (3 tool calls max)
+```
+[B1] Bash: (phase=$(grep "^phase:" .sessions/active_thread.md 2>/dev/null | awk '{print $2}'); [ "$phase" != "in_progress" ] && printf "SESSION_TOTAL: 0\n" > .sessions/session_tokens.md; cat .sessions/active_thread.md 2>/dev/null | tail -4; echo "---"; cat .sessions/session_tokens.md 2>/dev/null; echo "---"; grep -n "\[/\]" docs/master_roadmap.md 2>/dev/null | head -3; echo "---"; echo "CFP_COUNT: $(grep -c '^## CFP-' CODING_FAILURE_PATTERNS.md 2>/dev/null || echo 0)")
+[B2] IF prompt contains `skill: <name>` → skip manifest read · ELSE: grep keywords[] from skill-manifest.json (not full read) → identify skill_name
+[B3] Read: .agents/skills/<skill_name>/SKILL.md offset=1 limit=80 → sections[] only · on_demand_files = lookup table for G2 (NOT loaded at boot)
+```
+→ B1 auto-resets SESSION_TOTAL to 0 when phase ≠ in_progress (new session guard — runs before read)
+→ Load SESSION_TOTAL from B1 into working memory (no further file reads for tokens this session)
+→ Load CFP_COUNT from B1 output → store as `cfp_boot_count` in working memory (used by self_improve)
+→ If SESSION_TOTAL > 60k → warn user immediately before proceeding
+
+[B4] Platform Probe (run only if `.agents/platform/detected.md` has `platform: unknown`):
+     → List available tools → match against known platforms (see 07_platform.md Known Mappings)
+     → Found match → update detected.md → proceed
+     → No match → emit [platform-unknown] → ask 4 co-development questions (see 07_platform.md)
+     → B4 is skipped if detected.md already has a known platform value
+
+Reply line 1 — Boot trace:
+```
+**[Boot]** Thread: <done|in_progress> · Tasks: <N open> · Skill: `<name>` · Sections: <N> · Tokens: ~<N>k · CFP: <cfp_boot_count>
+```
+
+## ⚡ MANDATORY BOOT GATE
+
+**Before responding to ANY user message — verify `[Boot]` trace has been emitted this session.**
+
+If `[Boot]` trace has NOT been emitted yet:
+1. STOP — do not respond to the user message
+2. Run B1 → B2 → B3 (Boot Sequence above, max 3 tool calls)
+3. Emit: `**[Boot]** Thread: ... · Skill: ... · Tokens: ~Nk · CFP: N`
+4. THEN respond to the user
+
+**Skipping boot = invalid session state. Responding without `[Boot]` = harness violation (CFP).**
 
 ---
 
@@ -26,35 +52,56 @@ Read SESSION_TOTAL once at Boot (B1). Track in working memory each turn.
 - Emit [tokens] trace · append footer every response: `*(Session total: ~NNN tokens)*`
 - ⚠️ Do not define token formulas in other skill files — use R1 values exclusively
 
-### Tool Result Measurement
+### Tool Result Tokens (tiered — applied per result before adding to SESSION_TOTAL)
 
-After every tool call with significant output, measure before adding to SESSION_TOTAL:
+| Result size | Formula | Minimum |
+|---|---|---|
+| ≤ 150 lines | `result_chars × 0.3` | 200 tokens |
+| 151–300 lines | `result_chars × 0.5` | 200 tokens |
+| > 300 lines | `result_chars × 0.5 + 1,000 flat buffer` | 200 tokens |
 
-**Step 1 — Classify by source:**
-| Source | Apply |
-|---|---|
-| `.md`, `.txt`, `.sessions/*` | Split formula — Thai likely |
-| `.ts`, `.js`, `.json`, `.sql` | `total × 0.3` — code is English |
-| Bash/grep output | Check for Thai presence → use split if found |
-
-**Step 2 — Calculate:**
-- `tokens = (thai_chars × 1.7) + ((total_chars − thai_chars) × 0.3)`
-- No Thai detected → `tokens = total_chars × 0.3`
-- Never use UTF-8 bytes ÷ 3 — undercounts Thai by up to 1.7×
-
-**Step 3 — Bash char-count pattern** (append to commands with significant output):
-```bash
-result=$(your_command_here); echo "$result"; \
-printf "[chars: total=%s thai=%s]\n" \
-  "$(echo "$result" | wc -m)" \
-  "$(echo "$result" | grep -oP '[\x{0e00}-\x{0e7f}]' | wc -l 2>/dev/null || echo 0)"
-```
-Read the `[chars: total=N thai=N]` line → apply Step 2 → add to SESSION_TOTAL → write file.
+Never use UTF-8 bytes ÷ 3 — undercounts Thai by up to 1.7×.
 
 ---
 
 ## R2 · Tool Budget
 Max 5 tool calls/turn. Retry max 2×; diagnose on 2nd fail.
+
+---
+
+## Per-Turn Routing (every user message — before any work)
+
+Run C0 → C1 → C2 → C3 before any work. Topic switch = close current session FIRST.
+
+**C0 — Complaint Check:**
+- Detect signals: "ทำไมไม่ทำตาม" · "you skipped" · "ลืม" + harness step · "harness says" + violation
+- "ลืม" qualifier: object MUST be a harness step name (roadmap/error_index/CFP/index/boot/skill/gate/MECE)
+  "ลืมบอกให้เพิ่ม filter" = feature request → NOT C0
+- c0_resolved flag set in working memory → clear flag → skip C0 → proceed to C1 (prevents loop)
+- YES → emit [self-improve] → backfill missed step (ask if context gone) → log CFP → set c0_resolved=true → re-run C0-C3
+- NO → C1
+
+**C1 — Load state:** Read `.sessions/active_thread.md` → extract current task
+
+**C2 — Topic Switch Check:**
+IS a switch (close session first):
+  · Different app section · Different primary entity · Different intent type (debug→feature)
+  · Message names a different route/module than current task
+NOT a switch:
+  · "also fix/update" · revision of approach · bug inside current work · "ต่อ/continue"
+UNCERTAIN → emit [topic-unclear] → ASK before routing
+
+**C3 — Route:**
+- Topic switch → emit [topic-switch] Current: X · New: Y → session_manager close → new Phase 1
+- Same topic → match keywords → re-read SKILL.md if skill changes
+
+Routing shortcuts:
+  "แก้ bug / fix / error"       → editor
+  "สร้าง / implement / เพิ่ม"   → coder
+  "ปิด / close / done"           → session_manager
+  "plan / วางแผน"                → mece
+  "review CFP / improve harness" → self_improve
+  no match                       → agent (fallback)
 
 ---
 
@@ -97,6 +144,19 @@ Run 1 Bash scope probe before any task.
 - Parallel spawn: pass all sections as array in single `invoke_subagents` Subagents[] (not sequentially)
 - Custom types: use `define_subagent` to register a new TypeName for the session before invoking
 
+**Harness Context in Sub-agent Prompts:**
+- Explore agents (read-only): no harness constraints needed
+- Execution/Coder agents (any src/ work): MUST include `constraints:` block:
+  ```
+  constraints:
+    - Roadmap: task T-<N> must be [/] before any edit — grep docs/master_roadmap.md first
+    - No src/ edit without gather_complete.md AND mece_plan.md written today
+    - No new file without updating knowledge/index_files.json backlinks
+    - No symbol create/rename without python scripts/symbol_indexer.py after edit
+    - DB edits (src/db/): emit [db-gate] and halt — main agent must confirm
+  ```
+- Missing `constraints:` block in execution sub-agent prompt = CFP violation
+
 **Multi-file relevance check — primary vs fallback:**
 
 **Primary (spawn available):** Reading > 2 files to assess relevance → spawn Explore sub-agent instead.
@@ -125,9 +185,9 @@ Cannot fill Line? → grep not done yet → run grep first.
 **Post-Read Verdict — emit AFTER every Read result is processed:**
 
 **[post-read]** Target: `<file>` · Verdict: `relevant | partial | irrelevant` · Action: `keep | excerpt(L<N>–L<N>) | drop`
-- `relevant` → include as-is in `context_files:` or `cycle_context:`
+- `relevant` → include as-is in `on_demand_files:` or `cycle_context:`
 - `partial` → include only the stated excerpt range — not the full file
-- `irrelevant` → drop immediately; do NOT include in `context_files:`, `cycle_context:`, or any sub-agent prompt
+- `irrelevant` → drop immediately; do NOT include in `on_demand_files:`, `cycle_context:`, or any sub-agent prompt
 - Failure to emit `[post-read]` = treat content as `irrelevant` → drop
 - See CFP-004 in CODING_FAILURE_PATTERNS.md
 
@@ -182,13 +242,25 @@ Default: table/bullet over prose. Comparison → table. Steps → numbered list.
 2. grep knowledge/index_variables.json for affected symbol
 3. grep knowledge/index_files.json for backlinks
 
+**Step 0 — Recurring Fix Detection (run FIRST):**
+Signals: "ยังไม่หาย" · "แก้แล้วยัง" · "still broken" · "same error" · "กลับมาอีก" · "fix ไม่ผ่าน" · "ยังเจออยู่" · "ยังเป็นอยู่"
+OR: same ERR-XXX already [X] in roadmap / same T-N-BugID referenced
+→ Recurring: grep roadmap for prior AttemptID → read `### Failed Approaches:` in error_index entry → choose DIFFERENT approach
+→ Emit: `[recurring] ERR-XXX · Prior attempts: N · Previous approach: <summary> · New approach: <what's different>`
+
 New error → Task ID format: `T-{ParentTask}-{BugID}-{AttemptID}` (e.g. `T-004-001-02`)
 1. Add `[ ] T-{N}-{BugID}-01: <description>` to roadmap → set `[/]`
 2. Fix code
 3. Run python scripts/symbol_indexer.py
 4. Assign ERR-XXX code
-5. Write entry in knowledge/error_index.md (include Task ID + cross-link)
+5. Write entry in knowledge/error_index.md (include Task ID + cross-link + `### Failed Approaches:` field)
 6. Mark roadmap `[X] T-{N}-{BugID}-{Attempt} (→ ERR-XXX)`
+
+**On R12 verify failure** — before escalating per R13, MUST write to error_index entry:
+```
+### Failed Approaches:
+- [YYYY-MM-DD] T-{N}-{BugID}-01: <approach tried> → verify failed · Reason: <why it didn't resolve>
+```
 
 ---
 
@@ -201,38 +273,56 @@ Before starting ANY task:
 Set `[/]` when starting → `[X]` when done.
 ---
 
-## R19 · Self-Improvement
-_Extension only — runs after Completion Gate. Does NOT modify Boot, Loop, or R1–R18._
+## R16 · Self-Improvement Protocol (User Complaint Detection)
 
-**Post-task self-eval** — after all Completion Gate boxes checked, before session_manager close:
-| check | pass condition |
-|---|---|
-| `invariant_ok` | No I1–I5 gate tripped unexpectedly during this task |
-| `index_ok` | R8 Index Sync completed without error |
-| `new_pattern` | No failure type encountered absent from CODING_FAILURE_PATTERNS.md |
-| `routing_ok` | Skill used for each section matched skill-manifest.json at the start of that section. Mid-session re-routes via Per-Turn Routing do NOT count as mismatches. |
-| `budget_ok` | Tool calls stayed ≤5 per turn throughout this task |
+**Detection — treat as harness complaint if user message contains ANY of:**
+- "ทำไมไม่ทำตาม" / "ไม่ได้ทำตาม" + harness context
+- "ลืม" + harness step name (roadmap/error_index/CFP/index/pre-read/boot/skill/gate/MECE) — NOT feature/component name
+- "ไม่ได้บันทึก" / "ไม่ได้ log" / "ไม่ได้ update" + (roadmap|error_index|index|CFP)
+- "why didn't you follow" / "you skipped" / "you forgot" + rule/step reference
+- "harness says" / "CLAUDE.md says" / "rule says" + implied violation
+- Any correction where user explicitly names a harness step that was supposed to run
 
-- All pass → no action, proceed to session close
-- `new_pattern = true` → trigger CFP Auto-Draft below
-- `routing_ok = false` OR `budget_ok = false` → write friction note to `.agents/skill-patches/pending/<skill>-gap-<YYYY-MM-DD>.md` (use `_template.md`), then lower skill score in registry.md by 0.5
-- If `new_pattern = true` AND (`routing_ok = false` OR `budget_ok = false`): write CFP draft only — skip friction note
+**On detection — run this sequence immediately (before resuming original task):**
+```
+[C0] COMPLAINT DETECTED
+  1. Emit: [self-improve] Rule violated: `<R-number>` · Missed: `<what was skipped>`
+  2. DO NOT argue, explain away, or justify the skip
+  3. Execute the missed step NOW (context gone → ask user for missing info first → wait)
+  4. Verify missed step completed → emit [✓ backfilled] `<what was done>`
+  5. Log CFP (procedure below)
+  6. Set c0_resolved = true → re-run C0→C1→C2→C3 with original user message
+     (C0 detects c0_resolved → clears it → skips complaint check → proceeds to C1)
+```
 
-**CFP Auto-Draft** (only when `new_pattern = true`):
-1. Write draft → `knowledge/cfp-proposals/CFP-draft-YYYY-MM-DD.md` (Symptom / Root cause / Prevention — same format as existing CFPs)
-2. At session close → present to user: "พบ failure pattern ใหม่ — ต้องการเพิ่ม CFP ไหม? (y/n)"
-3. Confirm → append to `CODING_FAILURE_PATTERNS.md` with next CFP number → move draft → `knowledge/cfp-proposals/applied/`
-4. Decline → move draft → `knowledge/cfp-proposals/applied/` with `status: declined` in frontmatter
+**CFP Logging Procedure:**
+```
+Step 1: grep -c "^## CFP-" CODING_FAILURE_PATTERNS.md → get count N → next = CFP-(N+1)
+Step 2: Append to CODING_FAILURE_PATTERNS.md:
 
-**Recipe Notes** — load-on-demand only:
-- `knowledge/recipes/<topic>.md` — step-by-step safe procedures for recurring operations
-- Load only when task matches topic — never load all recipes at Boot
-- Add recipe when: operation repeats ≥ 2 times AND has a related CFP
+## CFP-<N+1> · <Short Title of What Was Skipped>
 
-**Safety:**
-- Never modify `CODING_FAILURE_PATTERNS.md` directly — always wait for user confirm (extends CFP-004)
-- Never run R19 self-eval before Completion Gate passes
-- Prefer false-negative over false-positive when uncertain about new_pattern
+**Symptom:** <What the user observed — what was missing>
+**Root cause:**
+- <Why agent skipped this step>
+- <Which rule/phase was violated>
+**Prevention:**
+1. <Specific check to prevent recurrence>
+2. <Where in the loop this check should live>
+**Detection signal:** User message contains `<C0 keyword>` + <step name>
+
+---
+
+Step 2.5: Validate "Detection signal:" field
+  Must contain ≥1 keyword from C0 signal list
+  Keyword absent/vague → rewrite with matching keyword → then proceed
+Step 3: Verify: grep -c "^## CFP-" CODING_FAILURE_PATTERNS.md → N+1
+```
+
+**Hard rules:**
+- Never skip CFP logging even if the fix is trivial
+- Never re-use an existing CFP number — always increment
+- Same pattern recurs → new CFP with `(recurrence of CFP-N)` note
 
 ```
 
@@ -249,45 +339,80 @@ Fill in `[PROJECT NAME]` and add project-specific rules in the placeholder at th
 
 You are operating inside the **[PROJECT NAME]** project. Rules apply to ALL agents regardless of vendor.
 
-> **Full hard constraints → `CLAUDE.md`** · **Destructive gates → `INVARIANTS.md`** · **Repo structure → `REPO_MAP.md`**
+> **Full hard constraints → `CLAUDE.md` (You MUST read this file first and strictly follow all of its principles)** · **Destructive gates → `INVARIANTS.md`** · **Repo structure → `REPO_MAP.md`**
 
 ---
 
 ## Boot Sequence (3 tool calls max)
 
 ```
-[B1] Bash: (phase=$(grep "^phase:" .sessions/active_thread.md 2>/dev/null | awk '{print $2}'); printf "SESSION_TOTAL: 0\n" > .sessions/session_tokens.md; cat .sessions/active_thread.md 2>/dev/null | tail -4; echo "---"; cat .sessions/session_tokens.md 2>/dev/null; echo "---"; grep -n "\[/\]" docs/master_roadmap.md 2>/dev/null | head -3)
-[B2] Read: .agents/skills/skill-manifest.json → match user intent to keywords[] → identify skill_name
-[B3] Read: .agents/skills/<skill_name>/SKILL.md → load sections[] and context_files
+[B1] Bash: (phase=$(grep "^phase:" .sessions/active_thread.md 2>/dev/null | awk '{print $2}'); [ "$phase" != "in_progress" ] && printf "SESSION_TOTAL: 0\n" > .sessions/session_tokens.md; cat .sessions/active_thread.md 2>/dev/null | tail -4; echo "---"; cat .sessions/session_tokens.md 2>/dev/null; echo "---"; grep -n "\[/\]" docs/master_roadmap.md 2>/dev/null | head -3; echo "---"; echo "CFP_COUNT: $(grep -c '^## CFP-' CODING_FAILURE_PATTERNS.md 2>/dev/null || echo 0)")
+[B2] IF prompt contains `skill: <name>` → skip manifest read · ELSE: grep keywords[] from skill-manifest.json (not full read) → identify skill_name
+[B3] Read: .agents/skills/<skill_name>/SKILL.md offset=1 limit=80 → sections[] only · on_demand_files = lookup table for G2 (NOT loaded at boot)
 ```
 
-- B1 always resets SESSION_TOTAL to 0 on every Boot — every new conversation starts fresh
-- If SESSION_TOTAL > 50k → run Mid-Session Compact immediately (non-blocking — see R3)
+[B4] Platform Probe (run only if `.agents/platform/detected.md` has `platform: unknown`):
+     → List available tools → match against known platforms (see detected.md Known Platform Mappings)
+     → Found match → update detected.md → proceed
+     → No match → emit [platform-unknown] → ask 4 co-development questions (see 07_platform.md)
+     → B4 is skipped if detected.md already has a known platform value
+
+- B1 auto-resets SESSION_TOTAL to 0 when phase ≠ in_progress (preserves in-progress sessions)
+- Load CFP_COUNT from B1 output → store as `cfp_boot_count` in working memory (used by self_improve)
 - If SESSION_TOTAL > 60k → warn user before proceeding
 
-Reply line 1: `**[Boot]** Thread: <done|in_progress> · Tasks: <N open> · Skill: <name> · Sections: <N> · Tokens: ~<N>k`
+Reply line 1: `**[Boot]** Thread: <done|in_progress> · Tasks: <N open> · Skill: <name> · Sections: <N> · Tokens: ~<N>k · CFP: <cfp_boot_count>`
+
+> ⚠️ **Boot ending ≠ ready to work.** After Reply line 1 → run C0–C3 → then Phase 1.
+> Reading SKILL.md at B3 is NOT Phase 1. Do NOT touch `src/` until `[✓ gather]` AND `[✓ MECE]` emitted.
 
 ---
 
-## Per-Turn Routing (every user message)
+## Per-Turn Routing (every user message — run C0→C1→C2→C3 before any work)
 
-| Situation | Action |
+**Hard rule:** Agent detects topic switch autonomously — user must NOT need to say "close session".
+
+**C0 — Complaint Check:**
+- Signals: "ทำไมไม่ทำตาม" · "ไม่ได้บันทึก" · "you skipped" · "ลืม" + harness step · "harness says" + violation
+- "ลืม" qualifier: object must be a harness step name (roadmap/error_index/CFP/index/boot/skill/gate/MECE)
+  "ลืมบอกให้เพิ่ม X" = feature request → NOT C0
+- c0_resolved flag set → clear → skip C0 → proceed to C1 (prevents infinite C0 loop)
+- YES → [self-improve] → backfill → CFP log → c0_resolved=true → re-run C0-C3
+- NO → C1
+
+**C1 — Load:** Read `.sessions/active_thread.md` → extract task: field
+
+**C2 — Topic Switch Check:**
+IS a switch (close first):
+  · Different app section (site-plan ↔ center ↔ admin ↔ report)
+  · Different primary entity (job ↔ user ↔ plan ↔ request)
+  · Different intent type (debug→feature or feature→debug)
+  · Message names different route/module than current task
+NOT a switch:
+  · "also fix/update" · revision of approach · added constraint
+  · Bug inside current work · "ต่อ/continue/keep going"
+UNCERTAIN → emit [topic-unclear] → ASK before routing
+
+**C3 — Route:**
+Topic switch → emit [topic-switch] Current: X · New: Y · Closing first
+             → session_manager §3 (close + reset) → new Phase 1
+Same topic   → match keywords[] → re-read SKILL.md if skill changes
+
+> ⚠️ **After C3 (any branch) → MANDATORY: Phase 1 G1-G2-G3 next. No exceptions.**
+> Knowing the skill (B3) does NOT satisfy Phase 1. Must grep indexes + read files + emit `[✓ gather]`.
+> `[✓ gather]` MUST write `.sessions/gather_complete.md` with `date: YYYY-MM-DD`.
+> Then Phase 2: MECE plan → user confirm → write `mece_plan.md` → emit `[✓ MECE]`.
+> **PreToolUse hook blocks `src/` Edit if `gather_complete.md` or `mece_plan.md` missing or stale (not written today).**
+
+| Keywords | Skill |
 |---|---|
-| User asks to fix a bug | Re-route → `editor` |
-| User says "close/done/end session" | Re-route → `session_manager` |
-| User asks to create a new file | Re-route → `coder` |
-| User asks to orchestrate multi-step task | Re-route → `agent` |
-| User asks about session/identity state | Re-route → `identity` |
-| token threshold exceeded | Re-route → `token_auditor` |
-| Same task type | Stay on current skill |
-
-**Same session ≠ same skill.** Always check intent → re-read SKILL.md if skill changes.
-
-**Re-route guard (prevents A→B→A cycle):**
-- Before re-routing: compare target skill against the skill active in the PREVIOUS section
-- Same as previous? → skip re-route → continue with current skill → emit `[route-guard] same skill, skipping re-route`
-- Different? → allow re-route as normal
-- If re-route count for this task reaches 3 → HALT re-routing → stay on current skill → emit `[route-limit]`
+| แก้ bug / fix / error / debug | editor |
+| สร้าง / implement / new / เพิ่ม | coder |
+| ย้าย / ลบ / rename file | file_manager |
+| ปิด / close / done / จบ | session_manager |
+| plan / วางแผน / mece | mece |
+| review CFP / improve harness / self improve | self_improve |
+| no match | agent (fallback) |
 
 ---
 
@@ -295,16 +420,14 @@ Reply line 1: `**[Boot]** Thread: <done|in_progress> · Tasks: <N open> · Skill
 
 | Phase | What happens |
 |---|---|
-| 1 Info Gather | Repeat: identify missing context → index-first → assess → emit [✓ gather] |
+| 1 Info Gather | **Hybrid front-loaded:** G1 scans ALL sections at once → output missing_files[] + missing_user_input[] · G2 runs ALL greps in one Bash call → targeted Read per item · Single user ask (max 1 per Phase 1 run) if input still missing → emit [✓ gather] |
 | 2 MECE Plan | Build plan (1:1 Skill sections) → Verify-N per section → user confirms → roadmap |
 
-**Gather iteration cap — hard limit:**
-Max 3 gather-read iterations per Phase 1 run. Count resets only at task start (not per turn).
-After 3 iterations without `[✓ gather]`:
-→ HALT gather loop
-→ Emit `[gather-stalled]` Missing: `<list what's still needed>`
-→ Ask user: "ขาด context: <list> — ช่วยระบุหรือให้ข้อมูลเพิ่มเติมได้ไหมครับ?"
-→ Do NOT proceed to Phase 2 until user provides context or explicitly says "proceed anyway"
+**Gather rules:**
+- G1: scan ALL sections in one pass — never one section at a time
+- G2: batch ALL greps into one Bash call — never one grep per turn
+- User ask: combine ALL missing items into ONE message — never ask incrementally
+- Stall cap: if after G1+G2+1 user ask context still insufficient → emit `[gather-stalled]` → halt Phase 1
 | 3 | Execution | Cycle Gate → group sections into Cycles → CYCLE LOOP: spawn Cycle N parallel → await → read cycle_N_*.json → spawn Cycle N+1 → Completion Gate |
 
 **Phases 1–2 run ONCE per task. On resume: skip to Phase 3 at pending section.**
@@ -434,6 +557,38 @@ Never duplicate task IDs. grep roadmap before creating.
 
 ---
 
+## I6 · Pre-assign Roadmap IDs Before Parallel Spawn
+
+When spawning parallel sub-agents — pre-assign ALL roadmap task IDs BEFORE any spawn call:
+1. `grep docs/master_roadmap.md` → find last T-N
+2. Write `[ ] T-N+1`, `[ ] T-N+2`, ... for ALL sections BEFORE spawning any agent
+3. Pass assigned T-ID to each sub-agent in its Delegation Contract
+Sub-agents MUST NOT self-assign IDs — race condition causes duplicate T-IDs.
+
+---
+
+## I7 · Cycle Token Accounting (tokens_estimated mandatory)
+
+Every sub-agent result file (`.sessions/cycle_N_<id>.json`) MUST include `"tokens_estimated"` field.
+After all Cycle N agents complete — orchestrator must:
+1. Sum `tokens_estimated` from all `cycle_N_*.json` files
+2. Missing field → add 2,000 flat (buffer)
+3. Add sum to SESSION_TOTAL in working memory
+4. Write updated total → `.sessions/session_tokens.md`
+5. Check R3 threshold immediately after writing
+
+---
+
+## I8 · CFP ID Pre-assignment (Parallel Sessions)
+
+When multiple parallel agents may log CFPs:
+1. `grep -c "^## CFP-" CODING_FAILURE_PATTERNS.md` → get count N
+2. Pre-assign CFP-N+1, CFP-N+2, ... before spawn
+3. Pass assigned IDs to sub-agents in Delegation Contract
+Sub-agents MUST NOT auto-increment without pre-assignment — causes duplicate CFP numbers.
+
+---
+
 ## Protected Zones
 
 <!-- EDIT: List files/directories that must NEVER be overwritten without user confirmation.
@@ -515,48 +670,96 @@ Copy to `.agents/skills/skill-manifest.json`. Add or remove skills to match your
 
 ```json
 {
-  "version": "2.0",
+  "version": "2.1",
+  "_comment": "Machine-readable skill routing. on_demand_files = lookup table for G2 only — NOT auto-loaded at boot.",
+  "_schema_note": "Each on_demand_files entry: { path, when, how }. 'how' values: grep_only | targeted | full_ok (≤30 lines only) | grep_headers_then_append",
+  "boot_read_policy": {
+    "_note": "Files that MAY be read at boot — all others on_demand only",
+    "B1_bash_only": [".sessions/active_thread.md", ".sessions/session_tokens.md", "docs/master_roadmap.md (grep [/] only)", "CODING_FAILURE_PATTERNS.md (grep -c only)"],
+    "B3_sections_only": "Read SKILL.md offset=1 limit=80 — sections[] and skill name only",
+    "never_at_boot": ["knowledge/index_variables.json", "knowledge/index_files.json", "INVARIANTS.md", "REPO_MAP.md", "CODING_FAILURE_PATTERNS.md (full read)", "docs/master_roadmap.md (full read)"]
+  },
   "default_skill": "editor",
   "skills": {
     "editor": {
       "path": ".agents/skills/editor/SKILL.md",
-      "keywords": ["แก้", "fix", "bug", "edit", "debug", "เปลี่ยน", "ปรับ", "อัปเดต", "update", "modify"]
+      "keywords": ["แก้", "fix", "bug", "edit", "debug", "เปลี่ยน", "ปรับ", "อัปเดต", "update", "modify"],
+      "on_demand_files": [
+        { "path": "knowledge/index_variables.json", "when": "looking up symbol line number or used_in list", "how": "grep_only" },
+        { "path": "knowledge/index_files.json",     "when": "checking backlinks before editing a file",        "how": "grep_only" },
+        { "path": "INVARIANTS.md",                  "when": "R14/R15 gate fires (DB change or destructive op)","how": "targeted" },
+        { "path": "CODING_FAILURE_PATTERNS.md",     "when": "writing a new CFP entry only",                   "how": "grep_headers_then_append" }
+      ]
     },
     "coder": {
       "path": ".agents/skills/coder/SKILL.md",
-      "keywords": ["สร้าง", "create", "new file", "implement", "feature", "add", "เพิ่ม"]
+      "keywords": ["สร้าง", "create", "new file", "implement", "feature", "add", "เพิ่ม"],
+      "on_demand_files": [
+        { "path": "knowledge/index_files.json",  "when": "checking file exists or backlinks before creating", "how": "grep_only" },
+        { "path": "docs/master_roadmap.md",      "when": "assigning new T-ID (check for duplicates)",        "how": "grep_only" },
+        { "path": "INVARIANTS.md",               "when": "R14/R15 gate fires (DB change or destructive op)", "how": "targeted" }
+      ]
     },
     "file_manager": {
       "path": ".agents/skills/file_manager/SKILL.md",
-      "keywords": ["move", "rename", "delete file", "restructure", "ย้าย", "ลบ", "เปลี่ยนชื่อ"]
+      "keywords": ["move", "rename", "delete file", "restructure", "ย้าย", "ลบ", "เปลี่ยนชื่อ"],
+      "on_demand_files": [
+        { "path": "knowledge/index_files.json", "when": "updating backlinks for changed file", "how": "grep_only" }
+      ]
     },
     "variable_manager": {
       "path": ".agents/skills/variable_manager/SKILL.md",
-      "keywords": ["rename symbol", "refactor", "export", "symbol", "function name"]
+      "keywords": ["rename symbol", "refactor", "export", "symbol", "function name"],
+      "on_demand_files": [
+        { "path": "knowledge/index_variables.json", "when": "updating symbol entry after code change", "how": "grep_only" }
+      ]
     },
     "session_manager": {
       "path": ".agents/skills/session_manager/SKILL.md",
-      "keywords": ["จบ session", "close", "end session", "สรุป session", "ปิด session"]
+      "keywords": ["จบ session", "close", "end session", "สรุป session", "ปิด session"],
+      "on_demand_files": [
+        { "path": ".sessions/active_thread.md",   "when": "checking current phase at routing",   "how": "full_ok" },
+        { "path": ".sessions/session_handoff.md", "when": "resume flow or blocked state",         "how": "full_ok" },
+        { "path": ".sessions/session_tokens.md",  "when": "writing SESSION_TOTAL at checkpoint", "how": "full_ok" }
+      ]
     },
     "mece": {
       "path": ".agents/skills/mece/SKILL.md",
-      "keywords": ["plan", "วางแผน", "mece", "orchestrate", "phases"]
+      "keywords": ["plan", "วางแผน", "mece", "orchestrate", "phases"],
+      "on_demand_files": []
     },
     "agent": {
       "path": ".agents/skills/agent/SKILL.md",
-      "keywords": ["orchestrate", "multi-step", "coordinate", "spawn", "จัดการหลายขั้นตอน", "cycle", "fan-out", "orchestrate cycles"]
+      "keywords": ["orchestrate", "multi-step", "coordinate", "spawn", "จัดการหลายขั้นตอน", "cycle", "fan-out", "orchestrate cycles"],
+      "on_demand_files": []
     },
     "identity": {
       "path": ".agents/skills/identity/SKILL.md",
-      "keywords": ["identity", "session state", "who am i", "current skill", "ตัวตน"]
+      "keywords": ["identity", "session state", "who am i", "current skill", "ตัวตน"],
+      "on_demand_files": []
     },
     "token_auditor": {
       "path": ".agents/skills/token_auditor/SKILL.md",
-      "keywords": ["token limit", "context full", "approaching limit", "token threshold"]
+      "keywords": ["token limit", "context full", "approaching limit", "token threshold"],
+      "on_demand_files": [
+        { "path": ".sessions/session_tokens.md", "when": "reading current total for audit", "how": "full_ok" }
+      ]
     },
     "token_tracker": {
       "path": ".agents/skills/token_tracker/SKILL.md",
-      "keywords": ["token count", "session total", "how many tokens", "นับ token"]
+      "keywords": ["token count", "session total", "how many tokens", "นับ token"],
+      "on_demand_files": [
+        { "path": ".sessions/session_tokens.md", "when": "Boot B1 read (once) and checkpoint write", "how": "full_ok" }
+      ]
+    },
+    "self_improve": {
+      "path": ".agents/skills/self_improve/SKILL.md",
+      "keywords": ["review CFP", "improve harness", "ปรับปรุง harness", "CFP review", "self improve", "failure pattern", "ปรับปรุงตัวเอง"],
+      "on_demand_files": [
+        { "path": "CODING_FAILURE_PATTERNS.md", "when": "reading CFP headers for analysis (grep -c first)", "how": "targeted" },
+        { "path": "CLAUDE.md",  "when": "proposing rule injection into CLAUDE.md", "how": "targeted" },
+        { "path": "AGENTS.md",  "when": "proposing rule injection into AGENTS.md", "how": "targeted" }
+      ]
     }
   }
 }
@@ -582,17 +785,22 @@ Copy to `.agents/skills/registry.md`. Human-readable fallback routing table.
 | จบ session / close / สรุป | session_manager |
 | วางแผน / orchestrate multi-step | agent |
 | token limit warning | token_auditor |
+| review CFP / improve harness / self improve | self_improve |
 
 ## Default
-No match → load `editor` skill.
+No match → load `agent` skill (fallback to routing).
 
 > **`mece` trigger priority** (highest → lowest): (1) Loop Phase 2 auto-run — fires ONCE per task; task boundary = Per-Turn skill change. Before overwriting `.sessions/mece_plan.md`, save existing plan to `.sessions/mece_plan_prev.md`. (2) Prefix before `editor` — when >1 file is affected by a fix. (3) Primary skill — when keywords like "implement/refactor" are the main intent. All three can apply; Phase 2 auto-run always supersedes.
 
 ## Micro-rules
 - MECE plan required for tasks >3 steps or any irreversible action
+- MECE plan sections MUST include `Skill:` field (editor|coder|file_manager|variable_manager|agent)
 - token_auditor gates: >60k warn · >90k halt
-- session_manager completes 6 steps on close: Step 0 R19 self-eval + session JSON + active_thread.md + session_tokens.md + session_handoff.md + mece_plan.md (clear)
+- session_manager closes with 5 mandatory writes: Step 0 = self_improve CFP review FIRST → then session JSON + active_thread.md + session_tokens.md + session_handoff.md
+- session_handoff.md must include: mece_plan_hash · cfp_boot_count · cfp_deferred · cfp_dismissed · last_self_improve_session
 - On close: enumerate any `.sessions/cycle_N_*.json` files written this session in the confirmation reply
+- Parallel sub-agent spawns: pre-assign T-IDs (I6) and CFP-IDs (I8) BEFORE spawning
+- Cycle result files MUST include `tokens_estimated` field (I7)
 
 ## Learned Routes (auto-updated — fast match before skill lookup)
 
@@ -694,5 +902,15 @@ All valid trace tokens agents must emit. Include in `CLAUDE.md` Quick Reference.
 | `**[resume]**` | When resuming an in_progress thread |
 | `**[tokens]**` | Token checkpoint (A=before, B=after, C=final) |
 | `**[MECE]**` | MECE plan sent to user — waiting confirm |
+| `**[topic-switch]**` | New task = different topic → close session first → new Phase 1 |
+| `**[topic-unclear]**` | Topic ambiguous → ask user before routing |
+| `**[self-improve]**` | R16 complaint detected → backfill missed step |
+| `**[cfp-tally]**` | New CFPs found at session close |
+| `**[cfp-skip]**` | No new CFPs → skip CFP review |
+| `**[cfp-deferred]**` | User skipped proposal → save count |
+| `**[✓ harness-updated]**` | Harness file edited + verified by self_improve |
+| `**[platform-unknown]**` | detected.md has platform: unknown → ask 4 questions |
+| `**[plan-stale]**` | Resume + mece_plan_hash mismatch / src/ changed → ask reconfirm |
+| `**[gather-stalled]**` | Phase 1 gather loop hit cap (3 iterations) → ask user |
 
 ---

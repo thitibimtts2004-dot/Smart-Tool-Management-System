@@ -7,7 +7,7 @@ description: Analyzes wasteful token consumption when SESSION_TOTAL > 60k. Ident
 ```
 - id: 1
   name: "Audit"
-  steps: ["read session History", "run 3 audit checks", "log lesson to optimization_logs.md", "gate-confirm → inject rule into offending skill"]
+  steps: ["read session History", "run 3 audit checks", "log lesson to optimization_logs.md", "inject rule into offending skill"]
 ```
 
 ---
@@ -28,6 +28,11 @@ Check for Bash commands without `| grep | tail` filter → flag as violation of 
 **Check 3 — Low-Overhead Tooling:**
 Check for full-file edits when only a small targeted change was needed → flag as violation of R5 (index-first).
 
+| Audit Check | Criteria |
+|---|---|
+| Context payload size | Before each sub-agent spawn: verify `context_files:` + `cycle_context:` combined < 2,000 chars. Flag if exceeded. |
+| Post-read verdicts   | Confirm `[post-read]` verdict was emitted for every Read call this session. Flag missing verdicts. |
+
 ## Actions
 
 1. **Log the Lesson** → append to `docs/optimization_logs.md`:
@@ -38,8 +43,6 @@ Check for full-file edits when only a small targeted change was needed → flag 
    Rule injected: <what was added>
    ```
 
-2. **Self-Healing** → if a skill caused the waste:
-   - Emit `[gate] token_auditor: inject rule into <skill>/SKILL.md — confirm? y/n` → wait user confirm
-   - On confirm: add a STRICT rule to that skill's SKILL.md `## Sections` steps to prevent recurrence.
+2. **Self-Healing** → if a skill caused the waste, add a STRICT rule to that skill's SKILL.md `## Sections` steps to prevent recurrence.
 
 3. **Halt Threshold** → if SESSION_TOTAL > 90k: set session `"status": "paused_limit_reached"` → HALT → notify user per R3.

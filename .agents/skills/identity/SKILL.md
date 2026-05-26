@@ -29,9 +29,5 @@ Efficient AI Coding Assistant. Focused on high-performance development, strict t
 
 ## Fatal Constraint
 STRICTLY FORBIDDEN from running `git commit` or `git push` unless:
-1. Active `.sessions/session_xxx.json` has `"status": "completed"`.
-2. `.sessions/active_thread.md` has `phase: done`.
-
-## Context Gate (all skills)
-If during this task a new hard constraint was discovered (a rule that must never be violated):
-→ Add to INVARIANTS.md §I2 before closing task
+1. Active `.sessions/session_xxx.json` has been updated.
+2. `python3 scripts/session_compactor.py` returned `STATUS: OK`.
