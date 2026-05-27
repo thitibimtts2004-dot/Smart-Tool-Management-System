@@ -48,10 +48,16 @@ Expected: ≥ 10 matches
 - [ ] `mece/SKILL.md` has Multi-skill Complex Feature template
 - [ ] `mece/SKILL.md` has Token Check block before `[cycle N]` emit
 - [ ] `mece/SKILL.md` has Feedback & Error Summary as Final Step before `[MECE]` done emit
-- [ ] **B2 conditional skip**: prompt contains `skill: <name>` → manifest grep skipped (saves ~1,300 tokens)
-- [ ] **B3 sections-only load**: SKILL.md read with `offset=1 limit=80` — `on_demand_files` NOT auto-loaded at boot
+- [ ] **M1.5 reasoning pass**: `AGENTS.md` has `[M1.5] REASON` block between M1→M2 in Phase 2 · `mece/SKILL.md` Execution Protocol has `[S1-A.5]` between S1-A and S1-B
+  Verify: `grep -c "M1.5\|S1-A.5" AGENTS.md` → ≥ 2 · `grep -c "S1-A.5" .agents/skills/mece/SKILL.md` → ≥ 1
+- [ ] **OmO Reviewer**: `AGENTS.md` has OmO Role Assignment table · `agent/SKILL.md` has Reviewer spawn block at Completion Gate
+  Verify: `grep -c "OmO\|Reviewer" AGENTS.md` → ≥ 4 · `grep -c "OmO Reviewer\|haiku sub-agent" .agents/skills/agent/SKILL.md` → ≥ 1
+- [ ] **B1 compact_state check**: B1 reads `.sessions/compact_state.md` first — `dt=today` → emit `[compact-restore]` · enables B2/B3 skip (~2.9k tokens saved)
+- [ ] **B2 conditional skip**: `[compact-restore]` → parse `sk=` (skip manifest) · OR prompt `skill: <name>` → skip · OR manifest grep
+- [ ] **B3 hash check**: `[compact-restore]` → `sha1sum` check `sk_h` + `mece_h` → match → skip SKILL.md reads
+- [ ] **B3 sections-only load** (non-restore path): SKILL.md read with `offset=1 limit=80` — `on_demand_files` NOT auto-loaded at boot
 - [ ] **Never-Full-Load list** in CLAUDE.md §R5: 7 files listed (CLAUDE.md, index_files.json, index_variables.json, master_roadmap.md, CODING_FAILURE_PATTERNS.md, INVARIANTS.md, error_index.md) with `[violation] never-full-load` emit on breach
-- [ ] **Full-Read whitelist** present: only SKILL.md (B3 ≤80L), src/ ≤80 lines (Phase 1 G2 only), REPO_MAP.md, session files
+- [ ] **Full-Read whitelist** present: SKILL.md (B3 ≤80L) · src/ ≤80L (Phase 1 G2) · REPO_MAP.md · session files · `.sessions/compact_state.md` (3-line, B1)
 - [ ] Verify with: `grep -c "Never-Full-Load\|Full-Read whitelist" CLAUDE.md` → ≥ 2
 - [ ] **L4.5 PURGE step**: drops raw tool results after Cycle N aggregation · keeps only verdict + artifact path
 - [ ] **Delegation Contract ≤800 tokens**: `constraints:` = rule numbers only · `cycle_context:` = ≤5 bullets ≤150 chars
@@ -128,21 +134,22 @@ Fix if missing: `Implement/03_config.md` → INVARIANTS.md template.
 
 All skill files must have: frontmatter (`name` + `description`) · `Sections[]` YAML · main content · Context Gate.
 
-Run this to check all 11 exist:
+Run this to check all 12 exist:
 ```bash
-ls .agents/skills/agent/SKILL.md .agents/skills/coder/SKILL.md .agents/skills/editor/SKILL.md \
+ls .agents/skills/agent/SKILL.md .agents/skills/ascii_flow/SKILL.md \
+   .agents/skills/coder/SKILL.md .agents/skills/editor/SKILL.md \
    .agents/skills/file_manager/SKILL.md .agents/skills/identity/SKILL.md .agents/skills/mece/SKILL.md \
    .agents/skills/self_improve/SKILL.md .agents/skills/session_manager/SKILL.md \
    .agents/skills/token_auditor/SKILL.md .agents/skills/token_tracker/SKILL.md \
    .agents/skills/variable_manager/SKILL.md 2>&1
 ```
-Expected: 11 paths printed, zero "No such file" errors.
+Expected: 12 paths printed, zero "No such file" errors.
 
-Run this to check all 11 have a Context Gate:
+Run this to check all 12 have a Context Gate:
 ```bash
 grep -l "Context Gate" .agents/skills/*/SKILL.md | wc -l
 ```
-Expected: 11
+Expected: 12
 
 ### Per-skill section requirements
 
@@ -361,6 +368,18 @@ python3 scripts/lookup.py "session" --session --json | python3 -c "import json,s
 ```
 Expected: `Session results: ≥ 1` (after session_indexer.py has been run)
 
+Source field check (T-090 — each result must include `source` key):
+```bash
+python3 scripts/lookup.py "export" --json | python3 -c "import json,sys; r=json.load(sys.stdin); print('source fields:', all('source' in x for x in r))"
+```
+Expected: `source fields: True`
+
+RAG stub check (env var must be recognised — no crash when set):
+```bash
+RAG_BASE_URL=http://localhost:9999 python3 scripts/lookup.py "test" --json 2>&1 | grep -c "error\|traceback" || echo "0"
+```
+Expected: `0` (graceful no-op when RAG service unreachable)
+
 Integration: T0 must be called before any grep/Read in `editor/SKILL.md`, `coder/SKILL.md`, `session_manager/SKILL.md §2`.
 
 Fix: `Implement/05_scripts.md §7` → lookup.py spec → implement the full script.
@@ -488,11 +507,11 @@ echo "=== ALL CHECKS DONE ==="
 <number ≥ 5>    ← AGENTS.md C0-C3 + spawn_tool count
 <number ≥ 8>    ← INVARIANTS.md gates I1–I8
 === 2. Skill Files ===
-11              ← SKILL.md files (includes self_improve)
-11              ← files with Context Gate
+12              ← SKILL.md files (includes ascii_flow + self_improve)
+12              ← files with Context Gate
 .agents/skills/self_improve/SKILL.md  ← confirmed present
 === 3. Routing ===
-11              ← keywords entries in skill-manifest.json
+12              ← keywords entries in skill-manifest.json
 ≥7              ← manifest v2.1 present + on_demand_files entries
 1               ← self_improve in manifest
 <number ≥ 4>    ← skill names in registry.md
