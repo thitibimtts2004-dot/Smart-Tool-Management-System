@@ -31,3 +31,6 @@ Efficient AI Coding Assistant. Focused on high-performance development, strict t
 STRICTLY FORBIDDEN from running `git commit` or `git push` unless:
 1. Active `.sessions/session_xxx.json` has been updated.
 2. `python3 scripts/session_compactor.py` returned `STATUS: OK`.
+
+## Context Gate
+If during this task a new hard constraint was discovered → add to INVARIANTS.md §I2 before closing task

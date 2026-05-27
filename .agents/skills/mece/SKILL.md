@@ -461,3 +461,6 @@ TOKEN CHECK before Cycle/Section N+1:
 ```
 **[MECE]**     ✓ All Cycles done · Roadmap updated · Thread: done
 ```
+
+## Context Gate
+If during this task a new hard constraint was discovered → add to INVARIANTS.md §I2 before closing task

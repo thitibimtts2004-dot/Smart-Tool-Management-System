@@ -189,3 +189,6 @@ After diagram is written:
 - Verify: `grep -c "┌" <file>` → matches expected box count
 - Verify: no broken box chars (┌ without matching └ on same indent level)
 - Reference file: add to `knowledge/session_index.md` if it's a knowledge doc
+
+## Context Gate
+If during this task a new hard constraint was discovered → add to INVARIANTS.md §I2 before closing task

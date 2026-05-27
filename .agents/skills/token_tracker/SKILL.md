@@ -56,3 +56,6 @@ Never use UTF-8 bytes ÷ 3 — undercounts Thai by up to 1.7×.
 |---|---|
 | > 60k | TOKEN PAUSE → finish current loop step → save state → ask user |
 | > 90k | HALT immediately → save state → report to user |
+
+## Context Gate
+If during this task a new hard constraint was discovered → add to INVARIANTS.md §I2 before closing task

@@ -77,3 +77,6 @@ Creating any `.md` file that contains a flow diagram or architecture chart → *
 [→ ascii_flow] Before drawing any box diagram in <file>
 ```
 Style reference: `knowledge/harness_flow_20260525.md` · Skill: `.agents/skills/ascii_flow/SKILL.md`
+
+## Context Gate
+If during this task a new hard constraint was discovered → add to INVARIANTS.md §I2 before closing task

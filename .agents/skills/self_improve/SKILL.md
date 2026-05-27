@@ -263,3 +263,6 @@ Hard rules: never skip · never re-use CFP number · same pattern recurs → new
 - Proposals must be minimal and specific — one rule change per session
 - If user rejects proposal: log `[cfp-deferred CFP-N]` in session_handoff.md
   so next session can re-propose if pattern recurs
+
+## Context Gate
+If during this task a new hard constraint was discovered → add to INVARIANTS.md §I2 before closing task

@@ -22,3 +22,6 @@ You must execute your duties on `knowledge/index_variables.json` under these con
 
 ## Pre-Analysis Role
 Before doing any structural refactoring, query this index to find all dependencies that rely on a specific variable to ensure zero downtime.
+
+## Context Gate
+If during this task a new hard constraint was discovered → add to INVARIANTS.md §I2 before closing task

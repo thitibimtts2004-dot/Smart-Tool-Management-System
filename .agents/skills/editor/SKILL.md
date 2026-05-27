@@ -276,3 +276,6 @@ R12 verify fail → write `### Failed Approaches:` → then emit `[blocked]` per
 
 ## Limitations
 - Do not create entirely new architectures here. If a task requires widespread new file scaffolding, the Agent Orchestrator should use the `coder` skill instead.
+
+## Context Gate
+If during this task a new hard constraint was discovered → add to INVARIANTS.md §I2 before closing task

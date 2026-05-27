@@ -22,3 +22,6 @@ You must execute your duties on `knowledge/index_files.json` ONLY under these co
 
 ## Pre-Analysis Role
 Before the Coder or Editor touches a file, use `Bash: grep` against this index to ensure you understand all `backlinks` that might be affected by the upcoming code change.
+
+## Context Gate
+If during this task a new hard constraint was discovered → add to INVARIANTS.md §I2 before closing task
