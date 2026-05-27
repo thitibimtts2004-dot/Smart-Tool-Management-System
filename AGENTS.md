@@ -18,26 +18,49 @@ You are operating inside the **Asset Plan** project. Rules apply to ALL agents r
 ## Boot Sequence (3 tool calls max)
 
 ```
-[B1] Bash: (phase=$(grep "^phase:" .sessions/active_thread.md 2>/dev/null | awk '{print $2}'); [ "$phase" != "in_progress" ] && printf "SESSION_TOTAL: 0\n" > .sessions/session_tokens.md; cat .sessions/active_thread.md 2>/dev/null | tail -4; echo "---"; cat .sessions/session_tokens.md 2>/dev/null; echo "---"; grep -n "\[/\]" docs/master_roadmap.md 2>/dev/null | head -3; echo "---"; echo "CFP_COUNT: $(grep -c '^## CFP-' CODING_FAILURE_PATTERNS.md 2>/dev/null || echo 0)")
-[B2] IF incoming prompt contains `skill: <name>` (orchestrator pre-resolved):
+[B1] Bash: (cs_dt=$(grep "^dt=" .sessions/compact_state.md 2>/dev/null | cut -d= -f2 | cut -d' ' -f1); today=$(date +%Y-%m-%d); [ "$cs_dt" = "$today" ] && echo "[compact-restore]" && cat .sessions/compact_state.md && echo "---"; phase=$(grep "^phase:" .sessions/active_thread.md 2>/dev/null | awk '{print $2}'); [ "$phase" != "in_progress" ] && printf "SESSION_TOTAL: 0\n" > .sessions/session_tokens.md; cat .sessions/active_thread.md 2>/dev/null | tail -4; echo "---"; cat .sessions/session_tokens.md 2>/dev/null; echo "---"; grep -n "\[/\]" docs/master_roadmap.md 2>/dev/null | head -3; echo "---"; echo "CFP_COUNT: $(grep -c '^## CFP-' CODING_FAILURE_PATTERNS.md 2>/dev/null || echo 0)")
+[B2] IF [compact-restore] in B1 output:
+       → parse `sk=<name>` from compact_state.md output → use as skill_name · SKIP manifest read (~1,300 tokens saved)
+       → cache skill_name in working memory
+     ELSE IF incoming prompt contains `skill: <name>` (orchestrator pre-resolved):
        → use that skill_name directly · SKIP manifest read (saves ~1,300 tokens)
      ELSE:
        → Bash: grep -B1 -A6 '"keywords"' .agents/skills/skill-manifest.json | head -80
          Match user intent against keywords[] → identify skill_name
          → Cache skill_name in working memory · NEVER re-read manifest this session
-[B3] Read: .agents/skills/<skill_name>/SKILL.md offset=1 limit=80
-     → load sections[] ONLY · cache in working memory
+[B3] IF [compact-restore] in B1 output:
+       → Bash: `sha1sum .agents/skills/<skill_name>/SKILL.md 2>/dev/null | cut -c1-8`
+         compare to `sk_h=` field in compact_state.md
+         Hash match → SKIP SKILL.md read · skill sections still in context (~1,600 tokens saved)
+         Hash mismatch → file changed → must re-read (proceed to ELSE branch below)
+       → Bash: `sha1sum .agents/skills/mece/SKILL.md 2>/dev/null | cut -c1-8`
+         compare to `mece_h=` field in compact_state.md
+         Hash match → SKIP mece/SKILL.md read (~1,300 tokens saved)
+         Hash mismatch → must re-read
+     ELSE:
+       → Read: .agents/skills/<skill_name>/SKILL.md offset=1 limit=80
+       → Also: Read .agents/skills/mece/SKILL.md offset=31 limit=110
+          → load §Plan Format (required fields: Skill/Tool/Constraints/Verify/Data_Sent/Token) +
+             §Execution Protocol (S1-A through S1-E steps) into working memory
+          → agent knows required plan fields BEFORE Phase 1 — avoids confusion at plan creation
+     (Either path: ensure §Plan Format + §Execution Protocol are in working memory)
      → on_demand_files from manifest = lookup table for G2, NOT loaded at boot
      → NEVER auto-load on_demand_files at B3 — they are read on-demand during G2 only
      → NEVER re-read SKILL.md mid-session unless skill changes (check cached skill_name first)
+     → NEVER re-read mece/SKILL.md mid-session (Plan Format + Execution Protocol stay in context)
 ```
 
 - B1 auto-resets SESSION_TOTAL to 0 when phase ≠ in_progress
+- B1 checks compact_state.md: `dt=today` → `[compact-restore]` → B2 skips manifest · B3 skips SKILL.md reads if hashes match → saves ~2.9k tokens per session restart
 - Load CFP_COUNT from B1 output → store as `cfp_boot_count` in working memory
 - If SESSION_TOTAL > 50k → run Mid-Session Compact (non-blocking — see CLAUDE.md R3)
 - If SESSION_TOTAL > 60k → warn user before proceeding
 - If mece_plan.md exists with pending sections → skip Phase 1+2 → resume Phase 3 at pending section
   (pending = `grep -cE "^\- \[[ /]\]" .sessions/mece_plan.md 2>/dev/null || echo "0"` > 0)
+  **Resume read (run when pending > 0):**
+  `grep -n "^\- \[ \]\|^\- \[/\]" .sessions/mece_plan.md | head -3` → find first pending item
+  Determine resume phase: item in `## Phase 2` block → resume at Phase 2 · item in `## Phase 3` → resume at Phase 3
+  Read .sessions/mece_plan.md at that block (offset=N limit=40) → load pending section context
   **Resume staleness gate (V3) — run after B3 only when phase = in_progress:**
   `git status --short src/ 2>/dev/null | grep -c "." || echo "0"` → src/ changes since last session?
   Compare `mece_plan_hash` in `.sessions/session_handoff.md` vs `sha1sum .sessions/mece_plan.md 2>/dev/null | cut -d' ' -f1`
@@ -197,6 +220,15 @@ After 3 loops without `[✓ gather]`:
 
 ```
 [M1] Read: .agents/skills/mece/SKILL.md offset=1 limit=100  ← format + rules section only, skip examples
+[M1.5] REASON — extended reasoning pass across ALL Skill sections (before building plan):
+       In one pass, think through:
+         □ Dependencies: does section A output feed section B? → mark Sequential
+         □ Parallelizable: sections with no shared state → mark Parallel
+         □ Irreversible: any [gate] / delete / DB write / overwrite? → flag + note scope
+         □ Risk surface: which section has highest blast-radius if wrong?
+         □ Outcome sketch: what does "done" look like per section? (feeds M2.5 Verify-N)
+       Output: dependency_map[] + risk_flags[] + draft_verify[] — working memory only
+       Token budget: ≤600 tokens · do NOT write to file · feeds M2 grouping + M2.5 Verify-N
 [M2] Build: plan covering ALL sections defined in Skill (must map 1:1, not generic)
 [M2.5] DoD: for each section, define ≥1 runnable verify command or measurable success criterion
         Format: Verify-<N>: `<command>` → expected: <output or condition>
@@ -206,7 +238,15 @@ After 3 loops without `[✓ gather]`:
 [M3] Send plan + DoD (Verify-<N> for each section) to user → wait confirm
      User must confirm BOTH plan steps AND verify criteria before proceeding
 [M4] R-Roadmap: add entry for each section [ ] T-<N>: <section-name>
-[M5] Emit [✓ MECE]
+[M5] Write .sessions/mece_plan.md using Phase-Checklist Template (mece/SKILL.md §Phase-Checklist Template):
+     - Phase 0 block: fresh session = all [ ] · same session = [X] already · Files Read table with wc -m entries
+     - Phase 1-3 blocks: [ ] placeholders + TOKEN CHECK lines after each phase + after each section
+       (TOKEN CHECK: leave `→ ___k` as placeholder · do NOT evaluate at plan creation · fill at runtime: write SESSION_TOTAL from working memory to file first, then cat)
+     - Sections block: Tool: + Constraints: + Data_Sent: Thai ___ch | ENG: ___ch + Token: ___k per section
+     - Constraints: field — grep `## MECE Constraints Block` from each section's SKILL.md → paste ≤5 relevant lines
+       Missing Constraints: field = incomplete plan → user must reject and replan
+     User confirms plan includes Phase 0-3 checklist + Constraints: per section before proceeding
+[M6] Emit [✓ MECE]
 ```
 
 MECE runs ONCE. On resume: load existing plan from session → jump to pending section.
@@ -310,6 +350,7 @@ CODING_FAILURE_PATTERNS.md      (grows over time)       → grep -c "^## CFP-" �
 docs/master_roadmap.md          (180+ lines)            → grep -n "T-NNN" or tail -30 · NEVER full Read
 INVARIANTS.md                   (134 lines)             → on-demand ONLY when R14/R15 gate fires · not at boot
 knowledge/error_index.md        (grows over time)       → grep -n "^## ERR" → Read offset=N limit=40 ONLY
+knowledge/index_cfp_fix.json   (grows over time)       → full_ok WHILE entries ≤ 30 · grep ONLY beyond 30 CFPs
 ```
 
 **Full-Read whitelist (only these files may be read in full):**
@@ -319,6 +360,7 @@ src/*.tsx / src/*.ts            → Phase 1 G2 only AND file ≤80 lines (else g
 REPO_MAP.md                     → on-demand for directory structure questions
 .sessions/active_thread.md      → C1 routing check
 .sessions/session_handoff.md    → resume flow only
+.sessions/compact_state.md      → B1 [compact-restore] read (3-line file, always full)
 ```
 
 **Violation:** Reading any Never-Full-Load file in full → emit `[violation] never-full-load` → discard result → re-run as grep.
@@ -376,6 +418,23 @@ constraints:
 ```
 
 Missing `constraints:` block in execution sub-agent prompt = **CFP violation**.
+
+---
+
+### OmO Role Assignment (apply when sections > 2 OR any section has [gate] / DB action)
+
+| Role | Maps to | Model | Responsibility |
+|---|---|---|---|
+| Architect | Phase 2 (main agent) | sonnet | Build MECE plan · dependency_map from M1.5 · draft Verify-N per section |
+| Executor | Phase 3 REACT loop | sonnet | Run sections · emit [✓ written] per step · write session_handoff after each section |
+| Reviewer | Completion Gate | haiku sub-agent | Verify all □ pass · report PASS or FAIL list · read-only |
+
+**Reviewer sub-agent rules:**
+- Spawn AFTER all sections executed, BEFORE reporting done to user
+- Prompt: paste Verify-N list from mece_plan.md + grep commands for each criterion
+- Output: `PASS` (all criteria met) OR `FAIL: [section, criterion, actual_output]`
+- On FAIL → structured diff → main agent retries that section (1× max) → R13 escalate if still fails
+- Reviewer is read-only — no Edit/Write tools · cannot modify src/
 
 ---
 

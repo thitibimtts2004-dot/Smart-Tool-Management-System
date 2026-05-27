@@ -24,6 +24,7 @@ If `[Boot]` trace has NOT been emitted yet:
 [B2] Read: .agents/skills/skill-manifest.json → match user intent to keywords[] → identify skill_name
 [B3] Read: .agents/skills/<skill_name>/SKILL.md → load sections[] and context_files
 ```
+→ B1 also checks `.sessions/compact_state.md`: if `dt=today` → emit `[compact-restore]` · B2 parses `sk=` (skip manifest) · B3 sha1 checks `sk_h/mece_h` (skip SKILL.md reads if match) · saves ~2.9k tokens — see **AGENTS.md §Boot B1-B3** for full command
 → B1 resets SESSION_TOTAL=0 when phase≠in_progress · Load CFP_COUNT as `cfp_boot_count` in working memory · Warn if >60k
 → [B4] Platform Probe: if `detected.md` has `platform: unknown` → list tools → update · else skip
 
@@ -69,6 +70,13 @@ Missing either → **STOP** → run the missing phase → only then proceed.
 **Reading SKILL.md at B3 is NOT Phase 1.** Phase 1 = grep indexes + targeted reads + [✓ gather] emitted.
 **[✓ gather] MUST write `.sessions/gather_complete.md`** (date: YYYY-MM-DD) — hook checks both files for today's date.
 **Writing mece_plan.md is NOT optional.** PreToolUse hook denies src/ Edit if either file missing or stale (not today).
+**mece_plan.md MUST include Phase 0-3 checklist blocks** (mece/SKILL.md §Phase-Checklist Template) — Tool/Data_Sent/Token per section.
+
+**At task complete — Phase 3 close mandatory sequence (no exceptions):**
+1. Write Phase 0 carry-forward → `session_handoff.md`: `skill_name + CFP_COUNT + task` — survives /compact
+2. Write `compact_state.md` → `.sessions/compact_state.md` (dt/sk/sk_h/mece_h/p3) — BEFORE /compact while session memory intact (see session_manager §Step 5.3)
+3. `/compact` — ALWAYS run (not conditional) — prevents next task context bloat
+4. Next task: Phase 0 [X] in mece_plan.md + read handoff carry-forward → G0 restore → skip Phase 0 → start Phase 1
 
 ---
 
@@ -80,7 +88,7 @@ Input  = (user_msg_chars × 0.3) + context_overhead + (tool_result_tokens)
 Output = (thai_chars × 1.7) + (en_chars × 0.3)
 context_overhead: Turn 1 = ~4,000 | subsequent = 200 + (SESSION_TOTAL × 0.08)
 ```
-Write to file ONLY at: token pause · blocked halt · completion gate. Emit `*(Session total: ~NNN tokens)*` every response.
+Write to file ONLY at: token pause · blocked halt · completion gate · TOKEN CHECK point (write working memory SESSION_TOTAL before reading). Emit `*(Session total: ~NNN tokens)*` every response.
 → Thresholds and pause rules → **R3** · audit → **token_auditor/SKILL.md**
 
 ---
@@ -116,7 +124,8 @@ Execution sub-agents MUST include `constraints:` block (roadmap, gather/mece fil
 ## R5 · Index-First Lookup
 
 **T0 (run before T1–T3):** `python scripts/lookup.py "<symbol or keyword>" --json`
-→ Returns file + line + read_hint (offset/limit) + keywords · Skip if result empty → proceed to T1.
+→ Returns file + line + read_hint (offset/limit) + keywords + score + source (index_variables|index_files|index_sessions|rag) · Skip if result empty → proceed to T1.
+→ Session-only: add `--session` flag (bypasses RAG · searches index_sessions only) · Semantic search: set `RAG_BASE_URL` env var when claw-rag-service is running.
 
 Emit BEFORE every Read: `**[pre-read]** Target: \`<symbol>\` · Tier: T<0|1|2|3> · Line: <N> · Will read: offset=<N> limit=60`
 Emit AFTER every Read: `**[post-read]** File: \`<path>\` · Verdict: relevant|partial|irrelevant`
@@ -127,7 +136,7 @@ Skip any gate = `[violation] R5` → discard result → re-run. `irrelevant` ver
 `CLAUDE.md` (in memory — never re-read) · `index_files.json` / `index_variables.json` (grep only) · `master_roadmap.md` (grep or tail -30) · `CODING_FAILURE_PATTERNS.md` (grep count + targeted Read ≤30L) · `INVARIANTS.md` (on-demand gate only) · `error_index.md` (grep → Read ≤40L)
 Violation → emit `[violation] never-full-load` → discard result → re-run as grep.
 
-**Full-Read permitted only:** `.agents/skills/*/SKILL.md` (B3, ≤80L cap) · `src/` ≤80L Phase 1 G2 · `.sessions/active_thread.md` · `.sessions/session_handoff.md` · `REPO_MAP.md`
+**Full-Read permitted only:** `.agents/skills/*/SKILL.md` (B3, ≤80L cap) · `src/` ≤80L Phase 1 G2 · `.sessions/active_thread.md` · `.sessions/session_handoff.md` · `.sessions/compact_state.md` (3-line file, B1 read) · `REPO_MAP.md`
 → Lookup tiers T1/T2/T3, blast-radius check → **editor/SKILL.md** · **AGENTS.md §Never-Full-Load**
 
 ---
@@ -225,10 +234,23 @@ On detection (before resuming original task):
 1. Emit `[self-improve] Rule: <R-N> · Missed: <what>`
 2. Execute missed step NOW (ask user if context insufficient, then wait)
 3. Emit `[✓ backfilled] <what done>`
-4. Log CFP: `grep -c "^## CFP-"` → N+1 → append entry (Symptom · Root cause · Prevention · Detection signal)
+4. Log CFP:
+   a. `grep -c "^## CFP-"` → N+1 → append entry to CODING_FAILURE_PATTERNS.md
+      Fields: Symptom · Root cause · Prevention · Detection signal · Model: `<current_model_id>`
+   b. Write occurrence to `knowledge/index_cfp_fix.json`:
+      ```
+      entry = index_cfp_fix[CFP-N]
+      entry.occurrences.append({ date: TODAY, model: <model_id>, session: <session_id> })
+      entry.last_seen = TODAY
+      entry.status = "active"
+      write back to index_cfp_fix.json
+      ```
+      If CFP-N not yet in index → create entry with group from CFP title keywords
+      (skip_planning / boot_gap / skip_verification / rule_drift / premature_report / index_desync / db_safety / token_management)
 5. Set c0_resolved=true → re-run C0→C1→C2→C3 with original user message
 
 → CFP entry format, archive gate, pattern analysis → **self_improve/SKILL.md §CFP Logging Format**
+→ Fix tracking, group classification, recurrence detection → **knowledge/index_cfp_fix.json**
 
 ---
 

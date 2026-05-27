@@ -54,34 +54,50 @@ Orchestrator skill. Handles two responsibilities:
 4. Each section agent writes → `.sessions/cycle_N_<section_id>.json`
 5. After all Cycle N agents done:
    a. Read all cycle_N_*.json → validate each file:
-      - Required keys present: cycle, section, status, verify_result, artifacts
+      - Required keys present: cycle, section, status, verify_result, artifacts, tokens_estimated
       - status value in ["done", "blocked"] — if missing/invalid → treat as blocked
+      - Missing tokens_estimated → add 2,000 flat buffer (INVARIANTS.md §I7)
       - Invalid JSON or missing file → treat as blocked, log in notes
+   a2. TOKEN MERGE (INVARIANTS.md §I7):
+      - Sum all tokens_estimated from cycle_N_*.json (use 2,000 for missing)
+      - Add sum to SESSION_TOTAL in working memory
+      - Write updated total → .sessions/session_tokens.md
+      - Check R3 threshold immediately
    b. Any status = blocked → HALT all remaining Cycles → BLOCKED flow
    c. All done → aggregate results → build **trimmed** context payload for Cycle N+1:
       - Include per result: `status`, `verify_result`, `artifacts` (paths only), `notes`
       - Exclude: raw file content read during the cycle (content stays in artifacts on disk)
-      - Apply Context Trim to any `context_files:` passed forward (see Delegation Contract)
+      - Apply Context Trim to any `on_demand_files:` passed forward (see Delegation Contract)
+   d. [L4.5] PURGE: drop all raw tool results from steps a–c from context
+      Keep only: verify verdict + artifact path per section (≤2 lines per section)
+      Emit: [purge] Cycle <N> — dropped raw results · kept: verify verdicts + artifact paths
 **Token Check before spawning Cycle N+1:**
 - Read SESSION_TOTAL from .sessions/session_tokens.md
 - > 50k AND compact not yet run this transition? → run Mid-Session Compact → emit [compact] → then spawn
 - > 60k? → TOKEN PAUSE (do not spawn next cycle until user confirms resume)
 - ≤ 50k? → spawn immediately
 6. Call `<spawn_tool>` for Cycle N+1 — inject cycle_N results as `cycle_context:` in each Subagent Prompt
-7. Repeat until all Cycles done → Completion Gate
+7. Repeat until all Cycles done → Completion Gate:
+   **[OmO Reviewer]** Spawn haiku sub-agent (read-only) BEFORE reporting done — when sections > 2 OR any [gate]/DB action:
+   - Prompt: Verify-N list from mece_plan.md + grep commands
+   - Output: `PASS` or `FAIL: [section, criterion, actual_output]`
+   - On FAIL → retry section (1× max) → R13 escalate
+   - Reviewer has no Edit/Write tools
 \```
 
 **Delegation Contract — every sub-agent prompt must include:**
-- `goal:` what to produce
-- `constraints:` relevant rules from CLAUDE.md (R5, R6, R8)
+- `goal:` what to produce (≤2 sentences)
+- `constraints:` rule numbers only (e.g. R5,R6,R8) — NEVER copy rule text
 - `output_format:` exact structure expected (JSON schema or table)
-- `context_files:` only files the sub-agent needs (no full index)
-- **Context Trim** (run before setting `context_files:`):
+- `on_demand_files:` only files the sub-agent needs (≤5 paths, NEVER inline content)
+- **Context Trim** (run before setting `on_demand_files:`):
   1. For each candidate file: check its `[post-read]` verdict from this session
-  2. `irrelevant` verdict → exclude from `context_files:` entirely
+  2. `irrelevant` verdict → exclude from `on_demand_files:` entirely
   3. `partial` verdict → pass excerpt reference only (`<file>` L<N>–L<N>), not full path
   4. No `[post-read]` verdict yet → include (sub-agent will read as needed)
-- `cycle_context:` structured results from prior Cycle(s) — omit if Cycle 1
+- `cycle_context:` ≤5 bullets ≤150 chars each — NEVER raw JSON · omit if Cycle 1
+- **Spawn Context Gate:** total `cycle_context` + `on_demand_files` >2,000 chars → summarize further
+- **Total prompt budget: ≤800 tokens** — count before spawning; if exceeded → trim `cycle_context` first
 
 **Spawn call structure — varies by platform (read from `[PROJECT_ROOT]/.agents/platform/detected.md`):**
 
@@ -110,16 +126,33 @@ Claude Code example: `Agent(subagent_type="task", prompt="<goal>...")`
   "status": "done | blocked",
   "verify_result": "<output of Verify command>",
   "artifacts": ["path/to/file"],
+  "tokens_estimated": N,
   "notes": ""
 }
 \```
 Path: `.sessions/cycle_N_<section_id>.json`
 
+`tokens_estimated` is REQUIRED (INVARIANTS.md §I7). Missing → treat as 2,000 flat buffer.
+
 ## Skill Delegation Rules
-- Creating new files/features → `coder` skill
-- Modifying/fixing existing files → `editor` skill
-- Any file created/moved/deleted → also trigger `file_manager`
-- Any symbol created/renamed/deleted → also trigger `variable_manager`
+
+**Priority order:**
+
+**P1 — Explicit `Skill:` field in MECE plan section (overrides all heuristics):**
+  `Skill: coder` → spawn coder regardless of action type
+
+**P2 — Heuristics (when Skill: not declared in MECE section):**
+- new files / features    → `coder`
+- modify / fix existing   → `editor`
+- file create/move/delete → also trigger `file_manager`
+- symbol create/rename    → also trigger `variable_manager`
+
+**Multi-skill `Skill: X + Y`:**
+- Run X first → verify → then Y
+- Both write to same `cycle_N_<section_id>.json`
+- X fails → do NOT run Y → section blocked
+
+**Hard limits:**
 - NEVER write code or run modifying Bash directly — always delegate to correct skill
 - Sub-agents MUST NOT spawn further agents (max depth = 1)
 
@@ -501,16 +534,16 @@ description: Loop Phase 2 — builds a section-based plan that maps 1:1 to targe
 **[✓ MECE]** Goal: <one line>
 
 Section 1 — <name from Skill sections[0]>:
-  Steps: [A] → [B] → [C]
-  Verify: <checkable — grep/compile/read-back, never subjective>
+  Skill:    <editor|coder|file_manager|variable_manager|agent>   ← MANDATORY
+  Steps:    [A] → [B] → [C]
+  Verify:   <checkable — grep/compile/read-back, never subjective>
   Rollback: <what to undo if this section fails>
 
 Section 2 — <name from Skill sections[1]>:
-  Steps: [D] → [E]
-  Verify: <checkable condition>
+  Skill:    <editor|coder|...>                                   ← MANDATORY
+  Steps:    [D] → [E]
+  Verify:   <checkable condition>
   Rollback: <what to undo>
-
-Independent (any section): [X] · [Y]
 
 Cycle grouping (add when plan has ≥ 2 sections):
   Cycle 1: [S1, S2]          ← sections with no dependencies between them
@@ -518,10 +551,38 @@ Cycle grouping (add when plan has ≥ 2 sections):
   S3 context-input: cycle_1_S1.json, cycle_1_S2.json
 \```
 Rules:
+- `Skill:` field is MANDATORY per section — no section may be without it
 - Sections in the same Cycle are spawned in parallel
 - Sections in Cycle N+1 declare which `cycle_N_*.json` files they need
 - Single-section plans have no Cycle grouping (omit Cycle block)
+- Multi-skill `Skill: X + Y`: X runs first → verify → then Y
+
+**Plan size caps (token budget enforcement):**
+- Steps: ≤5 items per section
+- Verify: ≤2 commands per section (≤60 chars each)
+- Rollback: ≤15 words per section
+- Total plan: ≤120 lines · if exceeds → consolidate into fewer sections
+- Cycle grouping block: ≤10 lines total
 \```
+
+## Verify Pattern Lookup (use when writing DoD for each section)
+
+| Action type | Verify pattern | Expected |
+|---|---|---|
+| Symbol created | `grep -c "symbolName" src/path.ts` | 1 |
+| Symbol deleted | `grep -c "symbolName" src/path.ts` | 0 |
+| Symbol renamed | `grep -c "OldName" src/` | 0 |
+| Import added | `grep -c "import.*NewThing" src/file.ts` | 1 |
+| Import removed | `grep -c "import.*OldThing" src/file.ts` | 0 |
+| File created | `ls path/to/file.ts` | no error |
+| File deleted | `ls path/to/file.ts` | error (not found) |
+| Build clean | `npm run build 2>&1 \| grep -c "error"` | 0 |
+| TS typecheck | `npx tsc --noEmit 2>&1 \| grep -c "error"` | 0 |
+| DB table exists | `grep -c "tableName" src/db/schema.ts` | ≥ 1 |
+| DB row written | `grep -c "expected-value" knowledge/index.json` | ≥ 1 |
+| Index synced | `python scripts/symbol_indexer.py; echo $?` | 0 |
+| Roadmap [X] | `grep -c "\[X\] T-N:" docs/master_roadmap.md` | 1 |
+| ERR entry written | `grep -c "^## ERR-N" knowledge/error_index.md` | 1 |
 
 Rules:
 - Sections must match target Skill sections[] exactly (same count and names)
@@ -543,6 +604,9 @@ Rules:
 \```
 Section 1 — Build Plan:
   [S1-A] Read target Skill SKILL.md → parse sections[]
+  [S1-A.5] REASON — extended reasoning pass across ALL sections:
+    □ Dependencies → Sequential · Parallelizable → Parallel · Irreversible → flag
+    □ Risk surface + Outcome sketch → feeds S1-C Verify-N · Budget: ≤600 tokens working memory only
   [S1-B] Map MECE steps to each section (use templates below as base)
   [S1-C] Add Verify + Rollback per section
   Verify: plan section count = Skill section count
@@ -564,43 +628,83 @@ On failure → STOP → report which step failed → do not auto-recover.
 ### Bug Fix (target: editor)
 \```
 Section 1 — Diagnose:
+  Skill:    editor
   [A] R9 3-checks: error_index → symbol_index → file_index
-  [B] Read source at line → confirm symptom
+  [B] Read source at line → confirm symptom · assess blast radius
   Verify: blast radius known · ERR candidate confirmed or ruled out
   Rollback: no changes yet
 
 Section 2 — Edit & Verify:
+  Skill:    editor
   [C] Apply targeted fix
   [D] [✓ written] grep verify change exists
   Verify: grep symptom → 0 results
   Rollback: revert edit
 
 Section 3 — Sync & Close:
+  Skill:    editor
   [E] python scripts/symbol_indexer.py
   [F] Write ERR-XXX to error_index.md · [✓ written] verify
   [G] Mark roadmap [X] T-{N}-{BugID} (→ ERR-XXX)
   Verify: ERR entry exists · roadmap [X]
   Rollback: remove ERR entry if incorrect
+
+Cycles: 1:[S1] → 2:[S2] → 3:[S3]   (serial — each depends on previous)
 \```
 
 ### New Feature (target: coder)
 \```
 Section 1 — Scope & Index:
+  Skill:    agent
   [A] R4 scope probe · check index for conflicts
   Verify: no duplicate symbols or file paths
   Rollback: n/a
 
 Section 2 — Build:
+  Skill:    coder
   [B] Create file(s) · [✓ written] verify each
   Verify: files exist at correct paths
   Rollback: delete created files
 
 Section 3 — Sync & Close:
+  Skill:    file_manager + variable_manager
   [C] file_manager: update index_files.json + backlinks
   [D] variable_manager: update index_variables.json
   [E] python scripts/symbol_indexer.py · Mark roadmap [X]
   Verify: symbol count increased · no stale backlinks
   Rollback: restore index from last known state
+
+Cycles: 1:[S1] → 2:[S2] → 3:[S3]
+\```
+
+### Multi-skill / Complex Feature (target: agent)
+\```
+Section 1 — Scope & Design:
+  Skill:    agent
+  [A] scope probe · assign Skill per section · pre-assign ALL T-IDs (I6)
+  Verify: no duplicate symbols/paths · all T-IDs pre-written to roadmap
+  Rollback: n/a
+
+Section 2 — Build New:
+  Skill:    coder
+  [B] create new files · [✓ written] verify each
+  Verify: files exist at correct paths
+  Rollback: delete created files
+
+Section 3 — Modify Existing:
+  Skill:    editor
+  [C] targeted edits · [✓ written] grep verify
+  Verify: grep symptom → 0 results or grep new content → 1 result
+  Rollback: revert edits
+
+Section 4 — Sync & Close:
+  Skill:    file_manager + variable_manager
+  [D] update indexes · python scripts/symbol_indexer.py · roadmap [X]
+  Verify: symbol count updated · roadmap entries [X]
+  Rollback: restore index from last known state
+
+Cycles: 1:[S1] → 2:[S2, S3] parallel → 3:[S4]
+S4 context-input: cycle_2_S2.json, cycle_2_S3.json
 \```
 
 ### Refactor / Rename (target: editor)
@@ -632,7 +736,7 @@ Section 3 — Sync & Close:
 **Token Check — mandatory before starting any new Cycle or Section:**
 ```
 TOKEN CHECK before Cycle/Section N+1:
-- Read SESSION_TOTAL from .sessions/session_tokens.md
+- Write SESSION_TOTAL (working memory) to file: `printf "SESSION_TOTAL: ___k\n" > .sessions/session_tokens.md` (fill ___k from memory) · then read + verify: `cat .sessions/session_tokens.md`
 - > 50k AND compact not yet run this cycle? → run Mid-Session Compact (see CLAUDE.md R3) → emit [compact] → then proceed
 - > 60k? → TOKEN PAUSE immediately (do not start next cycle)
 - ≤ 50k? → proceed to next Cycle/Section
@@ -751,7 +855,12 @@ Triggered from Loop Phase 3 when token threshold hit.
    sections_done: [list]
    sections_pending: [list]
    last_step: <step name>
-   attempt_count: <0|1>    ← attempts used on last_step (0 = first try, 1 = one retry done)
+   attempt_count: <0|1>          ← 0 = first try, 1 = one retry already done
+   mece_plan_hash: <sha1 of .sessions/mece_plan.md at this moment>
+   cfp_boot_count: <cfp_boot_count from working memory>
+   cfp_deferred: {}              ← merge (not overwrite) from prior handoff
+   cfp_dismissed: []             ← permanent — survives across sessions
+   last_self_improve_session: <id or "none">
    latest_result: <last tool output summary>
 3. Append to active session History with status "paused_token_limit"
 4. Show user:
@@ -759,8 +868,14 @@ Triggered from Loop Phase 3 when token threshold hit.
     ค้างที่: Section <N> step <name>
     ดำเนินการต่อไหมครับ?"
 5. On confirm:
-   → Reload config (target Skill context_files)
-   → Check MECE plan: reuse if state unchanged, rebuild if scope changed
+   MECE Staleness Gate:
+   → sha1sum .sessions/mece_plan.md vs mece_plan_hash in handoff
+   → git status --short src/ → any changes?
+   → hash mismatch OR src/ changed → emit [plan-stale] → ask: reconfirm plan or rebuild?
+   → hash matches AND src/ clean → proceed silently
+   → Reload config (target Skill on_demand_files) — skip if skill unchanged since last session
+   → Restore attempt_count: if count=0 → budget=1 retry; if count=1 → next fail = BLOCKED immediately
+   → emit [resume-attempt] count=<N>
    → Reset loop to pending section → continue Phase 3
 \```
 
@@ -800,7 +915,7 @@ If `attempt_count` missing from handoff → default to `0` (fresh budget for tha
 - Count total chars across all `cycle_N_*.json` files to be injected
 - If total > 3,000 chars: summarize each file to key fields only (`status`, `artifacts`, `notes`)
 - Never inject raw file content from artifact paths — pass paths only
-2. Reload config: Read target Skill SKILL.md context_files
+2. Reload config: Read target Skill SKILL.md on_demand_files — skip if skill unchanged (conditional reload)
 3. MECE: load existing plan from handoff → reuse if valid · rebuild if scope changed
 4. Emit [resume] trace
 5. Open REACT LOOP at first pending section
@@ -812,9 +927,14 @@ If `attempt_count` missing from handoff → default to `0` (fresh budget for tha
 
 **Trigger:** User explicitly requests session end — NOT a token pause or blocked state.
 
-**5 mandatory file writes — do NOT summarize without completing all:**
+**5 mandatory steps — do NOT report closed without completing all:**
 
 \```
+Step 0 — Run self_improve CFP review FIRST (before any file writes)
+  Load self_improve/SKILL.md → run §Section 1 (CFP tally)
+  → new CFPs found this session → run §Section 2–3 (analysis + proposal)
+  → no new CFPs → emit [cfp-skip] → proceed to Step 1
+
 Step 1 — Find and close current session JSON
   Bash: ls -t .sessions/session_*.json | head -1    → identify active session file
   Read: active session file
@@ -825,7 +945,7 @@ Step 2 — Reset session_tokens.md for next session
   Write: .sessions/session_tokens.md
   Content:
     SESSION_TOTAL: 0
-  Note: Final token count goes into session JSON summary_context (Step 1) — this file resets to 0 so the next session starts clean
+  Note: Final token count goes into session JSON summary_context (Step 1)
 
 Step 3 — Write active_thread.md
   Write: .sessions/active_thread.md
@@ -833,6 +953,12 @@ Step 3 — Write active_thread.md
     task: <what was done this session>
     phase: done
     next: <next action if any, else "none">
+
+Step 3.5 — READ-MERGE CFP fields from existing session_handoff.md BEFORE writing new one
+  Read: .sessions/session_handoff.md → extract:
+    cfp_deferred: {} (merge — do NOT overwrite existing deferrals)
+    cfp_dismissed: [] (permanent — survives across sessions)
+    last_self_improve_session: <id>
 
 Step 4 — Write session_handoff.md (ALWAYS — even if task is complete)
   Write: .sessions/session_handoff.md
@@ -843,6 +969,11 @@ Step 4 — Write session_handoff.md (ALWAYS — even if task is complete)
     tasks_pending: [list of T-IDs still open, or "none"]
     last_action: <final action taken>
     next_session_start: <what to do first next time>
+    mece_plan_hash: <sha1sum .sessions/mece_plan.md>
+    cfp_boot_count: <cfp_boot_count from working memory>
+    cfp_deferred: <merged from Step 3.5>
+    cfp_dismissed: <merged from Step 3.5>
+    last_self_improve_session: <updated if self_improve ran this session>
 
 Step 5 — Confirm to user (list every file written)
   Reply format:
@@ -851,9 +982,10 @@ Step 5 — Confirm to user (list every file written)
     · .sessions/session_tokens.md → SESSION_TOTAL: ~<N>k
     · .sessions/active_thread.md → phase: done
     · .sessions/session_handoff.md → next: <summary>
+    [CFP review: <N new CFPs found | skipped — no new patterns>]
 \```
 
-**Never report "session closed" before all 4 files are written.** Summary text alone = incomplete close.
+**Never report "session closed" before all 5 steps are complete.** Summary text alone = incomplete close.
 
 ## Context Gate
 If during this task a new hard constraint was discovered → add to INVARIANTS.md §I2 before closing task
@@ -947,9 +1079,15 @@ SESSION_TOTAL lives in working memory for the session duration. File I/O only at
 
 **Estimate each turn (in memory):**
 \```
-Input  = (user_msg_chars × 0.3) + context_overhead + (tool_result_chars × 0.3)
+Input  = (user_msg_chars × 0.3) + context_overhead + tool_result_tokens
 Output = (thai_chars × 1.7) + (en_chars × 0.3)
 context_overhead: Turn 1 = ~4,000 | subsequent = 200 + (SESSION_TOTAL × 0.08)
+
+tool_result_tokens (per result — tiered by line count):
+  ≤ 150 lines  → result_chars × 0.3
+  151–300 lines → result_chars × 0.5
+  > 300 lines  → result_chars × 0.5 + 1,000 flat buffer
+  floor: 200 tokens per result minimum
 \```
 
 **Write to `.sessions/session_tokens.md`** ONLY at:
@@ -963,11 +1101,14 @@ context_overhead: Turn 1 = ~4,000 | subsequent = 200 + (SESSION_TOTAL × 0.08)
 
 ## Formulas Reference
 
-| Content | Multiplier | Rationale |
+| Content | Multiplier | Notes |
 |---|---|---|
 | Thai chars | × 1.7 | ~1.5–2.5 tokens/char (UTF-8 multi-byte) |
 | English chars | × 0.3 | ~4 chars/token |
-| Tool results | × 0.3 | same as English |
+| Tool result ≤ 150 lines | × 0.3 | tiered — low density |
+| Tool result 151–300 lines | × 0.5 | tiered — code/JSON density higher |
+| Tool result > 300 lines | × 0.5 + 1,000 | tiered — flat buffer added |
+| Tool result floor | 200 minimum | per result regardless of size |
 | Turn 1 overhead | ~4,000 | CLAUDE.md + skills loaded |
 | Subsequent overhead | 200 + (total × 0.08) | conversation history growth |
 
@@ -982,6 +1123,149 @@ Never use UTF-8 bytes ÷ 3 — undercounts Thai by up to 1.7×.
 | > 50k | **MID-SESSION COMPACT** — non-blocking, emit `[compact]`, continue work |
 | > 60k | TOKEN PAUSE → finish current loop step → save state → ask user |
 | > 90k | HALT immediately → save state → report to user |
+
+## Context Gate
+If during this task a new hard constraint was discovered → add to INVARIANTS.md §I2 before closing task
+```
+
+---
+
+## self_improve
+
+```markdown
+---
+name: Self-Improve
+description: Reviews CODING_FAILURE_PATTERNS.md at session close, proposes harness fixes, and applies approved changes with backup/restore safety. Triggered by R16 complaint detection or explicit user request.
+---
+
+## Sections
+\```
+- id: 1
+  name: "CFP Tally"
+  steps: ["compare cfp_boot_count to current CFP count", "emit [cfp-tally] or [cfp-skip]"]
+- id: 2
+  name: "Analysis"
+  steps: ["rank patterns by session CFPs first then historical recurrence", "emit [cfp-analysis]"]
+- id: 3
+  name: "Proposal & Validate"
+  steps: ["present fix to user", "dry-run validate against original complaint", "handle deferral/dismiss"]
+- id: 4
+  name: "Implementation"
+  steps: ["cooldown gate", "INVARIANTS check", "backup file", "edit harness file", "verify", "log SI-N"]
+\```
+
+---
+
+# Self-Improve Skill
+
+## Trigger
+- C0 complaint detection (R16) → run §§1–3 immediately
+- Session close (session_manager §3 Step 0) → run §§1–3
+- User explicit: "review CFP / improve harness" → run §§1–4
+
+## §Section 1 — CFP Tally
+
+\```
+1. Read cfp_boot_count from working memory
+   (missing from working memory? → read from .sessions/session_handoff.md as fallback)
+2. grep -c "^## CFP-" CODING_FAILURE_PATTERNS.md → current_count
+3. new_cfps = current_count - cfp_boot_count
+4. new_cfps = 0 → emit [cfp-skip] → return (no further processing)
+5. new_cfps > 0 → emit [cfp-tally] New CFPs this session: <N> (CFP-<X> through CFP-<Y>)
+   → proceed to §Section 2
+\```
+
+## §Section 2 — Analysis
+
+**Priority queue for ranking (do NOT use raw recurrence count alone):**
+1. P1: CFPs logged THIS session (most actionable — fresh context)
+2. P2: Historical CFPs sorted by recurrence count descending
+
+\```
+1. Extract session CFPs: grep -n "^## CFP-" CODING_FAILURE_PATTERNS.md
+   → identify CFP-X through CFP-Y (the new ones from this session)
+2. For each CFP:
+   - Count recurrences: grep -c "CFP-[0-9]+" CODING_FAILURE_PATTERNS.md
+   - Extract root cause, Prevention steps, Detection signal
+3. Sort: session CFPs first → then historical by recurrence
+4. Emit [cfp-analysis]:
+   Top pattern: CFP-N · <title> · recurrence: N · root: <cause>
+   Proposed fix: <which harness file + what to add/change>
+\```
+
+## §Section 3 — Proposal & Validate
+
+\```
+Step 1: Present top-ranked CFP fix to user:
+  "พบ CFP-N: <title> (เกิดซ้ำ N ครั้ง)
+   แนวทางแก้: <proposed change to harness file>
+   ต้องการให้ปรับ harness ไหมครับ? (yes / skip / dismiss)"
+
+Step 2: Dry-run validation — before user answers:
+  Simulate: would the proposed fix have prevented the original complaint?
+  Match proposed "Detection signal:" against actual user complaint text
+  → PASS: signal would have caught it → present proposal
+  → FAIL: emit [proposal-mismatch] → revise proposal (max 2 revisions) → re-validate
+  → Still FAIL after 2 revisions → skip this CFP, move to next
+
+Step 2.5: Check cfp_dismissed list in session_handoff.md
+  → If this CFP-N is in cfp_dismissed → skip silently (user permanently dismissed)
+
+Step 3: Handle user response:
+  "yes" → proceed to §Section 4
+  silence (>1 turn without response) → save as pending_proposal in handoff → re-present next session
+    emit [cfp-pending] CFP-N: will re-present next session
+  "skip" (this session) → increment cfp_deferred[CFP-N] in handoff
+    deferred_count ≥ 3 → escalate: "CFP-N ถูกเลื่อนมา 3 ครั้ง — ต้องการ dismiss ถาวรไหมครับ?"
+    emit [cfp-deferred] CFP-N · deferred count: N
+  "dismiss" → add to cfp_dismissed[] in handoff (permanent)
+\```
+
+## §Section 4 — Implementation (harness edit)
+
+**Invariants (hard rules — never violate):**
+- MUST NOT edit `.agents/skills/self_improve/SKILL.md` itself → emit [blocked-self-edit] → present diff to user manually
+- MUST NOT edit `INVARIANTS.md` without explicit user confirm
+
+\```
+Step 0 — Cooldown gate:
+  Check last_self_improve_session in handoff
+  → ran in last 2 sessions? → emit [cfp-cooldown] → skip §4 (return after §3)
+  → exception: recurrence ≥ 5 OR user explicitly requested → bypass cooldown
+
+Step 0.5 — INVARIANTS conflict check:
+  grep INVARIANTS.md for any keyword from proposed change
+  → conflict found → emit [blocked-invariant] → ask user to confirm before proceeding
+  → no conflict → proceed
+
+Step 0.6 — Backup:
+  cp <target_harness_file> <target_harness_file>.backup_<YYYYMMDD>
+
+Step 1 — Apply edit:
+  Edit target harness file with proposed change
+  (follow R5 index-first, [pre-edit] gate before any symbol edit)
+
+Step 2 — Verify:
+  grep target harness file for proposed addition → confirm present
+  → PASS → emit [✓ harness-updated] File: <path> · Change: <what>
+  → FAIL → restore from backup → emit [blocked] restore complete → report to user
+
+Step 3 — Restore cleanup:
+  verify passes → remove .backup file
+
+Step 4 — Update harness_flow reference (if applicable):
+  If the fix changes a guard rail or flow step → append row to harness_flow patch table
+
+Step 5 — Update session_handoff.md:
+  last_self_improve_session: <current session id>
+
+Step 6 — Audit log:
+  Append to .sessions/self_improve_log.md:
+  ## SI-<N>: <session_id> · <date>
+  CFP: CFP-<N> · File: <path> · Change: <one-line summary>
+  Verify: pass | restored
+  ---
+\```
 
 ## Context Gate
 If during this task a new hard constraint was discovered → add to INVARIANTS.md §I2 before closing task
