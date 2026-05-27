@@ -67,6 +67,8 @@ You are operating inside the **Asset Plan** project. Rules apply to ALL agents r
   → Hash mismatch OR src/ changes > 0 → emit `[plan-stale]` · ask: "src/ changed since plan was created — reconfirm MECE plan or rebuild Phase 2?"
   → Hash matches AND no src/ changes → proceed to Phase 3 directly
 
+[B4] Platform Probe: check `.agents/platform/detected.md` → if `platform: unknown` → list available tools → detect spawn_tool + tool names → update `detected.md` → else skip (B4 fires once per project, not every session)
+
 Reply line 1: `**[Boot]** Thread: <done|in_progress> · Tasks: <N open> · Skill: <name> · Sections: <N> · Tokens: ~<N>k · CFP: <cfp_boot_count>`
 
 > ⚠️ **Boot ending ≠ ready to work.** After Reply line 1 → run C0–C3 routing → then Phase 1.

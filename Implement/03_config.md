@@ -775,6 +775,15 @@ Copy to `.agents/skills/skill-manifest.json`. Add or remove skills to match your
         { "path": "knowledge/harness_flow_20260525.md", "when": "reading existing flow as style reference", "how": "targeted" }
       ],
       "invoke_from": "Any skill that creates/edits a .md file containing box diagrams must call this skill"
+    },
+    "harness_doctor": {
+      "path": ".agents/skills/harness_doctor/SKILL.md",
+      "trigger": "CFP pattern recurred after a fix was applied — structural harness repair needed",
+      "keywords": ["harness doctor", "fix harness pattern", "recurring cfp", "ซ่อม harness", "cfp recurred", "structural fix"],
+      "on_demand_files": [
+        { "path": "knowledge/index_cfp_fix.json", "when": "loading recurrence data for top recurring CFP", "how": "full_ok" },
+        { "path": "CODING_FAILURE_PATTERNS.md", "when": "reading CFP entry details (grep + targeted Read)", "how": "targeted" }
+      ]
     }
   }
 }

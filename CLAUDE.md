@@ -116,8 +116,9 @@ Scope probe before any task: `find <path> -name "<pat>" | wc -l` or `grep -rl "<
 | < 5 files / < 300 lines | Proceed in main context |
 | ≥ 5 files / ≥ 300 lines | Spawn sub-agent → summary ≤500 tokens |
 
+Spawn invoke: read `spawn_tool` from `.agents/platform/detected.md` · `platform-unknown` → run [B4] first.
 Execution sub-agents MUST include `constraints:` block (roadmap, gather/mece files, index sync, db-gate).
-→ Spawn patterns, hard limits, harness context template → **AGENTS.md §Sub-agent Rules R4**
+→ Spawn patterns, hard limits, harness context template — uses `detected.md` platform → **AGENTS.md §Sub-agent Rules R4**
 
 ---
 

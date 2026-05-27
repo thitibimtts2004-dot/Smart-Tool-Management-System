@@ -1373,3 +1373,151 @@ Before doing any structural refactoring, query this index to find all dependenci
 ## Context Gate
 If during this task a new hard constraint was discovered → add to INVARIANTS.md §I2 before closing task
 ```
+
+---
+
+## harness_doctor
+
+```markdown
+---
+name: harness_doctor
+description: Structural fix agent for CFP patterns that recurred AFTER a fix was already applied. Reads index_cfp_fix.json + relevant harness files → proposes structural change → waits approval → executes following harness conventions.
+---
+
+## Sections
+\```
+- id: 1
+  name: "Diagnosis"
+  steps: ["load index_cfp_fix.json", "find top recurred CFP", "read CFP entry", "emit [diagnosis]"]
+- id: 2
+  name: "Harness Audit"
+  steps: ["grep audit targets for group", "check hooks in settings.json", "classify gap type a|b|c|d", "emit [audit-finding]"]
+- id: 3
+  name: "Proposal"
+  steps: ["draft structural fix", "dry-run validate", "present proposal", "HALT for approval"]
+- id: 4
+  name: "Approval Gate"
+  steps: ["wait explicit user confirm", "no auto-proceed"]
+- id: 5
+  name: "Execute + Verify"
+  steps: ["apply approved change", "update index_cfp_fix.json", "verify detection signal", "update CODING_FAILURE_PATTERNS.md"]
+\```
+
+---
+
+**Triggered by:**
+- self_improve §2.5 detects `recurred_after_fix[] not empty`
+- User says "harness doctor" / "fix harness pattern" / "recurring cfp" / "ซ่อม harness"
+- self_improve §3 escalation after deferred_count ≥ 3
+
+**NOT triggered by:**
+- First-time CFP with no fix attempt → use self_improve §3+§4 instead
+- CFP with status=active and fixes=[] → not a structural recurrence yet
+
+---
+
+## Section 1 — Diagnosis
+
+```
+Step 1: Load index — find top recurred CFP
+  python3 -c "
+import json, os, sys
+if not os.path.exists('knowledge/index_cfp_fix.json'):
+    print('NO_INDEX'); sys.exit(0)
+idx = json.load(open('knowledge/index_cfp_fix.json'))
+candidates = {k: v for k, v in idx.items()
+              if isinstance(v, dict) and v.get('recurrence_after_fix', 0) > 0}
+if not candidates:
+    print('NO_RECURRED')
+else:
+    top = max(candidates, key=lambda k: candidates[k]['recurrence_after_fix'])
+    e = candidates[top]
+    print('target:', top)
+    print('group:', e['group'])
+    print('recurrence_after_fix:', e['recurrence_after_fix'])
+  "
+  → NO_RECURRED → emit [harness-doctor-skip] · end skill
+  → found → store: target_cfp · target_group · prior_fix_descriptions[]
+
+Step 2: Read CFP entry from CODING_FAILURE_PATTERNS.md
+  grep -n "^## target_cfp" CODING_FAILURE_PATTERNS.md → line L
+  Read CODING_FAILURE_PATTERNS.md offset=L limit=30
+  → extract: Symptom · Root cause · Prevention · Detection signal
+
+Step 3: Emit [diagnosis]
+  [diagnosis] target_cfp "<title>" · Group: target_group · Fixes tried: N · Model: current_model_id
+```
+
+---
+
+## Section 2 — Harness Audit
+
+**Group → Audit target mapping:**
+
+| Group | Primary audit targets |
+|---|---|
+| `skip_planning` | CLAUDE.md R13 · AGENTS.md §Loop Architecture · PreToolUse hook |
+| `boot_gap` | CLAUDE.md §Boot · AGENTS.md §Boot Sequence · PreToolUse hook |
+| `skip_verification` | AGENTS.md §Phase 3 L4 · CLAUDE.md R12 |
+| `rule_drift` | CLAUDE.md §R<N> matching violation · AGENTS.md §Quick Reference |
+| `premature_report` | AGENTS.md §Completion Gate |
+| `index_desync` | CLAUDE.md R8 · AGENTS.md §Backlink Rule |
+| `db_safety` | CLAUDE.md R15 · INVARIANTS.md §I2 |
+| `token_management` | CLAUDE.md R3 · AGENTS.md §TOKEN PAUSE |
+
+```
+Step 1: Grep audit targets for target_group (one Bash call)
+Step 2: Check hooks in settings.json
+Step 3: Classify gap — (a) signal too narrow · (b) no hook · (c) agent ignores · (d) rule missing
+Step 4: Emit [audit-finding] Gap type · Location · Why prior fix failed · Evidence
+```
+
+---
+
+## Section 3 — Proposal
+
+```
+Step 1: Draft fix based on gap type
+  (a) Widen detection keywords in existing rule
+  (b) Propose new PreToolUse/Stop hook entry
+  (c) Rewrite rule as emit + HALT gate
+  (d) Draft new R-N rule following existing format
+
+Step 2: Dry-run — does change catch symptom? conflicts INVARIANTS.md?
+Step 3: Present [harness-proposal] — HALT · do NOT execute yet
+  → พิมพ์ "ทำเลย" เพื่อ execute หรือ "skip"
+```
+
+---
+
+## Section 4 — Approval Gate
+
+HALT until explicit user confirm. Accepted: "ทำเลย" / "proceed" / "yes" / "confirm"
+Rejected: "skip" → write deferred to session_handoff.md · end skill.
+
+---
+
+## Section 5 — Execute + Verify
+
+```
+Step 1: Apply approved change (emit [pre-edit] · edit · [post-read] verify present)
+Step 2: Update index_cfp_fix.json — append fix attempt · status: resolved-pending
+Step 3: Verify detection signal catches symptom (re-run detection grep)
+Step 4: Append under ### Fix Attempts in CODING_FAILURE_PATTERNS.md
+Step 5: [✓ harness-fix] target_cfp · Gap: type · File: edited · Detection: verified
+```
+
+---
+
+## MECE Constraints Block (copy into mece_plan.md for sections using `harness_doctor`)
+\```
+- Sections 1-2 (Diagnosis + Audit): read-only — no src/ or harness edits
+- Section 3 (Proposal): emit [harness-proposal] then HALT · do NOT execute yet
+- Section 4 (Approval Gate): wait explicit user confirm · no auto-proceed
+- Section 5 (Execute): apply only the approved proposal — no scope creep
+- [✓ harness-fix] trace required at completion · update index_cfp_fix.json status
+\```
+
+## Context Gate
+If during this task a new hard constraint was discovered → add to INVARIANTS.md §I2 before closing task
+```

@@ -4,8 +4,8 @@
 > For each item: run the Verify command → if it fails → follow the Fix action.
 > All commands run from `[PROJECT_ROOT]` (the directory containing CLAUDE.md).
 
-**Total required files: 26**
-(11 skill files + 3 config + 2 routing + 1 platform + 4 knowledge + 3 scripts + 1 docs + 1 failure patterns)
+**Total required files: 28**
+(13 skill files + 3 config + 2 routing + 1 platform + 4 knowledge + 3 scripts + 1 docs + 1 failure patterns)
 
 > Note: `02_setup.md §9` has a flat checkbox list. This file adds per-section grep verification and fix actions that §9 does not cover.
 
@@ -134,22 +134,23 @@ Fix if missing: `Implement/03_config.md` → INVARIANTS.md template.
 
 All skill files must have: frontmatter (`name` + `description`) · `Sections[]` YAML · main content · Context Gate.
 
-Run this to check all 12 exist:
+Run this to check all 13 exist:
 ```bash
 ls .agents/skills/agent/SKILL.md .agents/skills/ascii_flow/SKILL.md \
    .agents/skills/coder/SKILL.md .agents/skills/editor/SKILL.md \
-   .agents/skills/file_manager/SKILL.md .agents/skills/identity/SKILL.md .agents/skills/mece/SKILL.md \
+   .agents/skills/file_manager/SKILL.md .agents/skills/harness_doctor/SKILL.md \
+   .agents/skills/identity/SKILL.md .agents/skills/mece/SKILL.md \
    .agents/skills/self_improve/SKILL.md .agents/skills/session_manager/SKILL.md \
    .agents/skills/token_auditor/SKILL.md .agents/skills/token_tracker/SKILL.md \
    .agents/skills/variable_manager/SKILL.md 2>&1
 ```
-Expected: 12 paths printed, zero "No such file" errors.
+Expected: 13 paths printed, zero "No such file" errors.
 
-Run this to check all 12 have a Context Gate:
+Run this to check all 13 have a Context Gate:
 ```bash
 grep -l "Context Gate" .agents/skills/*/SKILL.md | wc -l
 ```
-Expected: 12
+Expected: 13
 
 ### Per-skill section requirements
 
@@ -196,13 +197,13 @@ skills = d.get('skills', d) if isinstance(d, dict) else d
 print('Skill entries:', len(skills) if isinstance(skills, list) else 'check structure')
 "
 ```
-Expected: 11
+Expected: 12
 
 Count keyword arrays:
 ```bash
 grep -c '"keywords"' .agents/skills/skill-manifest.json
 ```
-Expected: 11
+Expected: 12
 
 Check manifest version and on_demand_files (v2.1 requirement):
 ```bash
@@ -507,8 +508,8 @@ echo "=== ALL CHECKS DONE ==="
 <number ≥ 5>    ← AGENTS.md C0-C3 + spawn_tool count
 <number ≥ 8>    ← INVARIANTS.md gates I1–I8
 === 2. Skill Files ===
-12              ← SKILL.md files (includes ascii_flow + self_improve)
-12              ← files with Context Gate
+13              ← SKILL.md files (includes ascii_flow + harness_doctor + self_improve)
+13              ← files with Context Gate
 .agents/skills/self_improve/SKILL.md  ← confirmed present
 === 3. Routing ===
 12              ← keywords entries in skill-manifest.json
