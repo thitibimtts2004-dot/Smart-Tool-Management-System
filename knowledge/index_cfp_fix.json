@@ -1,0 +1,77 @@
+{
+  "CFP-005": {
+    "status": "active",
+    "description": "Skipping MECE Plan / Modifying Code Without Plan Alignment",
+    "fixes": []
+  },
+  "CFP-006": {
+    "status": "active",
+    "description": "Unbounded Loop → Token Exhaustion",
+    "fixes": []
+  },
+  "CFP-007": {
+    "status": "active",
+    "description": "Using Local Date/Time APIs Without Gregorian Safety → Buddhist Year Corruption",
+    "fixes": []
+  },
+  "CFP-008": {
+    "status": "active",
+    "description": "MECE Plan Staleness on Resume → Edits Target Wrong Lines",
+    "fixes": []
+  },
+  "CFP-009": {
+    "status": "active",
+    "description": "Parallel Sub-agent Token Accounting Gap → Missed Threshold Triggers",
+    "fixes": []
+  },
+  "CFP-010": {
+    "status": "active",
+    "description": "Skipping Loop Architecture Phases 1 & 2 (Info Gather & MECE Plan)",
+    "fixes": []
+  },
+  "CFP-011": {
+    "status": "active",
+    "description": "Creating Implementation Plan Artifact Before MECE Plan Approval (Recurrence of CFP-005/CFP-010)",
+    "fixes": []
+  },
+  "CFP-012": {
+    "status": "active",
+    "description": "Skipping MECE Plan for Bug Fixes and Follow-up Tasks",
+    "fixes": []
+  },
+  "CFP-013": {
+    "status": "active",
+    "description": "Omitting Harness Trace Tokens During Implementation → Silent Execution",
+    "fixes": []
+  },
+  "CFP-014": {
+    "status": "active",
+    "description": "Closing Session with Incomplete/Unchecked MECE Plan or Compilation Errors",
+    "fixes": []
+  },
+  "CFP-015": {
+    "status": "active",
+    "description": "MECE Plan Written to Chat/Artifact Instead of .sessions/mece_plan.md (Recurrence of CFP-005/CFP-010/CFP-011)",
+    "fixes": []
+  },
+  "CFP-016": {
+    "status": "active",
+    "description": "Skipping Per-Turn Routing (C1-C3) Checks and Working Before Boot in Subsequent Turns",
+    "fixes": []
+  },
+  "CFP-017": {
+    "status": "active",
+    "description": "Skipping Boot Sequence, Per-Turn Routing, and Info Gather/MECE Plan Loop on Task Resumption/Topic Switch",
+    "fixes": []
+  },
+  "CFP-018": {
+    "status": "active",
+    "description": "Missing Resume Staleness Gate Check on Task Resumption",
+    "fixes": []
+  },
+  "CFP-019": {
+    "status": "active",
+    "description": "Incorrect MECE Plan Format or Placement",
+    "fixes": []
+  }
+}
