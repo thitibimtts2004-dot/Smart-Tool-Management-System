@@ -1,7 +1,9 @@
 # Implement.md — Agent System Bootstrap & Integration Spec
 > **How to use:** Give this file + your repo (zip or path) to any capable AI agent.
-> The agent will read this spec and either set up the system from scratch (fresh project)
-> or integrate seamlessly into your existing codebase without touching source files.
+> The agent will read this spec and follow the correct track:
+> - **Track A** — fresh project (no existing code) → `02_setup.md §7`
+> - **Track B** — existing codebase (integrate harness without touching source) → `02_setup.md §8`
+> - **Track C** — upgrade from older harness version → `09_migration.md`
 
 ---
 

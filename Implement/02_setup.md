@@ -159,7 +159,23 @@ Step 7: Verify (see Section 9)
 
 ---
 
-## 9. Verification Checklist
+## 9. Track C — Upgrade Existing Harness (old version → current)
+
+Use this when a project already has an **older harness version** installed with mismatched tree
+structure, old index schemas, or missing skills (harness_editor · harness_doctor · session_manager).
+
+→ Follow `Implement/09_migration.md` — 4-track upgrade procedure:
+```
+M1: Re-format indexes  (session_tokens.md · index_files.json schema · backlink_analyzer)
+M2: Re-structure tree  (missing dirs + session files + mece_plan_schema + detected.md)
+M3: Update skills      (overwrite SKILL.md · CLAUDE.md · AGENTS.md · add new skills)
+M4: Verify             (run 08_checklist.md section-by-section)
+```
+⚡ Never touch `src/` during M1–M3. Commit before M3 as rollback checkpoint.
+
+---
+
+## 10. Verification Checklist
 
 Run after onboarding or integration. All items must pass before starting development work.
 
