@@ -19,6 +19,8 @@
 2. Document this plan in `.sessions/mece_plan.md` before making any source code edits.
 3. Ensure the user confirms the plan or has explicitly approved the roadmap before starting execution (Phase 3).
 
+**Detection signal:** Agent begins file edits without `[✓ MECE]` trace emitted, or `.sessions/mece_plan.md` is absent or not dated today.
+
 ---
 
 ## CFP-006 · Unbounded Loop → Token Exhaustion
@@ -36,6 +38,8 @@
 - Re-route: compare target skill vs previous section's skill → skip if same (see CLAUDE.md re-route guard)
 - Verify: non-empty output ≠ pass — must match defined condition (see mece/SKILL.md)
 
+**Detection signal:** SESSION_TOTAL approaches threshold but REACT loop doesn't pause; token warnings are skipped or `[loop]` emits continue without exit condition.
+
 ---
 
 ## CFP-007 · Using Local Date/Time APIs Without Gregorian Safety → Buddhist Year Corruption
@@ -51,6 +55,8 @@ In applications where dates are compared as strings (`YYYY-MM-DD` or `YYYY-MM`),
 1. Never use `new Date().getFullYear()` directly to get a Gregorian year for database/API communications or configurations.
 2. Use safe utilities that adjust timezone and force UTC methods (like `utcAdjustedDate.getUTCFullYear()`) or format explicitly using `Intl.DateTimeFormat("en-US", { calendar: "gregory" })`.
 3. In this project, use `getLocalGregorianString(new Date())` from `src/lib/date-utils.ts` and parse the year from it.
+
+**Detection signal:** Output contains Buddhist year (≥ 2567) in a Gregorian context, or `date.getFullYear()` used without UTC/Gregorian conversion.
 
 ---
 
@@ -262,3 +268,77 @@ In applications where dates are compared as strings (`YYYY-MM-DD` or `YYYY-MM`),
 2. Format the plan with structured sections and Verify-N criteria for each section, and await user approval.
 
 **Detection signal:** User or system warns about invalid MECE plan format or placement.
+
+---
+
+## CFP-020 · Harness File Edits Without Invoking harness_editor Skill First
+
+**Symptom:** Agent begins editing harness configuration files (CLAUDE.md, AGENTS.md, SKILL.md, knowledge/, Implement/) without first routing to `harness_editor` at B2 skill resolution. The MECE plan is built as a generic task, bypassing harness_editor's Refusal Contract checks (mece_plan.md gate, T-ID check, wc-l scope probe, File Size Contract).
+
+**Root cause:**
+- Skill routing at B2 matches intent as a general task rather than recognizing harness file edits as a harness_editor trigger.
+- Keywords like "edit backlink", "update index", "add to knowledge/" not listed in skill-manifest.json → manifest match fails → generic plan built.
+- Agent proceeds with MECE planning before confirming `skill_name=harness_editor`, skipping behavioral contract invocation gate entirely.
+
+**Prevention:**
+1. Any task touching CLAUDE.md · AGENTS.md · SKILL.md · knowledge/ · Implement/ · index_files.json · topic_registry.json MUST resolve `skill_name=harness_editor` at B2 before any MECE planning.
+2. Implement/04 Invocation Gate (⚡) must be checked: if harness files appear in task scope → route first.
+3. skill-manifest.json harness_editor keywords must cover: "edit knowledge/", "update index_files", "backlink", "topic_registry", "update Implement/".
+
+**Detection signal:** MECE plan exists (mece_plan.md) but `[Boot]` trace shows `Skill: <other>` while edited files include CLAUDE.md / AGENTS.md / SKILL.md / knowledge/ / Implement/. Or: harness files modified without `[harness-edit-done]` emitted.
+
+---
+
+## CFP-021 · mece_plan.md Sections Not Marked [X] During REACT Loop Execution
+
+**Symptom:** Agent completes all task sections (all [✓ written] + Verify-N pass) but `.sessions/mece_plan.md` sections remain `- [ ] S<N>` throughout. On next boot or C2 routing check, the harness reads pending `[ ]` sections and either re-executes or wrongly reports task as incomplete.
+
+**Root cause:**
+- AGENTS.md Phase 3 L5 DECIDE lacked an explicit "mark mece_plan.md [X]" step.
+- Agent tracked section completion only in memory/chat — file state was never updated.
+- Consequence: gather_complete.md and mece_plan.md from previous tasks persist into next task, making Phase Transition Gate stale.
+
+**Prevention:**
+1. After every section's [✓ written] + Verify-N BOTH pass → immediately write `- [ ] S<N>` → `- [X] S<N>` to `.sessions/mece_plan.md` (file write, not just memory).
+2. Phase 3 close step 0 (CLAUDE.md): verify all sections [X] before writing session_handoff.md.
+3. L5 DECIDE in AGENTS.md now includes: `→ mark mece_plan.md: - [ ] S<N> → - [X] S<N> (file write)`.
+
+**Detection signal:** After task reports done — `grep "^\- \[ \]" .sessions/mece_plan.md` returns results. Or: `active_thread.md phase: done` but mece_plan still has pending `[ ]` sections.
+
+---
+
+## CFP-022 · CHAT_TOTAL Boot Init Gap — Reset to 0 Instead of system_fixed (7,300)
+
+**Symptom:** After compact-restore or fresh session start, CHAT_TOTAL is initialized to 0 and boot reply shows `Chat: ~0k`. Correct value should be `~7.3k` (system_fixed overhead always present in context).
+
+**Root cause:**
+- B1 command writes `CHAT_TOTAL: 0` to `.sessions/session_tokens.md` on compact-restore OR phase≠in_progress.
+- No explicit step re-initializes CHAT_TOTAL to system_fixed=7,300 after reset.
+- R1 formula documents "CHAT_TOTAL starts at system_fixed = 7,300" as a comment only — no harness enforcement.
+- Model relies on working memory to apply system_fixed, but boot response showed 0 instead of 7,300.
+
+**Prevention:**
+1. B1 command must write `CHAT_TOTAL: 7300` (not 0) on compact-restore OR phase≠in_progress.
+2. Boot reply `Chat: ~NNk` reads from session_tokens.md — correctly shows ~7k after fix.
+3. system_fixed = CLAUDE.md ~2.6k + AGENTS.md ~3.4k + skills ~1.3k = 7,300 (one-time context overhead).
+
+**Detection signal:** Boot reply shows `Chat: ~0k` after /compact or fresh session start. Or: `CHAT_TOTAL` in session_tokens.md = 0 immediately after B1 runs (should be 7300).
+
+---
+
+## CFP-023 · harness_editor Step 5 Docs Close Skipped — flow_updated Not Enforced
+
+**Symptom:** harness_editor completes Edit+Verify steps ([pre-edit] + [✓ written]) but Step 5 (Docs Close: harness_flow + Implement/ update) is skipped. [harness-edit-done] emits without enforcing flow_updated=yes. T-034, T-035, T-036 all exhibited this pattern.
+
+**Root cause:**
+- harness_editor Output Contract has `flow_updated: <yes|no>` as a descriptive field — no gate prevents [harness-edit-done] if flow_updated=no.
+- No Refusal Contract rule blocks task completion when Step 5 is incomplete.
+- self_improve §4 says "apply via harness_editor" but has no explicit mece_plan gate or Step 5 check.
+- Result: diagnosis/proposal skills (harness_doctor, self_improve) skip Step 5 silently.
+
+**Prevention:**
+1. harness_editor Refusal Contract: emit [harness-refused] if task about to close with flow_updated=no → complete Step 5 first.
+2. self_improve §4: write mece_plan.md + T-ID in roadmap BEFORE delegating edits to harness_editor.
+3. harness_doctor §5: already has mece_plan gate — verify it's followed.
+
+**Detection signal:** Task marked done but harness_flow_*.md has no new entry matching task date. Or: grep "flow_updated: no" in session after harness file edits.

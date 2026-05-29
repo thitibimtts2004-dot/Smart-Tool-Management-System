@@ -25,6 +25,20 @@ description: Focused skill for surgically editing, modifying, and debugging exis
 ## Responsibilities
 You are the "Surgeon". Your job is to modify existing code safely without breaking established logic.
 
+## Trigger
+Activated when:
+- User reports a bug or error → fix task
+- Code requires a targeted modification or refactor
+- Orchestrator delegates an `edit src/` section from a MECE plan
+
+## Refusal Contract
+Halt and emit `[edit-refused]` if:
+- No roadmap T-ID assigned before editing (R-Roadmap gate)
+- Edit targets `src/` but `gather_complete.md` or `mece_plan.md` missing/stale (Phase Transition Gate)
+- Destructive overwrite >5 lines without pre-edit blast-radius check
+
+On refusal: emit `[edit-refused] Reason: <what's missing>` → prompt user/orchestrator to resolve → HALT.
+
 ## Roadmap Protocol (MANDATORY — before and after every edit)
 
 **Before editing:**
@@ -34,8 +48,7 @@ grep -n "\[.\] T-" docs/master_roadmap.md | tail -10
 # → Bug fix:  find parent T-<N> → count existing bugs → assign T-{N}-{BugID}-01
 # → Sub-task: find parent T-<N> → assign T-<N>.{sub}: <description>
 
-# Step 2 — add entry to roadmap ([ ] = not started, [/] = in progress)
-# Format to add:
+# Step 2 — add entry to roadmap ([ ] → [/] when starting)
 [ ] T-{N}-{BugID}-01: <short description of bug>   ← add before starting
 [/] T-{N}-{BugID}-01: <short description of bug>   ← update when starting
 
@@ -47,15 +60,12 @@ grep -n "\[.\] T-" docs/master_roadmap.md | tail -10
 # Step 1 — sync symbol index
 python scripts/symbol_indexer.py
 
-# Step 2 — mark roadmap done with completion annotation
-# Find the [ ] / [/] entry, replace with:
+# Step 2 — mark roadmap done
 [X] T-{N}-{BugID}-01: <description> (→ ERR-XXX) · attempts: 1 · tool_calls: <N>
 
-# Step 3 — assign ERR number and write error_index entry (REQUIRED for every bug fix)
+# Step 3 — write error_index entry (REQUIRED for every bug fix)
 grep "## ERR-" knowledge/error_index.md | tail -1
 # → take highest number + 1 → assign as ERR-XXX
-
-# Write entry at bottom of knowledge/error_index.md:
 ## ERR-XXX: <Short title>
 - **Task:** T-{N}-{BugID}-01 · **Session:** session_<NNN>
 - **File:** src/path/to/file.ts · **Line:** <N>
@@ -66,216 +76,74 @@ grep "## ERR-" knowledge/error_index.md | tail -1
 # Step 4 — call variable_manager if any symbol body was changed
 ```
 
-## Editing Best Practices
+## Workflow
 
-### Lookup Protocol — 3-Tier Escalation
+**Section 1 — Diagnose:**
+- R9 Step 0: recurring-fix detection (check error_index + roadmap for prior AttemptIDs)
+- 3-checks: grep error_index → grep index_variables → grep index_files
+- Read source at line (R5 index-first: T0→T1→T2→T3 escalation)
+- Assess blast radius before any edit
 
-Every lookup follows this exact sequence. Emit a trace at each step. Stop the moment you have a line number.
+**Section 2 — Edit & Verify:**
+- R5 index-first lookup → emit `[pre-edit]` blast-radius gate
+- Apply targeted edit (<5 lines → Edit tool; >5 lines → stage first)
+- `[✓ written]` grep verify: confirm change exists in file
 
----
+**Section 3 — Sync & Close:**
+- `python scripts/symbol_indexer.py`
+- Roadmap `[ ] → [X]` with ERR-XXX · attempts · tool_calls
+- Write ERR-XXX entry in `knowledge/error_index.md`
+- Write `active_thread.md` → `phase: done`
 
-**Tier 0 — pre-read oracle (run first, fastest)**
+→ Full lookup tiers, post-read verdicts, pre-edit gate, R9 step 0 detail:
+`@.agents/skills/editor/SKILL_detail.md`
 
-```bash
-python scripts/lookup.py "SymbolName" --json
-# or keyword: python scripts/lookup.py "job dashboard" --json
-```
-Emit trace:
-```
-**[index T0]** query: `SymbolName` → file: `src/...` · line: 42 · read_hint: offset=37 limit=60
-```
-→ Got file + line + read_hint? Emit pre-read gate → Read → STOP. Do NOT go to Tier 1.
-```
-**[pre-read]** Target: `SymbolName` · Tier: T0 · Line: 42 · Will read: offset=37 limit=60
-```
-→ Empty results or no line number? → proceed to Tier 1.
+## Output Contract
 
----
+Every edit session MUST emit (no exceptions):
+| Gate | Emit | When |
+|---|---|---|
+| Before Read | `[pre-read] Target: · Tier: T<N> · Line: · Will read: offset= limit=` | Every Read call |
+| After Read | `[post-read] File: · Verdict: relevant\|partial\|irrelevant` | Every Read result |
+| Before Edit | `[pre-edit] Symbol: · used_in: <N files> · safe to edit: yes\|needs review` | Every named-symbol Edit |
+| After Edit | `[✓ written]` + grep verify result | Every successful Edit/Write |
+| Bug fix close | ERR-XXX entry in error_index.md | Every bug fix |
+| Section close | Roadmap `[X]` with annotation | Every completed task |
 
-**Tier 1 — grep index (if T0 empty)**
-
-```bash
-# Action:
-grep -A 8 '"SymbolName"' knowledge/index_variables.json
-# or for file lookup:
-grep -A 6 '"src/path/file.tsx"' knowledge/index_files.json
-```
-Emit trace:
-```
-**[index T1]** Symbol: `SymbolName` → source: `src/components/LoginForm.tsx` · line: 42
-```
-→ Got source + line? Emit pre-read gate → Read → STOP. Do NOT go to Tier 2.
-```
-**[pre-read]** Target: `SymbolName` · Tier: T1 · Line: 42 · Will read: offset=37 limit=60
-```
-
----
-
-**Tier 2 — widen index (only if Tier 1 found nothing)**
-
-```bash
-# Action:
-grep -B 2 -A 20 '"SymbolName"' knowledge/index_variables.json
-```
-Emit trace:
-```
-**[index T2]** Symbol: `SymbolName` → <found: line N | not found: proceed to T3>
-```
-→ Got line number? Emit pre-read gate → Read → STOP.
-```
-**[pre-read]** Target: `SymbolName` · Tier: T2 · Line: <N> · Will read: offset=<N-5> limit=60
-```
-→ Still no line number? → proceed to Tier 3.
-
----
-
-**Tier 3 — grep source file (symbol not in index at all)**
-
-Step 3a — find line number first:
-```bash
-# Action:
-grep -n "SymbolName\|function SymbolName\|const SymbolName" src/path/to/file.ts
-```
-Emit trace:
-```
-**[index T3]** grep `SymbolName` in `src/path/to/file.ts` → line: 42
-```
-
-Step 3b — read only that range:
-```
-**[pre-read]** Target: `SymbolName` · Tier: T3 · Line: 42 · Will read: offset=37 limit=60
-Read  file_path=src/path/to/file.ts  offset=37  limit=60
-```
-
----
-
-**Hard limits — no exceptions:**
-| Prohibited | What to do instead |
-|---|---|
-| Read file without offset+limit | Run T0 lookup.py (or T1/T3 grep) first → get line N → Read offset=N-5 limit=60 |
-| Read >60 lines in one call | Use multiple targeted reads at different offsets |
-| Skip straight to Read without grep | Always grep first — no exceptions |
-| "Need full file to understand structure" | T1→T2→T3 provides sufficient context. Full reads = violation |
-
-If you catch yourself about to Read without a line number → emit:
-```
-**[violation] R5** — no line number yet · running grep first
-```
-Then run the appropriate grep tier.
-
-### Post-Read Verdict (MANDATORY — after every Read result)
-
-Emit immediately after processing each Read result:
-```
-**[post-read]** File: `<path>` · Verdict: relevant|partial|irrelevant
-```
-
-| Verdict | Action |
-|---|---|
-| `relevant` | Keep full content in context |
-| `partial` | Keep excerpt only — note line range · discard rest |
-| `irrelevant` | Drop from context immediately — do NOT cite in `context_files:` |
-
-Skipping `[post-read]` = CFP-004 violation (context bloat). No exceptions.
-
----
-
-### Pre-Edit Gate — Blast-Radius Check (MANDATORY before every named symbol Edit)
-
-Emit BEFORE every Edit/Write that modifies a named symbol:
-```
-**[pre-edit]** Symbol: `<name>` · index_variables lookup: T1 done · used_in: <N files> · safe to edit: <yes|needs review>
-```
-
-**Procedure:**
-```
-Step 1: grep -A 8 '"SymbolName"' knowledge/index_variables.json
-         → extract "used_in": [...] array
-Step 2: Count dependents — every file in used_in[] is a blast-radius target
-         used_in empty    → safe to edit · emit [pre-edit] safe to edit: yes
-         used_in non-empty → review each dependent first
-           → grep each dependent file for usage of this symbol
-           → confirm change is backward-compatible for all of them
-           → if breaking change: stop → report blast radius to user before proceeding
-Step 3: Emit [pre-edit] gate with result → only then proceed to Edit tool
-```
-
-Editing without this check = `[violation] R5-edit` → HALT · run check · re-confirm before Edit.
-
----
-
-### R9 Step 0 — Recurring Fix Detection (run FIRST on every error task)
-
-**Trigger signals** — treat as recurring if user message contains ANY of:
-"ยังไม่หาย" · "แก้แล้วยัง" · "still broken" · "same error" · "กลับมาอีก" · "fix ไม่ผ่าน" · "ยังเจออยู่" · "ยังเป็นอยู่"
-OR: same ERR-XXX already `[X]` in roadmap · same T-N-BugID referenced
-
-**On recurring detection:**
-```
-Step 1: grep -n "T-{N}-{BugID}" docs/master_roadmap.md → find last AttemptID used
-Step 2: grep -n "^## ERR-XXX" knowledge/error_index.md → Read offset=N limit=50
-         → find "### Failed Approaches:" section → read all listed approaches
-Step 2.5 (session history lookup):
-  python scripts/lookup.py "T-{N}-{BugID}" --session --json
-  → lists all sessions that worked on this task
-  → for each result: Read .sessions/<session_id>.json → check History[] and files_changed[]
-  → extract: what was tried, what file was changed, what the outcome was
-  → add any NEW approaches found here to "DO NOT repeat" list
-Step 3: DO NOT repeat any approach found in Step 2 or Step 2.5
-Step 4: New roadmap entry with incremented AttemptID
-Step 5: Emit [recurring] ERR-XXX · Prior attempts: N · Previous approach: <summary> · New approach: <what's different>
-```
-
-**Failed Approaches field** — write BEFORE escalating per R13:
-```
-### Failed Approaches:
-- [YYYY-MM-DD] T-{N}-{BugID}-{Attempt}: <approach tried> → verify failed · Reason: <why it didn't resolve>
-```
-Append to the ERR-XXX entry in `knowledge/error_index.md`. Never escalate without recording first.
-
----
-
-### R12 — Post-Edit Verification (run before reporting done)
-
-| Action type | Verify by |
-|---|---|
-| Edit `src/` file | Re-read changed section (Read offset=N limit=30) · confirm no broken imports |
-| Add/remove symbol | `python scripts/symbol_indexer.py` → confirm symbol appears/absent in index |
-| DB schema change | No ERR-007 violations (no multi-row insert, no onConflictDoNothing, no float in int col) |
-| Create/delete file | `knowledge/index_files.json` updated + all backlinks resolved |
-| Error fix | ERR-XXX written in `knowledge/error_index.md` + roadmap marked `[X]` |
-
-**Never report done before verification passes.**
-R12 verify fail → write `### Failed Approaches:` → then emit `[blocked]` per R13.
-
----
-
-### Edit Rules
-
-- Edit <5 lines → targeted edit tool with exact old/new block only
-- Edit multiple locations → one targeted edit per location
-- Never rewrite the entire file for a few line changes
-- Always view surrounding context (±5 lines) before editing
-
-3. **Context Preservation**: Always view surrounding context before editing. Never overwrite without understanding the structure.
-
-4. **Bug Fixing — search error_index first:**
-   ```bash
-   grep -A 12 'symptom_keyword\|ERR-00' knowledge/error_index.md | head -30
-   ```
-   Found matching ERR-XXX → apply resolution immediately, no re-analysis needed.
-   Not found → follow CLAUDE.md R-Roadmap + R7 (create roadmap entry T-{N}-{BugID}-{AttemptID} → fix → assign ERR code)
-
-5. **Piping — always filter before returning:**
-   ```bash
-   command 2>&1 | grep -iE "error|warn|fail" | tail -20
-   ```
-   If filtered output answers the question → stop, no need for more logs.
-
-6. **Formatting**: Always preserve original indentation, style, and imports.
+## Routing
+- Section 3 done → return to orchestrator (session_manager §3 Step 1)
+- `[blocked]` halt → report `T-{N}: <cause>` → wait for user/orchestrator decision
+- Sub-task complete → return to parent task context
 
 ## Limitations
-- Do not create entirely new architectures here. If a task requires widespread new file scaffolding, the Agent Orchestrator should use the `coder` skill instead.
+- Do not create entirely new architectures — delegate to `coder` skill instead.
+- Source work scope: `src/`, targeted config files.
+
+## File Size Contract (applies to all .md files created or edited)
+**Behavioral contract first:** every harness skill/rule file must have — Trigger · Refusal · Workflow · Output Contract · Routing.
+Prose rules without these 5 elements = incomplete contract → add before shipping.
+
+**Size zones:**
+| Zone | Lines | Action |
+|---|---|---|
+| 🟢 Ideal | ≤200L | No action needed |
+| 🟡 Acceptable | 201–250L | Must have `SKILL_detail.md` with `@` reference at bottom of Workflow |
+| 🔴 Must split | >250L | Split required — no exceptions |
+
+**Split rules:**
+1. `SKILL.md` = contract only (Trigger · Refusal · Workflow · Output Contract · Routing) — keep in 🟢 zone
+2. `SKILL_detail.md` = examples, templates, detailed procedures
+3. Add reference in primary: `@.agents/skills/<name>/SKILL_detail.md` at bottom of Workflow section
+4. Never split the contract itself — all 5 elements stay in SKILL.md
+
+## MECE Constraints Block (copy into mece_plan.md for sections using `editor`)
+```
+- [pre-read] T0 lookup + emit before every Read · [post-read] verdict (relevant|partial|irrelevant)
+- [pre-edit] emit before every named-symbol Edit · blast radius: check used_in count first
+- [✓ written] grep-verify after every Edit/Write — mandatory before marking section done
+- R14: [gate] + wait confirm before delete/overwrite >5 lines or batch >5 files
+- Harness files (.agents/): check wc -l → flag >200L → split if >250L
+```
 
 ## Context Gate
 If during this task a new hard constraint was discovered → add to INVARIANTS.md §I2 before closing task

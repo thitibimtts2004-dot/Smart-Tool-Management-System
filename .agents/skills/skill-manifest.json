@@ -1,20 +1,20 @@
 {
   "version": "2.1",
-  "_comment": "Machine-readable skill routing. Agent reads at Boot B2 (grep keywords only) to match intent \u2192 load skill. on_demand_files = lookup table for G2 only \u2014 NOT auto-loaded at B3.",
-  "_schema_note": "context_files renamed to on_demand_files v2.1. Each entry: { path, when, how }. 'how' values: grep_only | targeted (offset+limit) | full_ok (small files \u226430 lines only).",
+  "_comment": "Machine-readable skill routing. Agent reads at Boot B2 (grep keywords only) to match intent → load skill. on_demand_files = lookup table for G2 only — NOT auto-loaded at B3.",
+  "_schema_note": "context_files renamed to on_demand_files v2.1. Each entry: { path, when, how }. 'how' values: grep_only | targeted (offset+limit) | full_ok (small files ≤30 lines only).",
   "always_loaded": [
     "token_tracker",
     "identity"
   ],
   "boot_read_policy": {
-    "_note": "Files that MAY be read at boot \u2014 all others are on_demand only",
+    "_note": "Files that MAY be read at boot — all others are on_demand only",
     "B1_bash_only": [
       ".sessions/active_thread.md",
       ".sessions/session_tokens.md",
-      "docs/master_roadmap.md (grep [/] only \u2014 never full read)",
+      "docs/master_roadmap.md (grep [/] only — never full read)",
       "CODING_FAILURE_PATTERNS.md (grep -c only)"
     ],
-    "B3_sections_only": "Read SKILL.md offset=1 limit=80 \u2014 sections[] and skill name only",
+    "B3_sections_only": "Read SKILL.md offset=1 limit=80 — sections[] and skill name only",
     "never_at_boot": [
       "knowledge/index_variables.json",
       "knowledge/index_files.json",
@@ -28,7 +28,8 @@
   "skills": {
     "mece": {
       "path": ".agents/skills/mece/SKILL.md",
-      "trigger": "Loop Phase 2 \u2014 runs once per task after Info Gather Loop. Builds section-based plan mapping 1:1 to target Skill sections[].",
+      "bucket": "stable",
+      "trigger": "Loop Phase 2 — runs once per task after Info Gather Loop. Builds section-based plan mapping 1:1 to target Skill sections[].",
       "keywords": [
         "implement",
         "refactor",
@@ -36,13 +37,20 @@
         "build",
         "multi-step",
         "rename all",
-        "migrate"
+        "migrate",
+        "plan task",
+        "task plan",
+        "organize steps",
+        "วางแผน",
+        "ขั้นตอน",
+        "ปรับโครงสร้าง"
       ],
       "on_demand_files": [],
       "skip_when": "read-only task OR single file edit with backlinks=0 AND no ERR documentation needed"
     },
     "coder": {
       "path": ".agents/skills/coder/SKILL.md",
+      "bucket": "stable",
       "trigger": "Creating new files, scaffolding features, adding new pages or API routes",
       "keywords": [
         "create",
@@ -53,17 +61,22 @@
         "new api",
         "new route",
         "build",
-        "implement"
+        "implement",
+        "new feature",
+        "สร้าง",
+        "ไฟล์ใหม่",
+        "เพิ่มหน้า",
+        "สร้าง component"
       ],
       "lookup_oracle": {
         "script": "python scripts/lookup.py \"<query>\" --json",
-        "when": "T0 \u2014 run before creating to check if symbol/file already exists",
-        "note": "High score match = file may already exist \u00b7 prevents duplicate scaffolding"
+        "when": "T0 — run before creating to check if symbol/file already exists",
+        "note": "High score match = file may already exist · prevents duplicate scaffolding"
       },
       "on_demand_files": [
         {
           "path": "knowledge/index_files.json",
-          "when": "T1 fallback \u2014 checking file exists or backlinks before creating",
+          "when": "T1 fallback — checking file exists or backlinks before creating",
           "how": "grep_only"
         },
         {
@@ -85,6 +98,7 @@
     },
     "editor": {
       "path": ".agents/skills/editor/SKILL.md",
+      "bucket": "stable",
       "trigger": "Modifying, debugging, or fixing existing files",
       "keywords": [
         "fix",
@@ -99,27 +113,33 @@
         "not working",
         "issue",
         "wrong",
-        "fail"
+        "fail",
+        "แก้",
+        "แก้ไข",
+        "ไม่ทำงาน",
+        "ซ่อม",
+        "บัค",
+        "ผิดพลาด"
       ],
       "lookup_oracle": {
         "script": "python scripts/lookup.py \"<query>\" --json",
-        "when": "T0 \u2014 ALWAYS run before any grep or Read \u00b7 returns file+line+read_hint+keywords+sessions",
-        "note": "T0 returns symbols + files + sessions in one call \u2014 session results show prior fix history"
+        "when": "T0 — ALWAYS run before any grep or Read · returns file+line+read_hint+keywords+sessions",
+        "note": "T0 returns symbols + files + sessions in one call — session results show prior fix history"
       },
       "on_demand_files": [
         {
           "path": "knowledge/index_variables.json",
-          "when": "T1/T2 fallback if lookup.py returns empty \u2014 grep symbol name or used_in list",
+          "when": "T1/T2 fallback if lookup.py returns empty — grep symbol name or used_in list",
           "how": "grep_only"
         },
         {
           "path": "knowledge/index_files.json",
-          "when": "T1/T2 fallback \u2014 checking backlinks before editing a file",
+          "when": "T1/T2 fallback — checking backlinks before editing a file",
           "how": "grep_only"
         },
         {
           "path": "knowledge/index_sessions.json",
-          "when": "T1 fallback for session history \u2014 grep task ID or topic keyword",
+          "when": "T1 fallback for session history — grep task ID or topic keyword",
           "how": "grep_only"
         },
         {
@@ -141,6 +161,7 @@
     },
     "file_manager": {
       "path": ".agents/skills/file_manager/SKILL.md",
+      "bucket": "stable",
       "trigger": "MANDATORY after any file is created, moved, deleted, or has imports changed",
       "keywords": [
         "move file",
@@ -162,6 +183,7 @@
     },
     "variable_manager": {
       "path": ".agents/skills/variable_manager/SKILL.md",
+      "bucket": "stable",
       "trigger": "MANDATORY after any symbol is created, renamed, deleted, or its body is edited",
       "keywords": [
         "new function",
@@ -186,6 +208,7 @@
     },
     "session_manager": {
       "path": ".agents/skills/session_manager/SKILL.md",
+      "bucket": "stable",
       "trigger": "Token pause, blocked halt, session rotation, task completion, or user-requested close",
       "keywords": [
         "new session",
@@ -199,17 +222,17 @@
         "close session",
         "end session",
         "end",
-        "\u0e1b\u0e34\u0e14 session",
-        "\u0e1b\u0e34\u0e14",
-        "\u0e08\u0e1a session",
-        "\u0e08\u0e1a\u0e07\u0e32\u0e19",
+        "ปิด session",
+        "ปิด",
+        "จบ session",
+        "จบงาน",
         "close",
         "finish"
       ],
       "lookup_oracle": {
         "script": "python scripts/lookup.py \"<task or topic>\" --session --json",
-        "when": "resuming \u2014 find prior session for this task; or checking what was done on a topic",
-        "note": "Returns session path + summary excerpt \u2014 read the JSON file for full history"
+        "when": "resuming — find prior session for this task; or checking what was done on a topic",
+        "note": "Returns session path + summary excerpt — read the JSON file for full history"
       },
       "on_demand_files": [
         {
@@ -236,7 +259,8 @@
     },
     "token_tracker": {
       "path": ".agents/skills/token_tracker/SKILL.md",
-      "trigger": "Boot-load only \u2014 SESSION_TOTAL read once at Boot, tracked in memory per turn, written at checkpoints",
+      "bucket": "stable",
+      "trigger": "Boot-load only — SESSION_TOTAL read once at Boot, tracked in memory per turn, written at checkpoints",
       "keywords": [
         "__always__"
       ],
@@ -250,6 +274,7 @@
     },
     "token_auditor": {
       "path": ".agents/skills/token_auditor/SKILL.md",
+      "bucket": "stable",
       "trigger": "When SESSION_TOTAL > 60k (R3 threshold)",
       "keywords": [
         "token overflow",
@@ -266,13 +291,14 @@
     },
     "self_improve": {
       "path": ".agents/skills/self_improve/SKILL.md",
-      "trigger": "At every session close (auto-called by session_manager \u00a73 Step 0), OR user asks to review failure patterns or improve harness",
+      "bucket": "stable",
+      "trigger": "At every session close (auto-called by session_manager §3 Step 0), OR user asks to review failure patterns or improve harness",
       "keywords": [
         "review CFP",
         "improve harness",
-        "\u0e14\u0e39 pattern",
-        "\u0e1e\u0e31\u0e12\u0e19\u0e32 harness",
-        "\u0e1b\u0e31\u0e0d\u0e2b\u0e32\u0e0b\u0e49\u0e33",
+        "ดู pattern",
+        "พัฒนา harness",
+        "ปัญหาซ้ำ",
         "failure pattern",
         "self improve",
         "harness update",
@@ -295,10 +321,11 @@
           "how": "targeted"
         }
       ],
-      "auto_trigger": "session_manager \u00a73 Step 0 \u2014 always called before session close writes"
+      "auto_trigger": "session_manager §3 Step 0 — always called before session close writes"
     },
     "ascii_flow": {
       "path": ".agents/skills/ascii_flow/SKILL.md",
+      "bucket": "draft",
       "trigger": "Creating or updating ASCII flow diagrams, architecture charts, flow documentation in .md files",
       "keywords": [
         "flow diagram",
@@ -309,7 +336,11 @@
         "create flow",
         "update flow",
         "draw diagram",
-        "draw flow"
+        "draw flow",
+        "วาด",
+        "แผนภาพ",
+        "flow chart",
+        "diagram"
       ],
       "on_demand_files": [
         {
@@ -322,6 +353,7 @@
     },
     "agent": {
       "path": ".agents/skills/agent/SKILL.md",
+      "bucket": "stable",
       "trigger": "Orchestrating multi-section tasks, spawning sub-agents, Cycle fan-out, multi-skill delegation",
       "keywords": [
         "orchestrate",
@@ -331,18 +363,23 @@
         "multi-section",
         "fan-out",
         "parallel sections",
-        "delegate"
+        "delegate",
+        "parallel tasks",
+        "มอบหมาย",
+        "ทำพร้อมกัน",
+        "แบ่งงาน"
       ],
       "on_demand_files": []
     },
     "harness_doctor": {
       "path": ".agents/skills/harness_doctor/SKILL.md",
-      "trigger": "CFP pattern recurred after a fix was applied \u2014 structural harness repair needed",
+      "bucket": "draft",
+      "trigger": "CFP pattern recurred after a fix was applied — structural harness repair needed",
       "keywords": [
         "harness doctor",
         "fix harness pattern",
         "recurring cfp",
-        "\u0e0b\u0e48\u0e2d\u0e21 harness",
+        "ซ่อม harness",
         "cfp recurred",
         "structural fix"
       ],
@@ -358,11 +395,58 @@
           "how": "targeted"
         }
       ]
+    },
+    "harness_editor": {
+      "path": ".agents/skills/harness_editor/SKILL.md",
+      "bucket": "stable",
+      "trigger": "Task edits harness config files — CLAUDE.md, AGENTS.md, SKILL.md, knowledge/, Implement/",
+      "keywords": [
+        "แก้ harness",
+        "update harness",
+        "improve skill",
+        "เพิ่ม rule",
+        "edit skill",
+        "update SKILL.md",
+        "harness edit",
+        "update Implement"
+      ],
+      "on_demand_files": [
+        {
+          "path": "knowledge/harness_flow_20260526.md",
+          "when": "Step 5 — updating flow doc after harness edit",
+          "how": "targeted"
+        },
+        {
+          "path": "knowledge/topic_registry.json",
+          "when": "Step 4 — assigning topics[] to new knowledge/ or Implement/ files added to index_files.json",
+          "how": "full_ok"
+        }
+      ]
+    },
+    "skeptical_reviewer": {
+      "path": ".agents/skills/skeptical_reviewer/SKILL.md",
+      "bucket": "draft",
+      "trigger": "Phase 2 M4.5 — optional plan scrutiny gate after MECE plan confirmed, before Phase 3 execution",
+      "keywords": [
+        "skeptical review",
+        "challenge plan",
+        "plan scrutiny",
+        "go/revise/reject",
+        "M4.5"
+      ],
+      "on_demand_files": [
+        {
+          "path": ".sessions/mece_plan.md",
+          "when": "loading plan to scrutinize",
+          "how": "full_ok"
+        }
+      ],
+      "skip_when": "low-risk task · single-file edit · read-only · user explicitly skips"
     }
   },
   "fallback": {
     "path": ".agents/skills/agent/SKILL.md",
-    "trigger": "No keyword matches any skill \u2014 use as default orchestration skill",
+    "trigger": "No keyword matches any skill — use as default orchestration skill",
     "on_demand_files": [
       {
         "path": ".agents/skills/registry.md",
@@ -373,7 +457,7 @@
     "note": "Load registry.md fast-match table, re-evaluate intent, then route manually"
   },
   "learned_routes": {
-    "_comment": "Agent appends confirmed keyword\u2192skill pairs here after repeated use",
+    "_comment": "Agent appends confirmed keyword→skill pairs here after repeated use",
     "examples": []
   }
 }

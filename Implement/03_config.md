@@ -9,15 +9,15 @@ Copy this into `CLAUDE.md` at project root. Adjust token thresholds to match you
 
 ## Boot (3 tool calls max)
 ```
-[B1] Bash: (cs_dt=$(grep "^dt=" .sessions/compact_state.md 2>/dev/null | cut -d= -f2 | cut -d' ' -f1); today=$(date +%Y-%m-%d); [ "$cs_dt" = "$today" ] && echo "[compact-restore]" && cat .sessions/compact_state.md && echo "---"; phase=$(grep "^phase:" .sessions/active_thread.md 2>/dev/null | awk '{print $2}'); [ "$phase" != "in_progress" ] && printf "SESSION_TOTAL: 0\n" > .sessions/session_tokens.md; cat .sessions/active_thread.md 2>/dev/null | tail -4; echo "---"; cat .sessions/session_tokens.md 2>/dev/null; echo "---"; grep -n "\[/\]" docs/master_roadmap.md 2>/dev/null | head -3; echo "---"; echo "CFP_COUNT: $(grep -c '^## CFP-' CODING_FAILURE_PATTERNS.md 2>/dev/null || echo 0)")
+[B1] Bash: (cs_dt=$(grep "^dt=" .sessions/compact_state.md 2>/dev/null | cut -d= -f2 | cut -d' ' -f1); today=$(date +%Y-%m-%d); compact_restore=false; [ "$cs_dt" = "$today" ] && compact_restore=true && echo "[compact-restore]" && cat .sessions/compact_state.md && echo "---"; phase=$(grep "^phase:" .sessions/active_thread.md 2>/dev/null | awk '{print $2}'); { [ "$compact_restore" = "true" ] || [ "$phase" != "in_progress" ]; } && printf "SESSION_TOTAL: 0\nCHAT_TOTAL: 7300\n" > .sessions/session_tokens.md; cat .sessions/active_thread.md 2>/dev/null | tail -4; echo "---"; cat .sessions/session_tokens.md 2>/dev/null; echo "---"; grep -n "\[/\]" docs/master_roadmap.md 2>/dev/null | head -3; echo "---"; echo "CFP_COUNT: $(grep -c '^## CFP-' CODING_FAILURE_PATTERNS.md 2>/dev/null || echo 0)")
 [B2] IF [compact-restore] in B1 output → parse sk= from compact_state.md → use as skill_name · SKIP manifest read (~1,300 tokens saved)
      ELSE IF prompt contains `skill: <name>` → skip manifest read · ELSE: grep keywords[] from skill-manifest.json (not full read) → identify skill_name
 [B3] IF [compact-restore]: sha1 check sk_h= + mece_h= → hash match → SKIP SKILL.md + mece/SKILL.md reads (~2.9k tokens saved total)
      ELSE: Read .agents/skills/<skill_name>/SKILL.md offset=1 limit=80 → sections[] only · on_demand_files = lookup table for G2 (NOT loaded at boot)
            Also: Read .agents/skills/mece/SKILL.md offset=31 limit=110 → §Plan Format + §Execution Protocol into working memory
 ```
-→ B1 auto-resets SESSION_TOTAL to 0 when phase ≠ in_progress (new session guard — runs before read)
-→ Load SESSION_TOTAL from B1 into working memory (no further file reads for tokens this session)
+→ B1 resets SESSION_TOTAL=0 · sets CHAT_TOTAL=7300 (system_fixed) on compact-restore OR phase≠in_progress
+→ Load SESSION_TOTAL + CHAT_TOTAL from B1 into working memory (both sourced from session_tokens.md)
 → Load CFP_COUNT from B1 output → store as `cfp_boot_count` in working memory (used by self_improve)
 → If SESSION_TOTAL > 60k → warn user immediately before proceeding
 
@@ -49,7 +49,7 @@ If `[Boot]` trace has NOT been emitted yet:
 ## R1 · Token Tracking
 Two counters — both in working memory, sourced from files at Boot:
 - `SESSION_TOTAL` — resets at session close (per-task cost) · file: `.sessions/session_tokens.md`
-- `CHAT_TOTAL` — resets only on /compact or new chat (true context window size) · file: `.sessions/chat_tokens.md`
+- `CHAT_TOTAL` — resets only on /compact or new chat (true context window size) · file: `.sessions/session_tokens.md` (same file as SESSION_TOTAL) · B1 re-initializes to 7300 (system_fixed) on reset
 
 Formulas:
 - Output = (thai_chars × 1.7) + (en_chars × 0.3)
@@ -59,7 +59,7 @@ Formulas:
 
 Each turn: add turn_tokens → SESSION_TOTAL AND CHAT_TOTAL.
 Write SESSION_TOTAL at: token pause · blocked halt · completion gate.
-Write CHAT_TOTAL at: /compact (reset→0) · session close (accumulate, never reset).
+Write CHAT_TOTAL at: /compact (reset→0, then B1 re-initializes to 7300 on next boot) · session close (accumulate).
 Footer every response: `*(Session: ~NNNk | Chat: ~NNNk tokens)*`
 - ⚠️ Do not define token formulas in other skill files — use R1 values exclusively
 
@@ -430,7 +430,7 @@ You are operating inside the **[PROJECT NAME]** project. Rules apply to ALL agen
 ## Boot Sequence (3 tool calls max)
 
 ```
-[B1] Bash: (cs_dt=$(grep "^dt=" .sessions/compact_state.md 2>/dev/null | cut -d= -f2 | cut -d' ' -f1); today=$(date +%Y-%m-%d); [ "$cs_dt" = "$today" ] && echo "[compact-restore]" && cat .sessions/compact_state.md && echo "---"; phase=$(grep "^phase:" .sessions/active_thread.md 2>/dev/null | awk '{print $2}'); [ "$phase" != "in_progress" ] && printf "SESSION_TOTAL: 0\n" > .sessions/session_tokens.md; cat .sessions/active_thread.md 2>/dev/null | tail -4; echo "---"; cat .sessions/session_tokens.md 2>/dev/null; echo "---"; grep -n "\[/\]" docs/master_roadmap.md 2>/dev/null | head -3; echo "---"; echo "CFP_COUNT: $(grep -c '^## CFP-' CODING_FAILURE_PATTERNS.md 2>/dev/null || echo 0)")
+[B1] Bash: (cs_dt=$(grep "^dt=" .sessions/compact_state.md 2>/dev/null | cut -d= -f2 | cut -d' ' -f1); today=$(date +%Y-%m-%d); compact_restore=false; [ "$cs_dt" = "$today" ] && compact_restore=true && echo "[compact-restore]" && cat .sessions/compact_state.md && echo "---"; phase=$(grep "^phase:" .sessions/active_thread.md 2>/dev/null | awk '{print $2}'); { [ "$compact_restore" = "true" ] || [ "$phase" != "in_progress" ]; } && printf "SESSION_TOTAL: 0\nCHAT_TOTAL: 7300\n" > .sessions/session_tokens.md; cat .sessions/active_thread.md 2>/dev/null | tail -4; echo "---"; cat .sessions/session_tokens.md 2>/dev/null; echo "---"; grep -n "\[/\]" docs/master_roadmap.md 2>/dev/null | head -3; echo "---"; echo "CFP_COUNT: $(grep -c '^## CFP-' CODING_FAILURE_PATTERNS.md 2>/dev/null || echo 0)")
 [B2] IF [compact-restore] in B1 output → parse sk= from compact_state.md → use as skill_name · SKIP manifest read (~1,300 tokens saved)
      ELSE IF prompt contains `skill: <name>` → skip manifest read · ELSE: grep keywords[] from skill-manifest.json (not full read) → identify skill_name
 [B3] IF [compact-restore]: sha1 check sk_h= + mece_h= → hash match → SKIP SKILL.md + mece/SKILL.md reads (~2.9k tokens saved total)
@@ -517,7 +517,8 @@ Same topic   → match keywords[] → re-read SKILL.md if skill changes
   - Affected area: which module/file? · options = sections from REPO_MAP.md (read at G0 — in Never-Full-Load whitelist)
   - Constraints: limits? · options = [none / list specific]
   - Definition of done: acceptance test? · options = [passes tests / UI works / data correct / other]
-- Stop when: goal + constraints + affected files + acceptance criteria all present
+- **Refusal contract:** user ignores ≥2 rounds → emit `[gather-refused]` · HALT (don't proceed to G1)
+- **Output contract:** on spec complete → gather_complete.md must include: `objective` · `constraints` · `affected_files` · `acceptance_criteria` · `verification_intent`
 - G0 runs ONCE only → if still unclear → `[gather-stalled]`
 
 **Gather rules:**

@@ -17,6 +17,10 @@ description: Analyzes wasteful token consumption when SESSION_TOTAL > 60k. Ident
 ## Trigger
 Called by R3 when SESSION_TOTAL > 60k. Runs audit before TOKEN PAUSE completes.
 
+## Workflow
+Sequential: Run Audit Checks (1-5) → log findings to `docs/optimization_logs.md` → self-heal (add rule to offending SKILL.md if needed) → emit `[audit-done]` verdict.
+Full check detail: `## Audit Checks` and `## Actions` below.
+
 ## Audit Checks
 
 **Check 1 — Surgical File Reading:**
@@ -46,6 +50,25 @@ Check for full-file edits when only a small targeted change was needed → flag 
 2. **Self-Healing** → if a skill caused the waste, add a STRICT rule to that skill's SKILL.md `## Sections` steps to prevent recurrence.
 
 3. **Halt Threshold** → if SESSION_TOTAL > 90k: set session `"status": "paused_limit_reached"` → HALT → notify user per R3.
+
+## Output Contract
+| Result | Emit | File written |
+|---|---|---|
+| Findings found | `[audit-finding] Check: <N> · Rule: R<N> · Skill: <name>` | `knowledge/optimization_logs.md` + offending SKILL.md rule injected |
+| No findings | `[audit-clean] SESSION_TOTAL: <N>k · no violations` | — |
+| Threshold halt | `[halt] SESSION_TOTAL > 90k · session paused` | `session_handoff.md` |
+| Skipped | `[auditor-skip] reason: <below-threshold \| wrong-trigger>` | — |
+
+## Refusal Contract
+Skip audit entirely (emit `[auditor-skip]`) if:
+- SESSION_TOTAL < 60k at trigger time — below threshold, no audit needed
+- Called outside of R3 trigger (not from a TOKEN PAUSE or HALT path)
+
+## Routing
+→ After audit:
+- Findings logged + rule injected → return to session_manager (TOKEN PAUSE flow)
+- SESSION_TOTAL > 90k → HALT → notify user (does NOT return to loop)
+- No findings → emit `[audit-clean]` → return to caller
 
 ## Context Gate
 If during this task a new hard constraint was discovered → add to INVARIANTS.md §I2 before closing task

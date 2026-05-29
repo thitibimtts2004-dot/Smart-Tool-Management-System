@@ -7,8 +7,8 @@
 ## Boot Sequence (3 tool calls max)
 
 ```
-[B1] Bash: (cs_dt=$(grep "^dt=" .sessions/compact_state.md 2>/dev/null | cut -d= -f2 | cut -d' ' -f1); today=$(date +%Y-%m-%d); [ "$cs_dt" = "$today" ] && echo "[compact-restore]" && cat .sessions/compact_state.md && echo "---"; phase=$(grep "^phase:" .sessions/active_thread.md 2>/dev/null | awk '{print $2}'); [ "$phase" != "in_progress" ] && printf "SESSION_TOTAL: 0\n" > .sessions/session_tokens.md; cat .sessions/active_thread.md 2>/dev/null | tail -4; echo "---"; cat .sessions/session_tokens.md 2>/dev/null; echo "---"; grep -n "\[/\]" docs/master_roadmap.md 2>/dev/null | head -3; echo "---"; echo "CFP_COUNT: $(grep -c '^## CFP-' CODING_FAILURE_PATTERNS.md 2>/dev/null || echo 0)")
-[B2] IF [compact-restore]: parse sk= → skill_name · SKIP manifest read
+[B1] Bash: (cs_dt=$(grep "^dt=" .sessions/compact_state.md 2>/dev/null | cut -d= -f2 | cut -d' ' -f1); today=$(date +%Y-%m-%d); compact_restore=false; [ "$cs_dt" = "$today" ] && compact_restore=true && echo "[compact-restore]" && cat .sessions/compact_state.md && echo "---"; phase=$(grep "^phase:" .sessions/active_thread.md 2>/dev/null | awk '{print $2}'); { [ "$compact_restore" = "true" ] || [ "$phase" != "in_progress" ]; } && printf "SESSION_TOTAL: 0\nCHAT_TOTAL: 7300\n" > .sessions/session_tokens.md; cat .sessions/active_thread.md 2>/dev/null | tail -4; echo "---"; cat .sessions/session_tokens.md 2>/dev/null; echo "---"; grep -n "\[/\]" docs/master_roadmap.md 2>/dev/null | head -3; echo "---"; echo "CFP_COUNT: $(grep -c '^## CFP-' CODING_FAILURE_PATTERNS.md 2>/dev/null || echo 0)")
+[B2] IF [compact-restore]: parse sk= → skill_name · parse section= + step= → resume_hint · SKIP manifest read
      IF prompt has `skill: <name>`: use directly · SKIP manifest
      ELSE: grep -B1 -A6 '"keywords"' .agents/skills/skill-manifest.json | head -80 → match → skill_name
 [B3] IF [compact-restore]: sha1sum <skill>/SKILL.md → compare sk_h · sha1sum mece/SKILL.md → compare mece_h
@@ -16,7 +16,7 @@
      ELSE: Read .agents/skills/<skill_name>/SKILL.md offset=1 limit=80
            Read .agents/skills/mece/SKILL.md offset=31 limit=110
 ```
-- B1 resets SESSION_TOTAL=0 when phase≠in_progress · CFP_COUNT → cfp_boot_count in working memory
+- B1 resets SESSION_TOTAL=0 · sets CHAT_TOTAL=7300 (system_fixed) on compact-restore OR when phase≠in_progress · CFP_COUNT → cfp_boot_count in working memory
 - on_demand_files = lookup table for G2 only — NEVER auto-load at B3
 - mece_plan.md has pending sections? Skip Phase 1+2 → resume Phase 3:
   `grep -n "^\- \[ \]\|^\- \[/\]" .sessions/mece_plan.md | head -3` → first pending item
@@ -25,6 +25,7 @@
 [B4] Platform Probe: `detected.md` platform: unknown → list tools → update detected.md · else skip
 
 Reply line 1: `**[Boot]** Thread: <done|in_progress> · Tasks: <N> · Skill: <name> · Sections: <N> · Tokens: ~<N>k · CFP: <N>`
+compact-restore reply: append ` · Resume: S<N> — <step>` when section= + step= fields present in compact_state.md
 
 > Boot ending ≠ ready to work. Run C0–C3 → Phase 1 next. SKILL.md load ≠ Phase 1.
 
@@ -78,13 +79,14 @@ Reply line 1: `**[Boot]** Thread: <done|in_progress> · Tasks: <N> · Skill: <na
 
 ```
 [G0] Task clarity gate — run ONCE before G1:
-     Skip G0 if task has ≥3 of: specific feature name · file/path · error message · "fix/add/update X in Y"
-     Otherwise → use AskUserQuestion (MUST include options per question — never open-ended only):
-       - Goal: ask what outcome they want · options = [add feature / fix bug / refactor / other]
-       - Affected area: ask which part of the system · options = sections listed in REPO_MAP.md (read at G0)
-       - Constraints: ask limits (perf/scope/compat) · options = [none / list specific]
-       - Definition of done: ask acceptance test · options = [passes tests / UI works / data correct / other]
-     Stop when spec has: goal + constraints + affected files + acceptance criteria
+     Skip if task has ≥3 of: specific feature name · file/path · error message · "fix/add/update X in Y"
+     Otherwise → AskUserQuestion (MUST include options per question — never open-ended only):
+       - Goal: [add feature / fix bug / refactor / other]
+       - Affected area: sections from REPO_MAP.md (read at G0)
+       - Constraints: [none / list specific]
+       - Definition of done: [passes tests / UI works / data correct / other]
+     Refusal contract: user ignores ≥2 rounds → emit [gather-refused] · HALT
+     Output contract: on spec complete → gather_complete.md must have: objective · constraints · affected_files · acceptance_criteria · verification_intent
      G0 runs once only — if user still unclear → [gather-stalled]
 
 [G1] Scan ALL sections at once (1 pass — never section-by-section):
@@ -115,10 +117,10 @@ After 3 loops OR 5 clarification rounds: emit [gather-stalled] · ask user once 
 [M1.5] Reason (memory ≤600 tok): dependencies→Sequential · parallel→Parallel · irreversible→flag · risk · done-sketch per section
 [M2]   Build plan 1:1 with Skill sections · [M2.5] Verify-N: runnable command per section
 [M3]   Send plan+Verify-N → user confirms BOTH · [M4] R-Roadmap: add [ ] T-<N> per section
-[M5]   Write mece_plan.md (mece/SKILL.md §Phase-Checklist Template · include Constraints: field per section)
-[M6]   Emit [✓ MECE]
+[M4.5] Optional gate: spawn Skeptical Reviewer (haiku · read-only) → verdict go/revise/reject · revise→M2 · reject→Phase 1 · skip if task is low-risk or single-file
+[M5]   Write mece_plan.md using Phase-Checklist Template (docs/session_templates/mece_plan_schema.md) — Phase 0-3 blocks mandatory · no simplified format (CFP-019) · include Constraints: per section · [M6] Emit [✓ MECE]
 ```
-MECE runs ONCE. On resume: load existing plan → jump to pending section.
+MECE runs ONCE. Skeptical Reviewer (M4.5) = optional gate. On resume: load existing plan → jump to pending section.
 
 ---
 
@@ -137,6 +139,7 @@ REACT LOOP (per section — repeat until section_complete OR token pause):
   [L4.5] PURGE → drop tool results from context
                  keep only: [✓ written] verdict + artifact path + Verify-N result
   [L5] DECIDE  → section_done = [✓ written] AND Verify-N BOTH pass
+                 → mark mece_plan.md: `- [ ] S<N>` → `- [X] S<N>` (file write — not just memory)
                  → steps remain: emit [loop] continue · → done: emit [loop] done
 ```
 After each section → write session_handoff.md: sections_done + sections_pending + last_step + mece_plan_hash=`sha1sum .sessions/mece_plan.md | cut -c1-8` + resume_at=S<N>:step:<desc>
@@ -152,12 +155,54 @@ Before reporting done → spawn Reviewer (haiku · read-only): prompt = Verify-N
 Agent may NOT report done until: all sections executed (tool calls) · [✓ written] on every edit · R8 Index Sync · Roadmap [X] · active_thread phase:done · SESSION_TOTAL written · Feedback delivered · I6–I8 checked (if parallel agents used)
 SESSION_TOTAL > 50k → compact first · > 60k → TOKEN PAUSE before gate.
 
+Session Health Check — run after Reviewer PASS (this IS "Feedback delivered"):
+```
+SESSION_TOTAL < 20k  → ✅ no action
+SESSION_TOTAL 20–40k → 💡 emit [session-health] · recommend /compact before next task
+SESSION_TOTAL 40–60k → ⚠️ emit [session-health] · compact now before next task
+SESSION_TOTAL > 60k  → 🛑 TOKEN PAUSE (R3) — already fires
+```
+emit format: `[session-health] Session: ~NNk · Chat: ~NNk · <recommendation>`
+
+**User-facing close message (Thai — mandatory · R7):**
+After [session-health] emit → always append Thai summary to user:
+```
+งานเสร็จแล้วครับ ✅  <สรุปสั้น ๆ ว่าทำอะไรสำเร็จ — ภาษาไทย>
+สั่งงานต่อได้เลยครับ
+```
+Rule: harness signals ([harness-edit-done] · [session-health]) = English machine-readable · user summary = Thai · never English-only close to user.
+
 ---
 
-## Backlink Rule
-Before editing any file:
-`grep -A 6 '"src/path/to/file.tsx"' knowledge/index_files.json` → check backlinks[] → update all importers.
-After Write to new `src/` file → verify `knowledge/index_files.json` has entry before closing section (R8 · INVARIANTS.md I3).
+## Backlink Rule — 3-Tier Check (run before editing any indexed file)
+```
+python3 -c "
+import json; e=json.load(open('knowledge/index_files.json')).get('<path>',{})
+print('references:', e.get('references',[]))   # files this file cites
+print('backlinks:', e.get('backlinks',[]))      # files that cite this file
+print('related:', [r['path'] for r in e.get('related',[])])  # topic overlap ≥50%
+"
+```
+① `references[]` — files this file explicitly links to (may also need updating)
+② `backlinks[]` — files that cite this file (check for breakage)
+③ `related[]` — semantic neighbors via topic overlap ≥50% (check for concept drift impact)
+After Write to new file → add `index_files.json` entry with `topics[]` from `topic_registry.json` → run `python3 scripts/backlink_analyzer.py` (R8 · INVARIANTS.md I3).
+
+---
+
+## Index Sync Invariant
+
+Every create / modify / delete / rename of an indexed entity **must** update all related indexes before the task is marked done.
+
+| Entity changed | Must update |
+|---|---|
+| File created / moved / deleted | `knowledge/index_files.json` (via `file_manager`) |
+| Symbol created / renamed / deleted | `knowledge/index_variables.json` (run `symbol_indexer.py`) |
+| Session closed | `knowledge/index_sessions.json` (run `session_indexer.py`) |
+| SKILL.md created or renamed | `.agents/skills/skill-manifest.json` + `knowledge/skill-index.md` |
+| Tool script created or renamed | `.agents/tools/tool-manifest.json` |
+
+**Rule:** index update is part of the task — not optional follow-up. Completion Gate (R8) enforces this.
 
 ---
 

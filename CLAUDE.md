@@ -10,7 +10,7 @@ Skipping boot = invalid session state = CFP violation.
 
 ## Boot (3 tool calls max)
 → Full B1/B2/B3 commands + compact-restore logic: **AGENTS.md §Boot Sequence**
-- B1: checks compact_state.md + resets SESSION_TOTAL=0 when phase≠in_progress + loads CFP_COUNT
+- B1: checks compact_state.md + resets SESSION_TOTAL=0 · sets CHAT_TOTAL=7300 (system_fixed) on compact-restore OR phase≠in_progress + loads CFP_COUNT
 - B2: identifies skill_name (skips manifest if compact-restore or orchestrator pre-resolved)
 - B3: loads SKILL.md + mece/SKILL.md (skips if hashes match → saves ~2.9k tokens)
 - [B4] Platform Probe: `detected.md` platform: unknown → list tools → update · else skip
@@ -40,8 +40,10 @@ Boot ≠ Phase 1. Phase 1 = G1 greps + G2 reads + G3 assess + [✓ gather] emitt
 PreToolUse hook checks both files for today's date — mece_plan.md MUST include Phase 0-3 checklist blocks.
 
 Phase 3 close sequence (no exceptions):
+0. mece_plan.md — verify all sections marked [X] · mark any remaining [ ] → [X] before proceeding
 1. Write session_handoff.md: skill_name + CFP_COUNT + task
-2. Write compact_state.md: dt/sk/sk_h/mece_h/p3 — BEFORE /compact
+2. Write compact_state.md: dt/sk/sk_h/mece_h/p3/section/step — BEFORE /compact
+   section=S<N> (current section number) · step=<last completed step description>
 3. `/compact` — ALWAYS run
 
 ---
@@ -51,11 +53,21 @@ Two counters — both in working memory, sourced from files at Boot:
 - `SESSION_TOTAL` — resets at session close (per-task cost) · file: `.sessions/session_tokens.md`
 - `CHAT_TOTAL` — resets only on /compact or new chat (true context window size) · file: `.sessions/chat_tokens.md`
 ```
-Input  = (user_msg_chars × 0.3) + context_overhead + tool_result_tokens
-Output = (thai_chars × 1.7) + (en_chars × 0.3)
-context_overhead: Turn 1 = ~8,000 | subsequent = 800 + (CHAT_TOTAL × 0.6)
+# turn cost (same formula for both counters)
+turn_tokens   = (user_msg_chars × 0.3) + tool_result_tokens + output_tokens
+output_tokens = (thai_chars × 1.7) + (en_chars × 0.3)
+
+# SESSION_TOTAL — incremental cost per turn (resets each task)
+SESSION_TOTAL += turn_tokens
+
+# CHAT_TOTAL — cumulative context window (never shrinks until /compact)
+# Boot B1 fresh session: CHAT_TOTAL starts at system_fixed = 7,300
+#   system_fixed = CLAUDE.md 2.6k + AGENTS.md 3.4k + skills 1.3k (one-time)
+# Each turn adds only hooks + new content:
+CHAT_TOTAL_n = CHAT_TOTAL_{n-1} + hooks_per_turn + turn_tokens
+# hooks_per_turn = 1,300 (deferred-tools list + HARNESS REMINDER injected every turn)
 ```
-Each turn: add turn_tokens → SESSION_TOTAL AND CHAT_TOTAL.
+Each turn: compute turn_tokens → SESSION_TOTAL += turn_tokens · CHAT_TOTAL += 1,300 + turn_tokens.
 Write SESSION_TOTAL at: token pause · blocked halt · completion gate.
 Write CHAT_TOTAL at: /compact (reset→0) · session close (accumulate).
 Emit `*(Session: ~NNNk | Chat: ~NNNk tokens)*` every response.
@@ -96,7 +108,7 @@ INVARIANTS.md                  → on-demand when R14/R15 gate fires ONLY
 knowledge/error_index.md       → grep → Read ≤40L ONLY
 knowledge/index_cfp_fix.json   → full ok ≤30 entries · grep ONLY beyond 30
 ```
-Full-Read permitted: `.agents/skills/*/SKILL.md` (≤80L) · `src/` ≤80L G2 only · `.sessions/active_thread.md` · `.sessions/session_handoff.md` · `.sessions/compact_state.md` · `REPO_MAP.md`
+Full-Read permitted: `.agents/skills/*/SKILL.md` (≤80L) · `src/` ≤80L G2 only · `.sessions/active_thread.md` · `.sessions/session_handoff.md` · `.sessions/compact_state.md` · `REPO_MAP.md` · `knowledge/topic_registry.json`
 Violation → emit `[violation] never-full-load` → discard → re-run as grep.
 
 ## R6–R7 · Output + Density
@@ -104,10 +116,11 @@ R6: `cmd 2>&1 | grep -iE "error|warn|fail" | tail -20`
 R7: table/bullet > prose · comparison → table · steps → numbered · enum → bullet
 
 ## R8 · Index Sync (fire on file changes)
-- Create/delete/move file → `index_files.json` + backlinks
-- Edit imports → backlinks in `index_files.json`
+- Create/delete/move file → `index_files.json` entry + assign `topics[]` from `topic_registry.json` + run `python3 scripts/backlink_analyzer.py`
+- Edit imports → update `backlinks[]` in `index_files.json`
 - Create/delete/rename symbol → `index_variables.json` + `python scripts/symbol_indexer.py`
 - Session close → `python scripts/session_indexer.py`
+- Before editing any file: **3-tier check** — `backlinks[]` (who cites it) · `references[]` (what it cites) · `related[]` (topic overlap ≥50% — semantic impact)
 
 ## R9 · Error Protocol
 Step 0 (run FIRST on any debug): Signals: "still broken" · "same error" · "กลับมาอีก" · same ERR-XXX in roadmap

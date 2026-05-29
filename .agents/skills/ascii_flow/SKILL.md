@@ -1,194 +1,58 @@
-# Skill: ascii_flow
-# Trigger: creating or updating ASCII flow diagrams / architecture docs / flow .md files
-# Reference style: knowledge/harness_flow_20260525.md
-
+---
+name: ascii_flow
+description: Produces ASCII flow diagrams and architecture charts using a strict char palette and box/connector templates.
 ---
 
-## sections[]
-1. char-palette      — box-drawing + connector chars
-2. box-templates     — outer / inner / decision / note patterns
-3. detail-guidelines — what detail to include in each node
-4. flow-connectors   — branch / merge / sequence patterns
-5. doc-structure     — how to organize a full flow document
-6. invoke-rule       — when other skills must call this one
-
----
-
-## 1 · Char Palette
-
+## Sections
 ```
-BOX DRAWING
-  top-left: ┌   top-right: ┐   bottom-left: └   bottom-right: ┘
-  horizontal: ─   vertical: │
-  left-branch: ├   right-branch: ┤   top-branch: ┬   bottom-branch: ┴
-  cross: ┼
-
-FLOW ARROWS
-  down:  ▼   right: →   left: ←   up: ▲
-  branch-down: ↓   branch-right: ├─   last-branch: └─
-  split-label: ├─── <label> ──────┐   (right branch floats)
-
-ANNOTATIONS
-  new / important: ★
-  done: ✅   fail: ❌   pending: □
-  reference tag: [FILENAME §section]
-  inline note: ← <note text>
+- id: 1
+  name: "Diagram Production"
+  steps: ["verify invoke pattern", "select chars §1", "build boxes §2", "apply detail §3", "connect §4", "verify box count"]
 ```
 
----
+# ascii_flow Skill
 
-## 2 · Box Templates
+## Trigger
+Activated when creating or updating:
+- ASCII flow diagrams / architecture charts in any `.md` file
+- Flow reference docs (e.g., `knowledge/harness_flow_*.md`)
+- Any `.md` file that will contain a box/connector diagram
 
-### Outer process box (70 chars wide)
+Reference style: `knowledge/harness_flow_20260525.md`
+
+## Refusal Contract
+Skip entirely (emit `[ascii-skip]`) if:
+- No diagram or flow doc is required in this task
+- Task is purely code/config — no architectural documentation needed
+- Calling skill does not include `[→ ascii_flow]` invoke pattern
+
+## Workflow
+Sequential: verify `[→ ascii_flow]` invoke pattern → select chars from §1 Char Palette → build boxes from §2 templates → apply §3 detail level → connect with §4 flow connectors → structure per §5 doc format → emit `[ascii-done]`.
+Full char palette, templates, guidelines, connectors, doc structure: `@.agents/skills/ascii_flow/SKILL_detail.md`
+
+## Output Contract
+Every diagram produced must use:
+- Chars exclusively from §1 Char Palette (no Unicode outside palette)
+- Box structure from §2 box-templates
+- Node detail level from §3 detail-guidelines
+- Connector patterns from §4 flow-connectors
+- Emit `[ascii-done] <title> · lines: <N>` on completion
+
+## Routing
+→ After diagram written and verified:
+- Emit `[ascii-done] diagram: <file> · boxes: <N>`
+- Return to calling skill (coder / editor / mece) — do not initiate further actions
+
+## MECE Constraints Block (copy into mece_plan.md for sections using `ascii_flow`)
 ```
-┌──────────────────────────────────────────────────────────────────────┐
-│  BOX TITLE · [optional reference tag]                                │
-│                                                                      │
-│  Purpose: <1-line description of what this box accomplishes>         │
-│                                                                      │
-│  [step] Action                   ← why: <reason if non-obvious>     │
-│  [step] Action                                                       │
-│                                                                      │
-│  Output: <what this box produces for the next stage>                 │
-└──────────────────────────────────────────────────────────────────────┘
+- Only trigger when section creates/updates a .md file with a flow diagram
+- Chars must be from §1 Char Palette only — no Unicode outside palette
+- [ascii-done] emit required after diagram written and box-count verified
+- Verify: grep -c "┌" <file> → matches expected box count
+- Return to calling skill immediately after [ascii-done] — do not initiate further actions
 ```
-
-### Inner nested box (indent 2 spaces, 66 chars wide)
-```
-  ┌────────────────────────────────────────────────────────────────┐
-  │  INNER TITLE                                                   │
-  │  <detail lines — keep to ≤ 5 lines per inner box>             │
-  └────────────────────────────────────────────────────────────────┘
-```
-
-### Decision box
-```
-┌──────────────────────────────────────────────────────────────────────┐
-│  DECISION: <question or condition>                                   │
-│  Criteria: <what determines each path>                               │
-└──────────────────────────────────────────────────────────────────────┘
-     │
-     ├─── <condition A> ──────────────────────────────────────────────┐
-     │    <action for A>                                               │
-     │                                                                 │
-     └─── <condition B>                                               │
-          <action for B>  ◄──────────────────────────────────────────-┘
-```
-
-### Note / warning box
-```
-  ┌─ NOTE ────────────────────────────────────────────────────────┐
-  │  <important constraint, caveat, or rule>                       │
-  └───────────────────────────────────────────────────────────────┘
-```
-
----
-
-## 3 · Detail Guidelines
-
-Every box must answer 3 questions. Use inline annotations, not separate paragraphs.
-
-| Question | Where to put it | Format |
-|----------|----------------|--------|
-| **What** | Step label | `[step] Action verb + object` |
-| **Why** | Inline after step | `← why: <reason>` or `← trigger: <condition>` |
-| **Output** | Bottom of box | `Output: <what next stage receives>` |
-
-Detail rules:
-- Obvious steps (grep, read): no inline note needed
-- Non-obvious steps (why this order, why this command): add `← why:`
-- Decision criteria: always explain in the box header or `Criteria:` line
-- Error / failure paths: label with `← on fail:` or branch to error box
-- Cross-references: tag `[FILENAME §section]` at top of code block, not inline
-- Max 8 lines inside any single outer box before splitting into sub-boxes
-
----
-
-## 4 · Flow Connector Patterns
-
-### Sequence (steps in order)
-```
-[Box A]
-     │
-     ▼
-[Box B]
-```
-
-### Parallel (concurrent paths)
-```
-     │
-     ├─── Path A ────────────────────────────────┐
-     │    [action A]                              │
-     │                                            │
-     ├─── Path B ────────────────────────────────┤
-     │    [action B]                              │
-     │                                            │
-     ▼    ◄──────── merge after all complete ─────┘
-[Next Box]
-```
-
-### Loop with exit condition
-```
-┌─── LOOP ───────────────────────────────────────────────────────┐
-│  [step] action                                                 │
-│  [check] condition met?                                        │
-│       ❌ not met → repeat (max N iterations)                   │
-│       ✅ met     → exit loop ──────────────────────────────────┼──▶
-└────────────────────────────────────────────────────────────────┘
-```
-
-### Error / blocked branch
-```
-     │
-     ├─── success path ──────────────────────────────────▶ [Next]
-     │
-     └─── error / blocked ───────────────────────────────▶ [Error Handler]
-          ← on fail: <what to report + who decides next>
-```
-
----
-
-## 5 · Doc Structure
-
-A full flow document must follow this section order:
-
-```
-# <Title> — <Purpose>
-> Date · Version · Session · Replaces (if updating existing)
-
----
-## Layer Architecture        ← optional: shows file/system layers
-## <Phase/Stage 1 name>      ← one ## section per major phase
-## <Phase/Stage 2 name>
-## <Phase/Stage 3 name>
-## Quick Reference           ← summary table of all gate/trace signals
-## Appendix / Changelog      ← version history, ★ items explained
-```
-
-Each `## Section` contains exactly one fenced code block with the diagram.
-- First line inside code block: `[reference tag — source files for this section]`
-- Blank line after reference tag before diagram starts
-- Section heading outside the code block (not inside)
-
----
-
-## 6 · Invoke Rule
-
-**Any skill creating or editing a `.md` file that contains flow diagrams MUST use this skill.**
-
-Trigger phrase in task: "create flow", "update flow", "draw diagram", "architecture doc", "flow doc", "add diagram to"
-
-Invoke pattern:
-```
-[→ ascii_flow] Creating flow diagram in <file>
-  Style: knowledge/harness_flow_20260525.md
-  Sections planned: [list]
-```
-
-After diagram is written:
-- Verify: `grep -c "┌" <file>` → matches expected box count
-- Verify: no broken box chars (┌ without matching └ on same indent level)
-- Reference file: add to `knowledge/session_index.md` if it's a knowledge doc
 
 ## Context Gate
 If during this task a new hard constraint was discovered → add to INVARIANTS.md §I2 before closing task
+
+@.agents/skills/ascii_flow/SKILL_detail.md

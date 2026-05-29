@@ -36,6 +36,7 @@
 │  .agents/skills/session_manager/SKILL.md ← pause/resume/close ★    │
 │  .agents/skills/self_improve/SKILL.md    ← CFP review + harness ✦  │
 │  .agents/skills/harness_doctor/SKILL.md  ← structural CFP fix ●      │
+│  .agents/skills/harness_editor/SKILL.md  ← harness file edits △      │
 │  .agents/skills/token_tracker/SKILL.md   ← estimation formulas      │
 │  .agents/skills/file_manager/SKILL.md    ← index_files sync         │
 │  .agents/skills/variable_manager/SKILL.md← index_variables sync     │
@@ -75,6 +76,7 @@
                    ★ = added in 2026-05-25 vulnerability fixes
                    ● = added in 2026-05-26 CFP tracking + harness_doctor + checkpoint gates
                    ◆ = added in 2026-05-27 compact_state.md + mece_plan_controler fixes
+                   △ = added in 2026-05-29 harness_editor skill (T-021)
 ```
 
 ---
@@ -198,6 +200,7 @@ Routing examples (after C2 confirms same topic):
   "plan / วางแผน"                → mece/SKILL.md
   "review CFP / improve harness" → self_improve/SKILL.md ✦
   "harness doctor / structural"  → harness_doctor/SKILL.md ●
+  "แก้ harness / update harness / edit SKILL.md / improve skill" → harness_editor/SKILL.md △
   no match                      → agent/SKILL.md (fallback)
 ```
 
@@ -926,3 +929,80 @@ Root cause X15-X16: Agent was computing ~Tok as `chars ÷ 1000` (overcounting 3�
 | Y3 | `[S1-A.5]` added to mece Execution Protocol between S1-A→S1-B: mirrors M1.5 at skill level | `mece/SKILL.md §Execution Protocol` |
 | Y4 | M1.5 checkbox added to Phase-Checklist Phase 2 block; Sections[] steps list updated; Cycle grouping annotated with M1.5 source; Multi-skill S1[B] references M1.5 dependency_map[] | `mece/SKILL.md §Phase-Checklist` · `§Sections[]` · `§Plan Format` · `§Multi-skill template` |
 | Y5 | `lookup.py` upgraded: `source` field (index_variables/index_files/index_sessions/rag) in all 3 search functions · `RAG_BASE_URL` env var + `_rag_query()` stub · `.claw-rag/` added to .gitignore · CLAUDE.md R5 T0 updated with source + --session + RAG_BASE_URL note | `scripts/lookup.py` · `.gitignore` · `CLAUDE.md §R5` |
+
+---
+
+**Behavioral Contract + File Size Constraints (2026-05-28) ◈**
+
+> Principle: Skills are behavioral contracts, not prose rules. Every skill must answer 5 questions explicitly.
+
+| Z# | Change | Files Changed |
+|---|---|---|
+| Z1 | **Behavioral Contract** principle adopted from 9arm-skills: every SKILL.md must have 5 elements — Trigger (when to activate) · Refusal (when to HALT) · Workflow (ordered steps) · Output Contract (required output shape) · Routing (next-phase handoff). Prose rules without these = incomplete. | All skill SKILL.md files |
+| Z2 | **Multi-surface Verifier**: Reviewer prompt in `mece/SKILL.md` expanded with `task_type` classification → selects surface (CLI / browser / data read-back / adversarial) based on task type before running Verify-N | `.agents/skills/mece/SKILL.md` |
+| Z3 | **Formal Closeout Schema**: session_handoff.md Step 4 template now requires: `objective` · `outcome` · `changes[]` · `validation` · `root_cause` · `follow_ups` — explicit output contract for session close | `.agents/skills/session_manager/SKILL.md §3 Step 4` |
+| Z4 | **Requirements Interviewer upgrade**: G0 gains refusal contract (`[gather-refused]` after ≥2 ignored rounds) + output contract (gather_complete.md must have 5 fields before leaving G0) | `AGENTS.md §G0`, `Implement/03_config.md §G0` |
+| Z5 | **Skeptical Reviewer Phase (M4.5)**: optional pre-execution critic gate after MECE plan confirmed · spawns haiku sub-agent · verdict go/revise/reject · revise→M2 · reject→Phase 1 · skip for low-risk/single-file tasks | `AGENTS.md §Phase 2 M4.5`, new `.agents/skills/skeptical_reviewer/SKILL.md` |
+| Z6 | **Skill Governance Labels**: `bucket` field added to every skill in `skill-manifest.json` (stable/draft/deprecated) · skeptical_reviewer added to manifest | `.agents/skills/skill-manifest.json` |
+| Z7 | **File Role Architecture Doc**: 6-layer model (Persona/Identity/Bootstrap/Routing/Continuity/Operations) mapped to existing harness files · conflict resolution rule: higher layer wins | `knowledge/harness-file-role-map.md` (new) |
+| Z8 | **Contract Gap Fixes** (6 skills): file_manager + variable_manager gained Refusal+Workflow+Routing · self_improve gained Routing · token_tracker+token_auditor+ascii_flow gained Refusal+Routing · identity declared persona-only scope | `.agents/skills/file_manager|variable_manager|self_improve|token_tracker|token_auditor|ascii_flow|identity SKILL.md` |
+| Z9 | **File Size Contract**: editor + coder SKILL.md now enforce ≤200L target for any .md file created/edited · if >200L → split into SKILL.md (contract, ≤200L) + SKILL_detail.md (details) · behavioral contract never split across files | `.agents/skills/editor/SKILL.md`, `.agents/skills/coder/SKILL.md` |
+| Z10 | **Checklist updated**: `Implement/08_checklist.md` gains Behavioral Contract completeness check + File Size Contract check | `Implement/08_checklist.md` |
+
+◈ = added 2026-05-28 (9arm behavioral contract audit)
+
+**Skills status post-Z patch:**
+
+| Skill | All 5 contract elements | bucket |
+|---|---|---|
+| mece · editor · coder · session_manager · agent · harness_doctor · skeptical_reviewer | ✅ complete | stable (skeptical_reviewer: draft) |
+| file_manager · variable_manager · self_improve · token_tracker · token_auditor · ascii_flow | ✅ complete (fixed Z8) | stable |
+| identity | ✅ scope-declared (persona-only — no executable contract) | stable |
+
+| Z11 | editor (281L) + self_improve (274L) exceeded 200L limit | Split each into SKILL.md (contract ≤200L) + SKILL_detail.md (procedures) | editor/SKILL.md · editor/SKILL_detail.md · self_improve/SKILL.md · self_improve/SKILL_detail.md |
+
+**Status:** All 14 skills within File Size Contract. No pending splits.
+
+---
+
+**Token Formula + MECE Contract + harness_editor Patches (2026-05-29) △**
+
+| ID | Issue / Gap Fixed | Resolution | Affected Files |
+|---|---|---|---|
+| Y1 | **Token formula wrong**: CHAT_TOTAL re-added system_fixed (7,300) every turn — caused 3× overcount (estimated 37k vs 137.3k actual) | Fixed: `CHAT_TOTAL_n = CHAT_TOTAL_{n-1} + hooks_per_turn + turn_tokens` · system_fixed added once at session start · hooks_per_turn = 1,300/turn · simulation accuracy: 84.5% | `CLAUDE.md §R1` · `token_tracker/SKILL.md §Core Model` |
+| Y2 | **token_estimator.py**: no script existed for in-session estimation | Created `scripts/token_estimator.py` — `--test` validation · `--simulate --turns=N` · JSON output · registered in `knowledge/index_files.json` | `scripts/token_estimator.py` |
+| Y3 | **MECE plan format missing behavioral contract fields**: plan format had no way to reference skill Output Contract (expected signals) or Refusal Contract (what to do on refusal) | Added `Expected_Traces:` + `Refusal_Path:` to `mece/SKILL.md` plan format block + S1-D fallback rule | `mece/SKILL.md` |
+| Y4 | **MECE plan templates missing behavioral contract fields**: existing 4 templates (Bug Fix, New Feature, Refactor, Multi-skill) had no Expected_Traces/Refusal_Path fields | Added both fields to all 4 templates + added new "Harness Skill Editing" template | `mece/SKILL_detail.md` |
+| Y5 | **MECE Constraints Block missing** from 5 eligible skills (editor, coder, file_manager, variable_manager, ascii_flow) | Added `## MECE Constraints Block` to all 5 skills — planners can now copy ≤5 lines into plan Constraints: field | `editor/coder/file_manager/variable_manager/ascii_flow SKILL.md` |
+| Y6 | **No dedicated skill for harness file editing**: harness edits used generic editor with no mandatory MECE plan gate or doc close requirements | Created `harness_editor` skill: 103L · 5 behavioral contract elements · mandatory MECE plan gate · Step 5 mandatory close (flow + Implement docs) | `.agents/skills/harness_editor/SKILL.md` · `skill-manifest.json` · `registry.md` |
+
+| Y7 | **Bidirectional cross-links**: harness_doctor ↔ harness_editor were isolated — neither knew the other existed | Added cross-link in each Routing section: harness_doctor §5 delegates file edits to harness_editor · harness_editor escalates structural CFP to harness_doctor via `[escalate-to-harness_doctor]` | `.agents/skills/harness_doctor/SKILL.md §Routing` · `.agents/skills/harness_editor/SKILL.md §Routing` |
+| Y8 | **index_files.json severely underpopulated** — only 2 entries; 10 core harness files (CLAUDE.md, AGENTS.md, skill-manifest, registry, harness_flow, 4 knowledge indexes, harness_doctor) had no backlink tracking | Added 10 entries with type + description + top-6 backlinks[] each · removed stale `"files": {}` placeholder | `knowledge/index_files.json` |
+
+| Y9 | **Compact handling gaps** (3 fixes): (1) B1 only reset SESSION_TOTAL — CHAT_TOTAL never reset after /compact causing threshold drift · (2) TOKEN PAUSE had no pre-compact state emit — compact summary Section 7 may miss pending tasks · (3) compact_state.md had no section+step fields — resume only knew "in_progress" not which step | (1) B1 now resets both counters on compact-restore OR fresh start · (2) session_manager TOKEN PAUSE emits `[pre-compact-state]` block before asking user · (3) compact_state.md schema extended: section=S<N> + step=<desc> · B2 parses + Boot reply shows Resume: S<N>-step | `AGENTS.md §B1/B2` · `.agents/skills/session_manager/SKILL.md §Section 2` · `CLAUDE.md §Phase 3 close` |
+
+| Y10 | **Harness immune system gaps** (3 fixes): (1) harness_doctor/SKILL.md had no `## Workflow` heading + was 242L 🟡 — split to SKILL_detail.md · (2) self_improve/SKILL.md missing MECE Constraints Block + Routing had no harness_doctor escalation path · (3) CFP-005/006/007 had no Detection Signal (first 3 entries pre-dated the pattern) | (1) harness_doctor split 242L→64L 🟢 + SKILL_detail.md 190L + `## Workflow` added · (2) self_improve MECE Constraints Block + escalation route added · (3) Detection Signal added to all 15 CFPs (now 15/15) | `.agents/skills/harness_doctor/SKILL.md` · `.agents/skills/harness_doctor/SKILL_detail.md` · `.agents/skills/self_improve/SKILL.md` · `CODING_FAILURE_PATTERNS.md` |
+
+| Y11 | **1D backlinks → 3-tier topic-graph** — index_files.json only had `backlinks[]` (manual, no semantic discovery, no outgoing links). No controlled vocabulary existed. Agents couldn't determine semantic impact of edits beyond direct importers. | Created `knowledge/topic_registry.json` (20 closed topics + descriptions). Extended all 13 index_files.json entries with `topics[]` + `references[]` + `related[]`. Created `scripts/backlink_analyzer.py` (pairwise topic overlap, --dry-run, --min-overlap flag) → computes 32 related links across 12/13 files. Updated harness_editor Step 4 + CLAUDE.md R8 + AGENTS.md Backlink Rule to enforce 3-tier check before any edit. | `knowledge/topic_registry.json` · `knowledge/index_files.json` · `scripts/backlink_analyzer.py` · `.agents/skills/harness_editor/SKILL.md` · `CLAUDE.md §R8` · `AGENTS.md §Backlink Rule` |
+
+| Y12 | **Post-T-027 index gaps + behavioral contract invocation gap** — 3 new files not indexed (backlink_analyzer.py, harness_doctor/SKILL_detail.md, tool-manifest.json); harness_editor on_demand_files missing topic_registry.json; Implement/04 Step 4 lacked 3-tier sync instructions; CFP-020 gap: agents could edit harness files without invoking harness_editor skill first (no Invocation Gate existed in docs) | Added 3 entries to index_files.json (16 total) · Added topic_registry.json to skill-manifest.json on_demand_files · Added ⚡ Invocation Gate to Implement/04 harness_editor section · Updated Step 4 with topics[]+backlink_analyzer.py · Updated Implement/08 SKILL_detail note (harness_doctor) · Logged CFP-020 (behavioral contract invocation bypass) · Re-ran backlink_analyzer (32→47 related[] links) | `knowledge/index_files.json` · `.agents/skills/skill-manifest.json` · `Implement/04_skills.md` · `Implement/08_checklist.md` · `CODING_FAILURE_PATTERNS.md` |
+
+| Y13 | **Session bootstrap + template gap** — .sessions/ fully gitignored · no template files · self_improve_log.md missing · session_compactor.py missing · identity/SKILL.md used stale .sessions/session_xxx.json schema | Removed harness ignores from .gitignore (dev repo tracks all) · Created docs/session_templates/ (8 files) · scripts/bootstrap_sessions.py · scripts/session_compactor.py · Updated identity/SKILL.md Fatal Constraint · Impl/02_setup.md Step 5 + §11 scope note | `.gitignore` · `docs/session_templates/` · `scripts/bootstrap_sessions.py` · `scripts/session_compactor.py` · `.agents/skills/identity/SKILL.md` · `Implement/02_setup.md` |
+
+| Y14 | **Behavioral contract incomplete + REACT loop L5 silent gap** (3 fixes): (1) 7 SKILL.md files missing `## Workflow` (agent/coder/ascii_flow/self_improve/skeptical_reviewer/token_auditor/token_tracker) · ascii_flow 228L 🟡 not split · (2) harness_doctor first invocation: identified CFP-021 (mece_plan sections never marked [X] during execution) · AGENTS.md L5 DECIDE + CLAUDE.md Phase 3 close missing the update step | (1) Added `## Workflow` to 7 skills · ascii_flow split 228L→58L + SKILL_detail.md 187L · 14/15 skills 5/5 behavioral contract · (2) AGENTS.md L5: added `mark mece_plan.md [ ] → [X]` · CLAUDE.md Phase 3 step 0 added · CFP-021 logged · SI-1 written · index_cfp_fix.json first fix recorded | `.agents/skills/*/SKILL.md` · `AGENTS.md §L5` · `CLAUDE.md §Phase 3 close` · `CODING_FAILURE_PATTERNS.md` · `knowledge/index_cfp_fix.json` · `.sessions/self_improve_log.md` |
+
+| Y15 | **REPO_MAP.md severely outdated** — 24+ entries missing across .agents/, .sessions/, knowledge/, docs/, scripts/ · no trigger existed to update REPO_MAP.md when harness files changed | Added 24 entries (114L→158L) · Added REPO_MAP.md as MANDATORY entry in harness_editor Step 5B with explicit trigger condition: "new file / dir / skill created or removed" | `REPO_MAP.md` · `.agents/skills/harness_editor/SKILL.md §Step 5B` |
+
+| Y16 | **Session Health Check missing from Completion Gate** — "Feedback delivered" undefined · no trigger to recommend /compact after task complete | Added Session Health Check block to AGENTS.md §Completion Gate: SESSION_TOTAL thresholds <20k=✅ 20-40k=💡 40-60k=⚠️ >60k=🛑 · Added "Task complete" trigger + [session-health] Output Contract row to session_manager/SKILL.md | `AGENTS.md §Completion Gate` · `.agents/skills/session_manager/SKILL.md §Trigger + §Output Contract` |
+
+| Y17 | **CHAT_TOTAL Boot Init Gap (CFP-022)** — B1 wrote `CHAT_TOTAL: 0` at reset; no enforcement re-initialized to system_fixed=7,300 · boot reply showed `Chat: ~0k` instead of `~7k` | B1 printf changed `CHAT_TOTAL: 0` → `CHAT_TOTAL: 7300` · AGENTS.md B1 note + CLAUDE.md B1 note updated to say "sets CHAT_TOTAL=7300 (system_fixed)" | `AGENTS.md §B1` · `CLAUDE.md §Boot` |
+
+| Y18 | **harness_editor Step 5 Docs Close not enforced (CFP-023)** — Output Contract had flow_updated field as descriptive only · no gate blocked [harness-edit-done] when flow_updated=no · T-034/T-035/T-036 all skipped Step 5 | Added Refusal Contract gate: "Step 5 incomplete at task end → [harness-refused] before [harness-edit-done]" · Backfilled harness_flow + Implement/ for T-034/T-035/T-036 | `.agents/skills/harness_editor/SKILL.md §Refusal Contract` · `knowledge/harness_flow_20260526.md` · `Implement/03_config.md` · `Implement/04_skills.md` · `Implement/08_checklist.md` |
+
+| Y19 | **mece_plan.md Phase 0-3 Template never enforced (T-038)** — mece_plan.md used simplified format without Phase 0-3 checklist blocks · no behavioral contract enforcement in M5 step · AGENTS.md M5 had no template reference · mece/SKILL.md S1-E only validated Phase 0 block · 3 conditional close paths (PATH A/B/C) not documented in schema | Rewrote `docs/session_templates/mece_plan_schema.md` with full Phase 0-3 blocks + Phase 3 Close Checklist + PATH A/B/C · AGENTS.md M5 now references template + "no simplified format (CFP-019)" · mece/SKILL.md S1-E validates all 4 Phase blocks (grep -c "## Phase 0-3") · Output Contract updated with template mandatory note | `docs/session_templates/mece_plan_schema.md` · `AGENTS.md §Phase 2 M5` · `.agents/skills/mece/SKILL.md §S1-E + §Output Contract` · `Implement/04_skills.md` · `Implement/08_checklist.md` |
+
+| Y20 | **Thai user-facing close missing from harness_editor Output Contract (T-039)** — harness_editor added Thai close rule to SKILL.md + AGENTS.md but harness_editor Step 5 (Docs Close) was NOT run — harness_flow + Implement/ not updated — CFP-023 recurrence immediately after fix | Added Thai user-facing close rule to `harness_editor/SKILL.md §Output Contract`: after `[harness-edit-done]` → Thai summary mandatory ("งานเสร็จแล้วครับ ✅") · added same rule to `AGENTS.md §Completion Gate` · backfilled harness_flow Y20 + Implement/04 (this entry = Step 5 completion) | `.agents/skills/harness_editor/SKILL.md §Output Contract` · `AGENTS.md §Completion Gate` · `Implement/04_skills.md §harness_editor Output Contract` |
+
+| Y21 | **No migration guide for users on old harness version (T-040)** — users who downloaded older harness version have mismatched tree structure, old index schemas (missing `topics[]`/`backlinks[]`), `chat_tokens.md` instead of `session_tokens.md`, and missing new skills (harness_editor · harness_doctor · session_manager) — no upgrade path documented in Implement/ | Created `Implement/09_migration.md` (298L) with 4-track upgrade procedure: M1 re-format indexes (session_tokens migration · index schema · backlink_analyzer) · M2 re-structure tree (required dirs + session files + mece_plan_schema + detected.md) · M3 update/overwrite skills+config (overwrite list · preserve list · per-skill procedure · new skills to add) · M4 verify (08_checklist) + rollback plan · Added Track C entry to `Implement/00_index.md` | `Implement/09_migration.md` · `Implement/00_index.md §Track C` |
+
+△ = added 2026-05-29 (T-019 token formula fix · T-020 MECE contract closure · T-021 harness_editor · T-022 cross-links · T-024 index backlinks · T-025 compact improvements · T-026 immune system repair · T-027 topic-graph backlink system · T-028 post-T-027 index sync + behavioral contract clarity · T-029 session bootstrap · T-030 session_compactor + identity fix · T-031 behavioral contract Workflow · T-032 harness_doctor CFP-021 · T-033 REPO_MAP update · T-034 harness_editor Step 5B REPO_MAP trigger · T-035 session-health Completion Gate · T-036 CHAT_TOTAL boot init · T-037 CFP-023 Step 5 enforcement · T-038 mece_plan Phase 0-3 template enforcement · T-039 08_checklist BC + Thai close backfill · T-040 migration guide 09_migration.md)

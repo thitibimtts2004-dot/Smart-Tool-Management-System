@@ -6,22 +6,22 @@
   },
   "CFP-006": {
     "status": "active",
-    "description": "Unbounded Loop → Token Exhaustion",
+    "description": "Unbounded Loop \u2192 Token Exhaustion",
     "fixes": []
   },
   "CFP-007": {
     "status": "active",
-    "description": "Using Local Date/Time APIs Without Gregorian Safety → Buddhist Year Corruption",
+    "description": "Using Local Date/Time APIs Without Gregorian Safety \u2192 Buddhist Year Corruption",
     "fixes": []
   },
   "CFP-008": {
     "status": "active",
-    "description": "MECE Plan Staleness on Resume → Edits Target Wrong Lines",
+    "description": "MECE Plan Staleness on Resume \u2192 Edits Target Wrong Lines",
     "fixes": []
   },
   "CFP-009": {
     "status": "active",
-    "description": "Parallel Sub-agent Token Accounting Gap → Missed Threshold Triggers",
+    "description": "Parallel Sub-agent Token Accounting Gap \u2192 Missed Threshold Triggers",
     "fixes": []
   },
   "CFP-010": {
@@ -41,7 +41,7 @@
   },
   "CFP-013": {
     "status": "active",
-    "description": "Omitting Harness Trace Tokens During Implementation → Silent Execution",
+    "description": "Omitting Harness Trace Tokens During Implementation \u2192 Silent Execution",
     "fixes": []
   },
   "CFP-014": {
@@ -72,6 +72,45 @@
   "CFP-019": {
     "status": "active",
     "description": "Incorrect MECE Plan Format or Placement",
+    "fixes": []
+  },
+  "CFP-021": {
+    "description": "mece_plan.md sections not marked [X] during REACT loop \u2014 L5 DECIDE missing file-write step",
+    "recurrence_count": 1,
+    "deferred_count": 0,
+    "fixes": [
+      {
+        "fix_id": "CFP-021-FIX-001",
+        "date": "2026-05-29",
+        "applied_by": "harness_doctor T-032",
+        "change": "Added 'mark mece_plan.md [ ] \u2192 [X]' to AGENTS.md L5 DECIDE + CLAUDE.md Phase 3 close step 0",
+        "files": [
+          "AGENTS.md",
+          "CLAUDE.md"
+        ],
+        "detection_signal": "grep '^\\- \\[ \\]' .sessions/mece_plan.md after task done \u2192 should return nothing"
+      }
+    ],
+    "recurrence_note": "Recurred immediately during T-032 execution: harness_doctor edited AGENTS.md+CLAUDE.md without writing mece_plan.md first. Root cause: harness_doctor/SKILL.md Step 3 (Execute) has no explicit gate requiring mece_plan.md write before editing."
+  },
+  "CFP-022": {
+    "status": "fixed",
+    "description": "CHAT_TOTAL Boot Init Gap \u2014 Reset to 0 Instead of system_fixed (7,300)",
+    "fixes": [
+      {
+        "date": "2026-05-29",
+        "task": "T-036",
+        "change": "AGENTS.md B1 cmd CHAT_TOTAL:0\u21927300 \u00b7 AGENTS.md B1 note updated \u00b7 CLAUDE.md B1 note updated",
+        "files": [
+          "AGENTS.md",
+          "CLAUDE.md"
+        ]
+      }
+    ]
+  },
+  "CFP-023": {
+    "status": "active",
+    "description": "harness_editor Step 5 Docs Close Skipped \u2014 flow_updated Not Enforced",
     "fixes": []
   }
 }

@@ -19,6 +19,7 @@ description: Lightweight index of all available skills. Agent reads skill-manife
 | "new session", "done", "wrap up", "switch task" | `session_manager` |
 | token footer (every turn) | `token_tracker` (always active) |
 | output > 8k | `token_auditor` |
+| "แก้ harness", "update harness", "improve skill", "เพิ่ม rule", "edit SKILL.md", "harness edit" | `harness_editor` |
 
 > **Chained skills**: After `coder` or `editor` completes → ALWAYS run `file_manager` + `variable_manager` to sync indexes.
 
@@ -37,6 +38,7 @@ description: Lightweight index of all available skills. Agent reads skill-manife
 | `session_manager` | `.agents/skills/session_manager/SKILL.md` | At session start, context switch, or task completion | `[.sessions/<latest>.json]` |
 | `token_tracker` | `.agents/skills/token_tracker/SKILL.md` | At the end of every interaction turn (Step 6 of loop) | `[.sessions/<latest>.json]` |
 | `token_auditor` | `.agents/skills/token_auditor/SKILL.md` | Only when `estimated_tokens` exceeds 8,000 | `[knowledge/index_files.json, docs/optimization_logs.md]` |
+| `harness_editor` | `.agents/skills/harness_editor/SKILL.md` | Editing CLAUDE.md, AGENTS.md, SKILL.md files, knowledge/, Implement/ | `[knowledge/harness_flow_20260526.md]` |
 
 ---
 

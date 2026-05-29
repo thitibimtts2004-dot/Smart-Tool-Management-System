@@ -18,6 +18,39 @@ description: Focused skill for implementing new features and creating applicatio
 
 # Coder Skill
 
+## Trigger
+Activated when:
+- Orchestrator delegates a `Skill: coder` section from a MECE plan
+- Task requires creating new files, components, or features from scratch
+- `mece_plan.md` section type = "Scope & Index" / "Build" / "Sync & Close"
+
+## Refusal Contract
+Halt and emit `[coder-refused]` if:
+- Task is editing/fixing *existing* code → delegate to `editor` skill instead
+- `gather_complete.md` or `mece_plan.md` missing/stale before any `src/` write
+- No T-ID assigned in roadmap before starting
+
+On refusal: emit `[coder-refused] Reason: <edit-not-create | missing-plan | no-task-id>` → HALT.
+
+## Workflow
+Sequential: Roadmap [/] → gather context (G2 targeted reads) → write new file(s) → verify (grep + build check) → Index Sync (file_manager + variable_manager) → Roadmap [X] → session close.
+Full per-step detail: `## Roadmap Protocol` · `## Responsibilities` · `## Coding Standards` below.
+
+## Output Contract
+Required outputs per section:
+
+| Action | Required |
+|---|---|
+| Every file created | `[✓ written]` + grep verify (file exists at path) |
+| Section 3 done | `index_files.json` + `index_variables.json` updated via `file_manager` + `variable_manager` |
+| Every task complete | Roadmap `[ ] → [X] T-<N>` annotation |
+| Linter error found | Fix inline before proceeding — never leave TS errors |
+
+## Routing
+- Section 3 (Sync & Close) done → return to orchestrator / session_manager §3
+- `[blocked]` → halt · report `T-<N>: <cause>` · wait for orchestrator decision
+- File created → trigger `file_manager` + `variable_manager` before closing section
+
 ## Responsibilities
 You are the "Builder". When the Agent delegates a new feature task to you, focus on writing robust, error-free code and establishing new files.
 
@@ -77,6 +110,32 @@ Creating any `.md` file that contains a flow diagram or architecture chart → *
 [→ ascii_flow] Before drawing any box diagram in <file>
 ```
 Style reference: `knowledge/harness_flow_20260525.md` · Skill: `.agents/skills/ascii_flow/SKILL.md`
+
+## File Size Contract (applies to all .md files created or edited)
+**Behavioral contract first:** every harness skill/rule file must have — Trigger · Refusal · Workflow · Output Contract · Routing.
+Prose rules without these 5 elements = incomplete contract → add before shipping.
+
+**Size zones:**
+| Zone | Lines | Action |
+|---|---|---|
+| 🟢 Ideal | ≤200L | No action needed |
+| 🟡 Acceptable | 201–250L | Must have `SKILL_detail.md` with `@` reference at bottom of Workflow |
+| 🔴 Must split | >250L | Split required — no exceptions |
+
+**Split rules:**
+1. `SKILL.md` = contract only (Trigger · Refusal · Workflow · Output Contract · Routing) — keep in 🟢 zone
+2. `SKILL_detail.md` = examples, templates, detailed procedures
+3. Add reference in primary: `@.agents/skills/<name>/SKILL_detail.md` at bottom of Workflow section
+4. Never split the contract itself — all 5 elements stay in SKILL.md
+
+## MECE Constraints Block (copy into mece_plan.md for sections using `coder`)
+```
+- Roadmap `[ ] T-<N>` written BEFORE any file creation begins (R-Roadmap gate)
+- [✓ written] verify each file immediately after Write — mandatory
+- Do NOT edit index files (index_files.json / index_variables.json) directly — call file_manager after
+- Edge Runtime: no Node.js APIs — WebCrypto only
+- R15: any touch of src/db/ → [db-gate] → HALT for explicit confirm
+```
 
 ## Context Gate
 If during this task a new hard constraint was discovered → add to INVARIANTS.md §I2 before closing task

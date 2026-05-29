@@ -13,7 +13,7 @@
 | `AGENTS.md` | Agent orientation, boot sequence detail, loop architecture, sub-agent rules |
 | `INVARIANTS.md` | Destructive gates + DB hard stop + invariants I1–I8 (load on-demand at R14/R15) |
 | `REPO_MAP.md` | This file — repo layout reference |
-| `CODING_FAILURE_PATTERNS.md` | CFP-005–CFP-019 known agent failure modes (grep only · Read ≤30L per entry) |
+| `CODING_FAILURE_PATTERNS.md` | CFP-005–CFP-021 known agent failure modes (grep only · Read ≤30L per entry) |
 | `CLAUDE.th.md` | Thai-language version of CLAUDE.md (reference only) |
 | `README.md` | Project overview for humans |
 | `Implement.md` | Short pointer to Implement/ directory |
@@ -30,23 +30,36 @@ Agent configuration and skill library.
   platform/
     detected.md          ← platform auto-detection (spawn_tool, explore_type, etc.)
     session_protocol.md  ← context window + session boundary rules per provider
+  router.md              ← skill routing reference (keyword → skill decision tree)
+  tools/
+    tool-manifest.json   ← registered tool scripts (choose_tools.py lookup table)
+  skill-patches/
+    _template.md         ← patch template
+    applied/             ← patches already merged into SKILL.md files
+    pending/             ← patches queued for next harness_editor task
   skills/
     skill-manifest.json  ← keyword→skill routing table (grep only at B2)
-    registry.md          ← skill list + descriptions
-    agent/               ← SKILL.md: orchestrator / parallel fan-out
-    ascii_flow/          ← SKILL.md: diagram generation
+    registry.md          ← skill list + descriptions (one row per skill)
+    agent/               ← SKILL.md + SKILL_detail.md: orchestrator / parallel fan-out
+    ascii_flow/          ← SKILL.md + SKILL_detail.md: diagram generation
     coder/               ← SKILL.md: TypeScript/Next.js code writing
-    editor/              ← SKILL.md: file editing (current project skill)
+    editor/              ← SKILL.md + SKILL_detail.md: file editing
     file_manager/        ← SKILL.md: file create/move/delete
-    harness_doctor/      ← SKILL.md: structural CFP fix agent
-    identity/            ← SKILL.md: project identity / orientation
-    mece/                ← SKILL.md: MECE plan template + phase-checklist format
-    self_improve/        ← SKILL.md: R16 complaint handler + CFP logging format
-    session_manager/     ← SKILL.md: session open/close + compact_state write
+    harness_doctor/      ← SKILL.md + SKILL_detail.md: structural CFP fix agent
+    harness_editor/      ← SKILL.md: harness config file editor (CLAUDE.md/AGENTS.md/SKILL.md)
+    identity/            ← SKILL.md: project identity / orientation (persona — no behavioral contract)
+    mece/                ← SKILL.md + SKILL_detail.md: MECE plan template + phase-checklist format
+    self_improve/        ← SKILL.md + SKILL_detail.md: R16 complaint handler + CFP logging
+    session_manager/     ← SKILL.md + SKILL_detail.md: session open/close + compact_state write
+    skeptical_reviewer/  ← SKILL.md: M4.5 plan scrutiny gate (haiku · read-only)
     token_auditor/       ← SKILL.md: token budget audit
     token_tracker/       ← SKILL.md: session/chat token tracking
     variable_manager/    ← SKILL.md: symbol create/rename/delete
 ```
+
+> **SKILL_detail.md pattern:** Skills with >80L detail move overflow to `SKILL_detail.md` in the same dir.
+> SKILL.md stays ≤200L and ends with `@.agents/skills/<name>/SKILL_detail.md` reference.
+> 7 skills currently use this pattern: agent · ascii_flow · editor · harness_doctor · mece · self_improve · session_manager
 
 ### `.sessions/`
 Runtime session state. All files English-only.
@@ -58,22 +71,39 @@ Runtime session state. All files English-only.
   session_handoff.md    ← cross-session resume context (skill + sections + resume_at)
   compact_state.md      ← boot cache (dt/sk/sk_h/mece_h/p3) written before /compact
   gather_complete.md    ← date + task written at [✓ gather] (PreToolUse hook checks)
+  self_improve_log.md   ← SI-N entries written by R16 self-improve events (C0 complaint handler)
   session_tokens.md     ← SESSION_TOTAL (resets at session close)
   chat_tokens.md        ← CHAT_TOTAL (resets only at /compact or new chat)
   cycle_N_<id>.json     ← sub-agent result files (written by each spawned agent)
 ```
 
 ### `knowledge/`
-Index files + error log. Protected zone (I1 gate required for overwrite).
+Index files + error log + harness reference docs. Protected zone (I1 gate required for overwrite).
 
 ```
 knowledge/
-  index_files.json      ← file path → exports + backlinks (grep only · never full-read)
-  index_variables.json  ← symbol → file + line + type + used_in (grep only)
-  index_sessions.json   ← session history + keywords (populated by session_indexer.py)
-  index_cfp_fix.json    ← CFP fix tracking keyed by CFP-XXX ID
-  error_index.md        ← ERR-XXX entries (grep → Read ≤40L only)
-  cfp_archive.md        ← archived CFP-001–CFP-004
+  index_files.json           ← file path → exports + backlinks (grep only · never full-read)
+  index_variables.json       ← symbol → file + line + type + used_in (grep only)
+  index_sessions.json        ← session history + keywords (populated by session_indexer.py)
+  index_cfp_fix.json         ← CFP fix tracking keyed by CFP-XXX ID
+  topic_registry.json        ← closed tag list for topics[] in index_files.json (R8 index sync)
+  skill-index.md             ← skill descriptions index (one entry per skill)
+  error_index.md             ← ERR-XXX entries (grep → Read ≤40L only)
+  cfp_archive.md             ← archived CFP-001–CFP-004
+  harness-file-role-map.md   ← role map for all harness config files
+  harness_flow_20260525.md   ← ASCII flow diagram snapshot 2026-05-25
+  harness_flow_20260526.md   ← ASCII flow diagram snapshot 2026-05-26 (current)
+  cfp-proposals/
+    applied/                 ← CFP proposals already merged
+    pending/                 ← CFP proposals queued for review
+  recipes/
+    g0-interview-pattern.md  ← G0 task clarity interview pattern recipe
+    reviewer-spawn.md        ← Skeptical Reviewer spawn pattern recipe
+  research/                  ← dated research reference docs (read-only · not indexed)
+    9arm-skills-*.md         ← skill pattern research
+    agent-harness-skill-*.md ← harness skill spec research
+    claude-code-*.md         ← Claude Code behavior research
+    context-compression-*.md ← context compression strategy research
 ```
 
 ### `docs/`
@@ -81,6 +111,15 @@ knowledge/
 ```
 docs/
   master_roadmap.md     ← T-N task ledger (grep -n or tail -30 · never full-read)
+  session_templates/    ← canonical templates for bootstrap_sessions.py
+    active_thread.md         ← template
+    chat_tokens.md           ← template
+    compact_state.md         ← template
+    gather_complete.md       ← template
+    mece_plan_schema.md      ← template (named _schema to avoid PreToolUse hook trigger)
+    self_improve_log.md      ← template
+    session_handoff.md       ← template
+    session_tokens.md        ← template
 ```
 
 ### `scripts/`
@@ -88,9 +127,14 @@ Python automation. Run after symbol/session changes (R8 index sync).
 
 ```
 scripts/
-  lookup.py             ← T0 index-first lookup (R5): python scripts/lookup.py "<keyword>" --json
-  symbol_indexer.py     ← regenerates index_variables.json + index_files.json
-  session_indexer.py    ← appends to index_sessions.json at session close
+  lookup.py               ← T0 index-first lookup (R5): python scripts/lookup.py "<keyword>" --json
+  symbol_indexer.py       ← regenerates index_variables.json + index_files.json
+  session_indexer.py      ← appends to index_sessions.json at session close
+  backlink_analyzer.py    ← refreshes related[] 3-tier links in index_files.json (run after R8)
+  bootstrap_sessions.py   ← initializes .sessions/ from docs/session_templates/ (--dry-run/--force)
+  session_compactor.py    ← pre-commit health gate: validates 8 .sessions/ files + required fields
+  token_estimator.py      ← estimates SESSION_TOTAL + CHAT_TOTAL for harness agents
+  choose_tools.py         ← keyword search across skill-manifest + tool-manifest
 ```
 
 ### `src/`

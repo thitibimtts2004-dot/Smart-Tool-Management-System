@@ -1,7 +1,31 @@
 # Implement/08_checklist.md — Post-Installation Verification Checklist
 
-> Run this checklist after completing Track A or Track B setup.
-> For each item: run the Verify command → if it fails → follow the Fix action.
+## Behavioral Contract
+
+**Trigger:**
+- After completing Track A or Track B setup (Implement/02_setup.md)
+- After any harness edit task that touches CLAUDE.md / AGENTS.md / SKILL.md / Implement/
+- Re-run specific §N only when fixing that section's failure
+
+**Refusal Contract (blocking failures — do NOT proceed until resolved):**
+- `❌ FAIL`: missing file / count = 0 where expected ≥ 1 → HALT · apply Fix action · re-run §N
+- `⚠️ WARN`: count mismatch ≤ 2 · non-critical section → log + continue · fix before next task
+- ≥ 3 FAIL items in one run → escalate to `harness_doctor` before continuing
+
+**Workflow:** Sections 1 → 9 sequential · §9 session files verify after first boot only · each §N is independent (re-run one without re-running all)
+
+**Output Contract:**
+
+| Result | Condition | Action |
+|---|---|---|
+| ✅ PASS | All counts ≥ expected · 0 missing files | proceed / harness ready |
+| ⚠️ WARN | Count mismatch · non-critical | log + continue |
+| ❌ FAIL | Missing file OR count 0 where ≥ 1 expected | halt → Fix action → re-run §N |
+
+**Routing:** FAIL → find §N above → apply Fix action → re-run §N verify only → if still FAIL → `[blocked] §N: <cause>` → wait for resolution
+
+---
+
 > All commands run from `[PROJECT_ROOT]` (the directory containing CLAUDE.md).
 
 **Total required files: 28**
@@ -25,7 +49,7 @@ Expected: ≥ 10 matches
 |---|---|---|
 | Boot B1–B4 | `grep -c "\[B[1-4]\]" CLAUDE.md` | 4 |
 | CFP_COUNT in Boot | `grep -c "cfp_boot_count\|CFP_COUNT" CLAUDE.md` | ≥ 2 |
-| CHAT_TOTAL tracking | `grep -c "CHAT_TOTAL\|chat_tokens" CLAUDE.md` | ≥ 3 |
+| CHAT_TOTAL tracking | `grep -c "CHAT_TOTAL\|session_tokens" CLAUDE.md` | ≥ 3 |
 | Provider routing | `grep -c "provider\|claude-code\|detected.md" CLAUDE.md` | ≥ 2 |
 | Per-Turn C0-C3 | `grep -c "C0\|C1\|C2\|C3\|topic.switch\|complaint" CLAUDE.md` | ≥ 4 |
 | R16 Self-Improvement | `grep -c "R16\|self.improve\|cfp_boot_count" CLAUDE.md` | ≥ 3 |
@@ -33,6 +57,7 @@ Expected: ≥ 10 matches
 | R4 platform-agnostic | `grep -c "spawn_tool\|detected.md\|platform-unknown" CLAUDE.md` | ≥ 3 |
 | Cycle Gate | `grep -c "Cycle Gate\|cycle_N_\|TOKEN MERGE" CLAUDE.md` | ≥ 2 |
 | Completion Gate | `grep -c "Completion Gate" CLAUDE.md` | ≥ 1 |
+| Session Health Check | `grep -c "session-health\|Session Health" AGENTS.md` | ≥ 2 |
 | R5 Post-Read Gate | `grep -c "post-read\|Post-Read Verdict" CLAUDE.md` | ≥ 1 |
 | R5 T0 Oracle | `grep -c "lookup.py\|T0\|Tier 0\|pre-read oracle" CLAUDE.md` | ≥ 2 |
 | R8 Session Index Sync | `grep -c "session_indexer\|index_sessions" CLAUDE.md` | ≥ 1 |
@@ -58,7 +83,8 @@ Expected: ≥ 10 matches
   Verify: `grep -c "Prompt template\|exits 0\|PASS list\|FAIL list" .agents/skills/mece/SKILL.md` → ≥ 3
 - [ ] **G0 Starter Interview**: `AGENTS.md` Phase 1 has G0 block before G1 · uses `AskUserQuestion` with options per question · reads REPO_MAP.md for affected-area options
   Verify: `grep -c "G0\|REPO_MAP\|options per question\|never open-ended" AGENTS.md` → ≥ 3
-- [ ] **CHAT_TOTAL counter**: `.sessions/chat_tokens.md` exists · increments each turn alongside SESSION_TOTAL · resets to 0 on /compact or new chat only · CHAT_TOTAL >120k → warn /compact · >180k → บังคับ
+- [ ] **CHAT_TOTAL counter**: both SESSION_TOTAL + CHAT_TOTAL in `.sessions/session_tokens.md` · B1 resets SESSION_TOTAL=0 · sets CHAT_TOTAL=7300 (system_fixed) on compact-restore OR phase≠in_progress · CHAT_TOTAL >120k → warn /compact · >180k → บังคับ
+- [ ] **Session Health Check**: `AGENTS.md §Completion Gate` has 4-tier threshold block · `session_manager/SKILL.md` has "Task complete" Trigger + `[session-health]` Output Contract row · emit format: `[session-health] Session: ~NNk · Chat: ~NNk · <recommendation>`
 - [ ] **C2 task-freshness**: same topic + `status: task-complete` OR task-mismatch OR no pending `[ ]`/`[/]` → force Phase 1+2 fresh (skip Phase 0 if same chat)
 - [ ] **Provider-aware routing**: C3 + TOKEN PAUSE check `grep "^platform:" .agents/platform/detected.md` → claude-code → same chat / other → new chat · spec: `.agents/platform/session_protocol.md`
 - [ ] **mece_plan clear at task complete**: Phase 1–3 cleared (Bash head-trim) after Completion Gate · Phase 0 [X] kept · user notified "งานเสร็จแล้วครับ สั่งงานต่อได้เลย"
@@ -73,7 +99,19 @@ Expected: ≥ 10 matches
 - [ ] **L4.5 PURGE step**: drops raw tool results after Cycle N aggregation · keeps only verdict + artifact path
 - [ ] **Delegation Contract ≤800 tokens**: `constraints:` = rule numbers only · `cycle_context:` = ≤5 bullets ≤150 chars
 - [ ] **MECE plan size caps**: ≤5 steps/section · ≤2 verify commands/section (≤60 chars each) · total ≤120 lines
+- [ ] **mece_plan Phase 0-3 Template enforcement**: `docs/session_templates/mece_plan_schema.md` has full Phase 0-3 blocks + Phase 3 Close Checklist + PATH A/B/C · AGENTS.md M5 references template + "no simplified format (CFP-019)" · mece/SKILL.md S1-E validates all 4 Phase blocks on write · no simplified format accepted
+  Verify: `grep -c "Phase-Checklist Template\|no simplified" AGENTS.md` → ≥ 1 · `grep -c "## Phase 0\|## Phase 1\|## Phase 2\|## Phase 3" .agents/skills/mece/SKILL.md` → ≥ 4 · `grep -c "PATH A\|PATH B\|PATH C" docs/session_templates/mece_plan_schema.md` → 3
 - [ ] **self_improve CFP archive gate**: triggers when CFP count > 20 → archives oldest entries → keeps 15 active
+- [ ] **Thai user-facing close rule**: `harness_editor/SKILL.md §Output Contract` has Thai summary block after `[harness-edit-done]` · `AGENTS.md §Completion Gate` has Thai summary rule · never English-only close to user
+  Verify: `grep -c "งานเสร็จแล้วครับ\|user-facing close\|Thai.*mandatory" .agents/skills/harness_editor/SKILL.md` → ≥ 1 · `grep -c "User-facing close\|Thai.*mandatory" AGENTS.md` → ≥ 1
+- [ ] **harness_editor Step 5 gate in mece_plan_schema**: `docs/session_templates/mece_plan_schema.md §Phase 3 Close Checklist` has conditional "if skill=harness_editor → Step 5 gate" block before session_handoff
+  Verify: `grep -c "skill=harness_editor\|Step 5 gate" docs/session_templates/mece_plan_schema.md` → ≥ 1
+- [ ] **Behavioral Contract completeness**: every `SKILL.md` has all 5 elements — Trigger · Refusal · Workflow · Output Contract · Routing
+  Verify: `for f in .agents/skills/*/SKILL.md; do echo "$f: $(grep -c "Trigger\|Refusal\|Workflow\|Output\|Routing" "$f")"; done` → each file ≥ 3
+  Reference: `knowledge/9arm-skills-patterns-to-port-into-ai-agent-harness-2026-05-28.md`
+- [ ] **File Size Contract**: skill files target ≤200 lines · if file >200L → split into `SKILL.md` (contract) + `SKILL_detail.md` (details) · reference at bottom of Workflow: `@.agents/skills/<name>/SKILL_detail.md`
+  Verify: `wc -l .agents/skills/*/SKILL.md | sort -rn | head -5` → note any >200L files · check if SKILL_detail.md exists for them
+  Note: `editor/SKILL.md` (133L ✓) + `self_improve/SKILL.md` (124L ✓) split done 2026-05-28 — SKILL_detail.md created for each · `harness_doctor/SKILL.md` (64L ✓) split done 2026-05-29 — `harness_doctor/SKILL_detail.md` created (190L, procedures for Sections 1-5)
 - [ ] **MANDATORY BOOT GATE** section present: agent must emit `[Boot]` before responding — skipping = CFP violation
 - [ ] **PHASE TRANSITION GATE** section present: `[✓ gather]` + `[✓ MECE]` required before any `src/` edit
 - [ ] Gate text explicitly states: "Reading SKILL.md at B3 is NOT Phase 1"
@@ -147,17 +185,18 @@ Fix if missing: `Implement/03_config.md` → INVARIANTS.md template.
 
 All skill files must have: frontmatter (`name` + `description`) · `Sections[]` YAML · main content · Context Gate.
 
-Run this to check all 13 exist:
+Run this to check all 14 exist:
 ```bash
 ls .agents/skills/agent/SKILL.md .agents/skills/ascii_flow/SKILL.md \
    .agents/skills/coder/SKILL.md .agents/skills/editor/SKILL.md \
    .agents/skills/file_manager/SKILL.md .agents/skills/harness_doctor/SKILL.md \
+   .agents/skills/harness_editor/SKILL.md \
    .agents/skills/identity/SKILL.md .agents/skills/mece/SKILL.md \
    .agents/skills/self_improve/SKILL.md .agents/skills/session_manager/SKILL.md \
    .agents/skills/token_auditor/SKILL.md .agents/skills/token_tracker/SKILL.md \
    .agents/skills/variable_manager/SKILL.md 2>&1
 ```
-Expected: 13 paths printed, zero "No such file" errors.
+Expected: 14 paths printed, zero "No such file" errors.
 
 Run this to check all 13 have a Context Gate:
 ```bash
@@ -470,9 +509,14 @@ Added by setup. Replace with first real pattern when a bug requires ≥2 attempt
 These files are created at runtime by Boot B1. Check after the first agent task completes:
 
 ```bash
-ls .sessions/active_thread.md .sessions/session_tokens.md .sessions/chat_tokens.md 2>&1
+ls .sessions/active_thread.md .sessions/session_tokens.md 2>&1
 ```
-Expected: all three exist.
+Expected: both exist. (`session_tokens.md` holds both SESSION_TOTAL + CHAT_TOTAL — consolidated in T-036)
+
+```bash
+grep -c "SESSION_TOTAL\|CHAT_TOTAL" .sessions/session_tokens.md
+```
+Expected: 2 (both counters in one file)
 
 ```bash
 cat .sessions/active_thread.md
@@ -522,8 +566,8 @@ echo "=== ALL CHECKS DONE ==="
 <number ≥ 5>    ← AGENTS.md C0-C3 + spawn_tool count
 <number ≥ 8>    ← INVARIANTS.md gates I1–I8
 === 2. Skill Files ===
-13              ← SKILL.md files (includes ascii_flow + harness_doctor + self_improve)
-13              ← files with Context Gate
+14              ← SKILL.md files (includes ascii_flow + harness_doctor + harness_editor + self_improve)
+14              ← files with Context Gate
 .agents/skills/self_improve/SKILL.md  ← confirmed present
 === 3. Routing ===
 12              ← keywords entries in skill-manifest.json

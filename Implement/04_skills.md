@@ -678,7 +678,12 @@ Section 1 — Build Plan:
     □ Risk surface + Outcome sketch → feeds S1-C Verify-N · Budget: ≤600 tokens working memory only
   [S1-B] Map MECE steps to each section (use templates below as base)
   [S1-C] Add Verify + Rollback per section
-  Verify: plan section count = Skill section count
+  [S1-E] Write .sessions/mece_plan.md using Phase-Checklist Template (docs/session_templates/mece_plan_schema.md)
+         — Phase 0-3 blocks MANDATORY · no simplified format (CFP-019) → validate on write:
+           grep -c "## Phase 0" → = 1 · grep -c "## Phase 1" → = 1
+           grep -c "## Phase 2" → = 1 · grep -c "## Phase 3" → ≥ 1
+           FAIL any check → rewrite → re-validate · emit `[mece-fail] Step: S1-E` on 2nd fail
+  Verify: plan section count = Skill section count · all 4 Phase blocks present
 
 Section 2 — Confirm & Register:
   [S2-A] Send plan to user → wait confirm
@@ -837,7 +842,7 @@ If during this task a new hard constraint was discovered → add to INVARIANTS.m
 ```markdown
 ---
 name: Session Manager
-description: Handles TOKEN PAUSE, BLOCKED halt, session rotation, and resume flows. Maintains session JSON and active_thread.md.
+description: Handles TOKEN PAUSE, BLOCKED halt, session rotation, resume flows, and task-complete session-health check. Maintains session JSON and active_thread.md.
 ---
 
 ## Sections
@@ -1055,6 +1060,17 @@ Step 5 — Confirm to user (list every file written)
 \```
 
 **Never report "session closed" before all 5 steps are complete.** Summary text alone = incomplete close.
+
+## Task Complete → Session Health Check
+After Completion Gate Reviewer PASS → emit `[session-health]` with SESSION_TOTAL threshold check:
+```
+SESSION_TOTAL < 20k  → ✅ no action
+SESSION_TOTAL 20–40k → 💡 recommend /compact before next task
+SESSION_TOTAL 40–60k → ⚠️ compact now before next task
+SESSION_TOTAL > 60k  → 🛑 TOKEN PAUSE (already fires via R3)
+```
+emit format: `[session-health] Session: ~NNk · Chat: ~NNk · <recommendation>`
+→ This IS "Feedback delivered" in the Completion Gate. Full contract: `session_manager/SKILL.md §Trigger + §Output Contract`
 
 ## Context Gate
 If during this task a new hard constraint was discovered → add to INVARIANTS.md §I2 before closing task
@@ -1516,6 +1532,92 @@ Step 5: [✓ harness-fix] target_cfp · Gap: type · File: edited · Detection: 
 - Section 4 (Approval Gate): wait explicit user confirm · no auto-proceed
 - Section 5 (Execute): apply only the approved proposal — no scope creep
 - [✓ harness-fix] trace required at completion · update index_cfp_fix.json status
+\```
+
+## Context Gate
+If during this task a new hard constraint was discovered → add to INVARIANTS.md §I2 before closing task
+```
+
+## harness_editor
+
+```markdown
+---
+name: Harness Editor
+description: Manages all edits to harness configuration files (CLAUDE.md, AGENTS.md, SKILL.md, knowledge/, Implement/) with mandatory MECE planning and full close sequence.
+---
+
+## Sections
+\```
+- id: 1
+  name: "Diagnose & Plan"
+  steps: ["wc-l scope probe", "File Size Contract check", "confirm mece_plan.md + T-N roadmap [/]"]
+- id: 2
+  name: "Edit & Verify"
+  steps: ["[pre-edit] emit", "targeted Edit/Write", "[✓ written] grep verify", "5-element contract intact check"]
+- id: 3
+  name: "Close & Sync"
+  steps: ["index sync (skill-manifest if new skill)", "harness_flow update", "Implement/ update", "roadmap [X]"]
+\```
+
+## Trigger
+Activated when: task edits CLAUDE.md · AGENTS.md · any .agents/skills/*/SKILL.md · knowledge/ docs · Implement/ docs
+Orchestrator delegates `Skill: harness_editor` from MECE plan.
+
+⚡ **Invocation Gate (hard — no exceptions):**
+ANY planning that includes harness file edits MUST resolve `skill_name=harness_editor` at Boot B2 BEFORE building the MECE plan.
+Skipping this invocation = behavioral contract violation → log CFP-016.
+Signals that trigger harness_editor: "edit CLAUDE.md / AGENTS.md / SKILL.md / knowledge/ / Implement/" + any task touching backlinks, index_files.json, topic_registry.json, or Implement/ docs.
+
+## Refusal Contract
+`[harness-skip]` — no harness file being modified → delegate to coder/editor
+`[harness-refused]` — mece_plan.md missing or not dated today · no T-ID in roadmap · target >250L with no split plan
+
+## Workflow (ordered steps)
+Step 1 · Scope Probe: wc -l → File Size Contract zone check · grep line numbers before every Edit
+Step 2 · MECE Plan Gate: mece_plan.md dated today + T-N roadmap [/] — CANNOT skip
+Step 3 · Edit per Behavioral Contracts: [pre-edit] → targeted Edit → [✓ written] → grep -c 5 contract elements ≥5
+Step 4 · Index Sync:
+  - New skill → skill-manifest.json + registry.md
+  - New file in knowledge/ or Implement/ → file_manager skill
+  - Any file added/modified in index_files.json scope:
+    ① Assign `topics[]` from `knowledge/topic_registry.json` (closed vocabulary — no free-text)
+    ② Run `python3 scripts/backlink_analyzer.py` → refreshes `related[]` 3-tier links
+Step 5 · Docs Close (mandatory — same task, no deferral):
+```
+[A] knowledge/harness_flow_20260526.md:
+    grep -n target section → targeted edit · [✓ written]
+[B] Affected docs — check all that apply:
+    REPO_MAP.md            ← new file / dir / skill created or removed → MANDATORY entry
+    Implement/04_skills.md ← skill added or contract changed
+    Implement/08_checklist.md ← workflow changed
+[C] Roadmap: [/] T-<N> → [X]
+[D] Write active_thread.md: phase: done
+```
+⚡ Refusal gate: do NOT emit [harness-edit-done] until flow_updated=yes (Step 5A complete)
+
+## Output Contract
+`[harness-edit-done] files: <N> · lines_changed: <total> · flow_updated: <yes|no> · impl_updated: <yes|no>`
+Per changed SKILL.md: emit `wc-l: <N>L (🟢|🟡|🔴)` after verify.
+
+**User-facing close (Thai — mandatory after `[harness-edit-done]`):**
+```
+งานเสร็จแล้วครับ ✅
+แก้ไข <N> ไฟล์: <สรุปสั้น ๆ ว่าเปลี่ยนอะไร — ภาษาไทย>
+สั่งงานต่อได้เลยครับ
+```
+Rule: [harness-edit-done] = harness signal (English · machine-readable) · user summary = Thai · always both · never English-only close.
+
+## Routing
+After [harness-edit-done] + Thai user summary → return to orchestrator / session_manager §3
+New skill created → S4 (manifest+registry) must complete before returning
+
+## MECE Constraints Block (copy into mece_plan.md for sections using `harness_editor`)
+\```
+- mece_plan.md dated today + T-N roadmap [/] REQUIRED before any file edit
+- [pre-edit] emit before every Edit · [✓ written] grep verify after every change
+- File Size Contract: ≤200L 🟢 · 201-250L 🟡 (SKILL_detail.md required) · >250L 🔴 HALT+split
+- harness_flow_20260526.md + affected Implement/ MUST be updated in same task (Step 5)
+- [harness-edit-done] emit required before returning to orchestrator
 \```
 
 ## Context Gate

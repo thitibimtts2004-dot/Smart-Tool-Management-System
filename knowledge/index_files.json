@@ -1,0 +1,907 @@
+{
+  ".agents/skills/harness_editor/SKILL.md": {
+    "type": "skill",
+    "description": "Harness Editor skill \u2014 manages edits to CLAUDE.md, AGENTS.md, SKILL.md files, knowledge/, Implement/ with mandatory MECE plan gate and full close sequence.",
+    "backlinks": [
+      ".agents/skills/skill-manifest.json",
+      ".agents/skills/registry.md",
+      "Implement/04_skills.md",
+      "Implement/08_checklist.md",
+      "knowledge/harness_flow_20260526.md"
+    ],
+    "topics": [
+      "harness_editing",
+      "behavioral_contract",
+      "mece_planning",
+      "index_sync",
+      "phase_gates",
+      "topic_graph"
+    ],
+    "references": [
+      "CLAUDE.md",
+      "AGENTS.md",
+      "knowledge/harness_flow_20260526.md",
+      ".agents/skills/skill-manifest.json",
+      ".agents/skills/registry.md",
+      ".agents/skills/harness_doctor/SKILL.md"
+    ],
+    "related": [
+      {
+        "path": "CLAUDE.md",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "AGENTS.md",
+        "strength": "related",
+        "overlap": 0.5
+      }
+    ]
+  },
+  "scripts/token_estimator.py": {
+    "type": "script",
+    "description": "Token estimator \u2014 SESSION_TOTAL + CHAT_TOTAL formula per R1. Callable via Bash.",
+    "backlinks": [
+      "CLAUDE.md",
+      ".agents/skills/token_tracker/SKILL.md"
+    ],
+    "exports": [
+      "estimate_turn",
+      "run_test",
+      "run_simulate"
+    ],
+    "topics": [
+      "token_tracking",
+      "token_estimation"
+    ],
+    "references": [
+      "CLAUDE.md",
+      ".agents/skills/token_tracker/SKILL.md"
+    ],
+    "related": [
+      {
+        "path": "CLAUDE.md",
+        "strength": "related",
+        "overlap": 0.5
+      }
+    ]
+  },
+  ".agents/skills/harness_doctor/SKILL.md": {
+    "type": "skill",
+    "description": "Structural fix agent for recurring CFP patterns \u2014 diagnose \u2192 propose \u2192 wait approval \u2192 execute. Delegates SKILL.md file edits to harness_editor.",
+    "backlinks": [
+      ".agents/skills/harness_editor/SKILL.md",
+      ".agents/skills/mece/SKILL.md",
+      ".agents/skills/mece/SKILL_detail.md",
+      ".agents/skills/skill-manifest.json",
+      "Implement/03_config.md",
+      "knowledge/harness_flow_20260526.md"
+    ],
+    "topics": [
+      "cfp_immunity",
+      "behavioral_contract",
+      "harness_editing",
+      "cfp_logging",
+      "error_protocol"
+    ],
+    "references": [
+      "CODING_FAILURE_PATTERNS.md",
+      "knowledge/index_cfp_fix.json",
+      ".agents/skills/harness_editor/SKILL.md",
+      ".agents/skills/self_improve/SKILL.md"
+    ],
+    "related": [
+      {
+        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "strength": "strong",
+        "overlap": 1.0
+      }
+    ]
+  },
+  "CLAUDE.md": {
+    "type": "config",
+    "description": "Master hard constraints \u2014 R1\u2013R16, R-Roadmap, Boot gates. Read first by every agent, every session.",
+    "backlinks": [
+      ".agents/skills/agent/SKILL.md",
+      ".agents/skills/harness_doctor/SKILL.md",
+      ".agents/skills/harness_editor/SKILL.md",
+      ".agents/skills/identity/SKILL.md",
+      ".agents/skills/token_tracker/SKILL.md",
+      "Implement/00_index.md"
+    ],
+    "topics": [
+      "boot_sequence",
+      "token_tracking",
+      "harness_editing",
+      "phase_gates",
+      "index_sync",
+      "error_protocol",
+      "sub_agent_rules",
+      "compact_handling",
+      "per_turn_routing"
+    ],
+    "references": [
+      "AGENTS.md",
+      "INVARIANTS.md",
+      "REPO_MAP.md"
+    ],
+    "related": [
+      {
+        "path": "AGENTS.md",
+        "strength": "related",
+        "overlap": 0.67
+      }
+    ]
+  },
+  "AGENTS.md": {
+    "type": "config",
+    "description": "Agent orientation \u2014 Boot sequence B1-B4, Per-Turn Routing C0-C3, Loop Architecture Phases 1-3.",
+    "backlinks": [
+      ".agents/skills/agent/SKILL.md",
+      ".agents/skills/harness_doctor/SKILL.md",
+      ".agents/skills/harness_editor/SKILL.md",
+      ".agents/skills/mece/SKILL_detail.md",
+      ".agents/skills/token_tracker/SKILL.md",
+      "Implement/00_index.md"
+    ],
+    "topics": [
+      "boot_sequence",
+      "per_turn_routing",
+      "mece_planning",
+      "phase_gates",
+      "react_loop",
+      "session_management",
+      "sub_agent_rules",
+      "harness_editing",
+      "compact_handling"
+    ],
+    "references": [
+      "CLAUDE.md",
+      "INVARIANTS.md",
+      "REPO_MAP.md"
+    ],
+    "related": [
+      {
+        "path": "CLAUDE.md",
+        "strength": "related",
+        "overlap": 0.67
+      },
+      {
+        "path": "knowledge/harness_flow_20260526.md",
+        "strength": "related",
+        "overlap": 0.67
+      }
+    ]
+  },
+  ".agents/skills/skill-manifest.json": {
+    "type": "config",
+    "description": "Machine-readable skill routing \u2014 keyword \u2192 skill mapping, on_demand_files, boot_read_policy. Read at Boot B2.",
+    "backlinks": [
+      ".agents/skills/harness_editor/SKILL.md",
+      ".agents/skills/mece/SKILL_detail.md",
+      ".agents/skills/self_improve/SKILL.md",
+      "Implement/01_overview.md",
+      "Implement/02_setup.md",
+      "Implement/03_config.md"
+    ],
+    "topics": [
+      "skill_routing",
+      "behavioral_contract",
+      "boot_sequence"
+    ],
+    "references": [],
+    "related": [
+      {
+        "path": ".agents/skills/registry.md",
+        "strength": "related",
+        "overlap": 0.67
+      }
+    ]
+  },
+  ".agents/skills/registry.md": {
+    "type": "config",
+    "description": "Fast-match keyword\u2192skill table + micro-rules. Secondary routing after skill-manifest.json.",
+    "backlinks": [
+      ".agents/skills/agent/SKILL.md",
+      ".agents/skills/harness_editor/SKILL.md",
+      ".agents/skills/mece/SKILL_detail.md",
+      ".agents/skills/skill-manifest.json",
+      "Implement/01_overview.md",
+      "Implement/02_setup.md"
+    ],
+    "topics": [
+      "skill_routing",
+      "per_turn_routing",
+      "boot_sequence"
+    ],
+    "references": [],
+    "related": [
+      {
+        "path": "CLAUDE.md",
+        "strength": "related",
+        "overlap": 0.67
+      },
+      {
+        "path": "AGENTS.md",
+        "strength": "related",
+        "overlap": 0.67
+      },
+      {
+        "path": ".agents/skills/skill-manifest.json",
+        "strength": "related",
+        "overlap": 0.67
+      },
+      {
+        "path": "knowledge/harness_flow_20260526.md",
+        "strength": "related",
+        "overlap": 0.67
+      }
+    ]
+  },
+  "knowledge/harness_flow_20260526.md": {
+    "type": "knowledge",
+    "description": "Main harness architecture flow diagram \u2014 Layer 0-3, Boot, Per-Turn Routing, Phase 1-3, signal glossary, patch history.",
+    "backlinks": [
+      ".agents/skills/ascii_flow/SKILL.md",
+      ".agents/skills/coder/SKILL.md",
+      ".agents/skills/harness_editor/SKILL.md",
+      ".agents/skills/skill-manifest.json",
+      "Implement/02_setup.md",
+      "knowledge/harness_flow_20260525.md"
+    ],
+    "topics": [
+      "knowledge_base",
+      "boot_sequence",
+      "per_turn_routing",
+      "mece_planning",
+      "react_loop",
+      "session_management",
+      "harness_editing"
+    ],
+    "references": [
+      "CLAUDE.md",
+      "AGENTS.md"
+    ],
+    "related": [
+      {
+        "path": "AGENTS.md",
+        "strength": "related",
+        "overlap": 0.86
+      }
+    ]
+  },
+  "knowledge/index_variables.json": {
+    "type": "index",
+    "description": "Symbol index \u2014 component/function/hook definitions + used_in[] backlinks. Never-full-load: grep only.",
+    "backlinks": [
+      ".agents/skills/coder/SKILL.md",
+      ".agents/skills/editor/SKILL.md",
+      ".agents/skills/mece/SKILL_detail.md",
+      ".agents/skills/variable_manager/SKILL.md",
+      "Implement/00_index.md",
+      "Implement/01_overview.md"
+    ],
+    "topics": [
+      "index_sync",
+      "error_protocol"
+    ],
+    "references": [],
+    "related": [
+      {
+        "path": "CLAUDE.md",
+        "strength": "strong",
+        "overlap": 1.0
+      },
+      {
+        "path": ".agents/skills/harness_editor/SKILL.md",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "knowledge/index_cfp_fix.json",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "knowledge/index_sessions.json",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "knowledge/error_index.md",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "knowledge/topic_registry.json",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "scripts/backlink_analyzer.py",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "strength": "related",
+        "overlap": 0.5
+      }
+    ]
+  },
+  "knowledge/index_cfp_fix.json": {
+    "type": "index",
+    "description": "CFP occurrence + fix tracking index \u2014 recurrence count, last_fixed_session, status per CFP-XXX.",
+    "backlinks": [
+      ".agents/skills/harness_doctor/SKILL.md",
+      ".agents/skills/mece/SKILL_detail.md",
+      ".agents/skills/skill-manifest.json",
+      "Implement/02_setup.md",
+      "Implement/03_config.md",
+      "knowledge/harness_flow_20260526.md"
+    ],
+    "topics": [
+      "cfp_immunity",
+      "cfp_logging",
+      "index_sync"
+    ],
+    "references": [],
+    "related": [
+      {
+        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "strength": "related",
+        "overlap": 0.67
+      },
+      {
+        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "strength": "related",
+        "overlap": 0.67
+      }
+    ]
+  },
+  "knowledge/index_sessions.json": {
+    "type": "index",
+    "description": "Session history index \u2014 task summaries, files_changed[], lookup.py --session oracle source.",
+    "backlinks": [
+      ".agents/skills/session_manager/SKILL.md",
+      ".agents/skills/session_manager/SKILL_detail.md",
+      ".agents/skills/skill-manifest.json",
+      "Implement/02_setup.md",
+      "Implement/05_scripts.md",
+      "knowledge/harness_flow_20260526.md"
+    ],
+    "topics": [
+      "session_management",
+      "index_sync"
+    ],
+    "references": [],
+    "related": [
+      {
+        "path": ".agents/skills/harness_editor/SKILL.md",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "CLAUDE.md",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "AGENTS.md",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "knowledge/harness_flow_20260526.md",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "knowledge/index_variables.json",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "knowledge/index_cfp_fix.json",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "knowledge/topic_registry.json",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "scripts/backlink_analyzer.py",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "scripts/bootstrap_sessions.py",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "docs/session_templates",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "scripts/session_compactor.py",
+        "strength": "related",
+        "overlap": 0.5
+      }
+    ]
+  },
+  "knowledge/error_index.md": {
+    "type": "knowledge",
+    "description": "ERR-XXX error code registry \u2014 symptom, root cause, fix approach, failed approaches per error ID.",
+    "backlinks": [
+      ".agents/skills/editor/SKILL.md",
+      ".agents/skills/editor/SKILL_detail.md",
+      ".agents/skills/harness_editor/SKILL.md",
+      ".agents/skills/mece/SKILL.md",
+      ".agents/skills/mece/SKILL_detail.md",
+      "Implement/00_index.md"
+    ],
+    "topics": [
+      "error_protocol",
+      "cfp_logging"
+    ],
+    "references": [],
+    "related": [
+      {
+        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "strength": "strong",
+        "overlap": 1.0
+      },
+      {
+        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "strength": "strong",
+        "overlap": 1.0
+      },
+      {
+        "path": "CLAUDE.md",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "knowledge/index_variables.json",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "knowledge/index_cfp_fix.json",
+        "strength": "related",
+        "overlap": 0.5
+      }
+    ]
+  },
+  "knowledge/topic_registry.json": {
+    "type": "knowledge",
+    "description": "Controlled vocabulary for topic-graph backlink system \u2014 20 closed topics agents must use when assigning topics[] to files",
+    "topics": [
+      "topic_graph",
+      "index_sync",
+      "knowledge_base"
+    ],
+    "references": [],
+    "backlinks": [
+      "CLAUDE.md",
+      "AGENTS.md",
+      ".agents/skills/harness_editor/SKILL.md",
+      "scripts/backlink_analyzer.py"
+    ],
+    "related": [
+      {
+        "path": "scripts/backlink_analyzer.py",
+        "strength": "strong",
+        "overlap": 1.0
+      },
+      {
+        "path": ".agents/skills/harness_editor/SKILL.md",
+        "strength": "related",
+        "overlap": 0.67
+      }
+    ]
+  },
+  "scripts/backlink_analyzer.py": {
+    "type": "script",
+    "description": "Computes topic-graph related[] entries in index_files.json based on pairwise topic overlap (|A\u2229B|/|A| >= 0.5). Flags: --dry-run, --min-overlap, --show-matrix.",
+    "topics": [
+      "topic_graph",
+      "index_sync",
+      "knowledge_base"
+    ],
+    "references": [
+      "knowledge/index_files.json",
+      "knowledge/topic_registry.json"
+    ],
+    "backlinks": [
+      "CLAUDE.md",
+      "AGENTS.md",
+      ".agents/skills/harness_editor/SKILL.md"
+    ],
+    "related": [
+      {
+        "path": "knowledge/topic_registry.json",
+        "strength": "strong",
+        "overlap": 1.0
+      },
+      {
+        "path": ".agents/skills/harness_editor/SKILL.md",
+        "strength": "related",
+        "overlap": 0.67
+      }
+    ]
+  },
+  ".agents/skills/harness_doctor/SKILL_detail.md": {
+    "type": "skill",
+    "description": "Detailed procedures for harness_doctor sections 1-5: Diagnosis, Audit, Proposal, Approval Gate, Execute+Verify. Includes Python snippets for index_cfp_fix.json operations.",
+    "topics": [
+      "cfp_immunity",
+      "behavioral_contract",
+      "harness_editing",
+      "cfp_logging",
+      "error_protocol"
+    ],
+    "references": [
+      "CODING_FAILURE_PATTERNS.md",
+      "knowledge/error_index.md",
+      ".agents/skills/harness_doctor/SKILL.md"
+    ],
+    "backlinks": [
+      ".agents/skills/harness_doctor/SKILL.md"
+    ],
+    "related": [
+      {
+        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "strength": "strong",
+        "overlap": 1.0
+      }
+    ]
+  },
+  ".agents/tools/tool-manifest.json": {
+    "type": "config",
+    "description": "Registry of all agent tool scripts: path, tags, run command. Used by B2 skill routing and on_demand_files lookup.",
+    "topics": [
+      "skill_routing",
+      "knowledge_base"
+    ],
+    "references": [],
+    "backlinks": [
+      ".agents/skills/skill-manifest.json"
+    ],
+    "related": [
+      {
+        "path": ".agents/skills/skill-manifest.json",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": ".agents/skills/registry.md",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "knowledge/harness_flow_20260526.md",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "knowledge/topic_registry.json",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "scripts/backlink_analyzer.py",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "scripts/bootstrap_sessions.py",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "strength": "related",
+        "overlap": 0.5
+      }
+    ]
+  },
+  "scripts/bootstrap_sessions.py": {
+    "type": "script",
+    "description": "Initializes .sessions/ from docs/session_templates/ on first run. Flags: --force (overwrite), --dry-run (list without write). Used in target project setup (Implement/02_setup.md Step 5).",
+    "topics": [
+      "session_management",
+      "knowledge_base"
+    ],
+    "references": [
+      "docs/session_templates",
+      "Implement/02_setup.md"
+    ],
+    "backlinks": [
+      "Implement/02_setup.md"
+    ],
+    "related": [
+      {
+        "path": "knowledge/harness_flow_20260526.md",
+        "strength": "strong",
+        "overlap": 1.0
+      },
+      {
+        "path": "AGENTS.md",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "knowledge/index_sessions.json",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "knowledge/topic_registry.json",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "scripts/backlink_analyzer.py",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": ".agents/tools/tool-manifest.json",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "docs/session_templates",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "scripts/session_compactor.py",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "strength": "related",
+        "overlap": 0.5
+      }
+    ]
+  },
+  "docs/session_templates": {
+    "type": "docs",
+    "description": "8 template files for .sessions/ initialization: active_thread, mece_plan_schema, gather_complete, session_handoff, compact_state, session_tokens, chat_tokens, self_improve_log. Committed to repo so fresh clones have schema reference.",
+    "topics": [
+      "session_management",
+      "behavioral_contract",
+      "mece_planning",
+      "compact_handling"
+    ],
+    "references": [],
+    "backlinks": [
+      "Implement/02_setup.md",
+      "scripts/bootstrap_sessions.py"
+    ],
+    "related": [
+      {
+        "path": "AGENTS.md",
+        "strength": "related",
+        "overlap": 0.75
+      },
+      {
+        "path": ".agents/skills/harness_editor/SKILL.md",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "knowledge/harness_flow_20260526.md",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "scripts/session_compactor.py",
+        "strength": "related",
+        "overlap": 0.5
+      }
+    ]
+  },
+  "scripts/session_compactor.py": {
+    "type": "script",
+    "description": "Session health gate before git commit/push. Validates .sessions/ has all 8 required files, correct fields, and active_thread.md phase != in_progress. Called by identity/SKILL.md Fatal Constraint. Exit 0=STATUS:OK, Exit 1=STATUS:FAIL.",
+    "topics": [
+      "session_management",
+      "behavioral_contract"
+    ],
+    "references": [
+      ".sessions/active_thread.md",
+      "Implement/02_setup.md"
+    ],
+    "backlinks": [
+      ".agents/skills/identity/SKILL.md"
+    ],
+    "related": [
+      {
+        "path": "docs/session_templates",
+        "strength": "strong",
+        "overlap": 1.0
+      },
+      {
+        "path": ".agents/skills/harness_editor/SKILL.md",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "AGENTS.md",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": ".agents/skills/skill-manifest.json",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "knowledge/harness_flow_20260526.md",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "knowledge/index_sessions.json",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "scripts/bootstrap_sessions.py",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "strength": "related",
+        "overlap": 0.5
+      }
+    ]
+  },
+  ".agents/skills/ascii_flow/SKILL_detail.md": {
+    "type": "skill",
+    "description": "Detailed reference for ascii_flow: \u00a71 Char Palette (box-drawing chars, arrows, annotations), \u00a72 Box Templates (outer/inner/decision/note), \u00a73 Detail Guidelines, \u00a74 Flow Connector Patterns, \u00a75 Doc Structure, \u00a76 Invoke Rule.",
+    "topics": [
+      "behavioral_contract",
+      "knowledge_base"
+    ],
+    "references": [
+      ".agents/skills/ascii_flow/SKILL.md"
+    ],
+    "backlinks": [
+      ".agents/skills/ascii_flow/SKILL.md"
+    ],
+    "related": [
+      {
+        "path": ".agents/skills/harness_editor/SKILL.md",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": ".agents/skills/skill-manifest.json",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "knowledge/harness_flow_20260526.md",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "knowledge/topic_registry.json",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "scripts/backlink_analyzer.py",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": ".agents/tools/tool-manifest.json",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "scripts/bootstrap_sessions.py",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "docs/session_templates",
+        "strength": "related",
+        "overlap": 0.5
+      },
+      {
+        "path": "scripts/session_compactor.py",
+        "strength": "related",
+        "overlap": 0.5
+      }
+    ]
+  },
+  "REPO_MAP.md": {
+    "description": "Repository structure reference \u2014 full file tree with descriptions for all agents",
+    "topics": [
+      "repo-structure",
+      "harness-config",
+      "agent-orientation"
+    ],
+    "references": [
+      "CLAUDE.md",
+      "AGENTS.md",
+      "INVARIANTS.md"
+    ],
+    "backlinks": [
+      "CLAUDE.md",
+      "AGENTS.md"
+    ],
+    "related": []
+  },
+  ".agents/skills/session_manager/SKILL.md": {
+    "description": "session_manager skill \u2014 session open/close, topic switch, token pause, compact_state write",
+    "topics": [
+      "session-management",
+      "harness-config",
+      "token-tracking"
+    ],
+    "references": [
+      ".agents/skills/session_manager/SKILL_detail.md"
+    ],
+    "backlinks": [
+      "CLAUDE.md",
+      "AGENTS.md"
+    ],
+    "related": []
+  },
+  "Implement/09_migration.md": {
+    "description": "Migration guide for users upgrading from older harness version \u2014 4 tracks: M1 indexes, M2 tree, M3 skills/config, M4 verify",
+    "topics": [
+      "harness",
+      "implement",
+      "migration",
+      "setup"
+    ],
+    "backlinks": [
+      "Implement/00_index.md"
+    ],
+    "references": [
+      "Implement/00_index.md",
+      "Implement/08_checklist.md",
+      "knowledge/harness_flow_20260526.md"
+    ],
+    "related": []
+  }
+}

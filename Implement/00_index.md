@@ -14,8 +14,17 @@
 | [06_orchestrator.md](06_orchestrator.md) | Dual-mode execution, mece_plan.md schema, Cycle orchestration, cycle_N_*.json result files, sub-agent loop logic, token budget | When setting up orchestration or sub-agent spawn patterns (R4) |
 | [07_platform.md](07_platform.md) | Platform adapter — auto-detection, known platform mappings, co-development dialogue for unknown platforms | When deploying on a new platform or when [platform-unknown] is emitted |
 | [08_checklist.md](08_checklist.md) | Post-installation verification — 22 required files, per-file section checks, summary script | After completing Track A or Track B setup |
+| [09_migration.md](09_migration.md) | Upgrade guide for existing harness (old version → current) — 4 tracks: M1 re-format indexes · M2 re-structure tree · M3 update/overwrite skills+config · M4 verify | When upgrading from an older harness version |
 
 ## Agent Reading Order
+
+### Track C — Upgrade Existing Harness (old version installed)
+1. `09_migration.md M1` → re-format indexes (session_tokens · index_files · index_variables)
+2. `09_migration.md M2` → re-structure harness tree (create missing dirs + session files)
+3. `09_migration.md M3` → overwrite skills + config (CLAUDE.md · AGENTS.md · SKILL.md files)
+4. `09_migration.md M4` → verify (run 08_checklist.md section-by-section)
+
+> Key: never touch `src/` during M1–M3. Commit before M3 as rollback checkpoint.
 
 ### Track A — Fresh Project (no existing code)
 1. `01_overview.md` → understand structure

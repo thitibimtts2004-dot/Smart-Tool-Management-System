@@ -14,6 +14,37 @@ description: Fallback orchestration skill. Loaded when no keyword matches. Re-ro
 
 # Agent Core
 
+## Trigger
+Activated when:
+- No skill keyword matches user intent → fallback orchestrator route
+- Task has ≥2 independent MECE sections → multi-agent Cycle fan-out needed
+- MECE plan Cycle grouping declares parallel sections to spawn
+
+## Refusal Contract
+Halt and emit `[agent-refused]` if:
+- Task requires direct `src/` edits → delegate to `editor` or `coder`, never execute directly
+- Sub-agent depth would exceed 1 (no sub-agents spawning further agents)
+- T-IDs not pre-assigned before any spawn (INVARIANTS.md §I6)
+
+## Workflow
+Route: resolve skill_name (B2) → delegate to specialist skill OR orchestrate Cycle fan-out (spawn parallel Executors) → aggregate results → Completion Gate (Reviewer haiku).
+Full orchestration detail: `## Orchestration Protocol` · `## Skill Delegation Rules` below.
+
+## Output Contract
+
+| Action | Required emit |
+|---|---|
+| Re-route | `[route] Matched: <skill> · Loading SKILL.md` |
+| Route limit hit | `[route-limit] Staying on current skill · count: 3` |
+| Platform unknown | `[platform-unknown] → running B4 probe` |
+| Cycle spawn | `[cycle N] Spawning <X> sections · parallel: <yes\|no>` |
+| Cycle done | `[cycle N] All done · results: cycle_N_*.json` |
+| Any section blocked | `[blocked] Section: <S> · Cause: <reason> · Halting all remaining cycles` |
+| Completion | Reviewer sub-agent result: PASS or FAIL list |
+
+Required files written:
+- `.sessions/cycle_N_<section_id>.json` — every spawned section before Cycle N+1
+
 ## Role
 Orchestrator skill. Handles two responsibilities:
 1. **Routing** — when no keyword matches, re-route to correct skill
@@ -168,9 +199,5 @@ If section has `Skill: coder` → spawn coder sub-agent regardless of action typ
 
 ---
 
-## Environment & Paths
-- Libraries: `/Volumes/BriteBrain/Libraries`
-- IDE Context: `/Volumes/BriteBrain/IDE`
-- Python install: `pip install <pkg> --target=/Volumes/BriteBrain/Libraries/python`
-- NPM install: `npm install <pkg> --prefix=/Volumes/BriteBrain/Libraries/npm`
-- Execution: `export PYTHONPATH=$PYTHONPATH:/Volumes/BriteBrain/Libraries/python`
+→ Spawn call structure examples (Antigravity/Claude Code), sub-agent result schema, environment paths:
+`@.agents/skills/agent/SKILL_detail.md`

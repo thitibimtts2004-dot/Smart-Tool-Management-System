@@ -1,21 +1,11 @@
-# ─── Runtime state (never commit) ─────────────────────────────────────────────
-.sessions/
-
-# ─── Machine-specific platform config ─────────────────────────────────────────
-# detected.md is auto-generated at boot (B4) — template must stay platform: unknown
-# Gitignore the file only if you want B4 to always re-detect on clone
-# Current choice: commit as platform: unknown template
-# .agents/platform/detected.md
-
-# ─── Project-specific indexes (regenerated per project) ────────────────────────
-knowledge/index_files.json
-knowledge/index_variables.json
-knowledge/error_index.md
-knowledge/index_sessions.json
-
-# ─── Session history / runtime logs ────────────────────────────────────────────
-knowledge/harness_flow_*.md
-knowledge/cfp_archive.md
+# ─── Harness Agent — Development Repo ──────────────────────────────────────────
+# This is the harness development repository. ALL harness files are tracked here.
+# .sessions/, knowledge/index_*.json, harness_flow_*.md → all committed.
+#
+# When deploying harness to a TARGET PROJECT:
+#   → Use Implement/03_config.md §Gitignore to add harness runtime exclusions
+#   → Use scripts/bootstrap_sessions.py to initialize .sessions/ on first run
+#   → Templates: docs/session_templates/
 
 # ─── macOS resource forks ──────────────────────────────────────────────────────
 ._*
