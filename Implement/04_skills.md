@@ -634,6 +634,16 @@ Rules:
 - Cycle grouping block: ≤10 lines total
 \```
 
+**M1.5 Named Outputs** (write to mece_plan.md M1.5 block after reasoning pass):
+\```
+dependency_map: [<file_A> → <file_B>, <section_X> must precede <section_Y>, ...]
+risk_flags: [<irreversible action>, <scope >5 files>, <DB edit>, ...]
+\```
+Rules:
+- `dependency_map` → drives Sequential vs Parallel grouping in Cycle block
+- `risk_flags` → any flag present → trigger M4.5 Skeptical Reviewer gate
+- Empty list `[]` is valid (no deps / no risks)
+
 ## Verify Pattern Lookup (use when writing DoD for each section)
 
 | Action type | Verify pattern | Expected |

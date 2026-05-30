@@ -889,10 +889,9 @@
   "Implement/09_migration.md": {
     "description": "Migration guide for users upgrading from older harness version \u2014 4 tracks: M1 indexes, M2 tree, M3 skills/config, M4 verify",
     "topics": [
-      "harness",
-      "implement",
-      "migration",
-      "setup"
+      "harness_editing",
+      "knowledge_base",
+      "boot_sequence"
     ],
     "backlinks": [
       "Implement/00_index.md"
@@ -901,6 +900,63 @@
       "Implement/00_index.md",
       "Implement/08_checklist.md",
       "knowledge/harness_flow_20260526.md"
+    ],
+    "related": []
+  },
+  "docs/session_templates/mece_plan_schema.md": {
+    "type": "config",
+    "description": "Template for .sessions/mece_plan.md \u2014 Phase 0-3 blocks, Section Template (Tool/Rollback/Data_Sent/Token), Files Read tables, TOKEN CHECK runtime cmd, [mece-audit] + feedback in Phase 3 Close, PATH A/B/C.",
+    "topics": [
+      "mece_planning",
+      "phase_gates",
+      "session_management",
+      "harness_editing"
+    ],
+    "backlinks": [
+      "AGENTS.md",
+      ".agents/skills/mece/SKILL.md",
+      ".agents/skills/mece/SKILL_detail.md"
+    ],
+    "references": [
+      ".sessions/mece_plan.md"
+    ],
+    "related": []
+  },
+  "Implement/04_skills.md": {
+    "type": "doc",
+    "description": "Full skill reference \u2014 all 15 SKILL.md contents + MECE Planner plan format + M1.5 Named Outputs (dependency_map/risk_flags) + Verify Pattern Lookup.",
+    "topics": [
+      "mece_planning",
+      "harness_editing",
+      "behavioral_contract",
+      "skill_routing",
+      "session_management"
+    ],
+    "backlinks": [
+      "Implement/00_index.md"
+    ],
+    "references": [
+      "Implement/03_config.md"
+    ],
+    "related": []
+  },
+  "Implement/08_checklist.md": {
+    "type": "doc",
+    "description": "Behavioral contract verification checklist \u2014 all harness features with grep-based Verify commands. Includes M1.5 named outputs, mece_plan_schema fields, [mece-audit]+feedback checks.",
+    "topics": [
+      "mece_planning",
+      "phase_gates",
+      "harness_editing",
+      "session_management",
+      "boot_sequence"
+    ],
+    "backlinks": [
+      "Implement/00_index.md"
+    ],
+    "references": [
+      "AGENTS.md",
+      "CLAUDE.md",
+      "docs/session_templates/mece_plan_schema.md"
     ],
     "related": []
   }

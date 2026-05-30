@@ -115,6 +115,9 @@ After 3 loops OR 5 clarification rounds: emit [gather-stalled] · ask user once 
 ```
 [M1]   Read mece/SKILL.md offset=1 limit=100
 [M1.5] Reason (memory ≤600 tok): dependencies→Sequential · parallel→Parallel · irreversible→flag · risk · done-sketch per section
+       Named outputs → write to mece_plan.md M1.5 block:
+         dependency_map: [<file_A> → <file_B>, <section_X> must precede <section_Y>, ...]
+         risk_flags: [<irreversible action>, <scope >5 files>, <DB edit>, ...]
 [M2]   Build plan 1:1 with Skill sections · [M2.5] Verify-N: runnable command per section
 [M3]   Send plan+Verify-N → user confirms BOTH · [M4] R-Roadmap: add [ ] T-<N> per section
 [M4.5] Optional gate: spawn Skeptical Reviewer (haiku · read-only) → verdict go/revise/reject · revise→M2 · reject→Phase 1 · skip if task is low-risk or single-file

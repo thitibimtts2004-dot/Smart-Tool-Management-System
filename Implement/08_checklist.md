@@ -77,6 +77,16 @@ Expected: ≥ 10 matches
 - [ ] `mece/SKILL.md` has Feedback & Error Summary as Final Step before `[MECE]` done emit
 - [ ] **M1.5 reasoning pass**: `AGENTS.md` has `[M1.5] REASON` block between M1→M2 in Phase 2 · `mece/SKILL.md` Execution Protocol has `[S1-A.5]` between S1-A and S1-B
   Verify: `grep -c "M1.5\|S1-A.5" AGENTS.md` → ≥ 2 · `grep -c "S1-A.5" .agents/skills/mece/SKILL.md` → ≥ 1
+- [ ] **M1.5 named outputs**: `AGENTS.md [M1.5]` block has `dependency_map:` + `risk_flags:` named output fields written to mece_plan.md
+  Verify: `grep -c "dependency_map\|risk_flags" AGENTS.md` → ≥ 2
+- [ ] **mece_plan_schema Section Template fields**: `docs/session_templates/mece_plan_schema.md` section template has `Tool:` + `Rollback:` + `Data_Sent:` + `Token:` fields per section
+  Verify: `grep -c "Tool:\|Rollback:\|Data_Sent:\|Token:" docs/session_templates/mece_plan_schema.md` → ≥ 4
+- [ ] **mece_plan_schema Files Read tables**: Phase 1 + Phase 2 blocks have `### Files Read` table (3-col: File · Why · Lines read)
+  Verify: `grep -c "Files Read" docs/session_templates/mece_plan_schema.md` → ≥ 2
+- [ ] **mece_plan_schema TOKEN CHECK runtime cmd**: TOKEN CHECK uses `cat .sessions/session_tokens.md` (not just comment)
+  Verify: `grep -c "cat .sessions/session_tokens.md" docs/session_templates/mece_plan_schema.md` → ≥ 2
+- [ ] **mece_plan_schema Phase 3 Close — [mece-audit] + feedback**: Phase 3 Close Checklist has `[mece-audit]` emit + "Ask user" step + "Feedback delivered" checkbox
+  Verify: `grep -c "mece-audit\|Ask user\|Feedback delivered" docs/session_templates/mece_plan_schema.md` → ≥ 3
 - [ ] **OmO Reviewer**: `AGENTS.md` has OmO Role Assignment table · `agent/SKILL.md` has Reviewer spawn block at Completion Gate
   Verify: `grep -c "OmO\|Reviewer" AGENTS.md` → ≥ 4 · `grep -c "OmO Reviewer\|haiku sub-agent" .agents/skills/agent/SKILL.md` → ≥ 1
 - [ ] **Reviewer prompt template**: `mece/SKILL.md` Phase 3 close block has 5-step template (not just "Verify-N list")

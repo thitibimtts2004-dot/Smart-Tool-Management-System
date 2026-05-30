@@ -32,17 +32,31 @@ skill: <skill_name>
 - [ ] G2: batch greps in ONE Bash call · targeted Reads (offset+limit) · [post-read] verdicts emitted
 - [ ] G3: every section → file/symbol + Verify-N draft · [✓ gather] emitted
 - [ ] gather_complete.md written today (objective · constraints · affected_files · acceptance_criteria)
-→ TOKEN CHECK: SESSION_TOTAL ~___k
+
+### Files Read — Phase 1
+| File | Why | Lines read |
+|---|---|---|
+| <path> | <reason> | offset=N limit=N |
+
+→ TOKEN CHECK: `cat .sessions/session_tokens.md`
 
 ---
 
 ## Phase 2 — Plan
 - [ ] M1.5: reasoning pass (sequential vs parallel · irreversible flagged · risk noted)
+       dependency_map: [<file_A> → <file_B>, ...]
+       risk_flags: [<irreversible action>, <large scope>]
 - [ ] M2: plan 1:1 with skill sections · Skill: + Verify-N per section
 - [ ] M3: plan + Verify-N sent to user → user confirmed
 - [ ] M4: roadmap [ ] T-<N> per section added
 - [ ] M5: mece_plan.md written using this template (Phase 0-3 blocks mandatory) · [✓ MECE] emitted
-→ TOKEN CHECK: SESSION_TOTAL ~___k
+
+### Files Read — Phase 2
+| File | Why | Lines read |
+|---|---|---|
+| <path> | <reason> | offset=N limit=N |
+
+→ TOKEN CHECK: `cat .sessions/session_tokens.md`
 
 ---
 
@@ -51,22 +65,30 @@ skill: <skill_name>
 ### S1 · T-XXX · <Section 1 name>
 Skill: <skill_name>
 File: <path/to/file>
+Tool: <Edit | Write | Bash | Agent>
+Rollback: git checkout <path/to/file>
+Data_Sent: <what data / old_string / new_string / command is passed to the tool>
+Token: ~<NNN> output
 Constraints:
   - mece_plan.md dated today + T-N roadmap [/] REQUIRED before any file edit
   - [pre-edit] emit before every Edit · [✓ written] grep verify after every change
   - <skill-specific constraint from skill's ## MECE Constraints Block>
 Verify-1: <runnable grep/bash command> → <expected output>
 - [ ] S1
-→ TOKEN CHECK: SESSION_TOTAL ~___k  (>50k → /compact · >60k → TOKEN PAUSE → PATH B)
+→ TOKEN CHECK: `cat .sessions/session_tokens.md`  (>50k → /compact · >60k → TOKEN PAUSE → PATH B)
 
 ### S<N> · T-XXX · <Section N name>
 Skill: <skill_name>
 File: <path/to/file>
+Tool: <Edit | Write | Bash | Agent>
+Rollback: git checkout <path/to/file>
+Data_Sent: <what data is passed to the tool>
+Token: ~<NNN> output
 Constraints:
   - <constraint from MECE Constraints Block>
 Verify-N: <command> → <expected>
 - [ ] S<N>
-→ TOKEN CHECK: SESSION_TOTAL ~___k
+→ TOKEN CHECK: `cat .sessions/session_tokens.md`
 
 ---
 
@@ -76,7 +98,10 @@ Verify-N: <command> → <expected>
 - [ ] Spawn Reviewer (haiku · read-only):
       "Run each Verify-N: line exactly · Report: PASS list · FAIL list"
       On PASS → proceed · On FAIL → fix → retry 1× → R13 [blocked]
-- [ ] [session-health] emitted (Completion Gate — this IS "Feedback delivered")
+- [ ] [mece-audit] emitted: `[mece-audit] Sections: N · All Verify-N: PASS · Plan quality: <note>`
+- [ ] Ask user: "มีอะไรอยากแก้ไขหรือปรับเพิ่มไหมครับ?" (1 message — do not loop)
+- [ ] Feedback delivered (user replied or timeout after 1 exchange)
+- [ ] [session-health] emitted (Completion Gate)
 - [ ] **if skill=harness_editor** → Step 5 gate (mandatory before close):
       harness_flow_20260526.md updated (Y-entry) · affected Implement/ files updated · flow_updated=yes
       emit `[harness-edit-done]` → then Thai user summary ("งานเสร็จแล้วครับ ✅ ...")
