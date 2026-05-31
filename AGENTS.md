@@ -7,7 +7,7 @@
 ## Boot Sequence (3 tool calls max)
 
 ```
-[B1] Bash: (cs_dt=$(grep "^dt=" .sessions/compact_state.md 2>/dev/null | cut -d= -f2 | cut -d' ' -f1); today=$(date +%Y-%m-%d); compact_restore=false; [ "$cs_dt" = "$today" ] && compact_restore=true && echo "[compact-restore]" && cat .sessions/compact_state.md && echo "---"; phase=$(grep "^phase:" .sessions/active_thread.md 2>/dev/null | awk '{print $2}'); { [ "$compact_restore" = "true" ] || [ "$phase" != "in_progress" ]; } && printf "SESSION_TOTAL: 0\nCHAT_TOTAL: 7300\n" > .sessions/session_tokens.md; cat .sessions/active_thread.md 2>/dev/null | tail -4; echo "---"; cat .sessions/session_tokens.md 2>/dev/null; echo "---"; grep -n "\[/\]" docs/master_roadmap.md 2>/dev/null | head -3; echo "---"; echo "CFP_COUNT: $(grep -c '^## CFP-' CODING_FAILURE_PATTERNS.md 2>/dev/null || echo 0)")
+[B1] Bash: (cs_dt=$(grep "^dt=" .sessions/compact_state.md 2>/dev/null | cut -d= -f2 | cut -d' ' -f1); today=$(date +%Y-%m-%d); compact_restore=false; [ "$cs_dt" = "$today" ] && compact_restore=true && echo "[compact-restore]" && cat .sessions/compact_state.md && echo "---"; phase=$(grep "^phase:" .sessions/active_thread.md 2>/dev/null | awk '{print $2}'); if [ "$compact_restore" = "true" ]; then cs=$(grep "^compact_size=" .sessions/compact_state.md 2>/dev/null | cut -d= -f2 || echo "0"); ct=$((7300 + ${cs:-0})); printf "SESSION_TOTAL: 0\nCHAT_TOTAL: $ct\n" > .sessions/session_tokens.md; elif [ "$phase" != "in_progress" ]; then printf "SESSION_TOTAL: 0\nCHAT_TOTAL: 7300\n" > .sessions/session_tokens.md; fi; cat .sessions/active_thread.md 2>/dev/null | tail -4; echo "---"; cat .sessions/session_tokens.md 2>/dev/null; echo "---"; grep -n "\[/\]" docs/master_roadmap.md 2>/dev/null | head -3; echo "---"; echo "CFP_COUNT: $(grep -c '^## CFP-' CODING_FAILURE_PATTERNS.md 2>/dev/null || echo 0)")
 [B2] IF [compact-restore]: parse sk= → skill_name · parse section= + step= → resume_hint · SKIP manifest read
      IF prompt has `skill: <name>`: use directly · SKIP manifest
      ELSE: grep -B1 -A6 '"keywords"' .agents/skills/skill-manifest.json | head -80 → match → skill_name
@@ -16,7 +16,7 @@
      ELSE: Read .agents/skills/<skill_name>/SKILL.md offset=1 limit=80
            Read .agents/skills/mece/SKILL.md offset=31 limit=110
 ```
-- B1 resets SESSION_TOTAL=0 · sets CHAT_TOTAL=7300 (system_fixed) on compact-restore OR when phase≠in_progress · CFP_COUNT → cfp_boot_count in working memory
+- B1 resets SESSION_TOTAL=0 · compact-restore: CHAT_TOTAL = compact_size + 7300 (reads compact_size from compact_state.md) · fresh session: CHAT_TOTAL = 7300 · CFP_COUNT → cfp_boot_count in working memory
 - on_demand_files = lookup table for G2 only — NEVER auto-load at B3
 - mece_plan.md has pending sections? Skip Phase 1+2 → resume Phase 3:
   `grep -n "^\- \[ \]\|^\- \[/\]" .sessions/mece_plan.md | head -3` → first pending item

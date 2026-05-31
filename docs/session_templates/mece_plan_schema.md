@@ -126,14 +126,17 @@ SESSION: CHAT_TOTAL accumulates (never resets here)
 
 ### PATH B — TOKEN PAUSE (SESSION_TOTAL > 60k)
 ```
-SESSION: /compact resets CHAT_TOTAL=0 · B1 at next boot re-sets CHAT_TOTAL=7300 (system_fixed)
+SESSION: /compact resets CHAT_TOTAL=0 · B1 at next boot reads compact_size → CHAT_TOTAL = compact_size + 7300
          SESSION_TOTAL=0 written by B1 on compact_restore
 ```
+- [ ] Compute compact_size BEFORE /compact:
+      `python3 -c "import re; t=open('.sessions/session_tokens.md').read(); c=int(re.search(r'CHAT_TOTAL:\s*(\d+)',t).group(1)); print(int(c*0.30))"` → compact_size
 - [ ] Write compact_state.md:
       dt=<YYYY-MM-DD> s=___k task=<desc> cfp=___
       sk=<skill> sk_h=<8chars> mece_h=<8chars>
       p1=done p2=done p3=<last_section> section=S<N> step=<last step desc>
       resume_at=S<N>:step:<desc>
+      compact_size=<value from step above>
 - [ ] session_manager TOKEN PAUSE → emit [pre-compact-state] block → ask user confirm
 - [ ] claude-code: /compact · other platform: write compact_state.md → STOP
 

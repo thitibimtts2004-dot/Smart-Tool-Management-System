@@ -61,11 +61,17 @@ output_tokens = (thai_chars × 1.7) + (en_chars × 0.3)
 SESSION_TOTAL += turn_tokens
 
 # CHAT_TOTAL — cumulative context window (never shrinks until /compact)
-# Boot B1 fresh session: CHAT_TOTAL starts at system_fixed = 7,300
-#   system_fixed = CLAUDE.md 2.6k + AGENTS.md 3.4k + skills 1.3k (one-time)
-# Each turn adds only hooks + new content:
+# Boot B1 fresh session:    CHAT_TOTAL = 7,300 (system_fixed)
+# Boot B1 compact-restore:  CHAT_TOTAL = compact_size + 7,300
+#   compact_size = read from compact_state.md (written at PATH B: CHAT_TOTAL_pre_compact × 0.30)
+#   system_fixed = CLAUDE.md 2.6k + AGENTS.md 3.4k + skills 1.3k
+#
+# Per-turn growth (triangular accumulation — compact_base re-sent every turn):
 CHAT_TOTAL_n = CHAT_TOTAL_{n-1} + hooks_per_turn + turn_tokens
-# hooks_per_turn = 1,300 (deferred-tools list + HARNESS REMINDER injected every turn)
+# hooks_per_turn = 1,300 (deferred-tools list + HARNESS REMINDER)
+# ⚠️ Triangular undercount: true API total = Σ(each turn's full context re-sent)
+#    For long sessions: actual ≈ CHAT_TOTAL × 1.5–2× due to history accumulation
+#    Use CHAT_TOTAL as lower-bound estimate, not exact figure
 ```
 Each turn: compute turn_tokens → SESSION_TOTAL += turn_tokens · CHAT_TOTAL += 1,300 + turn_tokens.
 Write SESSION_TOTAL at: token pause · blocked halt · completion gate.

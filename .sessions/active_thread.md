@@ -1,3 +1,3 @@
-task: T-041 Asset Plan Priority 1+2 features
+task: T-042 Token Optimization Pack
 phase: done
 next: ready for new task
