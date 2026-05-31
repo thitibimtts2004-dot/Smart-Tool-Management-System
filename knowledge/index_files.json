@@ -959,5 +959,29 @@
       "docs/session_templates/mece_plan_schema.md"
     ],
     "related": []
+  },
+  "scripts/safe_run.py": {
+    "type": "script",
+    "description": "Priority-first chunked output filter (T-042). THRESHOLD=40, CHUNK=25. Signal lines first, never truncated. Noise lines (non-monotonic) removed. Short output pass-through.",
+    "topics": [
+      "token_tracking",
+      "harness_editing"
+    ],
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "docs/token_benchmark.md": {
+    "type": "doc",
+    "description": "Token optimization benchmark \u2014 before/after safe_run.py comparison for 3 scenarios. Projects 45-65% reduction for T-041-equivalent tasks.",
+    "topics": [
+      "token_tracking",
+      "knowledge_base"
+    ],
+    "backlinks": [],
+    "references": [
+      "scripts/safe_run.py"
+    ],
+    "related": []
   }
 }

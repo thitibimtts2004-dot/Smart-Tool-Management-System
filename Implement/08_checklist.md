@@ -87,6 +87,12 @@ Expected: ≥ 10 matches
   Verify: `grep -c "cat .sessions/session_tokens.md" docs/session_templates/mece_plan_schema.md` → ≥ 2
 - [ ] **mece_plan_schema Phase 3 Close — [mece-audit] + feedback**: Phase 3 Close Checklist has `[mece-audit]` emit + "Ask user" step + "Feedback delivered" checkbox
   Verify: `grep -c "mece-audit\|Ask user\|Feedback delivered" docs/session_templates/mece_plan_schema.md` → ≥ 3
+- [ ] **safe_run.py**: `scripts/safe_run.py` exists · THRESHOLD=40 · CHUNK=25 · signal-first · pass-through short output
+  Verify: `python3 scripts/safe_run.py "seq 1 50" | wc -l` → ≤30 · `python3 scripts/safe_run.py "echo 'error: x'" | grep error` → found
+- [ ] **Reviewer inline threshold**: `AGENTS.md §Completion Gate` has Verify-N ≤3 + no src/ → inline rule · saves spawn cost
+  Verify: `grep -c "inline\|≤3\|3 Verify" AGENTS.md` → ≥1
+- [ ] **Compact 30k multi-section rule**: `CLAUDE.md R3` table has >30k + multi-section row · `AGENTS.md §Completion Gate` has 30k compact rule
+  Verify: `grep -c "30k\|multi-section" CLAUDE.md` → ≥1 · `grep "30k" AGENTS.md` → ≥1
 - [ ] **OmO Reviewer**: `AGENTS.md` has OmO Role Assignment table · `agent/SKILL.md` has Reviewer spawn block at Completion Gate
   Verify: `grep -c "OmO\|Reviewer" AGENTS.md` → ≥ 4 · `grep -c "OmO Reviewer\|haiku sub-agent" .agents/skills/agent/SKILL.md` → ≥ 1
 - [ ] **Reviewer prompt template**: `mece/SKILL.md` Phase 3 close block has 5-step template (not just "Verify-N list")

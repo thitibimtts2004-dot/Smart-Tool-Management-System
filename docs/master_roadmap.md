@@ -82,3 +82,4 @@
 - [X] T-039: 08_checklist Behavioral Contract + Thai close backfill (Step 5 missed) + stale ref fix + mece_plan_schema conditional Step 5 gate (→ harness_flow Y20 · Implement/04+08 · mece_plan_schema §Close · 08 BC) · attempts: 1 · tool_calls: 18
 - [X] T-040: Migration Guide — Implement/09_migration.md (298L · 4 tracks M1-M4) + 00_index.md Track C + 01_overview.md Track A/B/C + 02_setup.md §9 + harness_flow Y21 · attempts: 1 · tool_calls: 20
 - [X] T-041: Asset Plan Priority 1+2 features — mece_plan_schema.md (Tool/Rollback/Data_Sent/Token fields · Files Read tables · TOKEN CHECK runtime · [mece-audit]+feedback) + AGENTS.md M1.5 (dependency_map/risk_flags) + Implement/04+08 · attempts: 1 · tool_calls: 22
+- [X] T-042: Token Optimization Pack — safe_run.py (priority-first filter · 97.5% git noise reduction) + AGENTS.md (reviewer inline · compact 30k · cache note) + CLAUDE.md R3 + Implement/04+08 + docs/token_benchmark.md · attempts: 1 · tool_calls: 28

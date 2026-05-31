@@ -149,14 +149,20 @@ After each section → write session_handoff.md: sections_done + sections_pendin
 
 BLOCKED: halt · show error+progress · ask "fix or skip?" · wait
 TOKEN PAUSE (>60k): check provider (detected.md): claude-code → ask continue → resume · other → compact_state.md → STOP
+Cache note: Anthropic prompt cache TTL = 5 min · /compact resets cache prefix cleanly · compact before long idle > 5 min preserves cache hits on next turn (10× cheaper reads)
 
 ---
 
 ### Completion Gate
 
-Before reporting done → spawn Reviewer (haiku · read-only): prompt = Verify-N list + grep commands · PASS → proceed · FAIL → fix → retry 1× → R13
+Reviewer spawn decision (token-aware):
+- Verify-N ≤ 3 commands + no src/ changes → run inline (bash) · skip spawn · saves ~8-11k
+- Verify-N ≥ 4 OR src/ changes → spawn Reviewer (haiku · read-only): prompt = Verify-N list + grep commands
+
+Before reporting done → Reviewer (inline or spawn): PASS → proceed · FAIL → fix → retry 1× → R13
 Agent may NOT report done until: all sections executed (tool calls) · [✓ written] on every edit · R8 Index Sync · Roadmap [X] · active_thread phase:done · SESSION_TOTAL written · Feedback delivered · I6–I8 checked (if parallel agents used)
 SESSION_TOTAL > 50k → compact first · > 60k → TOKEN PAUSE before gate.
+SESSION_TOTAL > 30k + sections ≥ 3 remaining → compact after current section (cache-aware: compact before 5-min idle to keep cache warm)
 
 Session Health Check — run after Reviewer PASS (this IS "Feedback delivered"):
 ```

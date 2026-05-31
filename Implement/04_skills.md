@@ -644,6 +644,16 @@ Rules:
 - `risk_flags` → any flag present → trigger M4.5 Skeptical Reviewer gate
 - Empty list `[]` is valid (no deps / no risks)
 
+**Token Optimization (T-042):**
+- **Batch tool calls:** combine independent Bash commands in 1 turn with `&&` — saves triangular-sum accumulation
+  - ❌ 3 separate turns: grep → wc -l → cat (each turn carries full history again)
+  - ✅ 1 turn: `grep ... && wc -l ... && cat ...`
+- **safe_run.py for verbose commands:** use `python3 scripts/safe_run.py "<cmd>"` for: git push/commit · script runs · any command likely >40 lines
+  - Priority-first: signal lines (error/warn/fail) shown first · never truncated
+  - Non-signal: first 25 lines + "[+N more]"
+- **Reviewer inline threshold:** Verify-N ≤ 3 + no src/ changes → run grep commands directly (skip spawn · saves ~8-11k)
+- **Compact at 30k (multi-section):** SESSION_TOTAL >30k + ≥3 sections remaining → /compact after current section
+
 ## Verify Pattern Lookup (use when writing DoD for each section)
 
 | Action type | Verify pattern | Expected |

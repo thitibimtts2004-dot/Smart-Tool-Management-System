@@ -78,6 +78,7 @@ Max 5 tool calls/turn. Retry max 2×; diagnose on 2nd fail.
 ## R3 · Session Pause Protocol
 | Counter | Threshold | Action |
 |---|---|---|
+| SESSION_TOTAL | >30k + multi-section (≥3 remaining) | compact after current section (cache-warm + triangular-sum prevention) |
 | SESSION_TOTAL | >60k | finish current step → TOKEN PAUSE |
 | SESSION_TOTAL | >80k | `/compact` immediately |
 | SESSION_TOTAL | >90k | HALT → save state → report |
