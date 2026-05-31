@@ -84,3 +84,5 @@
 - [X] T-041: Asset Plan Priority 1+2 features — mece_plan_schema.md (Tool/Rollback/Data_Sent/Token fields · Files Read tables · TOKEN CHECK runtime · [mece-audit]+feedback) + AGENTS.md M1.5 (dependency_map/risk_flags) + Implement/04+08 · attempts: 1 · tool_calls: 22
 - [X] T-042: Token Optimization Pack — safe_run.py (priority-first filter · 97.5% git noise reduction) + AGENTS.md (reviewer inline · compact 30k · cache note) + CLAUDE.md R3 + Implement/04+08 + docs/token_benchmark.md · attempts: 1 · tool_calls: 28
 - [X] T-043: CHAT_TOTAL formula fix — compact_size field in compact_state.md + B1 reads compact_size → CHAT_TOTAL = compact_size + 7300 + triangular undercount note in R1 · attempts: 1 · tool_calls: 12
+
+- [X] T-044: token formula accuracy fix · attempts: 1 · tool_calls: 20 — compact_size 0.30→0.45 · sys_fixed dynamic · hooks_per_turn 1300→700

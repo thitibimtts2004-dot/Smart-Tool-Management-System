@@ -10,7 +10,7 @@ Skipping boot = invalid session state = CFP violation.
 
 ## Boot (3 tool calls max)
 → Full B1/B2/B3 commands + compact-restore logic: **AGENTS.md §Boot Sequence**
-- B1: checks compact_state.md + resets SESSION_TOTAL=0 · sets CHAT_TOTAL=7300 (system_fixed) on compact-restore OR phase≠in_progress + loads CFP_COUNT
+- B1: checks compact_state.md + resets SESSION_TOTAL=0 · sets CHAT_TOTAL=sys_fixed on compact-restore OR phase≠in_progress + loads CFP_COUNT
 - B2: identifies skill_name (skips manifest if compact-restore or orchestrator pre-resolved)
 - B3: loads SKILL.md + mece/SKILL.md (skips if hashes match → saves ~2.9k tokens)
 - [B4] Platform Probe: `detected.md` platform: unknown → list tools → update · else skip
@@ -61,19 +61,19 @@ output_tokens = (thai_chars × 1.7) + (en_chars × 0.3)
 SESSION_TOTAL += turn_tokens
 
 # CHAT_TOTAL — cumulative context window (never shrinks until /compact)
-# Boot B1 fresh session:    CHAT_TOTAL = 7,300 (system_fixed)
-# Boot B1 compact-restore:  CHAT_TOTAL = compact_size + 7,300
-#   compact_size = read from compact_state.md (written at PATH B: CHAT_TOTAL_pre_compact × 0.30)
-#   system_fixed = CLAUDE.md 2.6k + AGENTS.md 3.4k + skills 1.3k
+# Boot B1 fresh session:    CHAT_TOTAL = sys_fixed
+# Boot B1 compact-restore:  CHAT_TOTAL = compact_size + sys_fixed
+#   compact_size = read from compact_state.md (written at PATH B: CHAT_TOTAL_pre_compact × 0.45)
+#   system_fixed = dynamic: (CLAUDE.md + AGENTS.md) chars × 0.3 + 3500 (skill est.) ≈ 11,070
 #
 # Per-turn growth (triangular accumulation — compact_base re-sent every turn):
 CHAT_TOTAL_n = CHAT_TOTAL_{n-1} + hooks_per_turn + turn_tokens
-# hooks_per_turn = 1,300 (deferred-tools list + HARNESS REMINDER)
+# hooks_per_turn = 700 (deferred-tools ~600 + HARNESS REMINDER ~100)
 # ⚠️ Triangular undercount: true API total = Σ(each turn's full context re-sent)
 #    For long sessions: actual ≈ CHAT_TOTAL × 1.5–2× due to history accumulation
 #    Use CHAT_TOTAL as lower-bound estimate, not exact figure
 ```
-Each turn: compute turn_tokens → SESSION_TOTAL += turn_tokens · CHAT_TOTAL += 1,300 + turn_tokens.
+Each turn: compute turn_tokens → SESSION_TOTAL += turn_tokens · CHAT_TOTAL += 700 + turn_tokens.
 Write SESSION_TOTAL at: token pause · blocked halt · completion gate.
 Write CHAT_TOTAL at: /compact (reset→0) · session close (accumulate).
 Emit `*(Session: ~NNNk | Chat: ~NNNk tokens)*` every response.

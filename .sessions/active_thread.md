@@ -1,3 +1,3 @@
-task: T-042 Token Optimization Pack
+task: T-044 token formula accuracy fix
 phase: done
-next: ready for new task
+next: ready for new task — /compact + retest formula accuracy
