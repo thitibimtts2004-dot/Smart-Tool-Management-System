@@ -182,3 +182,21 @@
 - [X] T-069.4: 08_checklist.md — T-067+T-068 verification items · attempts:1 · tool_calls:2
 - [X] T-069.5: 09_migration.md — M5 migration section: TURN_COUNT+LOOP_WEIGHT fields · PostToolUse hook · compact_checkpoint · attempts:1 · tool_calls:2
 - [X] T-069.6: 01_overview.md + 02_setup.md — session_tokens.md 6-field schema description · attempts:1 · tool_calls:3
+
+## Asset Plan Harness Upgrade — T-070
+
+- [X] T-070.1: backup old harness → AP/.sessions/harness_backup_20260601/ (8 items) · attempts:1 · tool_calls:2
+- [X] T-070.2: copy core files (CLAUDE.md·AGENTS.md·CFP·REPO_MAP·INVARIANTS) · sha1 verified · attempts:1 · tool_calls:1
+- [X] T-070.3: rsync .agents/ (+ harness_editor + skeptical_reviewer added) · attempts:1 · tool_calls:1
+- [X] T-070.4: rsync Implement/ (+ 6 new files) · attempts:1 · tool_calls:1
+- [X] T-070.5: rsync scripts/ + docs/session_templates/ + token_benchmark.md · attempts:1 · tool_calls:2
+- [X] T-070.6: .gitignore append + session_tokens 6 fields + .claude/settings.json · attempts:1 · tool_calls:1
+
+## Harness BC Gaps Fix — T-071
+
+- [X] T-071.1: mece_plan_schema.md — PATH A + PATH C Session Close BC (Pre/Contract/Post/Enforce) · attempts:1 · tool_calls:2
+- [X] T-071.2: mece/SKILL_detail.md — Phase 3 close block Session Close BC · attempts:1 · tool_calls:1
+- [X] T-071.3: .claude/settings.json — UserPromptSubmit hook C0.5 LOOP_WEIGHT warn (>30) + required (>50) · attempts:1 · tool_calls:1
+- [X] T-071.4: CLAUDE.md — trim R1 detail → pointer · 252L→191L (≤200L) · attempts:1 · tool_calls:1
+- [X] T-071.5: AGENTS.md — trim Phase 1-3 + Sub-agent detail → pointer · 281L→200L (≤200L) · attempts:1 · tool_calls:3
+- [X] T-071.6: CODING_FAILURE_PATTERNS.md — CFP-030 session close BC skipped · attempts:1 · tool_calls:1

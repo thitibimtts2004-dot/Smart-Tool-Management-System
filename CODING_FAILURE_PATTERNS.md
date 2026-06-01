@@ -424,3 +424,27 @@ Never present plan in chat before mece_plan.md exists on disk.
 **Detection signal:** Any response ending without `*(Turn:` line · or footer present but no `Loop_W:` field.
 
 **How to apply:** Last step of every response: check footer is present with all fields (Turn · Loop_W · Session · Chat). If missing → re-emit before sending. No exceptions.
+
+## CFP-029 · Phase 3 Close Sequence Skipped Before mece_plan Clear
+
+**Symptom:** Agent runs `Clear mece_plan.md Phase 1–3` without completing the full Phase 3 close checklist — skipping Reviewer spawn, compact_state.md write, CFP count check, harness_doctor check, and Feedback delivery.
+
+**Root cause:** Close treated as a single "clear" action rather than a 7-step checklist sequence. Agent shortcuts to the clear command without verifying all preceding steps are done.
+
+**Prevention:** Phase 3 close block in mece/SKILL_detail.md §Phase 3 close block is a SEQUENTIAL checklist — every `- [ ]` must be ticked before the next step. Clear command is step 4 of 7, not the final step.
+
+**Detection signal:** User says "เรียกหมอ" after close · or compact_state.md missing/stale after clear · or CFP count not verified after close.
+
+**How to apply:** Before running Clear command — verify in order: ① Reviewer PASS ② active_thread phase:done ③ THEN clear ④ compact_state.md written ⑤ SESSION_TOTAL written ⑥ CFP count check ⑦ Feedback + Ask user.
+
+## CFP-030 · Session Close BC Skipped — No session_*.json + No index_sessions Update
+
+**Symptom:** Task completes (mece_plan cleared, active_thread phase:done) but no new `session_<NNN>.json` written and `python scripts/session_indexer.py` never run. Session history and index_sessions.json remain stale.
+
+**Root cause:** Session close treated as optional bookkeeping — no Behavior Contract enforcing it. AI clears mece_plan and stops without checking session file creation or index update.
+
+**Prevention:** mece_plan_schema PATH A/C and mece/SKILL_detail.md Phase 3 close block MUST include Session Close Behavior Contract (Pre/Contract/Post/Enforce). Contract: src/ changed → session_*.json write + session_indexer.py = MANDATORY before clear.
+
+**Detection signal:** `ls .sessions/session_*.json | wc -l` unchanged after close when src/ was modified · or user says "ไม่มี session file" · or index_sessions.json timestamp stale.
+
+**How to apply:** Before clearing mece_plan — run: `ls .sessions/session_*.json | wc -l` → if count unchanged AND task modified src/ → write session_<NNN>.json + `python scripts/session_indexer.py` → verify count +1 → then clear.

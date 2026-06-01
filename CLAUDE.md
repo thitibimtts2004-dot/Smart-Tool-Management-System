@@ -49,87 +49,33 @@ Phase 3 close sequence (no exceptions):
 ---
 
 ## R1 · Token Tracking
-Two counters — both in working memory, sourced from files at Boot:
-- `SESSION_TOTAL` — resets at session close (per-task cost) · file: `.sessions/session_tokens.md`
-- `CHAT_TOTAL` — resets only on /compact or new chat (true context window size) · file: `.sessions/chat_tokens.md`
-- `CACHE_READ` / `CACHE_WRITE` — cumulative cache tokens this session · sourced from API `usage` fields
+Two counters: `SESSION_TOTAL` (per-task, resets at B1) · `CHAT_TOTAL` (context window, resets only on /compact)
+Six fields in `.sessions/session_tokens.md`: SESSION_TOTAL · CHAT_TOTAL · CACHE_READ · CACHE_WRITE · TURN_COUNT · LOOP_WEIGHT
 ```
-# turn cost (same formula for both counters)
 turn_tokens   = (user_msg_chars × 0.3) + tool_result_tokens + output_tokens
 output_tokens = (thai_chars × 1.7) + (en_chars × 0.3) + reasoning_tokens
-# reasoning_tokens = usage.thinking_tokens if extended thinking active ELSE 0
-# thai_chars ×1.7 = estimate only — may drift from actual; verify: POST /v1/messages/count_tokens
-
-# 4-bucket attribution (estimate per turn):
-bucket_sys    = sys_fixed / total_turns_so_far   # amortized system prompt cost
-bucket_tools  = tool_result_tokens               # tool schema + result tokens
-bucket_hist   = SESSION_TOTAL × 0.4             # accumulated history re-sent
-bucket_output = output_tokens                    # this response only
-# Sub-attribution (subset of bucket_tools — track per turn · no double-count):
-bucket_retrieval   = RAG/context-retrieval tokens within bucket_tools (0 if no RAG used)
-# bucket_tool_schema = tool definition tokens within bucket_tools (stable; measure once at boot)
-
-# SESSION_TOTAL — incremental cost per turn (resets each task)
 SESSION_TOTAL += turn_tokens
-
-# CHAT_TOTAL — cumulative context window (never shrinks until /compact)
-# Boot B1 fresh session:    CHAT_TOTAL = sys_fixed
-# Boot B1 compact-restore:  CHAT_TOTAL = compact_size + sys_fixed
-#   compact_size = read from compact_state.md (written at PATH B: CHAT_TOTAL_pre_compact × 0.52)
-#   system_fixed = dynamic: (CLAUDE.md + AGENTS.md) chars × 0.3 + 3500 (skill est.) ≈ 11,070
-#
-# Per-turn growth (triangular accumulation — compact_base re-sent every turn):
-CHAT_TOTAL_n = CHAT_TOTAL_{n-1} + hooks_per_turn + turn_tokens × 1.5
-# hooks_per_turn = 700 (deferred-tools ~600 + HARNESS REMINDER ~100) · ⚠️ unverified estimate — measure actual: python3 scripts/token_estimator.py --schema-only
-# ⚠️ Triangular undercount: true API total = Σ(each turn's full context re-sent)
-#    For long sessions: actual ≈ CHAT_TOTAL × 1.5–2× · 1.5× calibrated from T-046 measurement
-#    Use CHAT_TOTAL as lower-bound estimate, not exact figure
-# ⚠️ Cache invalidation: tool schema edit → prefix reset → CHAT_TOTAL spike ≈ +sys_fixed added back
-#    Detect via [spike:cache-collapse] · emit when cache_hit_pct drops >20pp vs prior turn
-
-# Cache tracking (from Anthropic API usage fields when available):
-# CACHE_READ  += usage.cache_read_input_tokens   (cheap: ~10× less than uncached input)
-# CACHE_WRITE += usage.cache_creation_input_tokens
-# cache_hit%  = CACHE_READ / (CACHE_READ + uncached_input_tokens) × 100
-# If API usage fields not accessible: omit cache% from footer (do not estimate)
+CHAT_TOTAL_n   = CHAT_TOTAL_{n-1} + 700 + turn_tokens × 1.5
+sys_fixed      = (CLAUDE.md + AGENTS.md chars × 0.3) + 3500
+compact_size   = CHAT_TOTAL_pre_compact × 0.52   (written to compact_state.md before /compact)
 ```
-Each turn (in order):
-1. Compute turn_tokens → SESSION_TOTAL += turn_tokens · CHAT_TOTAL += 700 + turn_tokens × 1.5
-2. Write SESSION_TOTAL at: token pause · blocked halt · completion gate
-3. Write CHAT_TOTAL at: /compact (reset→0) · session close (accumulate)
-4. Write JSONL entry → `.sessions/token_log.jsonl` (append one line):
-   `{"turn_id":"<uuid4>","timestamp":"<ISO-8601>","task_id":"<T-NNN>","phase":"<gather|mece|execute|verify|close>","skill_name":"<name>","session_total":<N>,"chat_total":<N>,"cache_read_tokens":<N>,"cache_write_tokens":<N>,"cache_hit_pct":<N.N>,"bucket_sys":<N>,"bucket_tools":<N>,"bucket_hist":<N>,"bucket_output":<N>,"turn_tokens":<N>,"hooks_overhead":700,"call_id":"<uuid4>","call_role":"initial|tool_loop|followup|final","success_state":"success|partial|failed","quality_score":0,"reasoning_tokens":<N>,"tool_called":false,"tool_name":"<name>","estimated_cost_usd":0.0000}`
-   If API usage fields not available: set cache_* = 0, cache_hit_pct = 0
-   # new fields default when unavailable: reasoning_tokens=0, quality_score=0, estimated_cost_usd=0.0, tool_called=false, tool_name=""
-   # 21 fields total (13 existing + 8 new · null-safe defaults)
-   # estimated_cost_usd formula — compute per turn before JSONL write:
-   # MODEL_HIGH (Sonnet 4.x): (in×0.000003) + (cw×0.00000375) + (cr×0.0000003) + (out×0.000015)
-   # MODEL_LOW  (Haiku 3.x):  (in×0.00000025) + (cw×0.0000003) + (cr×0.00000003) + (out×0.00000125)
-   # in=turn_tokens-output_tokens · cw=cache_write_tokens · cr=cache_read_tokens · out=output_tokens
-   # tier: read model_high/low from detected.md · default MODEL_HIGH if unknown
-   # Telemetry retention: .sessions/token_log.jsonl — keep 30 days · archive older entries monthly
-   #   trim script: python3 scripts/trim_exec_log.py --also-jsonl --days=30
+Each turn: (1) compute turn_tokens (2) SESSION_TOTAL += (3) CHAT_TOTAL += (4) write JSONL to token_log.jsonl (5) check R3 threshold (6) check spike alerts (7) append footer
+→ Full formula detail + JSONL schema + spike table + cost formula: **Implement/03_config.md §Token Tracking**
+
 Footer (Behavior Contract — no exceptions):
-  Pre:      read SESSION_TOTAL + LOOP_WEIGHT from `.sessions/session_tokens.md` (or working memory if just updated)
+  Pre:      read SESSION_TOTAL + LOOP_WEIGHT from `.sessions/session_tokens.md`
   Contract: MUST append to EVERY response — no response is valid without this footer:
             `*(Turn: N · Loop_W: N | Session: ~NNNk | Chat: ~NNNk tokens)*`
             When API usage available: `*(Turn: N · Loop_W: N | Session: ~NNNk | Chat: ~NNNk | Cache hit: NN% [sys:Nk tools:Nk hist:Nk out:Nk])*`
   Post:     footer missing = invalid response · re-emit immediately if omitted
-  Enforce:  R1 step 7 (last step before sending) · skip = CFP-026 violation → [self-improve] backfill
-Always compute and display 4-bucket breakdown in footer when SESSION_TOTAL > 5k:
-  `[sys:Nk tools:Nk hist:Nk out:Nk]` (+ `[ret:Nk]` when bucket_retrieval > 0) — use bucket formulas above · omit if SESSION_TOTAL ≤ 5k (too small to be useful)
-**Spike Detection:** after computing turn_tokens — check all 6 alert types:
-| Alert | Condition | Emit |
-|---|---|---|
-| turn-spike | turn_tokens > 3 × avg_turn | `[spike:turn] turn:~NNk avg:~NNk cause:<tool result\|loop\|output>` |
-| cache-collapse | cache_hit_pct drops >20pp vs prior turn | `[spike:cache-collapse] hit%:NN→NN` |
-| loop-explosion | same tool called ≥3× same turn | `[spike:loop-explosion] tool:<name> calls:<N>` |
-| retrieval-inflation | bucket_tools > 0.5 × turn_tokens | `[spike:retrieval-inflation] tools:~NNk of ~NNk` |
-| output-runaway | bucket_output > 5k | `[spike:output-runaway] output:~NNk` |
-| tool-result-inflation | single tool result > 200L before truncation | `[spike:tool-result-inflation] tool:<name> lines:<N>` |
-
-**Cache Guardrail:** after emitting footer — if cache_hit_pct < 60% AND cache_read_tokens > 0:
-  emit `[cache-warn] hit%: NN% (target ≥60%) · recommend /compact before next task`
+  Enforce:  step 7 above (last step before sending) · skip = CFP-026 + CFP-028 → [self-improve] backfill
+Always display 4-bucket when SESSION_TOTAL > 5k: `[sys:Nk tools:Nk hist:Nk out:Nk]` (+ `[ret:Nk]` when bucket_retrieval > 0)
+After footer — Cache Guardrail (Behavior Contract):
+  Pre:      cache_hit_pct available from API usage fields
+  Contract: cache_hit_pct < 60% AND cache_read_tokens > 0 → MUST emit:
+            `[cache-warn] hit%: NN% (target ≥60%) · recommend /compact before next task`
+  Post:     omitting [cache-warn] when hit% < 60% = R1 violation
+  Enforce:  step 7 above · skip = [self-improve] backfill
 
 ## R2 · Tool Budget
 Max 5 tool calls/turn. Retry max 2×; diagnose on 2nd fail.

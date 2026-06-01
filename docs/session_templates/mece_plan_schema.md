@@ -147,6 +147,22 @@ SESSION: CHAT_TOTAL accumulates (never resets here)
 - [ ] Clear mece_plan.md Phase 1–3 (keep Phase 0 [X]):
       `head -n $(grep -n "^## Phase 1" .sessions/mece_plan.md | head -1 | cut -d: -f1) .sessions/mece_plan.md > /tmp/mh.md && printf "\n## Phase 1–3 — cleared\nstatus: task-complete\n" >> /tmp/mh.md && mv /tmp/mh.md .sessions/mece_plan.md`
 
+**Session Close (Behavior Contract — PATH A · runs at every task complete):**
+```
+Pre:      grep "^phase:" .sessions/active_thread.md → confirm phase: done written
+          ls .sessions/session_handoff.md → confirm handoff exists OR task is internal-only
+Contract: IF task modified src/ OR created new feature OR fixed a bug →
+            MUST write session_<NNN>.json (status: completed · summary_context) BEFORE clearing mece_plan
+            MUST run `python scripts/session_indexer.py` to update index_sessions.json
+          IF task is harness-only (no src/ change) →
+            session_<NNN>.json optional · session_indexer still recommended
+Post:     session_<NNN>.json missing when src/ was changed = invalid close
+          index_sessions.json not updated = R8 violation
+          Re-run session_manager §3 steps 1+5 before proceeding
+Enforce:  R8 Index Sync Invariant (AGENTS.md) · session_manager §3 (SKILL.md)
+          Detection: `ls .sessions/session_*.json | wc -l` unchanged after close = violation
+```
+
 ### PATH B — TOKEN PAUSE (SESSION_TOTAL > 60k)
 ```
 SESSION: /compact resets CHAT_TOTAL=0 · B1 at next boot reads compact_size → CHAT_TOTAL = compact_size + sys_fixed
@@ -168,10 +184,23 @@ SESSION: /compact resets CHAT_TOTAL=0 · B1 at next boot reads compact_size → 
 SESSION: CHAT_TOTAL accumulates (resets ONLY on /compact — not on session close)
          SESSION_TOTAL reset to 0 by session_manager §3
 ```
-- [ ] session_manager §3 (5-file close — all required, no exceptions):
-      1. session_<NNN>.json → status: completed + summary_context
-      2. session_tokens.md → SESSION_TOTAL: 0
-      3. active_thread.md → phase: done + task + next
-      4. session_handoff.md → full closeout contract
-      5. index_sessions.json → python scripts/session_indexer.py
+
+**Session Close (Behavior Contract — PATH C · mandatory, no exceptions):**
+```
+Pre:      read active_thread.md → get task: field
+          count existing session files: `ls .sessions/session_*.json 2>/dev/null | wc -l` → store N
+Contract: MUST complete all 5 steps of session_manager §3 in order:
+            1. session_<NNN>.json → write status: completed + summary_context
+            2. session_tokens.md → SESSION_TOTAL: 0
+            3. active_thread.md → phase: done + task + next
+            4. session_handoff.md → full closeout contract
+            5. index_sessions.json → `python scripts/session_indexer.py`
+          ALL 5 are mandatory — no skipping, no reordering
+Post:     `ls .sessions/session_*.json | wc -l` must equal N+1 (one new file created)
+          `python scripts/session_indexer.py` exit code must be 0
+          Any step missing = invalid close → re-run §3 from step 1
+Enforce:  session_manager SKILL.md §3 · AGENTS.md R8 Index Sync Invariant
+          CFP-030: session close BC skipped → [self-improve] + backfill immediately
+```
+- [ ] session_manager §3 (Behavior Contract above — all 5 steps, no exceptions)
 - [ ] self_improve §1–3 (Step 0 at every session close)

@@ -371,6 +371,16 @@ Phase 2 total: TH ___ch · EN ___ch → ~___tok
       Report: task_type · surfaces · PASS list · FAIL list"
       On PASS → proceed · On FAIL → fix → retry 1× → R13
 - [ ] active_thread.md → phase: done
+- [ ] Session Close (Behavior Contract — runs after active_thread phase:done):
+      Pre:      `ls .sessions/session_*.json 2>/dev/null | wc -l` → store count N
+                check if task modified src/ or is a feature/bugfix task
+      Contract: src/ changed OR feature/bugfix → MUST write session_<NNN>.json + run session_indexer.py
+                harness-only task → session_<NNN>.json optional · session_indexer still recommended
+                Both cases: index_sessions.json MUST reflect latest state before clear
+      Post:     `ls .sessions/session_*.json | wc -l` → must equal N+1 if src/ was changed
+                `python scripts/session_indexer.py` exit 0
+                missing = invalid close → re-run before Clear
+      Enforce:  mece_plan_schema PATH A/C BC · session_manager §3 · CFP-030
 - [ ] Clear mece_plan.md Phase 1–3 (keeps Phase 0 [X]):
       head -n $(grep -n "^## Phase 1" .sessions/mece_plan.md | head -1 | cut -d: -f1) \
       .sessions/mece_plan.md > /tmp/mece_h.md && \

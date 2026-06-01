@@ -1,5 +1,17 @@
 {
   "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd '/Volumes/BriteBrain/Projects/Harness Agent' && lw=$(grep \"^LOOP_WEIGHT:\" .sessions/session_tokens.md 2>/dev/null | awk '{print $2}'); lw=${lw:-0}; if [ \"$lw\" -gt 50 ] 2>/dev/null; then echo \"[C0.5-REQUIRED] LOOP_WEIGHT=$lw > 50 — emit [compact-required] as FIRST line · write compact_state.md · STOP new work\" >&2; elif [ \"$lw\" -gt 30 ] 2>/dev/null; then echo \"[C0.5-warn] LOOP_WEIGHT=$lw > 30 — emit [compact-warn] as FIRST line (Skill · Remaining · Resume — all 3 mandatory)\" >&2; fi; exit 0",
+            "timeout": 5,
+            "statusMessage": "Checking loop weight..."
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [
