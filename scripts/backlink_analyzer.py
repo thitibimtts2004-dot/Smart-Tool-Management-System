@@ -44,15 +44,20 @@ def validate_topics(idx, valid_topics):
     if not valid_topics:
         return
     errors = []
+    warn_summary = []
     for path, meta in idx.items():
         for t in meta.get("topics", []):
             if t not in valid_topics:
                 errors.append(f"  {path}: unknown topic '{t}'")
+        if not meta.get("summary"):
+            warn_summary.append(f"  {path}: summary empty — run backfill_knowledge_index.py")
     if errors:
         print("VALIDATION ERRORS — topics not in registry:", file=sys.stderr)
         for e in errors:
             print(e, file=sys.stderr)
         sys.exit(1)
+    if warn_summary:
+        print(f"WARN: {len(warn_summary)} entries missing summary (run backfill_knowledge_index.py)", file=sys.stderr)
 
 
 def compute_related(idx, min_overlap=0.5):

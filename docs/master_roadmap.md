@@ -86,3 +86,99 @@
 - [X] T-043: CHAT_TOTAL formula fix — compact_size field in compact_state.md + B1 reads compact_size → CHAT_TOTAL = compact_size + 7300 + triangular undercount note in R1 · attempts: 1 · tool_calls: 12
 
 - [X] T-044: token formula accuracy fix · attempts: 1 · tool_calls: 20 — compact_size 0.30→0.45 · sys_fixed dynamic · hooks_per_turn 1300→700
+
+- [X] T-045: token formula accuracy test · attempts: 1 · tool_calls: 8 — harness 32.3k vs actual 40.6k · error: 20.5% · ratio: 1.26× (T-044 improvement: 1.49×→1.26×)
+
+- [X] T-046: token formula accuracy fix v2 · attempts: 1 · tool_calls: 8 — turn_tokens ×1.3 + compact_size 0.45→0.52 · expected boot error <3%
+
+- [X] T-047: Knowledge Conflict Detection — S1 schema extension · attempts: 1 · tool_calls: 4 — 6 fields added to 28 entries (summary/key_claims/supersedes/superseded_by/key_claims_generated_at/key_claims_stale) + backlink_analyzer.py soft-warn
+- [X] T-048: Knowledge Conflict Detection — S2 backfill_knowledge_index.py · attempts: 1 · tool_calls: 2 — 2-step workflow (extract+write) · scaled excerpt 60L cap · auto-supersedes from _YYYYMMDD.md pattern
+- [X] T-049: Knowledge Conflict Detection — S3 knowledge_conflict_checker.py · attempts: 1 · tool_calls: 2 — 0 LLM tokens Stage 1 · phrase matching ≥3 words · verdict: clean/low_priority/review_recommended · token_estimate: 295 (budget <2000)
+- [X] T-050: Knowledge Conflict Detection — S4 R8 integration · attempts: 1 · tool_calls: 3 — AGENTS.md +1L · EXCLUDE list prevents circular loop · stale key_claims rule · verdict→action mapping
+
+## Token Efficiency & Observability — Phase 1 (T-051–T-055)
+
+- [X] T-051: Cache hit logging infra — CACHE_READ/CACHE_WRITE fields in session_tokens.md, B1 printf, bootstrap_sessions.py, session_compactor.py · attempts:1 · tool_calls:6
+- [X] T-056: Context cache Stop hook — scripts/write_context_cache.sh + .claude/settings.json Stop event → session_context_cache.md written every turn end · attempts:1
+- [X] T-052: 4-bucket token attribution footer — CLAUDE.md R1 emit rule added [sys:Nk tools:Nk hist:Nk out:Nk] · attempts:1 · tool_calls:2
+- [X] T-053: token_log.jsonl telemetry — write_context_cache.sh appends JSON line per Stop event · attempts:1 · tool_calls:3
+- [X] T-054: Provider routing decision tree — AGENTS.md §R4 table (haiku/sonnet routing by task type+volume) · attempts:1 · tool_calls:3
+- [X] T-055: 30-day token efficiency rollout — phases 1+2 complete (T-051–T-054) · phase 3 = ongoing per-session habit via CLAUDE.md R1+R3 + AGENTS.md R4 · attempts:1 · tool_calls:1
+
+## Provider-Agnostic Model Tiers
+
+- [X] T-057: Model tier system — MODEL_HIGH/MEDIUM/LOW · Implement/03_config.md §Model Tiers · AGENTS.md R4 + OmO · mece/SKILL_detail.md · detected.md fields · attempts:1 · tool_calls:10
+- [X] T-058: Implement.md bootstrap prompt — Phase 0-5 agent instruction · Track A/B/C · Model Tiers Phase 3 · verify checklist · attempts:1 · tool_calls:4
+- [X] T-059: Token Efficiency Pack v2 — Output Contracts · State-Retention · Tool Compression · Spike Detection · harness_flow Y28 · attempts:1 · tool_calls:14
+- [X] T-060.1: JSONL per-turn logging rule in CLAUDE.md R1 · attempts:1 · tool_calls:2
+- [X] T-060.2: Cache hit % guardrail ≥60% in CLAUDE.md · attempts:1 · tool_calls:1
+- [X] T-060.3: Alert types (5 additional) in CLAUDE.md · attempts:1 · tool_calls:1
+- [X] T-060.4: Fix token_estimator.py SYSTEM_FIXED dynamic + hooks_per_turn=700 · attempts:1 · tool_calls:2
+- [X] T-060.5: Tool schema serialization + session_summary rule in AGENTS.md · attempts:1 · tool_calls:2
+- [X] T-060.6: Rolling summary trigger (SESSION_TOTAL >40k + turns ≥8) in CLAUDE.md R3 · attempts:1 · tool_calls:2
+- [X] T-060.7: Cache breakpoint hash tracking in AGENTS.md Boot · attempts:1 · tool_calls:2
+- [X] T-060.8: Implement/03_config.md sync — all T-060 changes · attempts:1 · tool_calls:5
+
+## Execution Log File System — T-061
+
+- [X] T-061.1: exec_log dir + AGENTS.md L4.5 OFFLOAD rule · attempts:1 · tool_calls:3
+- [X] T-061.2: CLAUDE.md Tool-Result Offload rule · attempts:1 · tool_calls:2
+- [X] T-061.3: scripts/trim_exec_log.py (prune 24h/50 files) · attempts:1 · tool_calls:2
+- [X] T-061.4: Completion Gate trim_exec_log step in AGENTS.md · attempts:1 · tool_calls:2
+- [X] T-061.5: Implement/03_config.md sync — exec_log + offload rule · attempts:1 · tool_calls:2
+
+## Harness Doctor — CFP-024 Structural Fix
+
+- [X] T-062: harness_doctor CFP-024 — R16 MANDATORY CFP write · CLAUDE.md + Implement/03_config.md · attempts:1 · tool_calls:6
+
+## Harness Doctor — CFP-025 Structural Fix
+
+- [ ] T-063.1: mece_plan_schema.md PATH A Clear + NEVER ad-hoc rule
+- [ ] T-063.2: CLAUDE.md PATH A Clear enforcement rule
+- [ ] T-063.3: AGENTS.md PATH A Clear enforcement rule
+- [ ] T-063.4: index_cfp_fix.json CFP-025 status → fixed
+- [ ] T-063.5: Implement/03_config.md sync
+
+## Token Formula Accuracy Fix — T-064
+
+- [X] T-064.1: CLAUDE.md R1 — 1.3×→1.5× + cache invalidation cascade note · attempts:1 · tool_calls:2
+- [X] T-064.2: AGENTS.md bucket_sys — tool schema carry-forward note · attempts:1 · tool_calls:2
+- [X] T-064.3: scripts/token_estimator.py — multiplier 1.3→1.5 + --schema-drift flag · attempts:1 · tool_calls:3
+- [X] T-064.4: Implement/03_config.md sync · attempts:1 · tool_calls:2
+
+## Token System Upgrade — T-065
+
+- [X] T-065.1: CLAUDE.md R1 — reasoning_tokens formula + Thai drift note + hooks_overhead note
+- [X] T-065.2: CLAUDE.md R1 — JSONL schema extension (13→21 fields, null-safe)
+- [X] T-065.3: CLAUDE.md R1 — bucket sub-attribution notes (bucket_retrieval + bucket_tool_schema)
+- [X] T-065.4: CLAUDE.md R3/R10 + bootstrap — auto history cap + CHAT_TOTAL adj + session_memory.md
+- [X] T-065.5: AGENTS.md Phase 3 — cache control rules + tool schema hash detection
+
+## Token Optimization Pack — T-066
+
+- [X] T-066.1: CLAUDE.md R4 + AGENTS.md — provider phase routing table (G1/G2→MODEL_LOW, MECE/Execute→MODEL_HIGH, Reviewer→MODEL_LOW)
+- [X] T-066.2: CLAUDE.md R1 — estimated_cost_usd formula (Sonnet/Haiku price tiers)
+- [X] T-066.3: CLAUDE.md R1 — bucket_retrieval active + footer [ret:Nk] display
+- [X] T-066.4: AGENTS.md Phase 3 — [schema-gate] rule for mid-session SKILL.md edits
+- [X] T-066.5: CLAUDE.md R1 — telemetry retention 30-day policy + trim_exec_log reference
+
+## Loop Weight Tracking — T-067
+
+- [X] T-067.1: session_tokens.md + B1 printf — TURN_COUNT + LOOP_WEIGHT fields
+- [X] T-067.2: PostToolUse hook — LOOP_WEIGHT weight increment (S/M/L)
+- [X] T-067.3: CLAUDE.md R1 footer + R3 table + AGENTS.md Phase 3 warn template
+- [X] T-067.4: AGENTS.md M1.5 — proactive compact checkpoint trigger
+- [X] T-067.5: mece_plan_schema.md — compact step template
+
+## Behavior Contract Enforcement — T-068
+
+- [X] T-068.1: CFP-026 — conditions/triggers without BC (AGENTS.md C0.5 gate + mece_plan_schema BC block + CODING_FAILURE_PATTERNS.md)
+
+## Implement/ Docs Upgrade (T-067+T-068 Sync) — T-069
+
+- [X] T-069.1: 03_config.md — R3 LOOP_WEIGHT rows + C0.5 BC + PostToolUse spec + compact_checkpoint formula
+- [X] T-069.2: 04_skills.md — M1.5 compact_checkpoint formula + footer BC
+- [X] T-069.3: 06_orchestrator.md — C0.5 BC gate + LOOP_WEIGHT cycle routing + compact_checkpoint ref
+- [X] T-069.4: 08_checklist.md — T-067+T-068 verification items · attempts:1 · tool_calls:2
+- [X] T-069.5: 09_migration.md — M5 migration section: TURN_COUNT+LOOP_WEIGHT fields · PostToolUse hook · compact_checkpoint · attempts:1 · tool_calls:2
+- [X] T-069.6: 01_overview.md + 02_setup.md — session_tokens.md 6-field schema description · attempts:1 · tool_calls:3

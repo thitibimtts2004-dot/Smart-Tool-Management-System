@@ -72,8 +72,10 @@ Runtime session state. All files English-only.
   compact_state.md      ← boot cache (dt/sk/sk_h/mece_h/p3) written before /compact
   gather_complete.md    ← date + task written at [✓ gather] (PreToolUse hook checks)
   self_improve_log.md   ← SI-N entries written by R16 self-improve events (C0 complaint handler)
-  session_tokens.md     ← SESSION_TOTAL (resets at session close)
+  session_tokens.md     ← SESSION_TOTAL / CHAT_TOTAL / CACHE_READ / CACHE_WRITE counters
   chat_tokens.md        ← CHAT_TOTAL (resets only at /compact or new chat)
+  session_context_cache.md ← compact context snapshot written by Stop hook (write_context_cache.sh)
+  token_log.jsonl       ← per-turn telemetry log: 1 JSON line per Stop event (T-053)
   cycle_N_<id>.json     ← sub-agent result files (written by each spawned agent)
 ```
 

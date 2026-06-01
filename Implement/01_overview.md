@@ -76,7 +76,7 @@ project-root/
 │
 └── .sessions/
     ├── active_thread.md               # 3-line state: task / phase / next
-    ├── session_tokens.md              # Cumulative output token counter
+    ├── session_tokens.md              # 6-field token counter: SESSION_TOTAL · CHAT_TOTAL · CACHE_READ · CACHE_WRITE · TURN_COUNT · LOOP_WEIGHT
     ├── session_handoff.md             # Brief written before /clear (optional)
     ├── mece_plan.md                   # Persistent MECE plan — survives chat resets, cleared only by "จบ session"
     └── cycle_N_<section_id>.json      # ← result file written by each sub-agent per Cycle (N = cycle number)

@@ -9,14 +9,14 @@ Copy this into `CLAUDE.md` at project root. Adjust token thresholds to match you
 
 ## Boot (3 tool calls max)
 ```
-[B1] Bash: (cs_dt=$(grep "^dt=" .sessions/compact_state.md 2>/dev/null | cut -d= -f2 | cut -d' ' -f1); today=$(date +%Y-%m-%d); compact_restore=false; [ "$cs_dt" = "$today" ] && compact_restore=true && echo "[compact-restore]" && cat .sessions/compact_state.md && echo "---"; phase=$(grep "^phase:" .sessions/active_thread.md 2>/dev/null | awk '{print $2}'); { [ "$compact_restore" = "true" ] || [ "$phase" != "in_progress" ]; } && printf "SESSION_TOTAL: 0\nCHAT_TOTAL: 7300\n" > .sessions/session_tokens.md; cat .sessions/active_thread.md 2>/dev/null | tail -4; echo "---"; cat .sessions/session_tokens.md 2>/dev/null; echo "---"; grep -n "\[/\]" docs/master_roadmap.md 2>/dev/null | head -3; echo "---"; echo "CFP_COUNT: $(grep -c '^## CFP-' CODING_FAILURE_PATTERNS.md 2>/dev/null || echo 0)")
+[B1] Bash: (cs_dt=$(grep "^dt=" .sessions/compact_state.md 2>/dev/null | cut -d= -f2 | cut -d' ' -f1); today=$(date +%Y-%m-%d); compact_restore=false; [ "$cs_dt" = "$today" ] && compact_restore=true && echo "[compact-restore]" && cat .sessions/compact_state.md && echo "---"; phase=$(grep "^phase:" .sessions/active_thread.md 2>/dev/null | awk '{print $2}'); { [ "$compact_restore" = "true" ] || [ "$phase" != "in_progress" ]; } && printf "SESSION_TOTAL: 0\nCHAT_TOTAL: $sys_fixed\nCACHE_READ: 0\nCACHE_WRITE: 0\nTURN_COUNT: 0\nLOOP_WEIGHT: 0\n" > .sessions/session_tokens.md; cat .sessions/active_thread.md 2>/dev/null | tail -4; echo "---"; cat .sessions/session_tokens.md 2>/dev/null; echo "---"; grep -n "\[/\]" docs/master_roadmap.md 2>/dev/null | head -3; echo "---"; echo "CFP_COUNT: $(grep -c '^## CFP-' CODING_FAILURE_PATTERNS.md 2>/dev/null || echo 0)")
 [B2] IF [compact-restore] in B1 output → parse sk= from compact_state.md → use as skill_name · SKIP manifest read (~1,300 tokens saved)
      ELSE IF prompt contains `skill: <name>` → skip manifest read · ELSE: grep keywords[] from skill-manifest.json (not full read) → identify skill_name
 [B3] IF [compact-restore]: sha1 check sk_h= + mece_h= → hash match → SKIP SKILL.md + mece/SKILL.md reads (~2.9k tokens saved total)
      ELSE: Read .agents/skills/<skill_name>/SKILL.md offset=1 limit=80 → sections[] only · on_demand_files = lookup table for G2 (NOT loaded at boot)
            Also: Read .agents/skills/mece/SKILL.md offset=31 limit=110 → §Plan Format + §Execution Protocol into working memory
 ```
-→ B1 resets SESSION_TOTAL=0 · sets CHAT_TOTAL=7300 (system_fixed) on compact-restore OR phase≠in_progress
+→ B1 resets SESSION_TOTAL=0 · sets CHAT_TOTAL=sys_fixed (dynamic ≈ 11–13k) on compact-restore OR phase≠in_progress · sys_fixed = (CLAUDE.md+AGENTS.md chars × 0.3)+3500
 → Load SESSION_TOTAL + CHAT_TOTAL from B1 into working memory (both sourced from session_tokens.md)
 → Load CFP_COUNT from B1 output → store as `cfp_boot_count` in working memory (used by self_improve)
 → If SESSION_TOTAL > 60k → warn user immediately before proceeding
@@ -49,18 +49,34 @@ If `[Boot]` trace has NOT been emitted yet:
 ## R1 · Token Tracking
 Two counters — both in working memory, sourced from files at Boot:
 - `SESSION_TOTAL` — resets at session close (per-task cost) · file: `.sessions/session_tokens.md`
-- `CHAT_TOTAL` — resets only on /compact or new chat (true context window size) · file: `.sessions/session_tokens.md` (same file as SESSION_TOTAL) · B1 re-initializes to 7300 (system_fixed) on reset
+- `CHAT_TOTAL` — resets only on /compact · B1 sets to sys_fixed (dynamic: (CLAUDE.md+AGENTS.md chars × 0.3)+3500 ≈ 11–13k) · compact-restore: compact_size + sys_fixed
+- `CACHE_READ` / `CACHE_WRITE` — from API usage fields · `cache_hit% = CACHE_READ / (CACHE_READ + uncached_input) × 100` · target ≥ 60%
 
 Formulas:
 - Output = (thai_chars × 1.7) + (en_chars × 0.3)
-- Input = (user_msg_chars × 0.3) + context_overhead + tool_result_tokens
-- context_overhead: Turn 1 = ~8,000 | Turn N = 800 + (CHAT_TOTAL × 0.6)
-- Tool results: classify by file type — `.md`/`.txt` → split formula; `.ts`/`.js`/`.json` → `× 0.3`; Bash → check for Thai
+- Input = (user_msg_chars × 0.3) + tool_result_tokens
+- Per-turn CHAT_TOTAL growth: CHAT_TOTAL += 700 + turn_tokens × 1.5  (calibrated T-046: actual ≈ 1.5–2×)
+- 4-bucket: sys=sys_fixed/turns · tools=tool_result_tokens · hist=SESSION_TOTAL×0.4 · output=output_tokens
+- ⚠️ Cache invalidation: tool schema edit → prefix reset → CHAT_TOTAL spike ≈ +sys_fixed · detected via [spike:cache-collapse]
+- bucket_sys note: if schema edited this session → actual cost ≈ sys_fixed added back once (not amortized)
 
-Each turn: add turn_tokens → SESSION_TOTAL AND CHAT_TOTAL.
-Write SESSION_TOTAL at: token pause · blocked halt · completion gate.
-Write CHAT_TOTAL at: /compact (reset→0, then B1 re-initializes to 7300 on next boot) · session close (accumulate).
-Footer every response: `*(Session: ~NNNk | Chat: ~NNNk tokens)*`
+Each turn (in order):
+1. Compute turn_tokens → SESSION_TOTAL += turn_tokens · CHAT_TOTAL += 700 + turn_tokens × 1.5
+2. Write SESSION_TOTAL at: token pause · blocked halt · completion gate
+3. Write JSONL entry → `.sessions/token_log.jsonl`: turn_id · timestamp · task_id · phase · session_total · chat_total · cache_read_tokens · cache_write_tokens · cache_hit_pct · bucket_sys/tools/hist/output · turn_tokens · hooks_overhead=700
+4. Footer: `*(Turn: N · Loop_W: N | Session: ~NNNk | Chat: ~NNNk tokens)*` · if SESSION_TOTAL >5k add `[sys:Nk tools:Nk hist:Nk out:Nk]`
+
+**Spike Detection — 6 alert types:**
+| Alert | Condition | Emit |
+|---|---|---|
+| turn-spike | turn_tokens > 3 × avg_turn | `[spike:turn]` |
+| cache-collapse | cache_hit_pct drops >20pp | `[spike:cache-collapse]` |
+| loop-explosion | same tool ≥3× same turn | `[spike:loop-explosion]` |
+| retrieval-inflation | bucket_tools > 0.5 × turn_tokens | `[spike:retrieval-inflation]` |
+| output-runaway | bucket_output > 5k | `[spike:output-runaway]` |
+| tool-result-inflation | single result > 200L | `[spike:tool-result-inflation]` |
+
+**Cache Guardrail:** cache_hit_pct < 60% AND cache_read > 0 → emit `[cache-warn] hit%: NN% (target ≥60%)`
 - ⚠️ Do not define token formulas in other skill files — use R1 values exclusively
 
 ### Tool Result Tokens (tiered — applied per result before adding to SESSION_TOTAL)
@@ -82,7 +98,19 @@ Max 5 tool calls/turn. Retry max 2×; diagnose on 2nd fail.
 
 ## Per-Turn Routing (every user message — before any work)
 
-Run C0 → C1 → C2 → C3 before any work. Topic switch = close current session FIRST.
+Run C0 → **C0.5** → C1 → C2 → C3 before any work. Topic switch = close current session FIRST.
+
+**C0.5 — LOOP_WEIGHT Gate (Behavior Contract — runs every turn before C1):**
+```
+Pre:      grep "^LOOP_WEIGHT:" .sessions/session_tokens.md → get value N
+Contract: N >30 → MUST emit [compact-warn] as FIRST line of response before any other content
+          N >50 → MUST emit [compact-required] → write compact_state.md → STOP (no new work)
+Post:     [compact-warn] MUST contain all 3 fields or response is invalid:
+            Skill: <current skill_name>
+            Remaining: <[ ] sections from mece_plan.md>
+            Resume: .sessions/mece_plan.md → first [ ] · compact_state.md → section/step
+Enforce:  skip = CFP-026 violation → emit [self-improve] CFP-026 → backfill immediately
+```
 
 **C0 — Complaint Check:**
 - Detect signals: "ทำไมไม่ทำตาม" · "you skipped" · "ลืม" + harness step · "harness says" + violation
@@ -124,26 +152,47 @@ Routing shortcuts:
 
 ---
 
-## R3 · Session Pause
+## R3 · Session Pause Protocol
 | Counter | Threshold | Action |
 |---|---|---|
-| SESSION_TOTAL | >50k | **MID-SESSION COMPACT** — non-blocking, continue work after compact |
-| SESSION_TOTAL | >60k | finish current loop step → TOKEN PAUSE |
-| SESSION_TOTAL | >90k | HALT immediately → save state → report to user |
-| CHAT_TOTAL | >120k | ⚠️ recommend /compact — context window หนัก |
-| CHAT_TOTAL | >180k | 🛑 /compact บังคับ ก่อนรับงานใหม่ |
+| SESSION_TOTAL | >40k + turns ≥8 | rolling summary: summarize prior 4 turns → `.sessions/session_memory.md` · keep last 2 raw |
+| SESSION_TOTAL | >30k + sections ≥3 remaining | compact after current section (cache-warm) |
+| SESSION_TOTAL | >60k | finish current step → TOKEN PAUSE |
+| SESSION_TOTAL | >80k | `/compact` immediately |
+| SESSION_TOTAL | >90k | HALT → save state → report |
+| CHAT_TOTAL | >120k | ⚠️ recommend /compact |
+| CHAT_TOTAL | >180k | 🛑 /compact บังคับ |
+| LOOP_WEIGHT | >30 | 🟡 [compact-warn] Skill · Remaining · Resume — all 3 fields mandatory |
+| LOOP_WEIGHT | >50 | 🔶 [compact-required] → write compact_state.md → user runs /compact |
 
-**Mid-Session Compact (>50k) — runs without interrupting work:**
+---
+
+## Model Tiers — Provider-Agnostic Configuration
+
+**Set once at project setup. All harness files reference tier names — never hardcode model names.**
+
 ```
-1. Write .sessions/context_compact_<N>.md:
-   summary:    <what was done so far — key decisions, artifacts, state> (≤300 tokens)
-   keep_loops: <last 6 loop interactions verbatim>
-   compacted:  <everything older than last 6 loops → summarized into `summary` field above>
-2. Emit [compact] Context: ~<N>k → compacted · keeping last 6 loops
-3. Treat `summary` as the new context anchor — do NOT re-read old tool results
-4. Continue current task from where it left off (no TOKEN PAUSE, no user prompt)
+MODEL_HIGH   = <your high-capability model>   # reasoning, MECE plan, multi-step execution
+MODEL_MEDIUM = <your mid-tier model>           # analysis, code review, structured output
+MODEL_LOW    = <your fast/cheap model>         # lookup, grep, read-only, single-output tasks
 ```
-Compact fires once per 10k window — next compact at SESSION_TOTAL > 60k if still running (before TOKEN PAUSE check).
+
+**Provider examples:**
+
+| Tier | Anthropic (Claude) | Google (Gemini) | OpenAI |
+|---|---|---|---|
+| HIGH | claude-sonnet-4-6 | gemini-2.0-pro | gpt-4o |
+| MEDIUM | claude-haiku-4-5 | gemini-2.0-flash | gpt-4o-mini |
+| LOW | claude-haiku-4-5 | gemini-2.0-flash-lite | gpt-4o-mini |
+
+**How to configure:** Agent fills in actual model IDs during project setup (Phase 1 §1.1).
+Store in `.agents/platform/detected.md` under `model_high:` / `model_medium:` / `model_low:` fields.
+All spawn calls in AGENTS.md use tier names — runtime resolves to actual model ID via detected.md.
+
+**Routing rule (R4):**
+- `MODEL_LOW` → lookup / grep / single-file read / Reviewer / Completion Gate
+- `MODEL_MEDIUM` → analysis / structured output / classify
+- `MODEL_HIGH` → MECE plan / multi-step execution / Phase 3 sections ≥2
 
 ---
 
@@ -164,6 +213,15 @@ Run 1 Bash scope probe before any task.
 - Token budget: sub-agent tokens count toward SESSION_TOTAL (no separate budget)
 - Parallel spawn: pass all sections as array in single `invoke_subagents` Subagents[] (not sequentially)
 - Custom types: use `define_subagent` to register a new TypeName for the session before invoking
+
+**Phase routing (override task-type tier when phase is known):**
+| Phase | Tier | Reason |
+|---|---|---|
+| G1 Scan / G2 Reads | MODEL_LOW | Grep + classify only |
+| MECE Plan M1-M3 | MODEL_HIGH | Reasoning heavy |
+| L1-L5 REACT Loop | MODEL_HIGH | Code edits need quality |
+| Reviewer (Completion Gate) | MODEL_LOW | Verify only — read-only |
+Savings: route G1+G2+Reviewer to MODEL_LOW → ~35% cost reduction vs all-HIGH
 
 **Harness Context in Sub-agent Prompts:**
 - Explore agents (read-only): no harness constraints needed
@@ -287,6 +345,9 @@ New error → Task ID format: `T-{ParentTask}-{BugID}-{AttemptID}` (e.g. `T-004-
 
 ## R10–R11 · Tool Cap + English
 R10: Truncate all tool results at 300 lines. >300 → grep relevant section only.
+**Tool-Result Offload:** tool result >50L → write full result to `.sessions/exec_log/<uuid>.txt` → inject only `[result-offloaded] path=<file> lines=<N>` into history. Agent reads file via Read tool if needed. (prevents triangular CHAT_TOTAL bloat)
+- exec_log schema: `.sessions/exec_log/<uuid>.txt` — full tool result · agent reads on-demand
+- Prune: `python3 scripts/trim_exec_log.py` before /compact (max 50 files · max age 24h)
 R11: `.sessions/`, `knowledge/`, comments, commits → English only. Thai: user replies only.
 
 ---
@@ -348,6 +409,48 @@ Violation → emit `[violation] never-full-load` → discard → re-run as grep.
 
 ---
 
+## PostToolUse Hook — LOOP_WEIGHT Tracking
+
+File: `.claude/settings.json` → `hooks.PostToolUse`
+
+```json
+{
+  "type": "command",
+  "command": "cd '<project_root>' && TNAME=\"${TOOL_NAME:-}\" && case \"$TNAME\" in Agent|Workflow|WebFetch|WebSearch) W=3 ;; Write|mcp__*) W=2 ;; *) W=1 ;; esac && cur=$(grep \"^LOOP_WEIGHT:\" .sessions/session_tokens.md 2>/dev/null | awk '{print $2}') && new=$(( ${cur:-0} + W )) && sed -i '' \"s/^LOOP_WEIGHT:.*/LOOP_WEIGHT: $new/\" .sessions/session_tokens.md 2>/dev/null || true",
+  "timeout": 5
+}
+```
+
+**Weight table:**
+| Tool category | Weight |
+|---|---|
+| Agent · Workflow · WebFetch · WebSearch | 3 (L) |
+| Write · mcp__* | 2 (M) |
+| All others (Read · Edit · Bash · etc.) | 1 (S) |
+
+Reset: B1 writes `LOOP_WEIGHT: 0` on every fresh session or compact-restore.
+
+---
+
+## M1.5 — compact_checkpoint Rule
+
+**Trigger:** `sections ≥ 3 OR (sections × 6) > 30`
+
+**Action:** insert `[/compact checkpoint]` in Sequential plan after section `ceil(N/2)`
+
+**Template for Steps checklist:**
+```
+- [ ] /compact checkpoint
+  Pre:  python3 -c "import re; t=open('.sessions/session_tokens.md').read(); c=int(re.search(r'CHAT_TOTAL:\s*(\d+)',t).group(1)); print(int(c*0.52))"
+  Pre:  write compact_state.md (section=S<N> · step=<last-step> · skill=<name> · compact_size=<value>)
+  How:  user runs /compact in terminal
+  Post: SESSION_TOTAL=0 · LOOP_WEIGHT=0 · CHAT_TOTAL ≈ compact_size + sys_fixed
+  Verify: cat .sessions/session_tokens.md → SESSION_TOTAL: 0 · LOOP_WEIGHT: 0
+  Resume: new chat → "Resume T-<N> · Skill: <name> · ต่อจาก S<N+1>"
+```
+
+---
+
 ## R-Roadmap · All work must be logged
 Before starting ANY task:
 - New feature: `[ ] T-<N>: description`
@@ -374,7 +477,9 @@ Set `[/]` when starting → `[X]` when done.
   2. DO NOT argue, explain away, or justify the skip
   3. Execute the missed step NOW (context gone → ask user for missing info first → wait)
   4. Verify missed step completed → emit [✓ backfilled] `<what was done>`
-  5. Log CFP (procedure below)
+  5. **MANDATORY tool call (same response):** Edit CODING_FAILURE_PATTERNS.md → append CFP entry immediately · no deferral
+     CFP format: `## CFP-<N+1> · <title>` · Symptom · Root cause · Prevention · Detection signal
+     After Edit: grep -c "^## CFP-" → verify count = N+1 · emit `[✓ CFP-<N+1>]`
   6. Set c0_resolved = true → re-run C0→C1→C2→C3 with original user message
      (C0 detects c0_resolved → clears it → skips complaint check → proceeds to C1)
 ```
@@ -430,7 +535,7 @@ You are operating inside the **[PROJECT NAME]** project. Rules apply to ALL agen
 ## Boot Sequence (3 tool calls max)
 
 ```
-[B1] Bash: (cs_dt=$(grep "^dt=" .sessions/compact_state.md 2>/dev/null | cut -d= -f2 | cut -d' ' -f1); today=$(date +%Y-%m-%d); compact_restore=false; [ "$cs_dt" = "$today" ] && compact_restore=true && echo "[compact-restore]" && cat .sessions/compact_state.md && echo "---"; phase=$(grep "^phase:" .sessions/active_thread.md 2>/dev/null | awk '{print $2}'); { [ "$compact_restore" = "true" ] || [ "$phase" != "in_progress" ]; } && printf "SESSION_TOTAL: 0\nCHAT_TOTAL: 7300\n" > .sessions/session_tokens.md; cat .sessions/active_thread.md 2>/dev/null | tail -4; echo "---"; cat .sessions/session_tokens.md 2>/dev/null; echo "---"; grep -n "\[/\]" docs/master_roadmap.md 2>/dev/null | head -3; echo "---"; echo "CFP_COUNT: $(grep -c '^## CFP-' CODING_FAILURE_PATTERNS.md 2>/dev/null || echo 0)")
+[B1] Bash: (cs_dt=$(grep "^dt=" .sessions/compact_state.md 2>/dev/null | cut -d= -f2 | cut -d' ' -f1); today=$(date +%Y-%m-%d); compact_restore=false; [ "$cs_dt" = "$today" ] && compact_restore=true && echo "[compact-restore]" && cat .sessions/compact_state.md && echo "---"; phase=$(grep "^phase:" .sessions/active_thread.md 2>/dev/null | awk '{print $2}'); { [ "$compact_restore" = "true" ] || [ "$phase" != "in_progress" ]; } && printf "SESSION_TOTAL: 0\nCHAT_TOTAL: $sys_fixed\nCACHE_READ: 0\nCACHE_WRITE: 0\nTURN_COUNT: 0\nLOOP_WEIGHT: 0\n" > .sessions/session_tokens.md; cat .sessions/active_thread.md 2>/dev/null | tail -4; echo "---"; cat .sessions/session_tokens.md 2>/dev/null; echo "---"; grep -n "\[/\]" docs/master_roadmap.md 2>/dev/null | head -3; echo "---"; echo "CFP_COUNT: $(grep -c '^## CFP-' CODING_FAILURE_PATTERNS.md 2>/dev/null || echo 0)")
 [B2] IF [compact-restore] in B1 output → parse sk= from compact_state.md → use as skill_name · SKIP manifest read (~1,300 tokens saved)
      ELSE IF prompt contains `skill: <name>` → skip manifest read · ELSE: grep keywords[] from skill-manifest.json (not full read) → identify skill_name
 [B3] IF [compact-restore]: sha1 check sk_h= + mece_h= → hash match → SKIP SKILL.md + mece/SKILL.md reads (~2.9k tokens saved total)
@@ -539,8 +644,10 @@ Completion Gate:
 ```
 □ All sections executed  □ Writes [✓ written]  □ Index Sync
 □ Roadmap [X]           □ phase: done          □ SESSION_TOTAL written → .sessions/session_tokens.md
+□ Write session_summary → .sessions/token_log.jsonl before /compact
 □ Feedback & Error Summary delivered to user (see mece/SKILL.md Final Step)
 ```
+Tool schema serialization: JSON key ordering MUST be stable — unstable serialization invalidates prompt cache prefix silently (→ cache-collapse spike)
 
 ---
 

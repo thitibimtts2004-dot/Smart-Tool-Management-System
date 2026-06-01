@@ -296,3 +296,59 @@ If M3 overwrites cause breakage:
 3. Re-run M4 to verify
 
 > Always commit before starting M3: `git add -A && git commit -m "pre-migration snapshot"`
+
+---
+
+## M5 — T-067+T-068 Migration (Loop Weight + Behavior Contract)
+
+Apply after completing M1–M4 when upgrading an existing harness to include LOOP_WEIGHT tracking, PostToolUse hook, and C0.5 BC gate.
+
+### Step 1 — session_tokens.md: add TURN_COUNT + LOOP_WEIGHT fields
+
+```bash
+grep -c "TURN_COUNT\|LOOP_WEIGHT" .sessions/session_tokens.md
+# Expected pre-T-067: 0 → need to add both
+```
+
+Add missing fields:
+```bash
+grep -q "TURN_COUNT" .sessions/session_tokens.md || echo "TURN_COUNT: 0" >> .sessions/session_tokens.md
+grep -q "LOOP_WEIGHT" .sessions/session_tokens.md || echo "LOOP_WEIGHT: 0" >> .sessions/session_tokens.md
+```
+
+Verify: `grep -c "TURN_COUNT\|LOOP_WEIGHT" .sessions/session_tokens.md` → 2
+
+### Step 2 — PostToolUse hook: add to .claude/settings.json
+
+```bash
+python3 -m json.tool .claude/settings.json 2>/dev/null | grep -c "PostToolUse"
+# 0 → add hook; ≥ 1 → skip
+```
+
+Add PostToolUse event under `hooks` in `.claude/settings.json` — weight table: Agent/Workflow/WebFetch/WebSearch=3 · Write/mcp__*=2 · all others=1.
+
+Verify: `python3 -m json.tool .claude/settings.json | grep -c "PostToolUse"` → ≥ 1
+
+### Step 3 — AGENTS.md: verify C0.5 BC gate present
+
+```bash
+grep -c "\[C0\.5\]" AGENTS.md
+# 0 → add between [C0] and [C1] in Per-Turn Routing
+```
+
+C0.5 must use full Behavior Contract (Pre/Contract/Post/Enforce) with >30/50 thresholds per AGENTS.md §Per-Turn Routing spec.
+
+### Step 4 — compact_checkpoint awareness for existing mece_plans
+
+For existing mece_plan.md with ≥3 sections predating T-067 — insert `/compact checkpoint` after `ceil(N/2)` section in Sequential line + matching `- [ ] /compact checkpoint` in Steps.
+
+Formula: `sections ≥ 3 OR (sections × 6) > 30 → insert after ceil(N/2)`
+
+### Step 5 — Verify all M5 steps
+
+```bash
+grep -c "TURN_COUNT\|LOOP_WEIGHT" .sessions/session_tokens.md  # → 2
+python3 -m json.tool .claude/settings.json 2>/dev/null | grep -c "PostToolUse"  # → ≥ 1
+grep -c "\[C0\.5\]" AGENTS.md  # → ≥ 1
+grep -c "Loop_W" CLAUDE.md  # → ≥ 1
+```

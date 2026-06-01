@@ -23,7 +23,7 @@ SESSIONS_DIR = Path(".sessions")
 # Required files and their minimum required fields/patterns
 REQUIRED_FILES = {
     "active_thread.md": ["task:", "phase:", "next:"],
-    "session_tokens.md": ["SESSION_TOTAL:", "CHAT_TOTAL:"],
+    "session_tokens.md": ["SESSION_TOTAL:", "CHAT_TOTAL:", "CACHE_READ:", "CACHE_WRITE:"],
     "chat_tokens.md": ["CHAT_TOTAL:"],
 }
 
@@ -37,6 +37,8 @@ MUST_EXIST = [
     "session_handoff.md",
     "compact_state.md",
     "self_improve_log.md",
+    "session_context_cache.md",  # written by Stop hook (write_context_cache.sh)
+    "token_log.jsonl",           # per-turn telemetry (T-053)
 ]
 
 # Blocking conditions: phase must NOT be in_progress on commit

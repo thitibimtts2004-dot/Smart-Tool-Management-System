@@ -22,7 +22,13 @@
     "token_estimation",
     "platform_detection",
     "knowledge_base",
-    "topic_graph"
+    "topic_graph",
+    "token_counting",
+    "token_efficiency",
+    "telemetry",
+    "prompt_caching",
+    "cost_optimization",
+    "compaction"
   ],
   "descriptions": {
     "boot_sequence":      "B1/B2/B3 boot process, compact_state.md detection, active_thread phase check, hash comparison for skip-load",
@@ -44,6 +50,12 @@
     "token_estimation":   "token_estimator.py formula (thai×1.7 + en×0.3), calibration against actual usage, accuracy tracking",
     "platform_detection": "detected.md platform field, B4 probe, spawn_tool selection (claude-code vs other), tool availability check",
     "knowledge_base":     "knowledge/ directory files, harness_flow_20260526.md, Implement/ procedure docs, Y-row patch tables",
-    "topic_graph":        "topic_registry.json taxonomy, backlink_analyzer.py overlap computation, 3-tier linking (references/backlinks/related)"
+    "topic_graph":        "topic_registry.json taxonomy, backlink_analyzer.py overlap computation, 3-tier linking (references/backlinks/related)",
+    "token_counting":     "API-level token counting methods across providers",
+    "token_efficiency":   "Strategies and patterns for reducing token usage in agent workflows",
+    "telemetry":          "Observability, metrics collection, and dashboard specs for agent systems",
+    "prompt_caching":     "Prompt cache usage, hit rates, and cost optimization via caching",
+    "cost_optimization":  "Techniques to reduce API costs including batching, caching, and compression",
+    "compaction":         "Context window compaction and conversation state management"
   }
 }

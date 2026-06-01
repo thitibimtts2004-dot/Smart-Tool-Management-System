@@ -43,9 +43,11 @@ TEMPLATE_MAP = {
 # Minimal content for files that should start blank (not with template schema comments)
 CLEAN_INIT = {
     "active_thread.md":  "task: init\nphase: done\nnext: none\n",
-    "session_tokens.md": "SESSION_TOTAL: 0\nCHAT_TOTAL: 0\n",
+    "session_tokens.md": "SESSION_TOTAL: 0\nCHAT_TOTAL: 0\nCACHE_READ: 0\nCACHE_WRITE: 0\n",
     "chat_tokens.md":    "CHAT_TOTAL: 0\n",
     "self_improve_log.md": "# Self-Improve Log\n# Created by bootstrap_sessions.py\n",
+    "token_log.jsonl":   "",  # empty — Stop hook appends JSON lines
+    "session_memory.md": "# Auto-history cap summary\ndate: \nturns_summarized: 0\ncontent:\n",
 }
 
 

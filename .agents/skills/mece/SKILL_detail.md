@@ -358,7 +358,7 @@ Phase 2 total: TH ___ch · EN ___ch → ~___tok
       → TOKEN CHECK  (>50k → /compact · >60k → TOKEN PAUSE)
 - [ ] R8 index sync done (if files/symbols changed)
 - [ ] Roadmap [X] all sections annotated
-- [ ] Spawn Reviewer (haiku · read-only):
+- [ ] Spawn Reviewer (MODEL_LOW · read-only):
       "You are a read-only reviewer. Do NOT edit any file.
       0. Classify task_type from mece_plan.md →
          edge/API → CLI + data read-back

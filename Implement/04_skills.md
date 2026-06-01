@@ -638,10 +638,14 @@ Rules:
 \```
 dependency_map: [<file_A> → <file_B>, <section_X> must precede <section_Y>, ...]
 risk_flags: [<irreversible action>, <scope >5 files>, <DB edit>, ...]
+compact_checkpoint: IF sections ≥ 3 OR (sections × 6) > 30
+  → insert [/compact checkpoint] in Sequential after section ceil(N/2)
+  → insert matching - [ ] /compact checkpoint in Steps (Pre · How · Post · Verify · Resume mandatory)
 \```
 Rules:
 - `dependency_map` → drives Sequential vs Parallel grouping in Cycle block
 - `risk_flags` → any flag present → trigger M4.5 Skeptical Reviewer gate
+- `compact_checkpoint` → proactive LOOP_WEIGHT management — prevents context bloat mid-task
 - Empty list `[]` is valid (no deps / no risks)
 
 **Token Optimization (T-042):**
@@ -1091,6 +1095,15 @@ SESSION_TOTAL > 60k  → 🛑 TOKEN PAUSE (already fires via R3)
 ```
 emit format: `[session-health] Session: ~NNk · Chat: ~NNk · <recommendation>`
 → This IS "Feedback delivered" in the Completion Gate. Full contract: `session_manager/SKILL.md §Trigger + §Output Contract`
+
+**Token footer (Behavior Contract — every response, no exceptions):**
+```
+Pre:      read SESSION_TOTAL + LOOP_WEIGHT from .sessions/session_tokens.md
+Contract: MUST append to every response:
+          *(Turn: N · Loop_W: N | Session: ~NNNk | Chat: ~NNNk tokens)*
+Post:     footer missing = invalid response · re-emit if omitted
+Enforce:  R1 step 7 · skip = CFP-026 + CFP-028 violation
+```
 
 ## Context Gate
 If during this task a new hard constraint was discovered → add to INVARIANTS.md §I2 before closing task

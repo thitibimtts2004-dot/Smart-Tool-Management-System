@@ -19,7 +19,7 @@ task: <task description — matches active_thread.md task:>
 skill: <skill_name>
 
 ## Phase 0 — Boot (once per session · keep [X] on resume · reset on topic switch only)
-- [ ] B1: compact_state.md checked · SESSION_TOTAL=0 · CHAT_TOTAL=7300 (system_fixed) · CFP_COUNT stored
+- [ ] B1: compact_state.md checked · SESSION_TOTAL=0 · CHAT_TOTAL=sys_fixed (dynamic: (CLAUDE.md+AGENTS.md chars × 0.3)+3500 ≈ 11–13k) · CFP_COUNT stored
 - [ ] B2-B3: skill=<name> identified · SKILL.md loaded · hashes checked
 - [ ] C0-C3: routing confirmed · no unresolved topic switch
 → TOKEN CHECK: SESSION_TOTAL ~___k
@@ -72,10 +72,12 @@ Token: ~<NNN> output
 Constraints:
   - mece_plan.md dated today + T-N roadmap [/] REQUIRED before any file edit
   - [pre-edit] emit before every Edit · [✓ written] grep verify after every change
+  - Output Contracts: [post-read] ≤1 line · [✓ written] ≤1 line · [✓ gather]/[✓ MECE] = signal only
+  - L4.5 PURGE: drop Bash/grep results after verdict · keep Read excerpts ≤10L · compress tool result >50L → verdict + path + ≤5 key lines
   - <skill-specific constraint from skill's ## MECE Constraints Block>
 Verify-1: <runnable grep/bash command> → <expected output>
 - [ ] S1
-→ TOKEN CHECK: `cat .sessions/session_tokens.md`  (>50k → /compact · >60k → TOKEN PAUSE → PATH B)
+→ TOKEN CHECK: `cat .sessions/session_tokens.md`  (>50k → /compact · >60k → TOKEN PAUSE → PATH B · spike: turn > 3×avg → emit [spike])
 
 ### S<N> · T-XXX · <Section N name>
 Skill: <skill_name>
@@ -85,17 +87,38 @@ Rollback: git checkout <path/to/file>
 Data_Sent: <what data is passed to the tool>
 Token: ~<NNN> output
 Constraints:
+  - Output Contracts: [post-read] ≤1 line · compress tool result >50L → verdict + path + ≤5 lines
+  - L4.5 PURGE: drop Bash/grep after verdict · keep Read ≤10L excerpt only
   - <constraint from MECE Constraints Block>
 Verify-N: <command> → <expected>
 - [ ] S<N>
 → TOKEN CHECK: `cat .sessions/session_tokens.md`
+→ LOOP_WEIGHT CHECK (Behavior Contract):
+   Pre:      `grep "^LOOP_WEIGHT:" .sessions/session_tokens.md`
+   Contract: >30 → emit [compact-warn] (Skill · Remaining · Resume — all 3 mandatory) BEFORE continuing
+             >50 → emit [compact-required] → write compact_state.md → STOP
+   Post:     [compact-warn] missing any field = invalid · must re-emit with complete fields
+   Enforce:  C0.5 gate in AGENTS.md Per-Turn Routing (fires every turn)
+
+### /compact checkpoint template (M1.5 inserts when: sections ≥ 3 OR sections × 6 > 30)
+Sequential notation: `[S1] → [S2] → [/compact] → [S3]`
+
+- [ ] /compact checkpoint
+  Pre: compute compact_size:
+    `python3 -c "import re,open as o; t=o('.sessions/session_tokens.md').read(); c=int(re.search(r'CHAT_TOTAL:\s*(\d+)',t).group(1)); print(int(c*0.52))"`
+  Pre: write compact_state.md (section=S<N> · step=<last-step-desc> · skill=<name> · compact_size=<value>)
+  How: user runs `/compact` in terminal
+  Post: SESSION_TOTAL=0 · LOOP_WEIGHT=0 · CHAT_TOTAL ≈ compact_size + sys_fixed
+  Verify: `cat .sessions/session_tokens.md` → SESSION_TOTAL: 0 · LOOP_WEIGHT: 0
+  Resume: open new chat → type: **"Resume T-<N> · Skill: <name> · ต่อจาก S<N+1>"**
+          read `.sessions/mece_plan.md` → first `- [ ]` section = next section to execute
 
 ---
 
 ## Phase 3 — Close Checklist
 - [ ] R8 index sync: files/symbols changed → indexes updated (index_files.json · symbol_indexer · session_indexer)
 - [ ] Roadmap [X]: all T-<N> sections annotated (attempts + tool_calls)
-- [ ] Spawn Reviewer (haiku · read-only):
+- [ ] Spawn Reviewer (model_low from detected.md — default: haiku · read-only):
       "Run each Verify-N: line exactly · Report: PASS list · FAIL list"
       On PASS → proceed · On FAIL → fix → retry 1× → R13 [blocked]
 - [ ] [mece-audit] emitted: `[mece-audit] Sections: N · All Verify-N: PASS · Plan quality: <note>`
@@ -130,7 +153,7 @@ SESSION: /compact resets CHAT_TOTAL=0 · B1 at next boot reads compact_size → 
          SESSION_TOTAL=0 written by B1 on compact_restore
 ```
 - [ ] Compute compact_size BEFORE /compact:
-      `python3 -c "import re; t=open('.sessions/session_tokens.md').read(); c=int(re.search(r'CHAT_TOTAL:\s*(\d+)',t).group(1)); print(int(c*0.45))"` → compact_size
+      `python3 -c "import re; t=open('.sessions/session_tokens.md').read(); c=int(re.search(r'CHAT_TOTAL:\s*(\d+)',t).group(1)); print(int(c*0.52))"` → compact_size
 - [ ] Write compact_state.md:
       dt=<YYYY-MM-DD> s=___k task=<desc> cfp=___
       sk=<skill> sk_h=<8chars> mece_h=<8chars>

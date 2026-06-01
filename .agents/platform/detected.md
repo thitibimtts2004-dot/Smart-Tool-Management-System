@@ -9,6 +9,9 @@ explore_type: unknown
 execution_type: unknown
 parallel_mode: unknown
 define_tool: none
+model_high: unknown
+model_medium: unknown
+model_low: unknown
 notes:
 
 ## Known Platform Mappings (reference)

@@ -342,3 +342,85 @@ In applications where dates are compared as strings (`YYYY-MM-DD` or `YYYY-MM`),
 3. harness_doctor §5: already has mece_plan gate — verify it's followed.
 
 **Detection signal:** Task marked done but harness_flow_*.md has no new entry matching task date. Or: grep "flow_updated: no" in session after harness file edits.
+
+---
+
+## CFP-024 · M5 Skip — mece_plan.md Not Written Before [✓ MECE] Emitted
+
+**Symptom:** Agent emits [✓ MECE] and/or sends plan to user via chat response, but never calls Write/Edit tool to actually write .sessions/mece_plan.md. File either missing or stale (prior task date).
+
+**Root cause:**
+- Agent constructs plan content in response text → "feels done" because content exists in output
+- No hard block prevents response from being sent before mece_plan.md is written
+- self-improve fires → logs intent → but next session model has no memory of it
+- Rule lives in AGENTS.md M5 which may be summarized lossy in long sessions
+
+**Prevention:**
+1. Before emitting [✓ MECE]: tool call Write mece_plan.md MUST precede the emit in same response
+2. C2 routing check: if new task detected → grep .sessions/mece_plan.md date field → if not today → Phase 2 mandatory before any response claiming plan exists
+3. [✓ MECE] is a file-write confirmation signal, not a declaration — treat like [✓ written]
+
+**Detection signal:** `grep "^date:" .sessions/mece_plan.md` returns date ≠ today after plan was "confirmed". Or: [✓ MECE] emitted but file shows prior task content.
+
+---
+
+## CFP-025 · mece_plan.md Clear = Stripped Content Instead of Blank Template Reset
+
+**Symptom:** After task complete, "Clear mece_plan.md" step writes minimal/stripped content (e.g. `# MECE Plan — (cleared)`) instead of resetting to the proper blank template from `docs/session_templates/mece_plan_schema.md`.
+
+**Root cause:**
+- Agent interprets "Clear" as "delete content" rather than "reset to reusable blank state"
+- No explicit pointer to schema template in the Close Checklist item
+- "Clear mece_plan.md Phase 1–3 (keep Phase 0 [X])" is ambiguous — doesn't say "use template"
+
+**Prevention:**
+1. Close Checklist item must read: "Clear mece_plan.md → Write blank template from `docs/session_templates/mece_plan_schema.md` (Phase 0 [X] kept · Phase 1–3 blank)"
+2. Before writing: Read mece_plan_schema.md → copy blank Phase 1–3 sections → Write to mece_plan.md
+
+**Detection signal:** `wc -l .sessions/mece_plan.md` returns < 20 lines after Clear step. Or: file missing Phase 1/Phase 2/Phase 3 headers.
+
+## CFP-026 · Condition/Trigger Written Without Behavior Contract
+
+**Symptom:** Rules like `>30 → emit [compact-warn]` or `IF X → do Y` appear as table rows, inline notes, or `→` shorthand — with no Pre-condition gate, no mandatory enforcement, no Post verification.
+
+**Root cause:** AI writes conditions *descriptively* (as documentation/reference) rather than *contractually* (with enforcement gates). Reader understands what SHOULD happen but nothing enforces it actually fires.
+
+**Prevention:** Every condition/trigger MUST follow BC structure:
+```
+Pre:      when/how to check (read which file · run which command)
+Contract: exact action when condition met (not "emit" — "MUST emit before any response")
+Post:     what verifies it happened (what fields must be present · what blocks if absent)
+Enforce:  where in the flow this gate sits (C0.5 · PreToolUse hook · Phase gate)
+```
+
+**Detection signal:** grep for `→ emit\|>.*compact\|>.*HALT\|>.*STOP\|>.*warn` in rule files → check if adjacent lines contain `Pre:\|Contract:\|Post:\|Enforce:` — if not = CFP-026 violation.
+
+**How to apply:** Before writing any `IF condition → action` rule anywhere in harness (CLAUDE.md/AGENTS.md/SKILL.md/schema templates): first draft Pre/Contract/Post/Enforce — THEN write the rule. Never write the shorthand first and "add contract later."
+
+## CFP-027 · MECE Plan Presented to User Without Being Written to File
+
+**Symptom:** AI presents a MECE plan in chat response (markdown table/sections) and asks user to confirm — but `.sessions/mece_plan.md` is never written. User sees the plan, confirms, and AI starts executing without a written plan file.
+
+**Root cause:** AI treats "presenting the plan" as equivalent to "writing the plan." Phase 2 M5 requires the file to be written BEFORE or AT SAME TIME as asking user to confirm — not after.
+
+**Prevention:** M5 order is strict:
+1. Write `gather_complete.md` (Phase 1 close)
+2. Write `mece_plan.md` using full template (Phase 2 M5)
+3. THEN present plan summary to user + ask confirm
+Never present plan in chat before mece_plan.md exists on disk.
+
+**Detection signal:** User confirms plan → AI starts executing → `cat .sessions/mece_plan.md` missing or stale date → CFP-027 violation.
+
+**How to apply:** At M5: Write tool call to `.sessions/mece_plan.md` MUST appear before the response text that presents the plan to the user. If Write fails → stop → fix → never skip to execution.
+
+## CFP-028 · Footer Omitted or Missing Loop_W Field
+
+**Symptom:** Response footer missing entirely, or shows `*(Turn: N | Session: ~NNNk | Chat: ~NNNk)*` without `Loop_W: N` field.
+
+**Root cause:** Footer rule written as prose (`Emit ... every response`) without Behavior Contract enforcement — AI treats it as advisory not mandatory.
+
+**Prevention:** Footer rule MUST use BC structure (Pre/Contract/Post/Enforce). `Contract:` must say "MUST append" not "emit." `Post:` must say "missing = invalid response."
+
+**Detection signal:** Any response ending without `*(Turn:` line · or footer present but no `Loop_W:` field.
+
+**How to apply:** Last step of every response: check footer is present with all fields (Turn · Loop_W · Session · Chat). If missing → re-emit before sending. No exceptions.

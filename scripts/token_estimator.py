@@ -20,14 +20,24 @@ import argparse
 import json
 import sys
 
-# ── Constants (measured from Claude app session data) ──────────────────────────
-SYSTEM_FIXED = 7300
-# CLAUDE.md ~2,600 tokens + AGENTS.md ~3,400 tokens + loaded skills ~1,300 tokens
+# ── Constants ─────────────────────────────────────────────────────────────────
+def _compute_sys_fixed():
+    import os
+    try:
+        base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        size = os.path.getsize(os.path.join(base, "CLAUDE.md")) + \
+               os.path.getsize(os.path.join(base, "AGENTS.md"))
+        return int(size * 0.3) + 3500
+    except OSError:
+        return 11070  # fallback
 
-HOOKS_PER_TURN = 1300
-# skill-list reminder + HARNESS REMINDER injected by hooks each turn
+SYSTEM_FIXED = _compute_sys_fixed()
+# dynamic: (CLAUDE.md + AGENTS.md chars × 0.3) + 3500 ≈ 11–13k
 
-OVERHEAD_PER_TURN = SYSTEM_FIXED + HOOKS_PER_TURN  # = 8,600
+HOOKS_PER_TURN = 700
+# deferred-tools manifest ~600 + HARNESS REMINDER ~100 (per CLAUDE.md R1)
+
+OVERHEAD_PER_TURN = SYSTEM_FIXED + HOOKS_PER_TURN
 
 # ── Char multipliers ───────────────────────────────────────────────────────────
 THAI_MULT = 1.7    # UTF-8 multi-byte: ~1.5-2.5 tokens/char
@@ -56,11 +66,11 @@ def estimate_turn(user_chars=0, tool_chars=0, thai_chars=0, en_chars=0, chat_tot
     output_tokens = (thai_chars * THAI_MULT) + (en_chars * EN_MULT)
     turn_tokens   = (user_chars * EN_MULT) + (tool_chars * TOOL_MULT) + output_tokens
 
-    # CHAT_TOTAL: system_fixed (7,300) added ONCE at session start (stored in chat_total=0 base).
-    # Each turn adds only hooks (1,300) + new turn content.
-    # If chat_total==0 (fresh session), also add system_fixed.
+    # CHAT_TOTAL: sys_fixed added ONCE at session start.
+    # Per-turn: hooks + turn_tokens × 1.5 (calibrated T-046: actual ≈ 1.5–2× due to history re-sent)
+    # schema_drift=True: simulate cache prefix reset → adds sys_fixed again (tool schema edited)
     system_bootstrap = SYSTEM_FIXED if chat_total == 0 else 0
-    new_chat_total   = chat_total + system_bootstrap + HOOKS_PER_TURN + turn_tokens
+    new_chat_total   = chat_total + system_bootstrap + HOOKS_PER_TURN + round(turn_tokens * 1.5)
 
     return {
         "output_tokens":    round(output_tokens),
@@ -143,6 +153,8 @@ def main():
                         help="Simulate N turns with constant turn size")
     parser.add_argument("--turns",    type=int, default=25,
                         help="Number of turns for --simulate (default: 25)")
+    parser.add_argument("--schema-drift", action="store_true",
+                        help="Simulate cache prefix reset (tool schema edited) — adds sys_fixed once")
     args = parser.parse_args()
 
     if args.test:
@@ -163,6 +175,9 @@ def main():
         en_chars=args.en_chars,
         chat_total=args.chat_total,
     )
+    if getattr(args, 'schema_drift', False):
+        result["schema_drift_penalty"] = SYSTEM_FIXED
+        result["new_chat_total"] += SYSTEM_FIXED
     print(json.dumps(result, indent=2))
 
 

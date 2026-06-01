@@ -1,18 +1,16 @@
-date: 2026-05-31
-objective: T-044 — fix token formula: compact_size ratio 0.30→0.45, sys_fixed dynamic, hooks_per_turn 1300→700
+date: 2026-06-01
+objective: Audit and update Implement/ docs for T-067+T-068 changes (LOOP_WEIGHT, PostToolUse hook, C0.5 BC gate, compact_checkpoint)
 constraints:
-  - CLAUDE.md Never-Full-Load: grep+offset only
-  - B1 bash one-liner: surgical edits only, must not break existing logic
-  - mece_plan_schema.md: template file — change ratio formula only
+  - Every condition/trigger must use Behavior Contract (Pre/Contract/Post/Enforce) — CFP-026
+  - Never full-read files >80L — grep first
+  - 03_config.md is ground truth — update first
 affected_files:
-  - CLAUDE.md (R1 formula block lines 13,64-67,71,76)
-  - AGENTS.md (B1 bash line 10, prose note line 19)
-  - docs/session_templates/mece_plan_schema.md (PATH B line 133, line 129)
-  - knowledge/harness_flow_20260526.md (Y25)
-  - docs/master_roadmap.md (T-044)
+  - Implement/03_config.md · 04_skills.md · 06_orchestrator.md · 08_checklist.md · 09_migration.md · 00_index.md · 01_overview.md · 02_setup.md
 acceptance_criteria:
-  - grep "sys_fixed" AGENTS.md → ≥4 hits
-  - grep "0.45" mece_plan_schema.md → ≥1 hit
-  - grep "700" CLAUDE.md → hooks_per_turn updated
-  - B1 formula: CHAT_TOTAL = compact_size + sys_fixed (not 7300)
-verification_intent: boot fresh session → compare harness CHAT_TOTAL vs actual API baseline
+  - All 8 files have LOOP_WEIGHT where applicable
+  - C0.5 gate in 03_config.md uses full BC format
+  - PostToolUse hook spec in 03_config.md
+  - compact_checkpoint in M1.5 of 03_config.md + 04_skills.md
+  - 08_checklist.md has T-067+T-068 verification items
+  - 09_migration.md has migration steps for new fields + hook
+verification_intent: grep each file for LOOP_WEIGHT, Pre:/Contract:/Post:/Enforce:, compact_checkpoint

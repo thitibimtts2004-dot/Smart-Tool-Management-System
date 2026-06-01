@@ -100,6 +100,14 @@ Expected: ≥ 10 matches
 - [ ] **G0 Starter Interview**: `AGENTS.md` Phase 1 has G0 block before G1 · uses `AskUserQuestion` with options per question · reads REPO_MAP.md for affected-area options
   Verify: `grep -c "G0\|REPO_MAP\|options per question\|never open-ended" AGENTS.md` → ≥ 3
 - [ ] **CHAT_TOTAL counter**: both SESSION_TOTAL + CHAT_TOTAL in `.sessions/session_tokens.md` · B1 resets SESSION_TOTAL=0 · sets CHAT_TOTAL=7300 (system_fixed) on compact-restore OR phase≠in_progress · CHAT_TOTAL >120k → warn /compact · >180k → บังคับ
+- [ ] **LOOP_WEIGHT + TURN_COUNT fields**: `.sessions/session_tokens.md` has all 6 fields (SESSION_TOTAL · CHAT_TOTAL · CACHE_READ · CACHE_WRITE · TURN_COUNT · LOOP_WEIGHT)
+  Verify: `grep -c "LOOP_WEIGHT\|TURN_COUNT" .sessions/session_tokens.md` → 2
+- [ ] **PostToolUse hook present**: `.claude/settings.json` has `PostToolUse` event incrementing LOOP_WEIGHT by weight (Agent/Workflow/WebFetch/WebSearch=3 · Write/mcp__*=2 · others=1)
+  Verify: `python3 -m json.tool .claude/settings.json 2>/dev/null | grep -c "PostToolUse"` → ≥ 1
+- [ ] **C0.5 BC gate in AGENTS.md**: Per-Turn Routing has C0.5 between C0 and C1 with full Behavior Contract (Pre/Contract/Post/Enforce) · >30→[compact-warn] · >50→[compact-required]
+  Verify: `grep -A4 "\[C0\.5\]" AGENTS.md | grep -c "Pre:\|Contract:"` → ≥ 1
+- [ ] **Footer Loop_W field**: every response footer includes `Loop_W: N` field · rule written as Behavior Contract with Enforce: pointing to R1 step 7
+  Verify: `grep -c "Loop_W" CLAUDE.md` → ≥ 1
 - [ ] **Session Health Check**: `AGENTS.md §Completion Gate` has 4-tier threshold block · `session_manager/SKILL.md` has "Task complete" Trigger + `[session-health]` Output Contract row · emit format: `[session-health] Session: ~NNk · Chat: ~NNk · <recommendation>`
 - [ ] **C2 task-freshness**: same topic + `status: task-complete` OR task-mismatch OR no pending `[ ]`/`[/]` → force Phase 1+2 fresh (skip Phase 0 if same chat)
 - [ ] **Provider-aware routing**: C3 + TOKEN PAUSE check `grep "^platform:" .agents/platform/detected.md` → claude-code → same chat / other → new chat · spec: `.agents/platform/session_protocol.md`

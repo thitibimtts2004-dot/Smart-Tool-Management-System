@@ -69,3 +69,47 @@ Combined with other optimizations:
 - SIGNAL_RE preserves all error/warn/fail/exception lines — never truncated
 - Test B demonstrates the primary use case: git operations with macOS pack index warnings
 - safe_run.py exit code = original command exit code (callers can check $?)
+
+---
+
+## T-045 · Formula Accuracy Test (2026-05-31)
+
+**Method:** Boot new session after /compact → compare harness CHAT_TOTAL vs actual API counter.
+
+### Boot Accuracy
+
+| Parameter | Value |
+|---|---|
+| date | 2026-05-31 |
+| compact_size (from compact_state.md) | 21,150 |
+| sys_fixed (dynamic: CLAUDE.md+AGENTS.md×0.3+3500) | 11,115 |
+| harness_start (compact_size + sys_fixed) | 32,265 |
+| actual_start (API counter after /compact) | 40,600 |
+| error% | 20.5% |
+| ratio (actual/harness) | 1.26× |
+
+### Per-Turn Growth
+
+| Parameter | Value |
+|---|---|
+| API growth (2 turns) | +2,700 (40.6k → 43.3k) |
+| Harness growth (2 turns) | +2,135 (32.3k → 34.4k) |
+| Per-turn actual avg | ~1,350 tokens |
+| Per-turn harness avg | ~1,068 tokens |
+| Per-turn ratio | 1.26× |
+
+### Formula Accuracy History
+
+| Task | compact_size ratio | sys_fixed | hooks/turn | boot_error% | ratio |
+|---|---|---|---|---|---|
+| pre-T-019 | N/A | hardcoded 7,300 | N/A | ~137% | ~5× |
+| T-019 | 0.30 | hardcoded 7,300 | 1,300 | ~33% | ~1.5× |
+| T-043 | 0.30 | hardcoded 7,300 | 1,300 | ~33% | ~1.49× |
+| **T-044** | **0.45** | **dynamic ~11,115** | **700** | **20.5%** | **1.26×** |
+
+### Analysis
+- Remaining gap (20.5%) = triangular accumulation: each turn re-sends full conversation history
+  to API, whereas harness tracks only new tokens per turn
+- Compact ratio 0.45 is accurate; primary remaining error source is history re-accumulation
+- 1.26× is consistent across both boot and per-turn measurements → systematic undercount, not noise
+- Recommendation: T-046 — add triangular correction factor (×1.3) to CHAT_TOTAL formula

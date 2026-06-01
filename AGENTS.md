@@ -7,7 +7,7 @@
 ## Boot Sequence (3 tool calls max)
 
 ```
-[B1] Bash: (cs_dt=$(grep "^dt=" .sessions/compact_state.md 2>/dev/null | cut -d= -f2 | cut -d' ' -f1); today=$(date +%Y-%m-%d); compact_restore=false; [ "$cs_dt" = "$today" ] && compact_restore=true && echo "[compact-restore]" && cat .sessions/compact_state.md && echo "---"; phase=$(grep "^phase:" .sessions/active_thread.md 2>/dev/null | awk '{print $2}'); sys_fixed=$(python3 -c "import os; print(int((os.path.getsize('CLAUDE.md') + os.path.getsize('AGENTS.md'))*0.3) + 3500)" 2>/dev/null || echo 11070); if [ "$compact_restore" = "true" ]; then cs=$(grep "^compact_size=" .sessions/compact_state.md 2>/dev/null | cut -d= -f2 || echo "0"); ct=$((sys_fixed + ${cs:-0})); printf "SESSION_TOTAL: 0\nCHAT_TOTAL: $ct\n" > .sessions/session_tokens.md; elif [ "$phase" != "in_progress" ]; then printf "SESSION_TOTAL: 0\nCHAT_TOTAL: $sys_fixed\n" > .sessions/session_tokens.md; fi; cat .sessions/active_thread.md 2>/dev/null | tail -4; echo "---"; cat .sessions/session_tokens.md 2>/dev/null; echo "---"; grep -n "\[/\]" docs/master_roadmap.md 2>/dev/null | head -3; echo "---"; echo "CFP_COUNT: $(grep -c '^## CFP-' CODING_FAILURE_PATTERNS.md 2>/dev/null || echo 0)")
+[B1] Bash: (cs_dt=$(grep "^dt=" .sessions/compact_state.md 2>/dev/null | cut -d= -f2 | cut -d' ' -f1); today=$(date +%Y-%m-%d); compact_restore=false; [ "$cs_dt" = "$today" ] && compact_restore=true && echo "[compact-restore]" && cat .sessions/compact_state.md && echo "---"; phase=$(grep "^phase:" .sessions/active_thread.md 2>/dev/null | awk '{print $2}'); sys_fixed=$(python3 -c "import os; print(int((os.path.getsize('CLAUDE.md') + os.path.getsize('AGENTS.md'))*0.3) + 3500)" 2>/dev/null || echo 11070); if [ "$compact_restore" = "true" ]; then cs=$(grep "^compact_size=" .sessions/compact_state.md 2>/dev/null | cut -d= -f2 || echo "0"); ct=$((sys_fixed + ${cs:-0})); printf "SESSION_TOTAL: 0\nCHAT_TOTAL: $ct\nCACHE_READ: 0\nCACHE_WRITE: 0\nTURN_COUNT: 0\nLOOP_WEIGHT: 0\n" > .sessions/session_tokens.md; elif [ "$phase" != "in_progress" ]; then printf "SESSION_TOTAL: 0\nCHAT_TOTAL: $sys_fixed\nCACHE_READ: 0\nCACHE_WRITE: 0\nTURN_COUNT: 0\nLOOP_WEIGHT: 0\n" > .sessions/session_tokens.md; fi; cat .sessions/active_thread.md 2>/dev/null | tail -4; echo "---"; cat .sessions/session_tokens.md 2>/dev/null; echo "---"; grep -n "\[/\]" docs/master_roadmap.md 2>/dev/null | head -3; echo "---"; echo "CFP_COUNT: $(grep -c '^## CFP-' CODING_FAILURE_PATTERNS.md 2>/dev/null || echo 0)")
 [B2] IF [compact-restore]: parse sk= → skill_name · parse section= + step= → resume_hint · SKIP manifest read
      IF prompt has `skill: <name>`: use directly · SKIP manifest
      ELSE: grep -B1 -A6 '"keywords"' .agents/skills/skill-manifest.json | head -80 → match → skill_name
@@ -17,6 +17,8 @@
            Read .agents/skills/mece/SKILL.md offset=31 limit=110
 ```
 - B1 resets SESSION_TOTAL=0 · compact-restore: CHAT_TOTAL = compact_size + sys_fixed · fresh session: CHAT_TOTAL = sys_fixed · sys_fixed = (CLAUDE.md + AGENTS.md chars × 0.3) + 3500 · CFP_COUNT → cfp_boot_count in working memory
+- B1 cache breakpoint: if compact_state.md has `prefix_hash=<val>` → compare vs `sha1sum CLAUDE.md | cut -c1-8` → mismatch → emit `[cache-miss-boot] prefix changed · cache cold this session`
+- B1 session_tokens.md format: `SESSION_TOTAL: 0\nCHAT_TOTAL: N\nCACHE_READ: 0\nCACHE_WRITE: 0` — add cache fields on fresh session init only if file is being reset
 - on_demand_files = lookup table for G2 only — NEVER auto-load at B3
 - mece_plan.md has pending sections? Skip Phase 1+2 → resume Phase 3:
   `grep -n "^\- \[ \]\|^\- \[/\]" .sessions/mece_plan.md | head -3` → first pending item
@@ -33,9 +35,19 @@ compact-restore reply: append ` · Resume: S<N> — <step>` when section= + step
 
 ## Per-Turn Routing (every message)
 
-**Run C0→C1→C2→C3 before any work. No exceptions.**
+**Run C0→C0.5→C1→C2→C3 before any work. No exceptions.**
 
 ```
+[C0.5] LOOP_WEIGHT gate (Behavior Contract — runs every turn before C1):
+  Pre:      read `grep "^LOOP_WEIGHT:" .sessions/session_tokens.md` → get value N
+  Contract: N >30 → MUST emit [compact-warn] as FIRST line of response before any other content
+            N >50 → MUST emit [compact-required] → write compact_state.md → STOP (no new work accepted)
+  Post:     [compact-warn] MUST contain all 3 fields or response is invalid:
+              Skill: <current skill_name>
+              Remaining: <[ ] sections from mece_plan.md>
+              Resume: .sessions/mece_plan.md → first [ ] · compact_state.md → section/step
+  Enforce:  skip = CFP-026 violation → emit [self-improve] CFP-026 → backfill immediately
+
 [C0] c0_resolved=true in memory → clear flag → skip to C1
      COMPLAINT CHECK: "ลืม"/"you skipped"/"didn't log"/"harness says" + harness step name
      "ลืม" triggers ONLY on step names: roadmap/CFP/index/pre-read/session/boot/skill/gate/MECE
@@ -118,9 +130,12 @@ After 3 loops OR 5 clarification rounds: emit [gather-stalled] · ask user once 
        Named outputs → write to mece_plan.md M1.5 block:
          dependency_map: [<file_A> → <file_B>, <section_X> must precede <section_Y>, ...]
          risk_flags: [<irreversible action>, <scope >5 files>, <DB edit>, ...]
+         compact_checkpoint: IF sections ≥ 3 OR (sections × 6) > 30
+           → insert `[/compact checkpoint]` in Sequential after section `ceil(N/2)`
+           → insert matching `- [ ] /compact checkpoint` in Steps (Pre · How · Post · Verify · Resume fields mandatory)
 [M2]   Build plan 1:1 with Skill sections · [M2.5] Verify-N: runnable command per section
 [M3]   Send plan+Verify-N → user confirms BOTH · [M4] R-Roadmap: add [ ] T-<N> per section
-[M4.5] Optional gate: spawn Skeptical Reviewer (haiku · read-only) → verdict go/revise/reject · revise→M2 · reject→Phase 1 · skip if task is low-risk or single-file
+[M4.5] Optional gate: spawn Skeptical Reviewer (MODEL_LOW · read-only) → verdict go/revise/reject · revise→M2 · reject→Phase 1 · skip if task is low-risk or single-file
 [M5]   Write mece_plan.md using Phase-Checklist Template (docs/session_templates/mece_plan_schema.md) — Phase 0-3 blocks mandatory · no simplified format (CFP-019) · include Constraints: per section · [M6] Emit [✓ MECE]
 ```
 MECE runs ONCE. Skeptical Reviewer (M4.5) = optional gate. On resume: load existing plan → jump to pending section.
@@ -139,8 +154,17 @@ REACT LOOP (per section — repeat until section_complete OR token pause):
   [L4] VERIFY  → (a) grep confirm → emit [✓ written]
                  (b) run section Verify-N from MECE plan
                  FAIL → do NOT mark done → diagnose → retry or BLOCKED
-  [L4.5] PURGE → drop tool results from context
-                 keep only: [✓ written] verdict + artifact path + Verify-N result
+  [L4.5] PURGE → drop tool results from context per state-retention policy:
+    | Tool result type        | Policy                                      |
+    |-------------------------|---------------------------------------------|
+    | Bash verify/grep        | DROP immediately after verdict emitted      |
+    | Read · irrelevant       | DROP immediately ([post-read] irrelevant)   |
+    | Read · partial/relevant | KEEP excerpt only (≤10L) · drop full output |
+    | Edit success            | KEEP [✓ written] verdict + artifact path    |
+    | Write success           | KEEP [✓ written] verdict + artifact path    |
+    | tool result >50L        | OFFLOAD → write to .sessions/exec_log/<uuid>.txt · inject [result-offloaded] path=<file> lines=<N> · agent reads file if needed |
+    keep: [✓ written] verdict + artifact path + Verify-N result · drop: everything else
+    exec_log schema: .sessions/exec_log/<uuid>.txt — full tool result · agent reads on-demand via Read tool
   [L5] DECIDE  → section_done = [✓ written] AND Verify-N BOTH pass
                  → mark mece_plan.md: `- [ ] S<N>` → `- [X] S<N>` (file write — not just memory)
                  → steps remain: emit [loop] continue · → done: emit [loop] done
@@ -149,7 +173,17 @@ After each section → write session_handoff.md: sections_done + sections_pendin
 
 BLOCKED: halt · show error+progress · ask "fix or skip?" · wait
 TOKEN PAUSE (>60k): check provider (detected.md): claude-code → ask continue → resume · other → compact_state.md → STOP
+LOOP_WEIGHT check (every turn after hook fires): read `.sessions/session_tokens.md` → if LOOP_WEIGHT >30 → [compact-warn] · if >50 → [compact-required]
+  [compact-warn/required] emit (mandatory fields — no partial emit):
+    `[compact-warn] Skill: <skill_name> · Remaining: <[ ] sections from mece_plan.md> · Resume: .sessions/mece_plan.md → first [ ] · compact_state.md → section/step`
 Cache note: Anthropic prompt cache TTL = 5 min · /compact resets cache prefix cleanly · compact before long idle > 5 min preserves cache hits on next turn (10× cheaper reads)
+Tool schema serialization: JSON key ordering in tool definitions MUST be stable across turns — unstable serialization invalidates the prompt cache prefix silently (causes cache-collapse spike)
+bucket_sys note: amortizes sys_fixed across turns — if tool schema edited this session → cache prefix resets → actual cost ≈ sys_fixed added back once · [spike:cache-collapse] detects this
+Stable prefix rule: CLAUDE.md + AGENTS.md = stable prefix (cache_control these blocks — never change mid-session) · User message + tool results = dynamic suffix — never cache_control dynamic blocks.
+[schema-gate] Before editing any SKILL.md or tool definition mid-session:
+  SESSION_TOTAL > 10k → emit `[schema-gate] Schema change · CHAT_TOTAL will spike +sys_fixed · confirm?` · wait for confirm
+  After edit: emit `[schema-changed] Cache prefix reset · CHAT_TOTAL += sys_fixed`
+Proactive cache invalidation: at boot → `sha1sum .agents/skills/*/SKILL.md 2>/dev/null | sort > .sessions/tool_schema_hash.txt` · per-turn: diff vs stored hash → mismatch → emit [cache-invalidated] + update `.sessions/tool_schema_hash.txt`
 
 ---
 
@@ -157,61 +191,43 @@ Cache note: Anthropic prompt cache TTL = 5 min · /compact resets cache prefix c
 
 Reviewer spawn decision (token-aware):
 - Verify-N ≤ 3 commands + no src/ changes → run inline (bash) · skip spawn · saves ~8-11k
-- Verify-N ≥ 4 OR src/ changes → spawn Reviewer (haiku · read-only): prompt = Verify-N list + grep commands
+- Verify-N ≥ 4 OR src/ changes → spawn Reviewer (MODEL_LOW · read-only): prompt = Verify-N list + grep commands
 
 Before reporting done → Reviewer (inline or spawn): PASS → proceed · FAIL → fix → retry 1× → R13
 Agent may NOT report done until: all sections executed (tool calls) · [✓ written] on every edit · R8 Index Sync · Roadmap [X] · active_thread phase:done · SESSION_TOTAL written · Feedback delivered · I6–I8 checked (if parallel agents used)
+Run `python3 scripts/trim_exec_log.py` before /compact → prune .sessions/exec_log/ stale files.
+Write session_summary record to `.sessions/token_log.jsonl` before /compact:
+  `{"record_type":"session_summary","task_id":"<T-NNN>","skill_name":"<name>","total_turns":<N>,"session_total_final":<N>,"cache_hit_pct_avg":<N.N>,"peak_chat_total":<N>,"compact_count":<N>,"timestamp":"<ISO-8601>"}`
 SESSION_TOTAL > 50k → compact first · > 60k → TOKEN PAUSE before gate.
 SESSION_TOTAL > 30k + sections ≥ 3 remaining → compact after current section (cache-aware: compact before 5-min idle to keep cache warm)
 
-Session Health Check — run after Reviewer PASS (this IS "Feedback delivered"):
-```
-SESSION_TOTAL < 20k  → ✅ no action
-SESSION_TOTAL 20–40k → 💡 emit [session-health] · recommend /compact before next task
-SESSION_TOTAL 40–60k → ⚠️ emit [session-health] · compact now before next task
-SESSION_TOTAL > 60k  → 🛑 TOKEN PAUSE (R3) — already fires
-```
-emit format: `[session-health] Session: ~NNk · Chat: ~NNk · <recommendation>`
-
-**User-facing close message (Thai — mandatory · R7):**
-After [session-health] emit → always append Thai summary to user:
-```
-งานเสร็จแล้วครับ ✅  <สรุปสั้น ๆ ว่าทำอะไรสำเร็จ — ภาษาไทย>
-สั่งงานต่อได้เลยครับ
-```
-Rule: harness signals ([harness-edit-done] · [session-health]) = English machine-readable · user summary = Thai · never English-only close to user.
+Session Health Check — run after Reviewer PASS:
+<20k ✅ · 20–40k 💡 [session-health] recommend compact · 40–60k ⚠️ compact now · >60k 🛑 TOKEN PAUSE
+emit: `[session-health] Session: ~NNk · Chat: ~NNk · <recommendation>`
+After → Thai summary mandatory: `งานเสร็จแล้วครับ ✅ <สรุป>` · harness signals = English · user close = Thai always
 
 ---
 
 ## Backlink Rule — 3-Tier Check (run before editing any indexed file)
 ```
-python3 -c "
-import json; e=json.load(open('knowledge/index_files.json')).get('<path>',{})
-print('references:', e.get('references',[]))   # files this file cites
-print('backlinks:', e.get('backlinks',[]))      # files that cite this file
-print('related:', [r['path'] for r in e.get('related',[])])  # topic overlap ≥50%
-"
+python3 -c "import json; e=json.load(open('knowledge/index_files.json')).get('<path>',{}); print('ref:',e.get('references',[])); print('back:',e.get('backlinks',[])); print('related:',[r['path'] for r in e.get('related',[])])"
 ```
-① `references[]` — files this file explicitly links to (may also need updating)
-② `backlinks[]` — files that cite this file (check for breakage)
-③ `related[]` — semantic neighbors via topic overlap ≥50% (check for concept drift impact)
-After Write to new file → add `index_files.json` entry with `topics[]` from `topic_registry.json` → run `python3 scripts/backlink_analyzer.py` (R8 · INVARIANTS.md I3).
+① references[] — files this file cites · ② backlinks[] — files citing this (breakage risk) · ③ related[] — topic overlap ≥50%
+New file → add index_files.json entry + topics[] + run `python3 scripts/backlink_analyzer.py`
 
 ---
 
 ## Index Sync Invariant
 
-Every create / modify / delete / rename of an indexed entity **must** update all related indexes before the task is marked done.
-
-| Entity changed | Must update |
+Every create/modify/delete/rename **must** update indexes before task marked done.
+| Entity | Must update |
 |---|---|
-| File created / moved / deleted | `knowledge/index_files.json` (via `file_manager`) |
-| Symbol created / renamed / deleted | `knowledge/index_variables.json` (run `symbol_indexer.py`) |
-| Session closed | `knowledge/index_sessions.json` (run `session_indexer.py`) |
-| SKILL.md created or renamed | `.agents/skills/skill-manifest.json` + `knowledge/skill-index.md` |
-| Tool script created or renamed | `.agents/tools/tool-manifest.json` |
-
-**Rule:** index update is part of the task — not optional follow-up. Completion Gate (R8) enforces this.
+| File created/moved/deleted | `index_files.json` (file_manager) |
+| Symbol created/renamed/deleted | `index_variables.json` (symbol_indexer.py) |
+| Session closed | `index_sessions.json` (session_indexer.py) |
+| SKILL.md created/renamed | `skill-manifest.json` + `skill-index.md` |
+| Tool script created/renamed | `tool-manifest.json` |
+| `knowledge/` file modified | `knowledge_conflict_checker.py --file <path> --no-trigger` · EXCLUDE: index_*.json · error_index.md |
 
 ---
 
@@ -224,23 +240,35 @@ on_demand_files in manifest = lookup table for G2 only. B3 MUST NOT load them.
 
 ## Sub-agent Rules (R4)
 
-| Pattern | When |
-|---|---|
-| Explore | ≥5 files / ≥300 lines → summary ≤500 tokens |
-| Execution | section >8 steps + isolated output |
-| Parallel fan-out | ≥2 independent sections → spawn simultaneously |
-| Cycle transition | Cycle N done → TOKEN CHECK → inject → spawn N+1 |
+Model tiers from `detected.md`: `model_high/medium/low` — see Implement/03_config.md §Model Tiers
 
+| Task type | Route | Tier |
+|---|---|---|
+| Lookup/grep/single-file · Phase 1 G1-G2 | main context | MODEL_LOW |
+| Classify/label · Reviewer/Gate | sub-agent | MODEL_LOW |
+| Multi-file analysis · Phase 2 MECE · Phase 3 Execution (≥2 sections) | sub-agent | MODEL_HIGH |
+
+**Phase routing (override task-type tier when phase is known):**
+| Phase | Tier | Notes |
+|---|---|---|
+| Boot B1-B3 | MODEL_HIGH | Full instruction following |
+| G1 Scan / G2 Reads | MODEL_LOW | Grep + classify only |
+| MECE Plan M1-M3 | MODEL_HIGH | Reasoning heavy |
+| L1-L5 REACT | MODEL_HIGH | Code edits need quality |
+| Reviewer (Completion Gate) | MODEL_LOW | Verify only — read-only |
+Savings: route G1+G2+Reviewer to MODEL_LOW → ~35% cost reduction vs all-HIGH
+
+Patterns: Explore (≥5 files/≥300L → ≤500 tok summary) · Parallel fan-out (≥2 independent → spawn simultaneously) · Cycle (done → TOKEN CHECK → spawn N+1)
 - Max depth = 1 · pre-assign ALL T-IDs before spawn · emit `[cycle N]` · HALT if any section blocked
 
 **Execution/Coder agents constraints (missing = CFP violation):** Roadmap T-N [/] before edit · no src/ edit without gather_complete+mece_plan · no new file without index_files.json backlinks · no symbol rename without symbol_indexer.py · DB edits → [db-gate] halt
 
 **OmO Roles (sections > 2 OR any [gate]/DB action):**
-| Role | Maps to | Model | Responsibility |
+| Role | Maps to | Tier | Responsibility |
 |---|---|---|---|
-| Architect | Phase 2 main agent | sonnet | MECE plan + dependency_map + Verify-N |
-| Executor | Phase 3 REACT loop | sonnet | Run sections + [✓ written] per step |
-| Reviewer | Completion Gate | haiku | Verify all □ pass · read-only · PASS or FAIL list |
+| Architect | Phase 2 main agent | MODEL_HIGH | MECE plan + dependency_map + Verify-N |
+| Executor | Phase 3 REACT loop | MODEL_HIGH | Run sections + [✓ written] per step |
+| Reviewer | Completion Gate | MODEL_LOW | Verify all □ pass · read-only · PASS or FAIL list |
 
 Reviewer: spawn after all sections done · prompt = Verify-N list + grep commands · on FAIL → retry 1× → R13
 

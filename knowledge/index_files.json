@@ -1,4 +1,17 @@
 {
+  "knowledge/telemetry-schema-harness-2026-06-01.md": {
+    "description": "Harness-specific token telemetry JSON schema and dashboard queries",
+    "topics": [
+      "telemetry",
+      "token_tracking",
+      "cost_optimization"
+    ],
+    "backlinks": [],
+    "references": [
+      "knowledge/token-telemetry-schema-and-dashboard-spec-for-agent-systems-2026-05-31.md"
+    ],
+    "related": []
+  },
   ".agents/skills/harness_editor/SKILL.md": {
     "type": "skill",
     "description": "Harness Editor skill \u2014 manages edits to CLAUDE.md, AGENTS.md, SKILL.md files, knowledge/, Implement/ with mandatory MECE plan gate and full close sequence.",
@@ -36,7 +49,18 @@
         "strength": "related",
         "overlap": 0.5
       }
-    ]
+    ],
+    "summary": "Harness Editor manages all edits to core configuration files (CLAUDE.md, AGENTS.md, SKILL.md, knowledge/, Implement/) using mandatory MECE planning and verifying a five-element behavioral contract after each change.",
+    "key_claims": [
+      "mece_plan.md dated today required before any file edit",
+      "File Size Contract enforces maximum line limits per file type",
+      "harness_flow and Implement/ documentation must update in same task",
+      "[pre-edit] emit mandatory before every Edit tool call"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false
   },
   "scripts/token_estimator.py": {
     "type": "script",
@@ -64,7 +88,18 @@
         "strength": "related",
         "overlap": 0.5
       }
-    ]
+    ],
+    "summary": "Token estimator provides command-line utilities for SESSION_TOTAL and CHAT_TOTAL estimation using measured character multipliers and configurable simulation for planning long sessions.",
+    "key_claims": [
+      "Thai characters multiply at 1.7 tokens per character",
+      "English characters multiply at 0.3 tokens per character",
+      "supports --simulate flag for multi-turn projection",
+      "constants derived from measured Claude app session data"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false
   },
   ".agents/skills/harness_doctor/SKILL.md": {
     "type": "skill",
@@ -96,7 +131,18 @@
         "strength": "strong",
         "overlap": 1.0
       }
-    ]
+    ],
+    "summary": "Harness Doctor fixes recurring CFP patterns that reoccurred after a prior fix was applied by reading index_cfp_fix.json, proposing structural changes, and enforcing harness conventions.",
+    "key_claims": [
+      "triggers on recurred_after_fix array non-empty in index",
+      "first-time CFP without prior fix attempt refused",
+      "structural fixes must follow harness behavioral contract",
+      "updates CODING_FAILURE_PATTERNS with fix attempt metadata"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false
   },
   "CLAUDE.md": {
     "type": "config",
@@ -131,7 +177,19 @@
         "strength": "related",
         "overlap": 0.67
       }
-    ]
+    ],
+    "summary": "CLAUDE.md defines hard constraints and gates for all agents including mandatory boot sequence, token tracking formulas, MECE planning requirements, and phase transition rules.",
+    "key_claims": [
+      "SESSION_TOTAL resets to zero at session start before any work",
+      "compact_size equals CHAT_TOTAL pre-compact times 0.52",
+      "B1 resets SESSION_TOTAL=0 on fresh session start",
+      "Never-Full-Load rule prohibits reading large index files in full",
+      "Phase Transition Gate requires gather_complete.md and mece_plan.md today"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false
   },
   "AGENTS.md": {
     "type": "config",
@@ -171,7 +229,19 @@
         "strength": "related",
         "overlap": 0.67
       }
-    ]
+    ],
+    "summary": "AGENTS.md provides complete agent orientation including boot sequence implementation, per-turn routing logic, three-phase loop architecture (Gather, MECE Plan, Execution), and sub-agent delegation rules.",
+    "key_claims": [
+      "B1 bash resets SESSION_TOTAL=0 and initializes CHAT_TOTAL at boot",
+      "sys_fixed computed dynamically as CLAUDE.md + AGENTS.md chars times 0.3 plus 3500",
+      "compact_size formula uses 0.52 multiplier on pre-compact CHAT_TOTAL",
+      "hooks_per_turn equals 700 tokens for harness reminders and tools",
+      "per-turn growth formula CHAT_TOTAL += 700 plus turn_tokens times 1.3"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false
   },
   ".agents/skills/skill-manifest.json": {
     "type": "config",
@@ -196,7 +266,18 @@
         "strength": "related",
         "overlap": 0.67
       }
-    ]
+    ],
+    "summary": "Skill manifest is machine-readable routing table that agents read at Boot B2 via keyword matching to load skills, and explicitly prohibits auto-loading on_demand_files at B3.",
+    "key_claims": [
+      "on_demand_files used for G2 lookup only never at B3 boot",
+      "boot_read_policy specifies which files legal to read at each boot stage",
+      "never_at_boot list includes all index_variables and index_files JSON",
+      "B3 reads SKILL.md offset 1 limit 80 for sections only"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false
   },
   ".agents/skills/registry.md": {
     "type": "config",
@@ -236,7 +317,18 @@
         "strength": "related",
         "overlap": 0.67
       }
-    ]
+    ],
+    "summary": "Skill Registry provides keyword-to-skill fast-match table and micro-rules for each skill, used after skill-manifest.json keyword matching and before loading full SKILL.md.",
+    "key_claims": [
+      "fast-match keywords route to specific skill names automatically",
+      "fix and bug keywords load editor skill with R7 first",
+      "hard constraints are always active regardless of loaded skill",
+      "learned_routes automatically updated for repeated keyword matches"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false
   },
   "knowledge/harness_flow_20260526.md": {
     "type": "knowledge",
@@ -268,7 +360,19 @@
         "strength": "related",
         "overlap": 0.86
       }
-    ]
+    ],
+    "summary": "Harness Complete Flow is the definitive reference documenting post-fix harness architecture, token formula accuracy improvements through T-046, and completion gate behavior.",
+    "key_claims": [
+      "compact_size ratio improved from 0.30 to 0.45 in T-044 fix",
+      "hooks_per_turn reduced from 1300 to 700 based on actual measurement",
+      "T-046 applies triangular correction factor of 1.3 to per-turn growth",
+      "system_fixed computed dynamically instead of hardcoded 7300",
+      "T-045 validated accuracy at 1.26x undercount versus API baseline"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false
   },
   "knowledge/index_variables.json": {
     "type": "index",
@@ -332,7 +436,17 @@
         "strength": "related",
         "overlap": 0.5
       }
-    ]
+    ],
+    "summary": "Index variables tracks all defined symbols and variables across the codebase with their location, usage count, and related references for refactoring safety checks.",
+    "key_claims": [
+      "stores structured symbol metadata keyed by symbol name",
+      "enables safe refactoring by tracking all symbol occurrences",
+      "must be updated when any symbol is created or renamed"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false
   },
   "knowledge/index_cfp_fix.json": {
     "type": "index",
@@ -362,7 +476,18 @@
         "strength": "related",
         "overlap": 0.67
       }
-    ]
+    ],
+    "summary": "Index CFP fix tracks known coding failure patterns, their fix attempts, recurrence count, and current status to prevent repeating same failures.",
+    "key_claims": [
+      "status field tracks active or resolved failure patterns",
+      "recurred_after_fix array counts how many times fix was applied again",
+      "harness_doctor uses this index to identify structural issues",
+      "each CFP entry maps to corresponding CODING_FAILURE_PATTERNS.md section"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false
   },
   "knowledge/index_sessions.json": {
     "type": "index",
@@ -436,7 +561,18 @@
         "strength": "related",
         "overlap": 0.5
       }
-    ]
+    ],
+    "summary": "Index sessions catalogs all completed sessions with their metadata, keywords, and summaries for session history lookup and context restoration.",
+    "key_claims": [
+      "tracks session status completed or in_progress for each entry",
+      "keywords extracted from session content enable full-text search",
+      "summary field truncated to aid discovery without re-reading files",
+      "files_changed list tracks which source files were modified per session"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false
   },
   "knowledge/error_index.md": {
     "type": "knowledge",
@@ -480,7 +616,18 @@
         "strength": "related",
         "overlap": 0.5
       }
-    ]
+    ],
+    "summary": "Error Index catalogs all discovered ERR-XXX bugs with their failed approaches and attempted fixes to prevent repeating debugging work.",
+    "key_claims": [
+      "each entry records bug ID, title, and chronological fix attempts",
+      "Failed Approaches section documents what did not work",
+      "prevents agent from trying identical debug paths twice",
+      "referenced by error protocol R9 before starting new debug"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false
   },
   "knowledge/topic_registry.json": {
     "type": "knowledge",
@@ -508,7 +655,18 @@
         "strength": "related",
         "overlap": 0.67
       }
-    ]
+    ],
+    "summary": "Topic registry defines closed vocabulary of valid topics that agents must use for tagging files, preventing free-text tags and enabling semantic backlink analysis.",
+    "key_claims": [
+      "closed vocabulary enforced strictly with no free-text tags allowed",
+      "agents must assign topics only from official list in this file",
+      "topics enable topic overlap computation in backlink_analyzer",
+      "version field tracks schema updates to topic definitions"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false
   },
   "scripts/backlink_analyzer.py": {
     "type": "script",
@@ -538,7 +696,18 @@
         "strength": "related",
         "overlap": 0.67
       }
-    ]
+    ],
+    "summary": "Backlink analyzer computes related array entries in index_files.json by measuring topic overlap between files and categorizing relationship strength.",
+    "key_claims": [
+      "overlap formula divides intersection size by source file topic count",
+      "strong relationship threshold set at overlap greater than or equal to 1.0",
+      "related relationship threshold set at overlap between 0.5 and 1.0",
+      "generates related array of files with semantic overlap"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false
   },
   ".agents/skills/harness_doctor/SKILL_detail.md": {
     "type": "skill",
@@ -564,7 +733,18 @@
         "strength": "strong",
         "overlap": 1.0
       }
-    ]
+    ],
+    "summary": "Harness Doctor detail section provides step-by-step procedures for diagnosing recurring patterns, proposing fixes, and executing structural changes following all harness contracts.",
+    "key_claims": [
+      "Step 1 queries index_cfp_fix to find highest recurrence count",
+      "Step 4 appends fix attempt to CODING_FAILURE_PATTERNS metadata",
+      "resolution status updated to resolved-pending at completion",
+      "session_manager auto-updates status on next session close"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false
   },
   ".agents/tools/tool-manifest.json": {
     "type": "config",
@@ -613,7 +793,18 @@
         "strength": "related",
         "overlap": 0.5
       }
-    ]
+    ],
+    "summary": "Tool manifest is registry for Claude Code built-ins and local scripts with tags for keyword matching, enabling choose_tools.py to route to appropriate tools.",
+    "key_claims": [
+      "each tool has type builtin or local with tags for discovery",
+      "when field documents usage context for each tool entry",
+      "backlink_analyzer tool must run after editing indexed files",
+      "tags enable keyword matching for automatic tool selection"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false
   },
   "scripts/bootstrap_sessions.py": {
     "type": "script",
@@ -675,7 +866,18 @@
         "strength": "related",
         "overlap": 0.5
       }
-    ]
+    ],
+    "summary": "Bootstrap sessions initializes .sessions/ directory from templates on first clone or fresh environment, skipping existing files unless --force flag provided.",
+    "key_claims": [
+      "copies templates from docs/session_templates into .sessions",
+      "skips files that already exist unless --force specified",
+      "mece_plan_schema.md template renamed to mece_plan.md on copy",
+      "supports --dry-run flag to preview actions without writing"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false
   },
   "docs/session_templates": {
     "type": "docs",
@@ -712,7 +914,17 @@
         "strength": "related",
         "overlap": 0.5
       }
-    ]
+    ],
+    "summary": "Directory containing session file templates used by harness agents. Provides canonical schemas for mece_plan.md and other session state files.",
+    "key_claims": [
+      "mece_plan_schema.md defines mandatory Phase 0-3 block structure",
+      "templates enforce consistent session state format across all agents",
+      "Phase 0 block required for PreToolUse hook validation to pass"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false
   },
   "scripts/session_compactor.py": {
     "type": "script",
@@ -779,7 +991,18 @@
         "strength": "related",
         "overlap": 0.5
       }
-    ]
+    ],
+    "summary": "Session compactor validates .sessions/ health before git commits by checking file presence and phase state, blocking commits when phase is in_progress.",
+    "key_claims": [
+      "exit code zero means safe to commit all checks pass",
+      "exit code one means checks failed do not commit",
+      "blocks commits when active_thread.md phase equals in_progress",
+      "checks for required fields in all session metadata files"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false
   },
   ".agents/skills/ascii_flow/SKILL_detail.md": {
     "type": "skill",
@@ -850,7 +1073,18 @@
         "strength": "related",
         "overlap": 0.5
       }
-    ]
+    ],
+    "summary": "ASCII flow detail provides comprehensive box-drawing character palette, box templates, connector patterns, and document structure for creating harness flow diagrams.",
+    "key_claims": [
+      "outer process box must be 70 characters wide consistently",
+      "inner nested box uses 2 space indent and 66 characters width",
+      "character set includes all box-drawing connectors and branches",
+      "flow sections organized as sequential parallel loop and error branches"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false
   },
   "REPO_MAP.md": {
     "description": "Repository structure reference \u2014 full file tree with descriptions for all agents",
@@ -868,7 +1102,18 @@
       "CLAUDE.md",
       "AGENTS.md"
     ],
-    "related": []
+    "related": [],
+    "summary": "REPO MAP is reference guide documenting repository structure including root files, directory purposes, and knowledge base paths for agent orientation.",
+    "key_claims": [
+      "CLAUDE.md contains hard constraints R1 through R16 rules",
+      "AGENTS.md details boot sequence per-turn routing and loop architecture",
+      "INVARIANTS.md loaded on-demand for destructive gates only",
+      "Full-Read permitted on REPO_MAP and all SKILL.md files"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false
   },
   ".agents/skills/session_manager/SKILL.md": {
     "description": "session_manager skill \u2014 session open/close, topic switch, token pause, compact_state write",
@@ -884,7 +1129,18 @@
       "CLAUDE.md",
       "AGENTS.md"
     ],
-    "related": []
+    "related": [],
+    "summary": "Session Manager handles session lifecycle including topic-switch close, TOKEN PAUSE halts, BLOCKED recovery, and manual close with mandatory five-file write sequence.",
+    "key_claims": [
+      "Section 1 checks active_thread.md phase and rotates session JSON",
+      "Section 3 Step 0 requires CFP self-improve before writing files",
+      "Section 3 must write five mandatory files in session_manager procedure",
+      "confirms all files written to user with complete list before closing"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false
   },
   "Implement/09_migration.md": {
     "description": "Migration guide for users upgrading from older harness version \u2014 4 tracks: M1 indexes, M2 tree, M3 skills/config, M4 verify",
@@ -901,7 +1157,19 @@
       "Implement/08_checklist.md",
       "knowledge/harness_flow_20260526.md"
     ],
-    "related": []
+    "related": [],
+    "summary": "Migration guide provides four-track procedure (M1 through M4) for upgrading projects from older harness versions to current version with index reformatting and file structure updates.",
+    "key_claims": [
+      "M1 reformats indexes from old schema missing topics and backlinks",
+      "M2 restructures tree to add required directories and session files",
+      "M3 overwrites skills and config with preserve list exceptions",
+      "M4 verifies migration with 08_checklist.md before rollback option"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false,
+    "last_modified": "2026-06-01"
   },
   "docs/session_templates/mece_plan_schema.md": {
     "type": "config",
@@ -920,7 +1188,18 @@
     "references": [
       ".sessions/mece_plan.md"
     ],
-    "related": []
+    "related": [],
+    "summary": "MECE plan schema is the mandatory template for writing .sessions/mece_plan.md including Phase 0 through 3 blocks, Verify-N commands, and close path selection.",
+    "key_claims": [
+      "must use exact template format no simplified versions allowed",
+      "Phase 0 block keeps X marking across task resume only",
+      "Verify-N sections contain runnable shell commands not prose",
+      "TOKEN CHECK rule triggers /compact at 50k and TOKEN PAUSE at 60k"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false
   },
   "Implement/04_skills.md": {
     "type": "doc",
@@ -938,7 +1217,18 @@
     "references": [
       "Implement/03_config.md"
     ],
-    "related": []
+    "related": [],
+    "summary": "Implementation guide provides complete bootstrap templates for all ten agent skills with project-specific paths replaced and behavioral contracts documented.",
+    "key_claims": [
+      "agent skill serves as fallback orchestration route re-evaluates intent",
+      "each skill section documents Trigger Refusal Workflow Output and Routing",
+      "templates copy behavior from main branch SKILL.md files exactly",
+      "MECE Constraints Block copied into project mece_plan.md per skill"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false
   },
   "Implement/08_checklist.md": {
     "type": "doc",
@@ -958,7 +1248,19 @@
       "CLAUDE.md",
       "docs/session_templates/mece_plan_schema.md"
     ],
-    "related": []
+    "related": [],
+    "summary": "Post-installation verification checklist validates harness setup completeness across nine sections, blocking on critical failures and warning on non-critical mismatches.",
+    "key_claims": [
+      "FAIL status blocks progression until issue resolved immediately",
+      "WARN status logs issue but allows continued progress to next check",
+      "three or more FAIL items per run escalates to harness_doctor skill",
+      "section 9 verifies session files only after first boot completes"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false,
+    "last_modified": "2026-06-01"
   },
   "scripts/safe_run.py": {
     "type": "script",
@@ -969,7 +1271,18 @@
     ],
     "backlinks": [],
     "references": [],
-    "related": []
+    "related": [],
+    "summary": "Safe run is priority-first chunked output filter that limits token waste by extracting signal lines and truncating non-signal output with threshold configuration.",
+    "key_claims": [
+      "output greater than THRESHOLD lines triggers filtering behavior",
+      "signal lines error warn fail exception traceback sent first never truncated",
+      "non-signal lines reduced to first CHUNK_SIZE lines plus remainder count",
+      "THRESHOLD set to 40 CHUNK_SIZE set to 25 in default configuration"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false
   },
   "docs/token_benchmark.md": {
     "type": "doc",
@@ -981,6 +1294,240 @@
     "backlinks": [],
     "references": [
       "scripts/safe_run.py"
+    ],
+    "related": [],
+    "summary": "Token benchmark documents token optimization results from T-042 through T-046 showing 73% waste reduction on git output and 20.5% formula accuracy gap breakdown.",
+    "key_claims": [
+      "Test A git output reduced 100 lines to 27 lines saving 438 tokens",
+      "Test B error storm reduced non-monotonic output from 156 to 40 lines",
+      "T-044 improved accuracy from 1.49x to 1.26x undercount ratio",
+      "remaining 20.5% gap caused by triangular accumulation of history"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false
+  },
+  "scripts/knowledge_conflict_checker.py": {
+    "type": "script",
+    "description": "Stage 1 knowledge conflict checker \u2014 pure Python, 0 LLM tokens. Computes review_priority_score from topic overlap + phrase matching. Returns structured JSON for agent review.",
+    "topics": [
+      "index_sync",
+      "topic_graph",
+      "knowledge_base"
+    ],
+    "references": [
+      "knowledge/index_files.json",
+      "knowledge/topic_registry.json"
+    ],
+    "backlinks": [
+      "AGENTS.md"
+    ],
+    "related": [],
+    "summary": "Knowledge conflict checker detects potential contradictions between files using topic overlap analysis and phrase-level matching, returning verdict for agent review.",
+    "key_claims": [
+      "clean verdict when no related files with overlap greater than minimum",
+      "low_priority verdict when related files exist without phrase matches",
+      "review_recommended verdict when related files contain matching phrases",
+      "exit code zero for clean or low_priority exit code one for review"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false
+  },
+  "scripts/write_context_cache.sh": {
+    "type": "script",
+    "description": "Stop hook script \u2014 writes compact context snapshot to .sessions/session_context_cache.md and appends 1 JSON line to .sessions/token_log.jsonl every time Claude stops.",
+    "topics": [
+      "token_efficiency",
+      "telemetry",
+      "prompt_caching",
+      "compaction"
+    ],
+    "references": [
+      ".sessions/session_context_cache.md",
+      ".sessions/token_log.jsonl",
+      ".sessions/active_thread.md",
+      ".sessions/session_tokens.md",
+      ".sessions/mece_plan.md"
+    ],
+    "backlinks": [
+      ".claude/settings.json"
+    ],
+    "related": [],
+    "summary": "Stop hook script that writes session_context_cache.md for fast context restore after cache miss and appends per-turn telemetry to token_log.jsonl.",
+    "key_claims": [
+      "Overwrites session_context_cache.md on every Stop event",
+      "Appends one JSON line to token_log.jsonl with ts, task, phase, session_total, chat_total, cache counters",
+      "Reads active_thread.md and session_tokens.md for current state",
+      "Called by .claude/settings.json Stop hook with 10s timeout"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false
+  },
+  "scripts/backfill_knowledge_index.py": {
+    "type": "script",
+    "description": "One-time backfill script for knowledge/index_files.json \u2014 extracts scaled excerpts (60L cap) and writes agent-generated summary/key_claims. Also auto-detects supersedes chain from _YYYYMMDD.md filename pattern.",
+    "topics": [
+      "index_sync",
+      "knowledge_base"
+    ],
+    "references": [
+      "knowledge/index_files.json"
+    ],
+    "backlinks": [
+      "AGENTS.md"
+    ],
+    "related": [],
+    "summary": "Backfill knowledge index populates summary and key_claims fields in index_files.json using three-step workflow with no SDK tokens via pure Python extraction.",
+    "key_claims": [
+      "Step 1 extract reads files and auto-detects supersedes chain",
+      "Step 2 agent generates summary and key_claims from excerpts",
+      "Step 3 write validates key_claims minimum 4 word length requirement",
+      "supports --auto-supersedes flag to detect date-based file chains"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-01",
+    "key_claims_stale": false
+  },
+  "knowledge/token-efficiency-agent-workflow-framework-2026-05-31.md": {
+    "description": "Token efficiency framework for agent workflows \u2014 patterns and strategies for reducing token usage.",
+    "topics": [
+      "token_efficiency",
+      "token_tracking"
+    ],
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "knowledge/token-counting-openai-2026-05-31.md": {
+    "description": "OpenAI API token counting methods and prompt caching usage.",
+    "topics": [
+      "token_counting",
+      "prompt_caching"
+    ],
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "knowledge/token-counting-anthropic-claude-2026-05-31.md": {
+    "description": "Anthropic Claude API token counting, cache hit rates, and token tracking.",
+    "topics": [
+      "token_counting",
+      "prompt_caching",
+      "token_tracking"
+    ],
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "knowledge/token-counting-google-gemini-2026-05-31.md": {
+    "description": "Google Gemini API token counting methods.",
+    "topics": [
+      "token_counting"
+    ],
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "knowledge/token-counting-cohere-2026-05-31.md": {
+    "description": "Cohere API token counting methods.",
+    "topics": [
+      "token_counting"
+    ],
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "knowledge/token-counting-cross-provider-comparison-2026-05-31.md": {
+    "description": "Cross-provider token counting comparison and cost optimization strategies.",
+    "topics": [
+      "token_counting",
+      "cost_optimization"
+    ],
+    "backlinks": [
+      "knowledge/provider-routing-strategy-2026-06-01.md"
+    ],
+    "references": [],
+    "related": []
+  },
+  "knowledge/provider-routing-strategy-2026-06-01.md": {
+    "description": "Decision tree for routing tasks to cheapest capable AI provider",
+    "topics": [
+      "cost_optimization",
+      "token_efficiency",
+      "token_counting"
+    ],
+    "backlinks": [],
+    "references": [
+      "knowledge/token-counting-cross-provider-comparison-2026-05-31.md"
+    ],
+    "related": []
+  },
+  "knowledge/harness-reference-forking-token-agent-application-2026-05-25.md": {
+    "description": "Harness reference for forking token agent application patterns.",
+    "topics": [
+      "token_efficiency",
+      "token_tracking"
+    ],
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "knowledge/token-telemetry-schema-and-dashboard-spec-for-agent-systems-2026-05-31.md": {
+    "description": "Token telemetry schema and dashboard specification for agent systems observability.",
+    "topics": [
+      "telemetry",
+      "token_tracking",
+      "cost_optimization"
+    ],
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "knowledge/token-efficiency-implementation-checklist-for-agent-systems-2026-05-31.md": {
+    "description": "Implementation checklist for token efficiency, cost optimization, and prompt caching in agent systems.",
+    "topics": [
+      "token_efficiency",
+      "cost_optimization",
+      "prompt_caching"
+    ],
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  ".sessions/exec_log/": {
+    "path": ".sessions/exec_log/",
+    "role": "temp",
+    "description": "Tool result offload dir \u2014 full results stored per-turn, pruned by trim_exec_log.py",
+    "topics": [
+      "token-management",
+      "context-window"
+    ],
+    "backlinks": [
+      "CLAUDE.md",
+      "AGENTS.md"
+    ],
+    "references": [],
+    "related": []
+  },
+  "scripts/trim_exec_log.py": {
+    "path": "scripts/trim_exec_log.py",
+    "role": "script",
+    "description": "Prune .sessions/exec_log/ \u2014 max 50 files, max age 24h. Run before /compact.",
+    "topics": [
+      "token-management"
+    ],
+    "backlinks": [
+      "AGENTS.md",
+      "Implement/03_config.md"
+    ],
+    "references": [
+      ".sessions/exec_log/"
     ],
     "related": []
   }

@@ -25,7 +25,7 @@ Orchestrator writes this file at **end of Phase 2 M5 AFTER user confirm** (align
 Phase 0 total: TH ___ch · EN ___ch → ~___tok
 - [ ] B1: compact_state.md checked · active_thread read · SESSION_TOTAL reset/loaded · CFP_COUNT stored
 - [ ] B2-B3: [compact-restore] → sk= + sha1 check · OR manifest grep + SKILL.md read · sections[] loaded
-- [ ] C0-C3: routing confirmed · no topic switch
+- [ ] C0-C0.5-C1-C3: routing confirmed · LOOP_WEIGHT checked · no topic switch
 → TOKEN CHECK (runtime · NOT at plan creation): write SESSION_TOTAL → file · cat → ___k
 
 ## Phase 1 — Info Gather
@@ -35,9 +35,16 @@ Phase 0 total: TH ___ch · EN ___ch → ~___tok
 
 ## Phase 2 — Plan
 ### Files Read  (same table format)
-- [ ] M1.5: reasoning pass done · dependency_map[] + risk_flags[] in working memory
+- [ ] M1.5: reasoning pass done · dependency_map[] + risk_flags[] + compact_checkpoint in working memory
+      compact_checkpoint: IF sections ≥ 3 OR (sections × 6) > 30 → insert [/compact checkpoint] after ceil(N/2)
 - [ ] M2/M3/M4/M5 checkboxes
 → TOKEN CHECK (runtime · NOT at plan creation) → ___k  (>60k → TOKEN PAUSE)
+→ LOOP_WEIGHT CHECK (Behavior Contract):
+   Pre:      grep "^LOOP_WEIGHT:" .sessions/session_tokens.md
+   Contract: >30 → MUST emit [compact-warn] (Skill · Remaining · Resume) BEFORE continuing
+             >50 → MUST emit [compact-required] → write compact_state.md → STOP
+   Post:     [compact-warn] missing any field = invalid · re-emit complete
+   Enforce:  C0.5 gate fires every turn (AGENTS.md Per-Turn Routing)
 
 ---
 

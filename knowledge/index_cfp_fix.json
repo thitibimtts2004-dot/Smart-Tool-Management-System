@@ -112,5 +112,23 @@
     "status": "active",
     "description": "harness_editor Step 5 Docs Close Skipped \u2014 flow_updated Not Enforced",
     "fixes": []
+  },
+  "CFP-024": {
+    "id": "CFP-024",
+    "title": "M5 Skip \u2014 mece_plan.md Not Written Before [\u2713 MECE] Emitted",
+    "status": "fixed",
+    "fix_location": "CLAUDE.md R16 \u2014 MANDATORY tool call inline",
+    "recurrence_count": 0,
+    "fixes": [
+      "T-061 harness_doctor \u00a75 \u2014 R16 inline CFP write requirement added"
+    ]
+  },
+  "CFP-025": {
+    "id": "CFP-025",
+    "title": "mece_plan Clear = Stripped Content Instead of Blank Template Reset",
+    "status": "active",
+    "fix_location": "pending \u2014 harness_doctor \u00a75",
+    "recurrence_count": 1,
+    "fixes": []
   }
 }
