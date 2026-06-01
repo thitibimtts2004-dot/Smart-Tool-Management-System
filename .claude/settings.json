@@ -1,0 +1,28 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd '/Volumes/BriteBrain/Projects/Harness Agent' && bash scripts/write_context_cache.sh 2>/dev/null || true",
+            "timeout": 10,
+            "statusMessage": "Saving context cache..."
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd '/Volumes/BriteBrain/Projects/Harness Agent' && TNAME=\"${TOOL_NAME:-}\" && case \"$TNAME\" in Agent|Workflow|WebFetch|WebSearch) W=3 ;; Write|mcp__*) W=2 ;; *) W=1 ;; esac && cur=$(grep \"^LOOP_WEIGHT:\" .sessions/session_tokens.md 2>/dev/null | awk '{print $2}') && new=$(( ${cur:-0} + W )) && sed -i '' \"s/^LOOP_WEIGHT:.*/LOOP_WEIGHT: $new/\" .sessions/session_tokens.md 2>/dev/null || true",
+            "timeout": 5,
+            "statusMessage": "Tracking loop weight..."
+          }
+        ]
+      }
+    ]
+  }
+}
