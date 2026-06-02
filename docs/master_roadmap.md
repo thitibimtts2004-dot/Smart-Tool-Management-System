@@ -200,3 +200,8 @@
 - [X] T-071.4: CLAUDE.md — trim R1 detail → pointer · 252L→191L (≤200L) · attempts:1 · tool_calls:1
 - [X] T-071.5: AGENTS.md — trim Phase 1-3 + Sub-agent detail → pointer · 281L→200L (≤200L) · attempts:1 · tool_calls:3
 - [X] T-071.6: CODING_FAILURE_PATTERNS.md — CFP-030 session close BC skipped · attempts:1 · tool_calls:1
+
+## Cross-Platform Hooks + Dynamic Root — T-072
+
+- [X] T-072.1: .claude/settings.json — ROOT pattern + python3 LOOP_WEIGHT + PreToolUse gate (all Edit/Write except .sessions/) · attempts:1 · tool_calls:2
+- [X] T-072.2: Implement/03_config.md — PostToolUse template python3 + PreToolUse template + Cross-Platform Notes block · attempts:1 · tool_calls:1

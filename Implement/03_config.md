@@ -416,10 +416,67 @@ File: `.claude/settings.json` → `hooks.PostToolUse`
 ```json
 {
   "type": "command",
-  "command": "cd '<project_root>' && TNAME=\"${TOOL_NAME:-}\" && case \"$TNAME\" in Agent|Workflow|WebFetch|WebSearch) W=3 ;; Write|mcp__*) W=2 ;; *) W=1 ;; esac && cur=$(grep \"^LOOP_WEIGHT:\" .sessions/session_tokens.md 2>/dev/null | awk '{print $2}') && new=$(( ${cur:-0} + W )) && sed -i '' \"s/^LOOP_WEIGHT:.*/LOOP_WEIGHT: $new/\" .sessions/session_tokens.md 2>/dev/null || true",
+  "command": "python3 -c \"\nimport os, subprocess\nroot = os.environ.get('CLAUDE_PROJECT_DIR')\nif not root:\n    try:\n        root = subprocess.check_output(['git','rev-parse','--show-toplevel'], stderr=subprocess.DEVNULL, cwd=os.getcwd()).decode().strip()\n    except Exception:\n        root = os.getcwd()\ntool = os.environ.get('TOOL_NAME', '')\nweights = {'Agent': 3, 'Workflow': 3, 'WebFetch': 3, 'WebSearch': 3, 'Write': 2, 'NotebookEdit': 2}\nw = next((v for k, v in weights.items() if k in tool), 1)\nif 'mcp__' in tool:\n    w = 2\npath = os.path.join(root, '.sessions', 'session_tokens.md')\nif not os.path.exists(path):\n    exit(0)\nlines = open(path).readlines()\nnew_lines = []\nfor line in lines:\n    if line.startswith('LOOP_WEIGHT:'):\n        cur = int(line.split(':')[1].strip() or 0)\n        new_lines.append(f'LOOP_WEIGHT: {cur + w}\\n')\n    else:\n        new_lines.append(line)\nopen(path, 'w').writelines(new_lines)\n\"",
   "timeout": 5
 }
 ```
+
+---
+
+## PreToolUse Hook — Phase Gate (ALL Edit/Write)
+
+File: `.claude/settings.json` → `hooks.PreToolUse`
+
+Blocks ALL Edit/Write/NotebookEdit tool calls unless Phase 1+2 state files are present and dated today.
+**Exception:** paths containing `.sessions/` are always allowed (session state files).
+
+```json
+{
+  "type": "command",
+  "command": "python3 -c \"\nimport json, sys, os, subprocess\ndata = json.load(sys.stdin)\ntool = data.get('tool_name', '')\nif tool not in ('Edit', 'Write', 'NotebookEdit'):\n    sys.exit(0)\nfile_path = data.get('tool_input', {}).get('file_path', '') or data.get('tool_input', {}).get('notebook_path', '')\nif '.sessions/' in file_path:\n    sys.exit(0)\nroot = os.environ.get('CLAUDE_PROJECT_DIR')\nif not root:\n    try:\n        root = subprocess.check_output(['git','rev-parse','--show-toplevel'], stderr=subprocess.DEVNULL, cwd=os.getcwd()).decode().strip()\n    except Exception:\n        root = os.getcwd()\ntoday = __import__('datetime').date.today().isoformat()\ngather = os.path.join(root, '.sessions', 'gather_complete.md')\nmece = os.path.join(root, '.sessions', 'mece_plan.md')\nerrors = []\nif not os.path.exists(gather):\n    errors.append('[gate] gather_complete.md missing — run Phase 1 first')\nelse:\n    content = open(gather).read()\n    if today not in content:\n        errors.append('[gate] gather_complete.md stale (not today) — re-run Phase 1')\nif not os.path.exists(mece):\n    errors.append('[gate] mece_plan.md missing — run Phase 2 first')\nelse:\n    content = open(mece).read()\n    if today not in content:\n        errors.append('[gate] mece_plan.md stale (not today) — re-run Phase 2')\nif errors:\n    print('\\n'.join(errors), file=sys.stderr)\n    sys.exit(1)\nsys.exit(0)\n\"",
+  "timeout": 8,
+  "statusMessage": "Phase gate check..."
+}
+```
+
+---
+
+## Cross-Platform Notes (macOS · Linux · Windows Git Bash/WSL)
+
+> All hook commands MUST use python3 for file manipulation. Never use `sed -i ''` (macOS-only) or `sed -i` (Linux). Use the python3 pattern below for portability.
+
+### Dynamic ROOT Pattern
+```bash
+# bash hooks — resolve project root without hardcoding
+ROOT="${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}"
+```
+```python
+# python3 hooks — resolve project root
+import os, subprocess
+root = os.environ.get('CLAUDE_PROJECT_DIR')
+if not root:
+    try:
+        root = subprocess.check_output(['git','rev-parse','--show-toplevel'],
+                                        stderr=subprocess.DEVNULL, cwd=os.getcwd()).decode().strip()
+    except Exception:
+        root = os.getcwd()
+```
+
+### File Update Pattern (replaces `sed -i`)
+```python
+# cross-platform in-place line replacement
+lines = open(path).readlines()
+new_lines = [new_value + '\n' if line.startswith(prefix) else line for line in lines]
+open(path, 'w').writelines(new_lines)
+```
+
+### OS Support Matrix
+| Feature | macOS | Linux | Windows (Git Bash) | Windows (WSL) |
+|---|---|---|---|---|
+| `git rev-parse --show-toplevel` | ✅ | ✅ | ✅ | ✅ |
+| `python3 -c "..."` | ✅ | ✅ | ✅ (if Python installed) | ✅ |
+| `sed -i ''` | ✅ | ❌ | ❌ | ❌ |
+| `CLAUDE_PROJECT_DIR` env | ✅ (if set) | ✅ (if set) | ✅ (if set) | ✅ (if set) |
 
 **Weight table:**
 | Tool category | Weight |

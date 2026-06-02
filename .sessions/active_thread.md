@@ -1,3 +1,3 @@
-task: T-069 Implement/ docs upgrade (T-067+T-068 sync)
+task: T-072 cross-platform hooks + dynamic ROOT + PreToolUse gate
 phase: done
-next: none
+next: git push T-072 changes
