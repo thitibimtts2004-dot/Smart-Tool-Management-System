@@ -1,79 +1,88 @@
-# MECE Plan — T-072 Cross-Platform Hooks + Dynamic Project Root
-date: 2026-06-02
-task: Fix hooks — dynamic ROOT + cross-platform commands + PreToolUse block all Edit/Write
+# MECE Plan — T-158 mece skill fixes
+date: 2026-06-08
+task: T-158 fix mece skill — resolve 3 weak components found in 9arm audit (audit_mece.json, CONDITIONAL 6/9)
 skill: harness_editor
 
-## Phase 0 — Boot
-- [X] B1: compact_state checked · SESSION_TOTAL=0 · CHAT_TOTAL=27641 · CFP_COUNT=26
-- [X] B2-B3: skill=harness_editor · hashes checked
-- [X] C0-C0.5-C1-C3: routing confirmed
-→ TOKEN CHECK: ~27k
+## Phase 0 — Boot (once per session · keep [X] on resume · reset on topic switch only)
+- [X] B1: compact_state.md checked · SESSION_TOTAL=0 · CHAT_TOTAL=sys_fixed · CFP_COUNT=36 stored
+- [X] B2-B3: skill=harness_editor identified · SKILL.md loaded · hashes checked
+- [X] C0-C3: routing confirmed · topic-switch from T-157(done)/audit-mece(done) → T-158 fix · skill_auditor→harness_editor
+→ TOKEN CHECK: SESSION_TOTAL ~0k
 
 ---
 
 ## Phase 1 — Info Gather
-- [X] G1: scoped — settings.json (3 hooks) · Implement/03_config.md (template line 419) · roadmap
-- [X] G2: grep — all 3 hooks hardcode `/Volumes/...` · sed -i'' at 03_config:419 · no sha1sum in scripts
-- [X] G3: critical — ROOT dynamic + sed→python3 + PreToolUse add (block all except .sessions/)
-→ [✓ gather]
+- [X] G0: clarity gate — audit gave precise line-cited findings → criteria clear
+- [X] G1: mece/SKILL.md scanned (full read by skill_auditor agent this session)
+- [X] G2: audit_mece.json = batch read result · line refs per finding
+- [X] G3: 3 sections → file/line + Verify-N draft · [✓ gather] emitted
+- [X] gather_complete.md written today (objective · constraints · affected_files · acceptance)
 
-## Phase 2 — MECE Plan
-- [X] Dependency: settings.json (S2) before 03_config template (S3)
-- [X] Risk: CLAUDE_PROJECT_DIR unverified → git fallback primary · sed -i'' macOS-only → python3
-- [X] User confirmed: PreToolUse blocks ALL Edit/Write except .sessions/
-→ [✓ MECE]
-
-## Files Read
-| File | Why | Lines |
+### Files Read — Phase 1
+| File | Why | Lines read |
 |---|---|---|
-| .claude/settings.json | 3 hooks to rewrite | full 40L |
-| Implement/03_config.md | hook template line 419 | grep |
-| docs/master_roadmap.md | T-ID check | grep |
+| .agents/skills/mece/SKILL.md | audit subject | full (via skill_auditor agent) |
+| .sessions/audit_mece.json | findings + line refs | full |
+
+→ TOKEN CHECK: SESSION ~0k
 
 ---
 
-## Phase 3 — Execution
+## Phase 2 — Plan
+- [X] M1.5: serial (single file mece/SKILL.md → no parallel) · irreversible: none (content edit, git-revertable) · risk: mece is load-bearing
+       dependency_map: [audit_mece.json → mece/SKILL.md]
+       risk_flags: [load-bearing skill — wording-only, no procedure change]
+- [X] M2: 3 sections · Tool=Edit · Avoid=full-read SKILL.md (grep/offset) · Model=high · Verify-N per section
+- [X] M3: plan + Verify-N sent to user → user confirmed (plan-only, halt before Phase 3)
+- [X] M4: roadmap T-158.1/.2/.3 added
+- [X] M5: this file written using template · [✓ MECE]
 
-### dependency_map
-S1 (ROOT pattern) → feeds S2 + S3 · S2 must finish before S3
-
-### risk_flags
-- CLAUDE_PROJECT_DIR: unverified → git rev-parse as primary fallback
-- sed -i '': macOS-only → replace all with python3 one-liner
-- PreToolUse exception: .sessions/ path must be exact pattern
-
-### compact_checkpoint
-3 sections → check after S2
-
----
-
-- [X] S1 — Define canonical ROOT pattern + verify
-  Steps: test git rev-parse · define ROOT line · define python3 LOOP_WEIGHT updater
-  Verify-1: `bash -c 'ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd); echo $ROOT'` → project path
-  Rollback: none (read-only)
-  Token: ~2k
-
-- [X] S2 — Rewrite `.claude/settings.json`
-  Steps: UserPromptSubmit ROOT · PostToolUse ROOT+python3 · Stop ROOT · add PreToolUse hook
-  Verify-2: `python3 -m json.tool .claude/settings.json >/dev/null` → valid · `grep -c "Volumes\|sed -i ''" .claude/settings.json` → 0 · `python3 -m json.tool .claude/settings.json | grep -c "PreToolUse"` → ≥1
-  Rollback: git checkout .claude/settings.json
-  Token: ~5k
-
-→ COMPACT CHECKPOINT after S2
-
-- [X] S3 — Update hook template in `Implement/03_config.md`
-  Steps: line 419 → ROOT+python3 · add Cross-Platform Notes block · add PreToolUse template
-  Verify-3: `grep -c "sed -i ''\|/Volumes" Implement/03_config.md` → 0 · `grep -c "PreToolUse\|gather_complete" Implement/03_config.md` → ≥2
-  Rollback: git checkout Implement/03_config.md
-  Token: ~4k
+→ TOKEN CHECK: SESSION ~0k
+→ [mece-complete] + /compact before Phase 3 (BC-mece-compact) — user explicitly said "ห้ามลงมือ" → HALT after this write
 
 ---
 
-## Phase 3 Close Checklist
-- [ ] All Verify-N pass
-- [ ] R8: no new files → index_files.json no change needed
-- [ ] Roadmap T-072.1–T-072.3 [X]
-- [ ] active_thread phase:done
-- [ ] SESSION_TOTAL written
-- [ ] Reviewer inline (Verify-N=3, no src/)
-- [ ] Feedback to user
+## Phase 3 — Execute
+
+### Cycle grouping
+Cycle 1 — serial · agents: 1 (main context · 1 file <5 → no sub-agent) → S1 → S2 → S3
+(all edit .agents/skills/mece/SKILL.md → shared file → MUST be serial, never parallel)
+
+### Per-Section Invariants (apply to EVERY S<N> · written ONCE)
+Constraints — every section carries these PLUS its own line:
+  - mece_plan.md dated today + T-N roadmap [/] REQUIRED before any file edit
+  - [pre-edit] emit before every Edit · [✓ written] grep verify after every change
+  - grep/offset only (mece/SKILL.md 196L >80 · no full-read) · re-read section before edit (R5)
+  - mece is load-bearing → refine wording ONLY · never change workflow steps S1-A..S2-C or the 1 BC
+  - Output Contracts: [post-read] ≤1L · [✓ written] ≤1L · L4.5 PURGE after each tool result
+Marking rule — flip [X] ONLY when [✓ written] + Verify-N both pass this turn
+
+### S1 · T-158.1 · Output Spec — Structure consolidation   [Cycle1 · HIGH]
+Context: artifact spec for mece_plan.md is scattered across 3 distant blocks; merge into one labeled block so an agent reads one place.
+File: .agents/skills/mece/SKILL.md (L54-70 Plan Format · L105-115 S1-E · L141-154 Output Contract)
+Tool: Edit · Avoid: full-read · Model: high · Input_From: audit_mece.json
+Action: create one `## Output Spec — Structure` block listing mandatory/optional fields; mark Plan Format as example + pointer to mece_plan_schema.md (canonical); dedupe [mece-skip] format (define once, pointer elsewhere)
+Verify-1: `grep -c "## Output Spec" .agents/skills/mece/SKILL.md` =1 · `grep -c "mece_plan_schema.md" mece/SKILL.md` >=1 · [mece-skip] format literal appears once
+
+### S2 · T-158.2 · When NOT to Use — 3 refusals inline   [Cycle1 · MED]
+Context: L49 is pointer-only; 2 of 3 refusals not in situ → agent reading only this section misses them.
+File: .agents/skills/mece/SKILL.md (When NOT to Use L45-52)
+Tool: Edit · Avoid: full-read · Model: high · Input_From: audit_mece.json
+Action: state all 3 refusals inline with reason — single-file (<5 lines), read-only/lookup, resume (pending sections exist)
+Verify-2: `grep -A8 "When NOT to Use" mece/SKILL.md | grep -ciE "read-only|resume"` >=2
+
+### S3 · T-158.3 · Tone Guide Prohibited fix   [Cycle1 · LOW]
+Context: L188 Prohibited contains enforcement echoes (Hard Rules), not tone guardrails.
+File: .agents/skills/mece/SKILL.md (Tone Guide L184-188)
+Tool: Edit · Avoid: full-read · Model: high · Input_From: audit_mece.json
+Action: replace Prohibited with tone prohibitions — no inline prose after signals, no hedging, no token counts in plan output, no section names diverging from target skill sections[]
+Verify-3: `grep -A6 "Tone Guide" mece/SKILL.md | grep Prohibited` shows tone items · no "BC"/"enforce" echoes
+
+### Phase 3 Close Checklist
+- [ ] re-audit mece (skill_auditor) → confirm no ✅ dropped to ⚠️/❌ · BC count still 1
+- [ ] R8: SKILL.md content edit (no rename) → no manifest change · emit [r8-sync-check]
+- [ ] Roadmap [X]: T-158.1-3 (attempts + tool_calls)
+- [ ] harness_editor Stage4: harness_flow Y-entry + Implement/ check + [harness-edit-done]
+- [ ] [session-health] · session_handoff.md written · active_thread phase:done
+- [ ] PATH A: close-gate check → clear mece_plan.md Phase 1-3
+- [ ] self_improve CFP check · harness_doctor gate

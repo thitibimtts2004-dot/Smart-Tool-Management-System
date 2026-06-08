@@ -1,0 +1,10 @@
+{
+  "task": "T-131",
+  "file": ".agents/skills/variable_manager/SKILL.md",
+  "status": "done",
+  "edits": 7,
+  "final_lines": 124,
+  "zone": "🟢",
+  "nine_arm_score": "Trigger, When-NOT-to-Use, Operating-Stance, Prerequisites, Refusal-Contract, Workflow, Output-Contract, Tone-Guide, Hard-Rules, Routing, MECE-Constraints (11 sections present)",
+  "verified": true
+}

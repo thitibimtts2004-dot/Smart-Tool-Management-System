@@ -1,0 +1,10 @@
+{
+  "task": "T-132",
+  "file": ".agents/skills/skeptical_reviewer/SKILL.md",
+  "status": "done",
+  "edits": 8,
+  "final_lines": 160,
+  "zone": "🟢",
+  "nine_arm_score": "triggers, When NOT to Use, Operating Stance, Prerequisites, Workflow+stop-conditions, Refusal Contract, Output Contract, Tone Guide, Hard Rules",
+  "verified": true
+}

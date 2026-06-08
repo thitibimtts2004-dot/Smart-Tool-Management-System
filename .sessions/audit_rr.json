@@ -1,0 +1,82 @@
+{
+  "skill": "repo_researcher",
+  "task": "T-138",
+  "audit_date": "2026-06-05",
+  "total_lines": 93,
+  "gaps": [
+    {
+      "component": "YAML front-matter triggers: array",
+      "status": "missing",
+      "insert_after_line": 4,
+      "severity": "high",
+      "accept_criteria": "grep -c 'triggers:' .agents/skills/repo_researcher/SKILL.md → 1"
+    },
+    {
+      "component": "## When to Invoke",
+      "status": "missing",
+      "insert_after_line": 26,
+      "severity": "high",
+      "accept_criteria": "grep -c '^## When to Invoke' .agents/skills/repo_researcher/SKILL.md → 1"
+    },
+    {
+      "component": "## When NOT to Use",
+      "status": "missing",
+      "insert_after_line": 26,
+      "severity": "high",
+      "accept_criteria": "grep -c '^## When NOT' .agents/skills/repo_researcher/SKILL.md → 1"
+    },
+    {
+      "component": "## Operating Stance",
+      "status": "missing",
+      "insert_after_line": 26,
+      "severity": "medium",
+      "accept_criteria": "grep -c '^## Operating Stance' .agents/skills/repo_researcher/SKILL.md → 1"
+    },
+    {
+      "component": "## Prerequisites",
+      "status": "missing",
+      "insert_after_line": 76,
+      "severity": "medium",
+      "accept_criteria": "grep -c '^## Prerequisites' .agents/skills/repo_researcher/SKILL.md → 1"
+    },
+    {
+      "component": "## Hard Rules",
+      "status": "missing",
+      "insert_after_line": 89,
+      "severity": "high",
+      "accept_criteria": "grep -c '^## Hard Rules' .agents/skills/repo_researcher/SKILL.md → 1"
+    },
+    {
+      "component": "## Tone Guide",
+      "status": "missing",
+      "insert_after_line": 93,
+      "severity": "low",
+      "accept_criteria": "grep -c '^## Tone Guide' .agents/skills/repo_researcher/SKILL.md → 1"
+    },
+    {
+      "component": "YAML front-matter triggers: array (≥5 phrases)",
+      "status": "missing",
+      "insert_after_line": 4,
+      "severity": "high",
+      "accept_criteria": "python3 -c \"import yaml,sys; d=yaml.safe_load(open('.agents/skills/repo_researcher/SKILL.md').read().split('---')[1]); print(len(d.get('triggers',[])) >= 5)\" → True"
+    },
+    {
+      "component": "## Workflow stop conditions",
+      "status": "below_min",
+      "insert_after_line": 79,
+      "severity": "medium",
+      "accept_criteria": "grep -c 'stop\\|halt\\|HALT\\|STOP\\|abort' .agents/skills/repo_researcher/SKILL.md → ≥1 within Workflow section"
+    }
+  ],
+  "present": [
+    "## Refusal Contract (partial equivalent of When NOT to Use — but not compliant format)",
+    "## Workflow",
+    "## Output Contract",
+    "Behavior Contract — Clone Gate",
+    "Behavior Contract — Size Routing",
+    "Behavior Contract — Output Write",
+    "## Context Gate",
+    "YAML front-matter (name/description/keywords present)"
+  ],
+  "zone": "🔴"
+}

@@ -1,0 +1,11 @@
+{
+  "task": "T-130",
+  "file": ".agents/skills/agent/SKILL.md",
+  "status": "done",
+  "edits": 7,
+  "final_lines": 250,
+  "zone": "🟡",
+  "nine_arm_score": "triggers, When-NOT-to-Use, Operating-Stance, Tone-Guide, Hard-Rules(6), Refusal-Contract, Output-Contract, Orchestration-Protocol, Skill-Delegation-Rules",
+  "verified": true,
+  "size_guard": "passed"
+}

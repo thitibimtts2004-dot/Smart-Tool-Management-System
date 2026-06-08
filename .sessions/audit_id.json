@@ -1,0 +1,63 @@
+{
+  "skill": "identity",
+  "task": "T-140",
+  "audit_date": "2026-06-05",
+  "total_lines": 74,
+  "gaps": [
+    {
+      "component": "YAML front-matter triggers array",
+      "status": "missing",
+      "insert_after_line": 3,
+      "severity": "high",
+      "accept_criteria": "grep -c '^triggers:' .agents/skills/identity/SKILL.md → 1"
+    },
+    {
+      "component": "## When to Invoke",
+      "status": "missing",
+      "insert_after_line": 11,
+      "severity": "high",
+      "accept_criteria": "grep -c '^## When to Invoke' .agents/skills/identity/SKILL.md → 1"
+    },
+    {
+      "component": "## When NOT to Use (minimum 4 bullets)",
+      "status": "below_min",
+      "insert_after_line": 38,
+      "severity": "medium",
+      "accept_criteria": "grep -A20 '^## When NOT' .agents/skills/identity/SKILL.md | grep -c '^-' | awk '{exit ($1>=4)?0:1}' → exit 0"
+    },
+    {
+      "component": "## Prerequisites",
+      "status": "missing",
+      "insert_after_line": 11,
+      "severity": "medium",
+      "accept_criteria": "grep -c '^## Prerequisites' .agents/skills/identity/SKILL.md → 1"
+    },
+    {
+      "component": "## Workflow",
+      "status": "missing",
+      "insert_after_line": 11,
+      "severity": "medium",
+      "accept_criteria": "grep -c '^## Workflow' .agents/skills/identity/SKILL.md → 1"
+    },
+    {
+      "component": "## Output Contract",
+      "status": "missing",
+      "insert_after_line": 11,
+      "severity": "high",
+      "accept_criteria": "grep -c '^## Output Contract' .agents/skills/identity/SKILL.md → 1"
+    },
+    {
+      "component": "## Hard Rules (minimum 5 rules)",
+      "status": "missing",
+      "insert_after_line": 74,
+      "severity": "high",
+      "accept_criteria": "grep -c '^## Hard Rules' .agents/skills/identity/SKILL.md → 1"
+    }
+  ],
+  "present": [
+    "## Operating Stance (4 bullets present as '## Operating stance')",
+    "## When NOT to Use (section present, below minimum bullets)",
+    "## Tone Guide"
+  ],
+  "zone": "🔴"
+}

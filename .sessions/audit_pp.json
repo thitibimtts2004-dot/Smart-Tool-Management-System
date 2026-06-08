@@ -1,0 +1,69 @@
+{
+  "skill": "project_presenter",
+  "task": "T-139",
+  "audit_date": "2026-06-05",
+  "total_lines": 151,
+  "gaps": [
+    {
+      "component": "YAML front-matter with triggers array (≥5 phrases)",
+      "status": "missing",
+      "insert_after_line": 0,
+      "severity": "high",
+      "accept_criteria": "grep -c '^triggers:' .agents/skills/project_presenter/SKILL.md → 1"
+    },
+    {
+      "component": "## When to Invoke",
+      "status": "missing",
+      "insert_after_line": 11,
+      "severity": "medium",
+      "accept_criteria": "grep -c '^## When to Invoke' .agents/skills/project_presenter/SKILL.md → 1"
+    },
+    {
+      "component": "## When NOT to Use (4+ bullets)",
+      "status": "missing",
+      "insert_after_line": 16,
+      "severity": "high",
+      "accept_criteria": "grep -c '^## When NOT to Use' .agents/skills/project_presenter/SKILL.md → 1"
+    },
+    {
+      "component": "## Operating Stance (4 bullets)",
+      "status": "missing",
+      "insert_after_line": 16,
+      "severity": "medium",
+      "accept_criteria": "grep -c '^## Operating Stance' .agents/skills/project_presenter/SKILL.md → 1"
+    },
+    {
+      "component": "## Prerequisites with Why/Missing sub-items (≥3 items)",
+      "status": "missing",
+      "insert_after_line": 16,
+      "severity": "high",
+      "accept_criteria": "grep -c '^## Prerequisites' .agents/skills/project_presenter/SKILL.md → 1"
+    },
+    {
+      "component": "## Workflow with stop conditions",
+      "status": "missing",
+      "insert_after_line": 45,
+      "severity": "medium",
+      "accept_criteria": "grep -c '^## Workflow' .agents/skills/project_presenter/SKILL.md → 1"
+    },
+    {
+      "component": "## Hard Rules (≥5 rules)",
+      "status": "missing",
+      "insert_after_line": 143,
+      "severity": "high",
+      "accept_criteria": "grep -c '^## Hard Rules' .agents/skills/project_presenter/SKILL.md → 1"
+    },
+    {
+      "component": "## Tone Guide",
+      "status": "missing",
+      "insert_after_line": 151,
+      "severity": "low",
+      "accept_criteria": "grep -c '^## Tone Guide' .agents/skills/project_presenter/SKILL.md → 1"
+    }
+  ],
+  "present": [
+    "## Output Contract",
+    "## Trigger (keyword list — partial trigger coverage, ≥5 phrases present)"
+  ],
+  "zone": "🔴"
+}

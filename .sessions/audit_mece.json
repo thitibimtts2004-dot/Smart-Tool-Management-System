@@ -1,0 +1,109 @@
+{
+  "skill": "mece",
+  "date": "2026-06-08",
+  "framework": "9arm-2026-06-04",
+  "components": [
+    {
+      "name": "[1] YAML Header — identity + trigger",
+      "verdict": "pass",
+      "lines": "L1–L7",
+      "note": "name: mece present L2. Description includes purpose AND trigger keywords (build a plan, MECE plan, Phase 2, plan the task, map out steps, วางแผน, เขียน mece) L5. Proactive trigger L6. Fully meets pass condition."
+    },
+    {
+      "name": "[2] When to Invoke — activation conditions",
+      "verdict": "pass",
+      "lines": "L40–L43",
+      "note": "≥2 phrase variants present L41 (outline the work, break this into steps, plan this out, map out the sections, build a plan). Proactive trigger L42 (Phase 2 auto-trigger after [✓ gather]). Resume trigger L43. Meets pass condition."
+    },
+    {
+      "name": "[3] When NOT to Use — negative space / refusal",
+      "verdict": "weak",
+      "lines": "L45–L52",
+      "note": "Only 1 standalone case stated: single-file edit (L47). Read-only and resume cases are deferred to Prerequisites via pointer (L49) — not directly stated in this section. Pass requires ≥2 contextual refusals WITH stated reason AND redirect. Redirect for single-file is emit [mece-skip] reason: single-file → return to main agent (L50), which is adequate. But the deferral pattern for read-only/resume means an agent reading only this section misses 2 of 3 cases. Counts as ⚠️ weak: 1 case present, 2 outsourced via pointer without restating reason in situ."
+    },
+    {
+      "name": "[4] Operating Stance — mental model",
+      "verdict": "pass",
+      "lines": "L23–L28",
+      "note": "Named section ## Operating Stance L23. 5 distinct mindset lines: Planner not executor (L24), Irreversibility first (L25), Atomic steps only (L26), Breadth over cleverness (L27), Self-contained sections (L28). All >2 lines, all genuine mindset constraints not mechanics. Meets pass condition."
+    },
+    {
+      "name": "[5] Prerequisites — required inputs checklist",
+      "verdict": "pass",
+      "lines": "L30–L38",
+      "note": "Checklist format with 4 items L30–L38. Each item has clarifying note and explicit halt/refuse action: gather_complete.md L32 → [mece-blocked]; Skill sections[] L34 → halt if not found; Task complexity gate L36 → [mece-skip]; mece_plan_schema.md L38 → [mece-blocked]. Explicit 'refuse without these' behavior in each item. Meets pass condition."
+    },
+    {
+      "name": "[6] Workflow — ordered sequential steps",
+      "verdict": "pass",
+      "lines": "L75–L136",
+      "note": "Two named sections (Build Plan L77, Confirm & Register L128), each with labeled sub-steps [S1-A] through [S2-C]. Explicit stop conditions: [mece-fail] after retry = HALT L160, [✓ mece-valid] required before S2-A L130, BC-mece-fail-halt L117. 'Do not skip' not literal but enforced by BC. Pass condition met."
+    },
+    {
+      "name": "[7] Output Spec — Structure",
+      "verdict": "weak",
+      "lines": "L141–L154",
+      "note": "Output Contract table L141–L154 lists signals with mandatory/optional labels. Required files listed L153–L155. However this is an Output CONTRACT (emit signals), not a structural Output Spec (what sections the produced artifact contains). The mece_plan.md structure is described in Plan Format L54–L70 and delegated to mece_plan_schema.md at L105 — not assembled in a dedicated ## Structure section. Pass requires section list with mandatory/optional labels under Output Spec. The Output Contract table partially satisfies this but is organized around signals not output sections. ⚠️ weak: labels present but the artifact structure is scattered (L54–L70, L105, L141–L154) rather than consolidated."
+    },
+    {
+      "name": "[7] Output Spec — Tone",
+      "verdict": "weak",
+      "lines": "L184–L188",
+      "note": "## Tone Guide present L184. Keep/Strip rules exist L185–L186. Format rule L187. Prohibited phrases L188 — but these are behavioral prohibitions (Presenting plan before mece_plan.md written, Emitting [✓ MECE] before [✓ mece-valid]) rather than tone/style prohibited phrases. Pass requires ≥2 prohibited phrases. The 2 listed are really BC-enforcement echoes, not tone guardrails. No avoid-words, no style specific rules (e.g. 'no passive voice', 'never hedge'). ⚠️ weak: prohibited field exists but contains enforcement rules not tone prohibitions."
+    },
+    {
+      "name": "[8] Hard Rules — absolute prohibitions",
+      "verdict": "pass",
+      "lines": "L157–L168",
+      "note": "8 numbered imperative rules L158–L168. Quality heuristic present L165 ('any section with >5 steps → decompose into two named sections before sending to user'). All are imperative Never/Match/Steps=. Count ≥5, heuristic present. Meets pass condition."
+    }
+  ],
+  "structure": [
+    "[scattered] topic: 'validation gate' · locations: L114–L115 (workflow text), L117–L126 (BC block), L159–L160 (Hard Rules 2+3), L161 (Hard Rule 4) · recommend: consolidate BC at L117 + one Hard Rule pointer ('see BC-mece-fail-halt') instead of restating 3 times",
+    "[scattered] topic: 'mece-skip emit format' · locations: L36 (Prerequisites), L50 (When NOT to Use), L148 (Output Contract) · same format string repeated 3× · recommend: define once in Output Contract L148, pointer-only at L36 and L50",
+    "[over-prescribed] location: 'Plan Format' L54–L70 · the field-by-field template is exact syntax with comment annotations — useful but will silently break if schema evolves (e.g. new required field added) · recommend: keep template, add pointer to mece_plan_schema.md as canonical, mark template as example not contract"
+  ],
+  "connections": [
+    {
+      "type": "Type 1 — Text Reference",
+      "verdict": "pass",
+      "note": "Multiple skill references in On-Demand Wire table L169–L180: agent/SKILL.md, self_improve/SKILL.md, session_manager/SKILL.md, INVARIANTS.md. Successor named in Routing L191: 'return to main agent → Phase 3 REACT LOOP begins'."
+    },
+    {
+      "type": "Type 2 — Mandatory Trigger + Wait",
+      "verdict": "pass",
+      "note": "S2-A L130: 'Send plan → wait for explicit user approval before writing roadmap entries'. Appropriate: user approval gate is genuine data-integrity step (prevents Phase 3 starting on an unconfirmed plan)."
+    },
+    {
+      "type": "Type 3 — BC-Gated Delegation",
+      "verdict": "pass",
+      "note": "1 BC at L117–L126 (mece-fail Halt). Guards against entering Phase 3 without valid plan — appropriate: prevents corrupt plan propagating to irreversible Phase 3 executions. Not a judgment/quality gate."
+    },
+    {
+      "type": "Type 4 — On-Demand Wire",
+      "verdict": "pass",
+      "note": "On-Demand Wire Triggers table L169–L180. Conditions are specific and observable (≥5 files, section >8 steps, R16 fires, src/db/ touch, token >60k). Appropriate use."
+    },
+    {
+      "type": "Type 5 — Proactive Offer",
+      "verdict": "weak",
+      "note": "Routing section L191 says '[✓ MECE] emitted → return to main agent → Phase 3 REACT LOOP begins' — this is a routing directive, not a proactive offer. Framework requires 'Next: X if you need Y' pattern. No close step with conditional next-step offer. ⚠️ weak: successor named but no offer pattern."
+    },
+    {
+      "type": "Type 6 — Input Sourcing",
+      "verdict": "pass",
+      "note": "Prerequisites explicitly reference upstream: gather_complete.md dated today L31 (output of Phase 1/gather skill). SKILL sections[] L33 reference upstream skill load. Input_From field L62 in Plan Format. Clear upstream sourcing documented."
+    }
+  ],
+  "bc_check": {
+    "count": 1,
+    "overreach": []
+  },
+  "overall": "CONDITIONAL",
+  "score": "6/9",
+  "top_fixes": [
+    "FIX 1 (High — Output Spec Structure): Consolidate mece_plan.md artifact structure into a single ## Output Structure section. Currently split across Plan Format (L54–L70), S1-E (L105–L115), and Output Contract (L141–L154). Write one block: '## Output Spec — Structure\\nPrimary artifact: .sessions/mece_plan.md (mandatory)\\n- Phase 0–3 blocks present (mandatory)\\n- Section count = target Skill sections[] count (mandatory)\\n- Per section: Context · Skill · Model · Tool · Input_From · Constraints · Steps · Verify · Rollback (all mandatory)\\n- compact_checkpoint block if ≥3 sections (mandatory)\\nSignals: see Output Contract table.'",
+    "FIX 2 (Medium — When NOT to Use): Restate the read-only and resume refusals inline rather than delegating to Prerequisites. Current L49 is a pointer only. Add: '- Read-only task (no file create/edit/delete, no DB write, ≤3 steps) → emit [mece-skip] reason: read-only · return to main agent\\n- Resuming: .sessions/mece_plan.md has pending [ ] sections → skip Phases 1+2 · load plan · jump to first pending section'",
+    "FIX 3 (Low — Output Spec Tone): Replace the two enforcement-echo Prohibited phrases with actual tone guardrails. Replace L188 with: 'Prohibited: inline prose explanation after signals (use signal format only) · hedging language (\"this should\", \"probably\") · token counts in plan output · section names differing from target Skill sections[] names'"
+  ]
+}

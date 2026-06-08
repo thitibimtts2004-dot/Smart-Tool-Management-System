@@ -1,3 +1,3 @@
-task: T-072 cross-platform hooks + dynamic ROOT + PreToolUse gate
+task: T-157 token-tracking fix — DONE (persist-every-turn + consume-once reset marker · all 6 sections + close)
 phase: done
-next: git push T-072 changes
+next: (none — pick next roadmap item)

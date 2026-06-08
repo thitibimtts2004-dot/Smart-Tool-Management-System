@@ -472,13 +472,15 @@ Never present plan in chat before mece_plan.md exists on disk.
 
 **Root cause:** Footer BC says "MUST run grep … before footer" but AI appends footer using in-context remembered value from boot (0) instead of running the grep. File is updated by hook but AI never re-reads it.
 
-**Prevention:** Footer step MUST be a live file read — not recalled from memory. Bash grep must run as a tool call in the SAME response, result used directly for Loop_W value.
+**Prevention:** Footer step MUST be a live file read — not recalled from memory. Bash grep must run as a tool call in the SAME response, result used directly for Loop_W value. **(T-157) persist-every-turn:** AI MUST write SESSION_TOTAL + CHAT_TOTAL → session_tokens.md EVERY turn before the footer — not only at pause/halt/gate — so the footer never reads a stale file.
 
-**Detection signal:** `Loop_W: 0` in footer when TURN_COUNT > 1 · OR user says "Loop_W ไม่นับ" / "Loop_W stuck" · OR footer grep result differs from displayed value.
+**Reset-timing root cause (T-157):** Separate defect under the same topic — SESSION_TOTAL was reset on EVERY boot via a date-match on compact_state.md. A stale/leftover compact_state.md from a *prior, completed* task therefore wrongly triggered a mid-task reset (SESSION→0 when it should have been preserved). **Marker prevention:** reset is now gated by a consume-once `session_reset=armed` field in compact_state.md — armed only by PATH B (genuine /compact at a mece checkpoint) or task-done close, consumed exactly once at the next boot by B1 / the UserPromptSubmit hook (flips →consumed). Stale compact_state with marker absent/consumed → SESSION preserved, never re-reset.
 
-**How to apply:** Before every footer: `grep -E "^(SESSION_TOTAL|LOOP_WEIGHT):" .sessions/session_tokens.md` → use ONLY those values → never use boot-cached value. Loop_W: 0 on turn 2+ = immediate re-read signal.
+**Detection signal:** `Loop_W: 0` in footer when TURN_COUNT > 1 · OR user says "Loop_W ไม่นับ" / "Loop_W stuck" · OR footer grep result differs from displayed value · OR SESSION_TOTAL drops to 0 mid-task without a genuine /compact (reset-timing defect).
 
-topic: token-tracking · count: 1 · recurrences: [2026-06-02]
+**How to apply:** Before every footer: `grep -E "^(SESSION_TOTAL|LOOP_WEIGHT):" .sessions/session_tokens.md` → use ONLY those values → never use boot-cached value. Loop_W: 0 on turn 2+ = immediate re-read signal. Reset only when marker `session_reset=armed` is consumed — never on a bare date-match.
+
+topic: token-tracking · count: 2 · recurrences: [2026-06-02, {date: 2026-06-08, session: T-157, note: reset-timing defect — SESSION reset on every boot via date-match; stale compact_state.md wrongly reset mid-task. Fix: consume-once session_reset=armed marker (B1 + UserPromptSubmit hook) + persist-every-turn}]
 
 ## CFP-032 · R2 Tool Budget Overflow — Multi-Section Work in Single Response
 Symptom: Executed S2→S6 (5 sections) in one response with ~37 tool calls, violating R2 ≤5 tool calls/turn. LOOP_WEIGHT spiked to 84.

@@ -592,9 +592,23 @@
 - [X] T-155.4: .claude/settings.json — additive UserPromptSubmit hook -> analyze -> [learning-state]
 - [X] T-155.5: register user-coach in skill-manifest.json + skill-index.md
 
-[/] T-156: harness_editor cycle rewrite — 5-stage lifecycle (AUDIT->PLAN->EDIT->CLOSE . CFP loop-back) + Implement-map table + trim/bugfix
-  [ ] T-156.1: Workflow -> 5 cyclic stages . audit-first mandatory . CFP loop-back . fix L96 grep
-  [ ] T-156.2: Implement-map table (edit file -> Implement doc)
-  [ ] T-156.3: trim redundancy + <=180L
-  [ ] T-156.4: sync Implement/04_skills.md
-  [ ] T-156.5: skill_auditor re-audit + close
+[X] T-156: harness_editor cycle rewrite — 5-stage lifecycle (AUDIT->PLAN->EDIT->CLOSE . CFP loop-back) + Implement-map table + trim/bugfix
+  [X] T-156.1: Workflow -> 5 cyclic stages . audit-first mandatory . CFP loop-back . fix L96 grep
+  [X] T-156.2: Implement-map table (edit file -> Implement doc)
+  [X] T-156.3: trim redundancy + <=180L
+  [X] T-156.4: sync Implement/04_skills.md
+  [X] T-156.5: skill_auditor re-audit + close
+
+## T-157 · token-tracking fix — persist-every-turn + consume-once reset marker
+> Constraint: B1 boot block is load-bearing (3 copies must match) · no src/ touched · harness_editor
+- [X] T-157.1: AGENTS.md B1 bash — reset SESSION_TOTAL via marker armed→consumed (not date-match) [Cycle1·serial·HIGH]
+- [X] T-157.2: Implement/03_config.md §R1 + B1 mirror — sync to S2 canonical + persist-every-turn [Cycle1·serial]
+- [X] T-157.3: .claude/settings.json token-state hook — marker logic consistent with B1 [Cycle1·serial·HIGH]
+- [X] T-157.4: CLAUDE.md §R1 — reset 2-condition rule + persist-every-turn [Cycle2·parallel]
+- [X] T-157.5: mece_plan_schema.md PATH A/B/C — reset annotations + PATH B writes session_reset=armed [Cycle2·parallel]
+- [X] T-157.6: CFP-031 update + harness_flow Y-entry + roadmap [X] + close [Cycle3·serial]
+
+## T-158 · mece skill fixes — 3 weak components (9arm audit CONDITIONAL 6/9)
+- [ ] T-158.1: mece/SKILL.md — consolidate Output Spec Structure (merge L54-70+L105-115+L141-154 into one block + pointer to schema) [Cycle1·serial·HIGH]
+- [ ] T-158.2: mece/SKILL.md — When NOT to Use: 3 refusals inline (single-file/read-only/resume + reason) [Cycle1·serial]
+- [ ] T-158.3: mece/SKILL.md — fix Tone Guide Prohibited (tone prohibitions, not enforcement echoes) [Cycle1·serial]

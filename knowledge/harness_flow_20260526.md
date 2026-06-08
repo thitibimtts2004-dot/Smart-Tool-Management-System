@@ -1116,3 +1116,10 @@ Root cause X15-X16: Agent was computing ~Tok as `chars ÷ 1000` (overcounting 3�
 - `.agents/skills/skill-manifest.json` — user-coach entry added (bucket stable, Phase3+manual)
 - `.agents/tools/tool-manifest.json` — learning_profile entry added
 - Verify: profile JSON valid - analyze clean - SKILL.md 7 sections/78L - settings valid + hook fires - manifest valid
+
+## Y-2026-06-08 · T-156 harness_editor rewrite
+- SKILL.md: Workflow -> 5-stage cycle (AUDIT/PLAN/EDIT/CLOSE/CFP) · Implement Map added · Parallel-cycle scan added · L96 grep-bug fixed · dedup close block
+- Implement/04_skills.md synced (5-stage + Implement Map · Step5->Stage4)
+- audit PASS: 8/8 components · 5 stages · 230L yellow · hygiene clean
+
+## Y90 · T-157 · token-tracking fix — persist-every-turn + consume-once reset marker · SESSION_TOTAL/CHAT_TOTAL written EVERY turn before footer (closes CFP-031 persist gap) · reset now gated by session_reset=armed in compact_state.md (B1 + UserPromptSubmit hook consume ONCE, armed→consumed) replacing buggy date-match that let stale compact_state.md reset mid-task · touched: AGENTS.md B1 · Implement/03_config.md (B1 mirror x2 + R1) · .claude/settings.json hook · CLAUDE.md R1 · mece_plan_schema PATH A/B/C · CFP-031 🟢

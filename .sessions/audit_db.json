@@ -1,0 +1,59 @@
+{
+  "skill": "doc_builder",
+  "task": "T-142",
+  "audit_date": "2026-06-05",
+  "total_lines": 122,
+  "gaps": [
+    {
+      "component": "YAML front-matter triggers: array",
+      "status": "below_min",
+      "insert_after_line": 1,
+      "severity": "medium",
+      "accept_criteria": "grep -c 'triggers:' .agents/skills/doc_builder/SKILL.md → 1 (YAML key present with array of ≥5 quoted phrases)"
+    },
+    {
+      "component": "## When to Invoke",
+      "status": "below_min",
+      "insert_after_line": 31,
+      "severity": "low",
+      "accept_criteria": "grep -c '^## When to Invoke' .agents/skills/doc_builder/SKILL.md → 1 (section present; current '## Trigger' section is functionally equivalent but does not match 9arm canonical name)"
+    },
+    {
+      "component": "## Operating Stance",
+      "status": "below_min",
+      "insert_after_line": 56,
+      "severity": "low",
+      "accept_criteria": "grep -c '^## Operating Stance' .agents/skills/doc_builder/SKILL.md → 1 AND grep -c '^- ' section ≥ 4 (present with 4 bullets — passes minimum)"
+    },
+    {
+      "component": "## Workflow with stop conditions",
+      "status": "below_min",
+      "insert_after_line": 99,
+      "severity": "high",
+      "accept_criteria": "grep -c '^## Workflow' .agents/skills/doc_builder/SKILL.md → 1 AND section contains at least one explicit stop/halt condition (current §1–§6 workflow is spread across multiple ad-hoc sections without a unified ## Workflow header or explicit stop conditions)"
+    },
+    {
+      "component": "## Output Contract",
+      "status": "missing",
+      "insert_after_line": 114,
+      "severity": "high",
+      "accept_criteria": "grep -c '^## Output Contract' .agents/skills/doc_builder/SKILL.md → 1"
+    },
+    {
+      "component": "## Tone Guide",
+      "status": "missing",
+      "insert_after_line": 104,
+      "severity": "medium",
+      "accept_criteria": "grep -c '^## Tone Guide' .agents/skills/doc_builder/SKILL.md → 1 (separate from existing '## Output Tone' section — both must coexist)"
+    }
+  ],
+  "present": [
+    "YAML front-matter (name + description present; triggers phrases embedded in description prose — not a formal triggers: array)",
+    "## When NOT to Use (4 bullets — passes minimum)",
+    "## Operating Stance (4 bullets — passes minimum)",
+    "## Prerequisites (3 items with Why/Missing — passes minimum)",
+    "## Hard Rules (8 rules — passes minimum of ≥5)",
+    "## Output Tone (present but is NOT the required '## Tone Guide' section)"
+  ],
+  "zone": "🔴"
+}

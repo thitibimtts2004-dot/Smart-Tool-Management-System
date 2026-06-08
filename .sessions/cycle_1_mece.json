@@ -1,0 +1,10 @@
+{
+  "task": "T-133",
+  "file": ".agents/skills/mece/SKILL.md",
+  "status": "done",
+  "edits": 4,
+  "final_lines": 191,
+  "zone": "🟢",
+  "nine_arm_score": "Refusal+Workflow+OutputContract+HardRules+OnDemand+Routing present (6/6)",
+  "verified": true
+}

@@ -1,1 +1,0 @@
-CHAT_TOTAL: 0

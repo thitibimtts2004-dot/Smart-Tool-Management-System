@@ -1,0 +1,45 @@
+{
+  "skill": "ascii_flow",
+  "task": "T-141",
+  "audit_date": "2026-06-05",
+  "total_lines": 115,
+  "gaps": [
+    {
+      "component": "YAML front-matter triggers: array",
+      "status": "below_min",
+      "insert_after_line": 6,
+      "severity": "high",
+      "accept_criteria": "grep -c 'triggers:' .agents/skills/ascii_flow/SKILL.md → 1; triggers array must have ≥5 distinct phrases as a YAML list"
+    },
+    {
+      "component": "## When to Invoke",
+      "status": "missing",
+      "insert_after_line": 7,
+      "severity": "medium",
+      "accept_criteria": "grep -c '^## When to Invoke' .agents/skills/ascii_flow/SKILL.md → 1"
+    },
+    {
+      "component": "## When NOT to Use",
+      "status": "missing",
+      "insert_after_line": 25,
+      "severity": "high",
+      "accept_criteria": "grep -c '^## When NOT to Use' .agents/skills/ascii_flow/SKILL.md → 1; section must have ≥4 bullets"
+    },
+    {
+      "component": "## Tone Guide",
+      "status": "missing",
+      "insert_after_line": 114,
+      "severity": "low",
+      "accept_criteria": "grep -c '^## Tone Guide' .agents/skills/ascii_flow/SKILL.md → 1 (separate from existing '## Output Tone' section — both must coexist)"
+    }
+  ],
+  "present": [
+    "## Operating Stance (4 bullets present)",
+    "## Prerequisites (3 items with Why/Missing sub-items)",
+    "## Workflow (with stop conditions)",
+    "## Output Contract",
+    "## Hard Rules (8 rules, ≥5 met)",
+    "## Output Tone (present but is NOT a replacement for ## Tone Guide)"
+  ],
+  "zone": "🔴"
+}

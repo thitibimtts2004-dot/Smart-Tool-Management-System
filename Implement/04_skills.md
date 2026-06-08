@@ -1635,28 +1635,24 @@ Signals that trigger harness_editor: "edit CLAUDE.md / AGENTS.md / SKILL.md / kn
 `[harness-skip]` — no harness file being modified → delegate to coder/editor
 `[harness-refused]` — mece_plan.md missing or not dated today · no T-ID in roadmap · target >250L with no split plan
 
-## Workflow (ordered steps)
-Step 1 · Scope Probe: wc -l → File Size Contract zone check · grep line numbers before every Edit
-Step 2 · MECE Plan Gate: mece_plan.md dated today + T-N roadmap [/] — CANNOT skip
-Step 3 · Edit per Behavioral Contracts: [pre-edit] → targeted Edit → [✓ written] → grep -c 5 contract elements ≥5
-Step 4 · Index Sync:
-  - New skill → skill-manifest.json + registry.md
-  - New file in knowledge/ or Implement/ → file_manager skill
-  - Any file added/modified in index_files.json scope:
-    ① Assign `topics[]` from `knowledge/topic_registry.json` (closed vocabulary — no free-text)
-    ② Run `python3 scripts/backlink_analyzer.py` → refreshes `related[]` 3-tier links
-Step 5 · Docs Close (mandatory — same task, no deferral):
-```
-[A] knowledge/harness_flow_20260526.md:
-    grep -n target section → targeted edit · [✓ written]
-[B] Affected docs — check all that apply:
-    REPO_MAP.md            ← new file / dir / skill created or removed → MANDATORY entry
-    Implement/04_skills.md ← skill added or contract changed
-    Implement/08_checklist.md ← workflow changed
-[C] Roadmap: [/] T-<N> → [X]
-[D] Write active_thread.md: phase: done
-```
-⚡ Refusal gate: do NOT emit [harness-edit-done] until flow_updated=yes (Step 5A complete)
+## Workflow — 5-stage cycle (AUDIT → PLAN → EDIT → CLOSE · CFP loops back on abnormal)
+Stages 1→4 run forward. Abnormal at any stage → Stage 5 CFP → loop back to the failed stage with a DIFFERENT approach (never retry the same way twice).
+Stage 1 · AUDIT (mandatory-first for structural SKILL.md edits): wc -l zone probe · structural SKILL.md edit → spawn skill_auditor (MANDATORY) · minor / non-SKILL.md edit → emit `[audit-skip]` + reason
+Stage 2 · PLAN (gate — cannot skip): mece_plan.md dated today + T-N roadmap [/] · Parallel-cycle scan — group sections with NO shared file-write AND no mutual dependency into ONE parallel Cycle (spawn agents + barrier to rejoin); shared file OR dependency → serial; >=5 files/>=300L → spawn agents (R4), <5 files → main-context serial · record grouping in `### Cycle grouping`
+Stage 3 · EDIT: [pre-edit] → targeted Edit → [✓ written] · SKILL.md edit → confirm 8 components survive · grep the file's ACTUAL section headers (never assume fixed names like "## Trigger")
+Stage 4 · CLOSE (Index Sync + Docs Close): index sync (skill-manifest if new skill · topics[] from topic_registry.json · backlink_analyzer.py) · then Docs Close — edit a harness file → update its paired Implement/REPO doc in the SAME task per §Implement Map below · roadmap [/]→[X] · active_thread phase:done
+Stage 5 · CFP (abnormal → loop back · do NOT retry blindly): emit [escalate] → self_improve → harness_doctor · log CFP · re-enter the failed stage with a DIFFERENT approach · 3rd consecutive fail → [blocked] + halt for user
+
+### Implement Map (Stage 4 — closed list · no guessing · the "edit harness file → update its paired Implement doc" rule)
+- CLAUDE.md (R-rules · gates)          -> Implement/03_config.md
+- AGENTS.md (boot · routing · phases)  -> Implement/04_skills.md + Implement/06_orchestrator.md
+- .agents/skills/*/SKILL.md            -> Implement/04_skills.md
+- hook (.claude/settings.json)         -> Implement/02_setup.md (+ 03_config.md if token/loop logic)
+- scripts/*.py                         -> Implement/05_scripts.md
+- workflow / checklist change          -> Implement/08_checklist.md
+- new file / dir / skill               -> REPO_MAP.md (mandatory entry)
+
+⚡ Refusal gate: do NOT emit [harness-edit-done] until flow_updated=yes AND impl_updated=yes (Stage 4 complete — paired Implement doc synced per the map above)
 
 ## Output Contract
 `[harness-edit-done] files: <N> · lines_changed: <total> · flow_updated: <yes|no> · impl_updated: <yes|no>`
@@ -1679,7 +1675,7 @@ New skill created → S4 (manifest+registry) must complete before returning
 - mece_plan.md dated today + T-N roadmap [/] REQUIRED before any file edit
 - [pre-edit] emit before every Edit · [✓ written] grep verify after every change
 - File Size Contract: ≤200L 🟢 · 201-250L 🟡 (SKILL_detail.md required) · >250L 🔴 HALT+split
-- harness_flow_20260526.md + affected Implement/ MUST be updated in same task (Step 5)
+- harness_flow_20260526.md + affected Implement/ MUST be updated in same task (Stage 4 · per §Implement Map — every harness file has a paired Implement/REPO doc)
 - [harness-edit-done] emit required before returning to orchestrator
 \```
 

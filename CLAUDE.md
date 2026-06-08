@@ -46,9 +46,9 @@ Enforce: skip any step = [violation] BC-phase3-close → complete missing steps 
 ```
 
 ## R1 · Token Tracking
-Two counters: `SESSION_TOTAL` (per-task, resets at B1) · `CHAT_TOTAL` (context window, resets only on /compact)
+Two counters: `SESSION_TOTAL` (per-task) · `CHAT_TOTAL` (context window). **Reset SESSION_TOTAL to 0 ONLY on: (1) user-confirmed /compact at an explicit mece compact-checkpoint — PATH B arms `session_reset=armed` in compact_state.md, consumed once at next boot, OR (2) task done + session close (PATH A/C). NEVER reset on stale/leftover compact_state.md or mid-task fresh boot** (CFP-031). CHAT_TOTAL resets on /compact only.
 → Full formulas + JSONL + spike alerts: **Implement/03_config.md §Token Tracking**
-Each turn: (1) compute (2) SESSION_TOTAL += (3) CHAT_TOTAL += (4) write JSONL (5) check R3 (6) check spike (7) footer
+Each turn: (1) compute (2) SESSION_TOTAL += (3) CHAT_TOTAL += (4) **persist SESSION_TOTAL + CHAT_TOTAL → session_tokens.md EVERY turn, before footer** (persist-every-turn — closes CFP-031) (5) write JSONL (6) check R3 (7) check spike (8) footer
 
 Footer: → use [token-state] hook values DIRECTLY · absent → grep session_tokens.md · NEVER estimated · write SESSION_TOTAL BEFORE footer · skip write = CFP-028 · format: `*(Turn: N · Loop_W: N | Session: ~NNNk | Chat: ~NNNk tokens)*` · Loop_W stale = CFP-031 · display 4-bucket when SESSION_TOTAL > 5k: `[sys:Nk tools:Nk hist:Nk out:Nk]`
 → after footer: if cache_hit_pct < 60% AND cache_read_tokens > 0: emit `[cache-warn] hit%: NN% (target ≥60%) · recommend /compact before next task` · skip = R1 violation
