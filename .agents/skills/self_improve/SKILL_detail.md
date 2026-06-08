@@ -96,6 +96,18 @@ Verify row written: grep "Q<N>" knowledge/harness_flow_20260525.md → found
 ```
 
 **Step 6 — Write self_improve_log.md audit entry (NS2):**
+
+**Behavior Contract — Audit Log Write (fires at Step 6 — after every §4 execution):**
+```
+Pre:    §4 Steps 1-4 complete · [✓ harness-updated] emitted
+Contract: MUST write SI-N entry to .sessions/self_improve_log.md before ending §4
+          create file if missing: printf "# Self-Improve Audit Log\n\n" > .sessions/self_improve_log.md
+          append SI-N block with all 4 required fields: CFP / File / Change / Trigger
+          verify: grep "^## SI-<N>" .sessions/self_improve_log.md → found
+          missing → emit [log-write-failed] · retry once · HALT if still failing
+Post:   SI-N entry verified in log · session_handoff.md last_self_improve_session updated
+Enforce: §4 ends without SI-N in log = [violation] BC-audit-log → write log entry · re-verify
+```
 ```
 Bash: ls .sessions/self_improve_log.md 2>/dev/null || printf "# Self-Improve Audit Log\n\n" > .sessions/self_improve_log.md
 Append:
@@ -111,6 +123,17 @@ Update session_handoff.md: last_self_improve_session: <current session_id>
 ```
 
 **Step 0.6 — Backup/restore detail:**
+
+**Behavior Contract — Pre-Edit Backup (HOOK: fires before every Edit in §4):**
+```
+Pre:    target file path known · about to call Edit tool
+Contract: MUST run backup BEFORE first Edit call this task:
+          bash: cp <target_file> <target_file>.bak_$(date +%Y%m%d_%H%M)
+          verify backup exists: ls <target_file>.bak_* → found → proceed
+          backup missing → emit [backup-failed] · HALT · do not edit
+Post:   backup file exists on disk · proceed to Edit · cleanup on success
+Enforce: Edit without backup this task = [violation] BC-pre-edit-backup → create backup · re-edit
+```
 ```
 Before editing: cp <target_file> <target_file>.bak_$(date +%Y%m%d_%H%M)
 On verify failure (Step 2): git checkout -- <target_file>  (or restore from .bak)
@@ -150,4 +173,13 @@ Step 2.5: Validate "Detection signal:" field — must contain ≥1 keyword from:
 Step 3: Verify: grep -c "^## CFP-" CODING_FAILURE_PATTERNS.md → N+1
 ```
 
+**Behavior Contract — Hard Rules Enforcement (fires after every CFP log operation):**
+```
+Pre:    CFP entry just written to CODING_FAILURE_PATTERNS.md
+Contract: verify count: grep -c "^## CFP-" CODING_FAILURE_PATTERNS.md → must = N+1
+          duplicate number check: grep "^## CFP-<N>" → must appear exactly ONCE
+          FAIL count or duplicate → emit [cfp-log-violation] · halt · fix before continuing
+Post:   CFP-N appears exactly once · total count = N+1 verified
+Enforce: CFP written without post-count verify = [violation] BC-hard-rules → verify immediately · self-improve backfill
+```
 Hard rules: never skip · never re-use CFP number · same pattern recurs → new CFP with `(recurrence of CFP-N)` · non-blocking.

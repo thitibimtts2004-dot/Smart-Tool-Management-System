@@ -40,10 +40,11 @@ Phase 0 total: TH ___ch · EN ___ch → ~___tok
 - [ ] M2/M3/M4/M5 checkboxes
 → TOKEN CHECK (runtime · NOT at plan creation) → ___k  (>60k → TOKEN PAUSE)
 → LOOP_WEIGHT CHECK (Behavior Contract):
-   Pre:      grep "^LOOP_WEIGHT:" .sessions/session_tokens.md
-   Contract: >30 → MUST emit [compact-warn] (Skill · Remaining · Resume) BEFORE continuing
-             >50 → MUST emit [compact-required] → write compact_state.md → STOP
-   Post:     [compact-warn] missing any field = invalid · re-emit complete
+   Pre:      read [token-state] hook → LOOP_W · CHAT_TOTAL · SESSION_TOTAL
+   Contract: CHAT_TOTAL >80k → MUST emit [compact-rec] strong (Recommend/Why/MUST-vs-SHOULD=SHOULD/Resume brief/Your call) — PRIMARY · recommendation + choice, NOT a STOP
+             LOOP_WEIGHT >50 → MUST emit [compact-rec] light hint BEFORE continuing (secondary · optional · no STOP)
+             hard STOP only at SESSION_TOTAL >90k OR CHAT_TOTAL >120k → [compact-STOP] → write compact_state.md → STOP
+   Post:     [compact-rec] strong missing any of the 5 fields = invalid · re-emit complete
    Enforce:  C0.5 gate fires every turn (AGENTS.md Per-Turn Routing)
 
 ---

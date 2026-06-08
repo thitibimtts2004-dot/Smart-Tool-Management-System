@@ -69,12 +69,11 @@ Step 4c: Configure Claude Code settings (.claude/settings.json)
 
 Step 5: Initialize session state
   Run: python3 scripts/bootstrap_sessions.py
-  → Creates all 8 .sessions/ files from docs/session_templates/ (skips existing)
+  → Creates all 7 .sessions/ files from docs/session_templates/ (skips existing)
   → Templates define correct schema for each file (see docs/session_templates/)
   Manual fallback if script unavailable:
     .sessions/active_thread.md   → task: init\nphase: done\nnext: none
     .sessions/session_tokens.md  → SESSION_TOTAL: 0\nCHAT_TOTAL: 0\nCACHE_READ: 0\nCACHE_WRITE: 0\nTURN_COUNT: 0\nLOOP_WEIGHT: 0
-    .sessions/chat_tokens.md     → CHAT_TOTAL: 0
     .sessions/self_improve_log.md → # Self-Improve Log
   See docs/session_templates/ for schema of: mece_plan · gather_complete · session_handoff · compact_state
 

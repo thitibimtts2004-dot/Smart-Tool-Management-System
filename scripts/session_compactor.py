@@ -23,15 +23,14 @@ SESSIONS_DIR = Path(".sessions")
 # Required files and their minimum required fields/patterns
 REQUIRED_FILES = {
     "active_thread.md": ["task:", "phase:", "next:"],
+    # CHAT_TOTAL lives here — chat_tokens.md removed (was a duplicate of this field · BUG-2)
     "session_tokens.md": ["SESSION_TOTAL:", "CHAT_TOTAL:", "CACHE_READ:", "CACHE_WRITE:"],
-    "chat_tokens.md": ["CHAT_TOTAL:"],
 }
 
 # Files that must exist (but content not strictly validated)
 MUST_EXIST = [
     "active_thread.md",
     "session_tokens.md",
-    "chat_tokens.md",
     "mece_plan.md",
     "gather_complete.md",
     "session_handoff.md",

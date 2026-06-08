@@ -1,9 +1,35 @@
+---
+name: Self-Improvement
+description: Session-close skill — tallies new CFPs, identifies root cause, proposes one minimal harness fix per session.
+triggers: ["review CFP", "improve harness", "ดู pattern", "พัฒนา harness", "ปัญหาซ้ำ", "self improve"]
+activates_at: [session_close_auto, manual]
+---
 # Self-Improvement Skill
 
 ## Trigger
 - **Automatic:** session_manager §3 Step 0 calls this at every session close
 - **Manual:** user says "review CFP" / "improve harness" / "ดู pattern" / "พัฒนา harness" / "ปัญหาซ้ำ"
 - **Condition:** full analysis only if ≥1 new CFP logged this session OR user explicitly requests
+
+## When NOT to Use
+- CFP has no prior recurrence history — use `self_improve §1–2` to log first occurrence, not doctor flow
+- Same CFP fixed or logged <24h ago — cooldown applies; log recurrence only, do not re-propose fix
+- User is asking about session state, tokens, or routing — delegate to `token_tracker` or `session_manager`
+- Requesting harness file edits (SKILL.md / CLAUDE.md / AGENTS.md) — delegate to `harness_editor`; self_improve does not self-edit harness files
+
+## Operating Stance
+- **Pattern observer first, fixer second.** §1–§2 goal: understand why pattern recurs. Proposal before root cause confirmed = scope creep.
+- **One change per session, always.** Minimal means: removing one word breaks the prevention. Two ideas in one proposal → split.
+- **Cooldown is not laziness.** §4 cooldown gate exists because harness changes need sessions to validate. Skipping cooldown = proposing before previous fix was tested.
+- **self_improve cannot fix itself.** Circular dependency (V20) is a hard stop, not a judgment call.
+
+## Prerequisites
+- `CODING_FAILURE_PATTERNS.md` readable
+  Why: CFP tally impossible without it · Missing: emit `[cfp-skip] reason:patterns-unreadable`
+- `session_handoff.md` loaded (current session context)
+  Why: need prior session summary for root-cause reasoning · Missing: proceed with current session transcript only
+- `cfp_boot_count` in working memory (from B1)
+  Why: delta calculation (new CFPs = current_count − boot_count) requires baseline · Missing: grep `CODING_FAILURE_PATTERNS.md` for `^## CFP-` count now
 
 ## Refusal Contract
 Halt and emit:
@@ -37,6 +63,7 @@ Step 3: new_cfps = 0 AND not requested → emit [cfp-skip] · STOP
          new_cfps ≥ 1 OR user asked → emit [cfp-tally] New: <N> · Total: <current_count> → §2
 ```
 Archive gate: fires when current_count > 20 → see `@.agents/skills/self_improve/SKILL_detail.md §Archive`
+Decay update: after tally → run `python3 scripts/cfp_decay.py --update` to refresh last_seen + window_count + stale fields
 
 ---
 
@@ -44,10 +71,13 @@ Archive gate: fires when current_count > 20 → see `@.agents/skills/self_improv
 
 ```
 Step 1: grep "^## CFP-" CODING_FAILURE_PATTERNS.md → extract titles
-Step 2: grep -cE "recurrence of CFP-[0-9]+" per CFP-N → frequency table
+Step 2: count recurrences per CFP-N using window_count (90-day) from index_cfp_fix.json — NOT lifetime count
+         stale=true entries (last_seen >90d or null): deprioritize in ranking — still match but moved to P3 tier
+         if index_cfp_fix.json not yet migrated (no window_count field): fallback to count field + emit [decay-missing]
 Step 3: Priority queue:
          P1 — current session (CFP-N where N > cfp_boot_count) → always first · multiple: lowest N
-         P2 — historical (N ≤ cfp_boot_count) by recurrence count · only if P1 empty
+         P2 — historical (N ≤ cfp_boot_count) by window_count · only if P1 empty
+         P3 — stale=true entries (last seen >90d): report only if P1+P2 empty
          Emit [cfp-analysis] showing BOTH layers
 Step 4: [pre-read] top pattern: grep -n "^## CFP-<N>" → Read offset=L limit=30
 Step 5: Emit [cfp-analysis] · New this session · Top pattern · Root cause · Other patterns
@@ -70,6 +100,17 @@ Step 4: WAIT for explicit confirm before §4
          silence → write pending_proposal to session_handoff.md → [cfp-pending]
          On defer: write cfp_deferred: { "CFP-<N>": <count+1> } to session_handoff.md
 ```
+
+**Behavior Contract — Approval Gate (fires at Step 4 — before ANY §4 execution):**
+```
+Pre:    proposal presented to user (Step 3 complete) · awaiting reply
+Contract: MUST wait for explicit user confirm — no auto-proceed on silence or ambiguity
+          "ทำเลย"/"proceed"/"yes"/"ได้เลย" → emit [cfp-approved] CFP-N → proceed §4
+          "skip"/"ไว้ก่อน"/"no" → emit [cfp-deferred] CFP-N · write session_handoff.md · end
+          silence / no reply → write pending_proposal to session_handoff.md · emit [cfp-pending] · end
+Post:   ONE of [cfp-approved] / [cfp-deferred] / [cfp-pending] emitted — never silent §4 entry
+Enforce: §4 execution without [cfp-approved] this turn = [violation] BC-approval-gate → halt · re-present proposal
+```
 Escalation rule (deferred ≥3) + dry-run examples → `SKILL_detail.md §S3`
 
 ---
@@ -80,6 +121,17 @@ Escalation rule (deferred ≥3) + dry-run examples → `SKILL_detail.md §S3`
 Step 0: cooldown gate — last_self_improve_session ≤ 2 sessions ago AND not explicit request
          → [cfp-cooldown] Skip · end skill
          Exception: recurrence ≥ 5 OR user typed "improve harness" → bypass
+
+**Behavior Contract — Cooldown Gate (fires at §4 Step 0 — before any file edit):**
+```
+Pre:    grep last_self_improve_session from .sessions/session_handoff.md
+Contract: last session ≤ 2 ago AND no explicit "improve harness" request
+          → emit [cfp-cooldown] Skip · END §4 immediately (no edits)
+          recurrence ≥ 5 OR explicit request → emit [cfp-cooldown-bypass] · proceed
+          first time (no session record) → proceed normally
+Post:   [cfp-cooldown] or [cfp-cooldown-bypass] emitted · OR no prior session (proceed)
+Enforce: §4 file edit without cooldown check this turn = [violation] BC-cooldown → undo edit · re-check
+```
 Step 0.5: INVARIANTS.md conflict check — grep key terms · conflict → [blocked-invariant]
 Step 0.6: backup target file: cp <file> <file>.bak_$(date +%Y%m%d_%H%M)
 Step 1: apply change · R5 pre-edit gate before every Edit
@@ -102,6 +154,12 @@ Step 5 (patch table) + Step 6 (SI audit log) → `SKILL_detail.md §S4`
 At Boot B1, capture: `cfp_boot_count=$(grep -c "^## CFP-" CODING_FAILURE_PATTERNS.md 2>/dev/null || echo 0)`
 Store in working memory — used in §1 Step 2 comparison.
 
+## Tone Guide
+Keep:   CFP-N IDs · [self-improve] signal · [cfp-tally] count · [cfp-skip] when none
+Strip:  internal reasoning about whether to log · token counts · session IDs · deliberation prose
+Format: `[signal] CFP-N: symptom → fix` (one line per entry)
+Prohibited: "I'll now log this..." · "As an improvement..." · prose CFP rationale in user-facing reply
+
 ## Output Contract
 
 | Section | Required emit |
@@ -121,15 +179,24 @@ After user rejects proposal: log `[cfp-deferred CFP-N]` → return to session_ma
 After §3 proposal deferred ≥ 3 times for same CFP-N → escalate to `harness_doctor` (structural fix needed — do not loop self_improve again)
 Never stay active after returning — session_manager owns the close sequence.
 
-## Invariants
+## Hard Rules
 
 - Never propose changes that contradict INVARIANTS.md
 - Never delete existing CFP entries — only add
 - Proposals must be minimal and specific — one rule change per session
 - If user rejects: log `[cfp-deferred CFP-N]` in session_handoff.md for next session
+- Deferred ≥3 on same CFP-N = structural problem → escalate to harness_doctor (do not loop §3 again)
 
 ## Context Gate
 If during this task a new hard constraint was discovered → add to INVARIANTS.md §I2 before closing task
+
+## CFP Recurrence Thresholds (window_count — 90-day sliding window)
+| window_count | Signal | Action |
+|---|---|---|
+| < 3 | `[recurrence-logged]` | log only |
+| ≥ 3 | `[fix-required]` | propose fix next session |
+| ≥ 5 | `[fix-escalated]` | invoke harness_doctor immediately |
+Note: thresholds use window_count from index_cfp_fix.json, NOT lifetime count field.
 
 ## MECE Constraints Block (copy into mece_plan.md for sections using `self_improve`)
 - self_improve runs ONCE per session close (§1 tally → §2 pattern → §3 propose → §4 execute)

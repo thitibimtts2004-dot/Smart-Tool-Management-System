@@ -1,6 +1,9 @@
 ---
 name: mece
-description: Loop Phase 2 — builds a section-based plan that maps 1:1 to target Skill sections[]. Runs once per task. Skipped on resume if plan exists.
+description: >
+  Loop Phase 2 — builds a section-based plan that maps 1:1 to target Skill sections[]. Runs once per task. Skipped on resume if plan exists.
+  Trigger on: "build a plan", "MECE plan", "Phase 2", "plan the task", "map out steps", "วางแผน", "เขียน mece".
+  Proactively: after [✓ gather] emitted on any task with >3 steps or a side effect.
 ---
 
 ## Sections
@@ -17,32 +20,53 @@ description: Loop Phase 2 — builds a section-based plan that maps 1:1 to targe
 
 # MECE Planner
 
-## Trigger
-- **Phase 2:** after Info Gather completes — tasks with >3 steps OR any side effect
-- **Side effects:** file create/edit/delete · DB write · index update · symbol rename
+## Operating Stance
+- Planner, not executor. mece maps intent to sections — it does not run those sections. Execution is Phase 3's job.
+- Irreversibility first. Sections with delete/overwrite/DB write get flagged in S1-A.5 before steps are written — not after.
+- Atomic steps only. Each step = one observable action. "Build and verify" = two steps, not one.
+- Breadth over cleverness. A flat, readable plan beats a compressed elegant one. Reviewers confirm it — they should not need to decode it.
+- Self-contained sections (the goal). Each section must be runnable by a low-tier agent with NO chat history as accurately as a high-tier one — that is exactly what Context + Model + Input_From + Verify-N together buy. If a section needs information not on its own block, the block is incomplete.
 
-## Refusal Contract
-Emit `[mece-skip]` and skip to Phase 3 when:
-- Read-only task: grep / search / explain / lookup — no side effects
-- Single-file edit, backlinks = 0, no ERR documentation needed
-- Resuming with existing valid plan → load plan → jump to pending section (skip Phase 1+2)
+## Prerequisites
+- [ ] `gather_complete.md` dated today — stale = Phase 1 not run
+      → Missing: emit `[mece-blocked] Missing: gather_complete.md` · halt
+- [ ] Target Skill `sections[]` loaded into context — mece maps 1:1 to these
+      → Missing: re-read target SKILL.md sections block · halt if not found
+- [ ] Task has >3 steps OR has a side effect (file create/edit/delete · DB write · index update)
+      → Neither: emit `[mece-skip] reason: read-only` · return to main agent
+- [ ] `docs/session_templates/mece_plan_schema.md` accessible (required at S1-E)
+      → Missing: emit `[mece-blocked] Missing: mece_plan_schema.md` · halt
 
-On refusal: emit `[mece-skip] reason: <read-only | single-file | resuming>` → return to main agent.
+## When to Invoke
+**Phrase variants:** "outline the work" / "break this into steps" / "plan this out" / "map out the sections" / "build a plan"
+- **Phase 2 auto-trigger:** after `[✓ gather]` emitted on any task with >3 steps OR side effect → see Prerequisites for full condition check
+- **Resume trigger** — when `.sessions/mece_plan.md` has pending `[ ]` sections from a prior session → load plan and resume from first pending section without re-running Phase 1+2
+
+## When NOT to Use
+Additional skip condition (not in Prerequisites):
+- Single-file edit, backlinks = 0, no ERR documentation needed → emit `[mece-skip] reason: single-file`
+
+Read-only and resume cases → see Prerequisites items 3 and 4 for halt/skip behavior.
+Emit format: `[mece-skip] reason: <read-only | single-file | resuming>` → return to main agent.
+→ if plan has 0 parallel sections: emit `[mece-sequential] No Cycle grouping needed — all sections are sequential`
+→ if plan has ≥2 independent sections: emit `[mece-cycle-required] Use Cycle block syntax (see S1-A.5 template)`
 
 ## Plan Format (key fields — 1:1 with target Skill sections[])
 
 ```
-Section N — <name from Skill sections[N]>:
+Section N — <name from Skill sections[N]>:   [Cycle <N> · serial|parallel]
+  Context:        <1 line: goal + why · cold-readable by a spawned agent with NO chat history>
   Skill:          <editor|coder|file_manager|variable_manager|agent|ascii_flow|harness_doctor>
+  Model:          <model_low | model_high>   (low: lookup/read/grep · high: reasoning/multi-file/edit)
   Tool:           <Bash|Read|Edit|Write>
+  Input_From:     <none | cycle_<N>_S<M>.json>   (prior-batch output this section pulls in · none = independent)
   Constraints:    (≤5 lines from skill's MECE Constraints Block — see S1-D)
-  Steps:          [A] → [B] → [C]  (≤5 per section)
-  Verify:         <grep/compile/read-back command>  (≤2 per section · ≤60 chars each)
+  Steps:          [A] → [B] → [C]  (≤5 per section · 1 atomic action each)
+  Verify:         <grep/compile/read-back command>  (≤2 · ≤60 chars each)  ← DoD / done-test
   Rollback:       <undo if this section fails>  (≤15 words)
-  Expected_Traces: <emit signals the skill must produce — from skill Output Contract>
-  Refusal_Path:   <if skill emits [skill-refused] → action: halt|skip|retry>
-  Data_Sent:      Thai ___ch | ENG: ___ch  ← fill AFTER section completes
-  Token:          ___k                     ← fill AFTER section completes
+  Expected_Traces: <emit signals from skill Output Contract>
+  Refusal_Path:   <[skill-refused] → halt|skip|retry>
+  Data_Sent / Token: <optional · fill only when session >40k tokens>
 ```
 
 Rules: match section count exactly · steps = 1 atomic action · total plan ≤120 lines
@@ -59,25 +83,54 @@ Rules: match section count exactly · steps = 1 atomic action · total plan ≤1
            □ Irreversible: [gate]/delete/DB write → flag + scope note
            □ Risk surface: highest blast-radius section
            → informs Cycle grouping + Verify-N criteria
-[S1-B]   Map MECE steps to each section
+
+**Cycle block syntax template (copy when plan has parallel sections):**
+```
+### Cycle 1 — parallel · agents: <N> · cap: <N>  (<N> independent sections · no shared files)
+- Section: <name> · Model: <low|high> · Output: cycle_1_<label>.json · T-<N>
+- Section: <name> · Model: <low|high> · Output: cycle_1_<label>.json · T-<N>
+**Barrier:** all cycle_1_*.json status:done before Cycle 2  (Cycle 2 sections set Input_From: cycle_1_*.json)
+(agents = sub-agents spawned this cycle · cap = max concurrent · group parallel only if no shared file write + no mutual dependency)
+
+### Cycle 2 — sequential (shared file writes · depends on Cycle 1 done)
+- Section: <name> (writes: harness_flow + roadmap + active_thread)
+```
+**Cycle decision rule:** use Cycle grouping when ≥2 sections write to different files with no cross-dependency · always sequential if any section writes a shared file (harness_flow, roadmap, active_thread).
+
+[S1-B]   Map per section: Context (cold-readable goal) · Skill · Model (low=lookup/read · high=reasoning/edit) · Tool · Input_From (prior cycle output | none) · Steps
 [S1-C]   Add Verify + Rollback per section
 [S1-D]   Copy Constraints: from each section's SKILL.md ## MECE Constraints Block (≤5 lines)
            Fallback (no MECE Constraints Block): read skill's ## Refusal Contract + ## Output Contract
            → extract: refusal conditions → Refusal_Path: · required emits → Expected_Traces:
-[S1-E]   Write .sessions/mece_plan.md using Phase-Checklist Template (docs/session_templates/mece_plan_schema.md)
-           → no simplified format (CFP-019) → validate immediately:
-           grep -cE "^  Constraints:" → = section count
-           grep -c "## Phase 0" → = 1
-           grep -c "## Phase 1" → = 1
-           grep -c "## Phase 2" → = 1
-           grep -c "## Phase 3" → ≥ 1
-           grep -cE "^  Tool:" → = section count
-           FAIL any check → rewrite to fix → re-validate before proceeding · emit `[mece-fail] Step: S1-E · Cause: <missing block>`
+[S1-E]   Read docs/session_templates/mece_plan_schema.md FIRST (full file — permitted ≤80L)
+           → copy structure verbatim → fill task-specific content (date/task/skill/sections/Verify-N)
+           → Write .sessions/mece_plan.md — NEVER write from memory (CFP-019: simplified format)
+           → After writing: assess whether the plan is structurally complete —
+               all 4 phase blocks present (Phase 0–3) · section count matches target Skill sections[]
+               each section has Tool + Constraints fields · no section left as placeholder
+           → If any structural gap is found: understand what is missing and why → rewrite to fix → re-assess
+```
+
+→ if mece_plan.md is missing any Phase 0–3 block, section count mismatches Skill sections[], or any section is missing Tool/Constraints: emit `[mece-fail] Step: S1-E · Cause: <what is missing>` · rewrite · retry once · still failing → HALT · skip = validation-gate violation
+→ if structurally complete: emit `[✓ mece-valid]` · proceed to S2
+
+**Behavior Contract — mece-fail Halt (fires when [mece-fail] emitted after retry):**
+```
+Pre:    [mece-fail] emitted · rewrite attempted · second validate still fails
+Contract: HALT all downstream work immediately — do NOT proceed to S2-A or Phase 3
+          emit [mece-fail-halt] Step:<N> · Cause:<which check> · asking user to review plan
+          write partial mece_plan.md to .sessions/mece_plan.md (partial — for inspection)
+          wait explicit user instruction before retry
+Post:   [mece-fail-halt] emitted · no Phase 3 entry without user re-confirm
+Enforce: Phase 3 REACT loop entry without [✓ mece-valid] = [violation] BC-mece-fail-halt → HALT immediately
 ```
 
 **Section 2 — Confirm & Register:**
 ```
-[S2-A] Send plan → wait confirm ("ok" / "go" / "ดำเนิน" / "yes" / explicit approval)
+[S2-A] → .sessions/mece_plan.md must be written and [✓ written] emitted before presenting plan to user · presenting without file written = BC-mece-compact violation
+         Send plan → wait for explicit user approval before writing roadmap entries
+           Assess from context whether the user has genuinely approved the plan — not just acknowledged it
+           Ambiguous response ("interesting", "I see") → ask once: "ยืนยัน plan นี้ไหมครับ?"
 [S2-B] R-Roadmap: add [ ] T-<N>: <section-name> per section
 [S2-C] Emit [✓ MECE]
 ```
@@ -87,18 +140,31 @@ Rules: match section count exactly · steps = 1 atomic action · total plan ≤1
 
 ## Output Contract
 
-| Action | Required emit |
-|---|---|
-| Plan ready | `[✓ MECE] Plan covers <N> sections in <M> Cycles · user confirmed · roadmap entries added` |
-| Section done | `[MECE] ✓ Section <N> done · → Section <N+1> next` |
-| Cycle done | `[cycle N] All <X> sections done · results: cycle_N_*.json · spawning Cycle <N+1>` |
-| Plan skipped | `[mece-skip] reason: <read-only | single-file | resuming>` |
-| Token check | `TOKEN CHECK` before every new Cycle/Section |
-| Validate fail | `[mece-fail] Step: <S1-E check> · Cause: <which field missing>` |
+| Action | Emit | Label |
+|---|---|---|
+| Plan ready | `[✓ MECE] Plan covers <N> sections in <M> Cycles · user confirmed · roadmap entries added` | **mandatory** |
+| Validate pass | `[✓ mece-valid]` — all 6 S1-E checks pass | **mandatory** |
+| Validate fail | `[mece-fail] Step: <S1-E check> · Cause: <which field missing>` | **mandatory** |
+| Plan skipped | `[mece-skip] reason: <read-only | single-file | resuming>` | **mandatory** |
+| Section done | `[MECE] ✓ Section <N> done · → Section <N+1> next` | **optional** |
+| Cycle done | `[cycle N] All <X> sections done · results: cycle_N_*.json · spawning Cycle <N+1>` | **optional** |
+| Token check | `TOKEN CHECK` before every new Cycle/Section | **mandatory** |
 
 Required files written:
 - `.sessions/mece_plan.md` — **Phase-Checklist Template mandatory** (docs/session_templates/mece_plan_schema.md) — Phase 0–3 blocks required · no simplified format (CFP-019) · S1-E validates on write
 - `docs/master_roadmap.md` — `[ ] T-<N>` per section (M4, before Phase 3)
+
+## Hard Rules
+1. Never write mece_plan.md from memory — read `docs/session_templates/mece_plan_schema.md` first · copy structure verbatim (CFP-019).
+2. Never proceed to S2-A without `[✓ mece-valid]` emitted — all 6 S1-E grep checks must pass first.
+3. Never enter Phase 3 without `[✓ mece-valid]` — `[mece-fail]` after retry = HALT, wait user instruction.
+4. Never emit `[✓ MECE]` before `[✓ mece-valid]` is confirmed — order is: validate → confirm → emit.
+5. Match section count exactly — sections in plan = sections in target Skill `sections[]`, no additions.
+6. Steps = 1 atomic action each — "Build and verify" is two steps; write it as two steps.
+7. Plan length ≤120L for single-Cycle plans — multi-Cycle plans (≥2 Cycle blocks with Barrier gate) are exempt from this limit · emit [plan-size] lines:<N> · cycles:<N> when exceeding 120L · if single-Cycle and exceeded, split the largest section into two before finalizing.
+- Quality heuristic: any section with >5 steps → decompose into two named sections before sending to user.
+8. Post-exec intent check: when all S[N] marked [X], assess next user message intent before running Close Checklist —
+   new task or topic detected → C3 topic-switch first (not restart Phase 2 directly) · never keyword-match to decide.
 
 ## On-Demand Wire Triggers (load only when condition fires — never pre-load)
 
@@ -111,13 +177,19 @@ Required files written:
 | Error recurring ("still broken" / same ERR-XXX) | `error_index.md ERR-XXX entry` |
 | Session close ("ปิด/close/done") | `session_manager/SKILL.md §3` |
 | Token >60k | `session_manager/SKILL.md §2 TOKEN PAUSE` |
+| Cycle fan-out needed | ≥2 independent sections in plan with no shared file writes | Use Cycle block syntax (S1-A.5 template) |
 
 Rule: 1 lookup + 1 targeted Read = 2 tool calls max per trigger.
 
+## Tone Guide
+Keep:   section names · step labels · verify commands · T-ID references · signal names
+Strip:  session IDs · token counts · internal reasoning text
+Format: `[signal] Key: value · Key: value` — single line · no prose explanation inline with signals
+Prohibited: "Presenting plan before mece_plan.md written" · "Emitting [✓ MECE] before [✓ mece-valid]"
+
 ## Routing
 - `[✓ MECE]` emitted → return to main agent → Phase 3 REACT LOOP begins
-- S1-E validate fail → rewrite mece_plan.md → retry once → `[mece-fail]` → HALT
-- `[mece-skip]` → return to main agent → Phase 3 directly (existing plan loaded)
+- `[mece-fail-halt]` emitted → wait user instruction — see BC-mece-fail-halt above
 - Token >60k during Phase 2 → TOKEN PAUSE → `session_manager §2`
 
 ## Context Gate

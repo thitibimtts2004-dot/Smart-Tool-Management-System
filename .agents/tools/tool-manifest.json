@@ -14,13 +14,13 @@
         "inspect",
         "content",
         "source",
-        "\u0e2d\u0e48\u0e32\u0e19"
+        "อ่าน"
       ],
-      "when": "Read a specific file or section \u2014 prefer offset+limit over full read"
+      "when": "Read a specific file or section — prefer offset+limit over full read"
     },
     "Edit": {
       "type": "builtin",
-      "short": "Exact string replacement in existing files (<5 lines \u2014 use sed instead)",
+      "short": "Exact string replacement in existing files (<5 lines — use sed instead)",
       "tags": [
         "edit",
         "modify",
@@ -29,9 +29,9 @@
         "replace",
         "patch",
         "fix",
-        "\u0e41\u0e01\u0e49\u0e44\u0e02"
+        "แก้ไข"
       ],
-      "when": "Modify an existing file \u2014 exact string match required"
+      "when": "Modify an existing file — exact string match required"
     },
     "Write": {
       "type": "builtin",
@@ -42,9 +42,9 @@
         "new file",
         "overwrite",
         "scaffold",
-        "\u0e2a\u0e23\u0e49\u0e32\u0e07\u0e44\u0e1f\u0e25\u0e4c"
+        "สร้างไฟล์"
       ],
-      "when": "Create a new file or fully rewrite \u2014 use Edit for partial changes"
+      "when": "Create a new file or fully rewrite — use Edit for partial changes"
     },
     "Bash": {
       "type": "builtin",
@@ -58,9 +58,9 @@
         "find",
         "command",
         "script",
-        "\u0e23\u0e31\u0e19"
+        "รัน"
       ],
-      "when": "Shell commands, grep, find, git, python scripts \u2014 always pipe output filter"
+      "when": "Shell commands, grep, find, git, python scripts — always pipe output filter"
     },
     "Agent": {
       "type": "builtin",
@@ -75,7 +75,7 @@
         "fanout",
         "explore"
       ],
-      "when": "\u22655 tool calls expected OR independent parallel sections \u2014 max depth 1"
+      "when": "≥5 tool calls expected OR independent parallel sections — max depth 1"
     },
     "lookup_py": {
       "type": "script",
@@ -89,10 +89,10 @@
         "index",
         "oracle",
         "T0",
-        "\u0e04\u0e49\u0e19\u0e2b\u0e32"
+        "ค้นหา"
       ],
-      "when": "T0 \u2014 ALWAYS run before grep or Read \u2014 returns file+line+read_hint+keywords+sessions",
-      "note": "High score = already exists \u2014 prevents duplicate scaffolding"
+      "when": "T0 — ALWAYS run before grep or Read — returns file+line+read_hint+keywords+sessions",
+      "note": "High score = already exists — prevents duplicate scaffolding"
     },
     "symbol_indexer_py": {
       "type": "script",
@@ -107,7 +107,7 @@
         "sync",
         "index sync"
       ],
-      "when": "After any symbol rename, add, or delete \u2014 run to keep index accurate"
+      "when": "After any symbol rename, add, or delete — run to keep index accurate"
     },
     "session_indexer_py": {
       "type": "script",
@@ -121,7 +121,7 @@
         "index sessions",
         "session history"
       ],
-      "when": "After session close \u2014 update session search index"
+      "when": "After session close — update session search index"
     },
     "token_estimator_py": {
       "type": "script",
@@ -135,12 +135,12 @@
         "size",
         "token count"
       ],
-      "when": "Before large file reads or long operations \u2014 estimate cost first"
+      "when": "Before large file reads or long operations — estimate cost first"
     },
     "choose_tools_py": {
       "type": "script",
       "spawn_script": "python scripts/choose_tools.py --keywords \"<kw1,kw2>\" [--top N]",
-      "short": "Keyword search across skill-manifest + tool-manifest \u2014 returns top-N matches",
+      "short": "Keyword search across skill-manifest + tool-manifest — returns top-N matches",
       "tags": [
         "choose",
         "select",
@@ -151,7 +151,7 @@
         "which skill",
         "routing"
       ],
-      "when": "When intent is unclear \u2014 call before loading skill-manifest manually"
+      "when": "When intent is unclear — call before loading skill-manifest manually"
     },
     "backlink_analyzer": {
       "type": "script",
@@ -166,13 +166,73 @@
         "graph",
         "analyze"
       ],
-      "when": "After adding/editing files in index_files.json \u2014 refreshes related[] based on shared topics",
+      "when": "After adding/editing files in index_files.json — refreshes related[] based on shared topics",
       "flags": [
         "--dry-run",
         "--min-overlap FLOAT",
         "--show-matrix"
       ],
       "run": "python3 scripts/backlink_analyzer.py"
+    },
+    "repo_scout": {
+      "type": "script",
+      "path": "scripts/repo_scout.py",
+      "short": "Clone or validate a git repo, enumerate files, detect language, output JSON metadata",
+      "tags": [
+        "repo",
+        "clone",
+        "scout",
+        "github",
+        "research",
+        "language",
+        "enumerate",
+        "files"
+      ],
+      "when": "Phase 1 of repo_researcher skill — before any Read or map steps",
+      "output": ".sessions/repo_scout_<repo_name>.json",
+      "args": "<url_or_local_path> [--output <path>]"
+    },
+    "session_close": {
+      "type": "script",
+      "path": "scripts/session_close.py",
+      "short": "Write all 5 mandatory session-close files (session JSON, tokens, thread, handoff, indexer)",
+      "tags": [
+        "session",
+        "close",
+        "automation",
+        "5-file",
+        "handoff"
+      ],
+      "when": "session_manager §3 Steps 1-5 — replaces manual file writes at session close",
+      "args": "[--task <str>] [--next <str>] [--session-total <int>] [--chat-total <int>] [--dry-run]"
+    },
+    "verify_runner": {
+      "type": "script",
+      "path": "scripts/verify_runner.py",
+      "short": "Parse Verify-N lines from mece_plan.md section and run each as bash command, reporting PASS/FAIL",
+      "tags": [
+        "verify",
+        "mece",
+        "automation",
+        "test",
+        "bash"
+      ],
+      "when": "Phase 3 [L4] VERIFY step — after Edit/Write, run section Verify-N automatically",
+      "args": "--section S<N> [--all] [--file <path>]"
+    },
+    "learning_profile": {
+      "type": "script",
+      "path": "scripts/learning_profile.py",
+      "short": "Record post-task quiz results + analyze user proficiency (mastery, weak/strong, glossing depth) — the usage engine of the user-coach closed learning loop",
+      "tags": [
+        "learning",
+        "quiz",
+        "user-coach",
+        "proficiency",
+        "glossing"
+      ],
+      "when": "user-coach at task close (record) + UserPromptSubmit hook every turn (analyze)",
+      "args": "record --topic <str> --correct <int> --total <int> [--note <str>] | analyze [--topic <str>]"
     }
   }
 }

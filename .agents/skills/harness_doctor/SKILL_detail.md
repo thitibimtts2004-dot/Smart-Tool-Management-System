@@ -5,51 +5,143 @@
 ---
 
 ## Section 1 — Diagnosis
+> Topic-match flow replaces recurrence_after_fix lookup.
+> Every step has a Behavior Contract (BC). No silent actions.
 
+---
+
+### Step 1.0 — Resume Check (BC-A — MANDATORY FIRST)
 ```
-Step 1: Load index — find top recurred CFP
-  python3 -c "
-import json, os, sys
+Behavior Contract A — Resume Check
+Pre:    python3 -c "
+import json, os
 if not os.path.exists('knowledge/index_cfp_fix.json'):
-    print('NO_INDEX'); sys.exit(0)
+    print('NO_APPROVED'); exit()
 idx = json.load(open('knowledge/index_cfp_fix.json'))
-candidates = {k: v for k, v in idx.items()
-              if isinstance(v, dict) and v.get('recurrence_after_fix', 0) > 0}
-if not candidates:
-    print('NO_RECURRED')
+approved = [(k,v) for k,v in idx.items()
+            if isinstance(v,dict) and v.get('approved_proposal','') != ''
+            and v.get('status','') == 'approved']
+if approved:
+    k, v = approved[0]
+    print('APPROVED:', k, '|', v['approved_proposal'][:80])
 else:
-    top = max(candidates, key=lambda k: candidates[k]['recurrence_after_fix'])
-    e = candidates[top]
-    print('target:', top)
-    print('group:', e['group'])
-    print('recurrence_after_fix:', e['recurrence_after_fix'])
-    print('status:', e['status'])
-    for i, f in enumerate(e.get('fixes', [])):
-        print(f'fix[{i}]:', f.get('description',''), '→', f.get('status','pending'))
-  "
-  → NO_RECURRED → emit [harness-doctor-skip] No recurring CFPs with prior fix · end skill
-  → found → store: target_cfp · target_group · prior_fix_descriptions[]
+    print('NO_APPROVED')
+"
+Contract: IF output starts with 'APPROVED:' →
+            emit [resume] CFP-N · approved_proposal: <summary>
+            SKIP steps 1.1–1.3 → jump directly to §5 (Execute)
+          MUST be FIRST action in §1 — before any other logic
+          NEVER skip resume check even on 'fresh' session
+Post:   [resume] emitted and §5 entered, OR NO_APPROVED and proceed to 1.1
+Enforce: step labeled "1.0 — MANDATORY FIRST" — any §1 that starts at 1.1 = [violation] BC-A
+```
 
-Step 2: Read CFP entry from CODING_FAILURE_PATTERNS.md
-  [pre-read] Target: target_cfp entry
-  grep -n "^## target_cfp" CODING_FAILURE_PATTERNS.md → line L
-  Read CODING_FAILURE_PATTERNS.md offset=L limit=30
-  [post-read] verdict: relevant | partial | irrelevant
-  → extract: Symptom · Root cause · Prevention · Detection signal
+---
 
-Step 3: Record diagnosing model
-  → check environment / session context for current model_id
-  → default: "claude-sonnet-4-6" (update if running on different model)
-  → store as diagnosing_model in working memory
+### Step 1.1 — Keyword Match (BC-B)
+```
+Behavior Contract B — Keyword Match
+Pre:    load cfp_topics.md keywords[] per topic_id
+        extract symptom keywords from new error / user-reported pattern
+        python3 -c "
+import re
+topics_raw = open('knowledge/cfp_topics.md').read()
+blocks = re.split(r'\n---\n', topics_raw)
+topics = {}
+for b in blocks:
+    tid = re.search(r'^## topic: (\S+)', b, re.M)
+    kws = re.search(r'keywords: \[([^\]]+)\]', b)
+    if tid and kws:
+        topics[tid.group(1)] = [k.strip() for k in kws.group(1).split(',')]
+print(topics)
+"
+Contract: score per topic = count of keywords[] that appear in symptom text
+          match = topic where score ≥ 2
+          IF match found:
+            append to recurrences[] in index_cfp_fix.json (entry for highest count in topic)
+            count++ on that entry
+            emit [keyword-match] topic: <id> · score: N/M
+            SKIP steps 1.2 + 1.3 → proceed to 1.4
+          NEVER create new topic if keyword match score ≥ 2
+Post:   [keyword-match] emitted + recurrence logged, OR score < 2 for all topics → proceed to 1.2
+Enforce: emit [keyword-match] BEFORE updating index — no silent assignment
+         if update done without [keyword-match] in session = [violation] BC-B
+```
 
-Step 4: Emit [diagnosis]
-  [diagnosis] target_cfp "<title>"
-  · Group: target_group
-  · Fixes tried: N · Still recurring after fix
-  · Model diagnosing: diagnosing_model
-  · Symptom: <from CFP entry>
-  · Prior fix attempts: <descriptions from fixes[]}
-  · Recurrence hypothesis: <why fix didn't hold — narrow signal / no hook / agent drift>
+---
+
+### Step 1.2 — AI Judge (BC-C — fallback when keyword match fails)
+```
+Behavior Contract C — AI Judge
+Pre:    keyword match returned no result (score < 2 for all topics)
+        read each topic's name + description from cfp_topics.md
+        read symptom of new error
+Contract: judge semantic similarity: new symptom vs each topic description
+          emit verdict BEFORE taking any action:
+            [topic-match] topic: <id> · confidence: 0.N  (if best match ≥ 0.7)
+            OR [no-match] · confidence: 0.N              (if all topics < 0.7)
+          confidence ≥ 0.7 → assign existing topic:
+            append recurrence · count++ · proceed to 1.4
+          confidence < 0.7 → proceed to exhaustion gate (1.3)
+Post:   topic assigned (existing) + proceed to 1.4, OR escalate to 1.3
+Enforce: confidence score MUST be emitted before any index write
+         silent assignment without confidence emit = [violation] BC-C
+```
+
+---
+
+### Step 1.3 — Topic Exhaustion Gate (BC-D — only when 1.1 + 1.2 both fail)
+```
+Behavior Contract D — Exhaustion Gate
+Pre:    BOTH keyword match (score < 2) AND AI judge (confidence < 0.7) failed
+        review all 8 topic descriptions one final time (re-read cfp_topics.md)
+Contract: MUST emit [new-topic-proposed] with ALL fields before any file change:
+            [new-topic-proposed] topic_id: <proposed_id>
+            · name: <proposed name>
+            · reason: <why no existing topic covers this>
+            · nearest_existing: <closest topic_id and why it's insufficient>
+          MUST HALT after emit — wait explicit user confirm before:
+            - adding topic to cfp_topics.md
+            - creating new CFP entry
+          EXCEPTION: confidence > 0.9 from AI judge → auto-proceed, emit [auto-confirmed]
+Post:   user confirms → new topic added + new CFP created · rejected → log under nearest topic
+Enforce: creating new topic_id or CFP with new topic_id WITHOUT [new-topic-proposed] in session
+         = [violation] T073-gate · halt · self-improve backfill immediately
+```
+
+---
+
+### Step 1.4 — Count Threshold (BC-E — runs after every recurrence append)
+```
+Behavior Contract E — Count Threshold
+Pre:    count field updated in index_cfp_fix.json (immediately after recurrence append)
+Contract: read updated count value
+          count ≥ 5 → MUST emit [fix-escalated] CFP-N · topic: <id> · count: N
+                       escalate to user · no deferral · proceed to §2 with priority=HIGH
+          count ≥ 3 → MUST emit [fix-required] CFP-N · topic: <id> · count: N
+                       proceed to §2 (Harness Audit)
+          count < 3 → emit [recurrence-logged] CFP-N · topic: <id> · count: N
+                       END skill (no fix needed yet)
+Post:   ONE of [fix-escalated] / [fix-required] / [recurrence-logged] emitted — never silent
+Enforce: count update step always runs threshold check IMMEDIATELY after write
+         skipping threshold check after count++ = [violation] BC-E
+```
+
+---
+
+### Step 1.5 — Read CFP Entry (only when §2 Audit triggered)
+```
+[pre-read] Target: target_cfp entry · Tier: T1
+grep -n "^## <target_cfp>" CODING_FAILURE_PATTERNS.md → line L
+Read CODING_FAILURE_PATTERNS.md offset=L limit=30
+[post-read] verdict: relevant | partial | irrelevant
+→ extract: Symptom · Root cause · Prevention · Detection signal
+→ store: target_cfp · target_topic · prior_fix_descriptions[]
+→ record diagnosing_model (default: "claude-sonnet-4-6")
+→ emit [diagnosis] target_cfp "<title>"
+  · Topic: target_topic · Count: N · Fixes tried: M · Still recurring
+  · Model: diagnosing_model · Symptom: <text>
+  · Recurrence hypothesis: <why fix didn't hold>
 ```
 
 ---

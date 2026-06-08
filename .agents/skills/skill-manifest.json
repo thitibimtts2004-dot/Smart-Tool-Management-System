@@ -46,7 +46,21 @@
         "ปรับโครงสร้าง"
       ],
       "on_demand_files": [],
-      "skip_when": "read-only task OR single file edit with backlinks=0 AND no ERR documentation needed"
+      "skip_when": "read-only task OR single file edit with backlinks=0 AND no ERR documentation needed",
+      "activates_at": [
+        "Phase2-M1"
+      ],
+      "tools": {
+        "primary": [
+          "Bash",
+          "Write"
+        ],
+        "avoid": [
+          "WebFetch",
+          "WebSearch",
+          "Workflow"
+        ]
+      }
     },
     "coder": {
       "path": ".agents/skills/coder/SKILL.md",
@@ -94,7 +108,20 @@
           "when": "determining correct directory for new file",
           "how": "full_ok"
         }
-      ]
+      ],
+      "activates_at": [
+        "B2",
+        "manual"
+      ],
+      "tools": {
+        "primary": [
+          "Edit",
+          "Bash",
+          "Write",
+          "Agent"
+        ],
+        "avoid": []
+      }
     },
     "editor": {
       "path": ".agents/skills/editor/SKILL.md",
@@ -157,7 +184,20 @@
           "when": "writing a new CFP entry only",
           "how": "grep_headers_then_append"
         }
-      ]
+      ],
+      "activates_at": [
+        "B2"
+      ],
+      "tools": {
+        "primary": [
+          "Edit",
+          "Read"
+        ],
+        "avoid": [
+          "Workflow",
+          "WebFetch"
+        ]
+      }
     },
     "file_manager": {
       "path": ".agents/skills/file_manager/SKILL.md",
@@ -179,7 +219,21 @@
       ],
       "auto_after": [
         "coder"
-      ]
+      ],
+      "activates_at": [
+        "B2",
+        "manual"
+      ],
+      "tools": {
+        "primary": [
+          "Bash",
+          "Write",
+          "Edit"
+        ],
+        "avoid": [
+          "Workflow"
+        ]
+      }
     },
     "variable_manager": {
       "path": ".agents/skills/variable_manager/SKILL.md",
@@ -204,7 +258,19 @@
       "auto_after": [
         "coder",
         "editor"
-      ]
+      ],
+      "activates_at": [
+        "B2",
+        "manual"
+      ],
+      "tools": {
+        "primary": [
+          "Bash"
+        ],
+        "avoid": [
+          "Workflow"
+        ]
+      }
     },
     "session_manager": {
       "path": ".agents/skills/session_manager/SKILL.md",
@@ -255,7 +321,21 @@
           "when": "T1 fallback if lookup.py --session returns empty",
           "how": "grep_only"
         }
-      ]
+      ],
+      "activates_at": [
+        "C3",
+        "manual"
+      ],
+      "tools": {
+        "primary": [
+          "Bash",
+          "Write"
+        ],
+        "avoid": [
+          "Workflow",
+          "Agent"
+        ]
+      }
     },
     "token_tracker": {
       "path": ".agents/skills/token_tracker/SKILL.md",
@@ -270,7 +350,20 @@
           "when": "Boot B1 read (once) and checkpoint write",
           "how": "full_ok"
         }
-      ]
+      ],
+      "activates_at": [
+        "B1"
+      ],
+      "tools": {
+        "primary": [
+          "Bash",
+          "Read"
+        ],
+        "avoid": [
+          "Workflow",
+          "Agent"
+        ]
+      }
     },
     "token_auditor": {
       "path": ".agents/skills/token_auditor/SKILL.md",
@@ -287,7 +380,20 @@
           "when": "reading current total for audit",
           "how": "full_ok"
         }
-      ]
+      ],
+      "activates_at": [
+        "manual"
+      ],
+      "tools": {
+        "primary": [
+          "Bash",
+          "Read"
+        ],
+        "avoid": [
+          "Workflow",
+          "Agent"
+        ]
+      }
     },
     "self_improve": {
       "path": ".agents/skills/self_improve/SKILL.md",
@@ -321,7 +427,21 @@
           "how": "targeted"
         }
       ],
-      "auto_trigger": "session_manager §3 Step 0 — always called before session close writes"
+      "auto_trigger": "session_manager §3 Step 0 — always called before session close writes",
+      "activates_at": [
+        "C0",
+        "manual"
+      ],
+      "tools": {
+        "primary": [
+          "Edit",
+          "Bash"
+        ],
+        "avoid": [
+          "Workflow",
+          "WebFetch"
+        ]
+      }
     },
     "ascii_flow": {
       "path": ".agents/skills/ascii_flow/SKILL.md",
@@ -349,7 +469,22 @@
           "how": "targeted"
         }
       ],
-      "invoke_from": "Any skill that creates/edits a .md file containing box diagrams must call this skill"
+      "invoke_from": "Any skill that creates/edits a .md file containing box diagrams must call this skill",
+      "activates_at": [
+        "B2",
+        "manual"
+      ],
+      "tools": {
+        "primary": [
+          "Write",
+          "Edit"
+        ],
+        "avoid": [
+          "Workflow",
+          "WebFetch",
+          "WebSearch"
+        ]
+      }
     },
     "agent": {
       "path": ".agents/skills/agent/SKILL.md",
@@ -369,7 +504,18 @@
         "ทำพร้อมกัน",
         "แบ่งงาน"
       ],
-      "on_demand_files": []
+      "on_demand_files": [],
+      "activates_at": [
+        "B2",
+        "manual"
+      ],
+      "tools": {
+        "primary": [
+          "Agent",
+          "Bash"
+        ],
+        "avoid": []
+      }
     },
     "harness_doctor": {
       "path": ".agents/skills/harness_doctor/SKILL.md",
@@ -381,7 +527,9 @@
         "recurring cfp",
         "ซ่อม harness",
         "cfp recurred",
-        "structural fix"
+        "structural fix",
+        "fix-escalated",
+        "recurred_after_fix"
       ],
       "on_demand_files": [
         {
@@ -394,21 +542,49 @@
           "when": "reading CFP entry details (grep + targeted Read)",
           "how": "targeted"
         }
-      ]
+      ],
+      "activates_at": [
+        "manual"
+      ],
+      "tools": {
+        "primary": [
+          "Bash",
+          "Read",
+          "Edit"
+        ],
+        "avoid": [
+          "Workflow",
+          "WebFetch"
+        ]
+      }
     },
     "harness_editor": {
       "path": ".agents/skills/harness_editor/SKILL.md",
       "bucket": "stable",
-      "trigger": "Task edits harness config files — CLAUDE.md, AGENTS.md, SKILL.md, knowledge/, Implement/",
+      "trigger": "Task edits harness config files (CLAUDE.md, AGENTS.md, SKILL.md, knowledge/, Implement/) OR adds/converts/selects enforcement rules (BC, hook, signal contract, tier)",
       "keywords": [
         "แก้ harness",
         "update harness",
         "improve skill",
         "เพิ่ม rule",
+        "แก้ rule",
         "edit skill",
         "update SKILL.md",
         "harness edit",
-        "update Implement"
+        "update Implement",
+        "เพิ่ม BC",
+        "แก้ BC",
+        "ลด BC",
+        "convert BC",
+        "เพิ่ม hook",
+        "PreToolUse",
+        "PostToolUse",
+        "signal contract",
+        "seam gate",
+        "เลือก tier",
+        "ใช้ BC",
+        "enforcement rule",
+        "เพิ่ม enforcement"
       ],
       "on_demand_files": [
         {
@@ -421,7 +597,23 @@
           "when": "Step 4 — assigning topics[] to new knowledge/ or Implement/ files added to index_files.json",
           "how": "full_ok"
         }
-      ]
+      ],
+      "activates_at": [
+        "B2",
+        "manual"
+      ],
+      "tools": {
+        "primary": [
+          "Edit",
+          "Bash",
+          "Write"
+        ],
+        "avoid": [
+          "Workflow",
+          "WebFetch",
+          "WebSearch"
+        ]
+      }
     },
     "skeptical_reviewer": {
       "path": ".agents/skills/skeptical_reviewer/SKILL.md",
@@ -441,7 +633,225 @@
           "how": "full_ok"
         }
       ],
-      "skip_when": "low-risk task · single-file edit · read-only · user explicitly skips"
+      "skip_when": "low-risk task · single-file edit · read-only · user explicitly skips",
+      "activates_at": [
+        "Phase2-M4.5",
+        "manual"
+      ],
+      "tools": {
+        "primary": [
+          "Bash",
+          "Read"
+        ],
+        "avoid": [
+          "Edit",
+          "Write",
+          "Workflow"
+        ]
+      }
+    },
+    "repo_researcher": {
+      "path": ".agents/skills/repo_researcher/SKILL.md",
+      "name": "Repo Researcher",
+      "bucket": "on_demand",
+      "trigger": "user wants to analyze/research an external git repo — clone, map, synthesize 3 .md outputs",
+      "keywords": [
+        "วิจัย",
+        "analyze",
+        "research",
+        "explore",
+        "สรุป repo",
+        "repo researcher",
+        "github",
+        "clone",
+        "repository"
+      ],
+      "on_demand_files": [
+        {
+          "path": "docs/session_templates/research_summary.md",
+          "when": "writing summary output",
+          "how": "full_ok"
+        },
+        {
+          "path": "docs/session_templates/research_improvement.md",
+          "when": "writing improvement output",
+          "how": "full_ok"
+        },
+        {
+          "path": "docs/session_templates/research_repo_map.md",
+          "when": "writing repo_map output",
+          "how": "full_ok"
+        }
+      ],
+      "skip_when": "task is about harness source code (not external repos)",
+      "activates_at": [
+        "B2",
+        "manual"
+      ],
+      "tools": {
+        "primary": [
+          "Bash",
+          "WebFetch",
+          "WebSearch",
+          "Write"
+        ],
+        "avoid": [
+          "Workflow"
+        ]
+      }
+    },
+    "doc_builder": {
+      "path": ".agents/skills/doc_builder/SKILL.md",
+      "name": "Doc Builder",
+      "bucket": "on_demand",
+      "trigger": "user wants to generate HTML manual pages, screenshot plan, or Playwright capture script for a web app project",
+      "keywords": [
+        "manual",
+        "คู่มือ",
+        "doc",
+        "screenshot",
+        "playwright",
+        "present",
+        "สร้างคู่มือ",
+        "ทำคู่มือ",
+        "user guide",
+        "doc/manual",
+        "capture"
+      ],
+      "on_demand_files": [
+        {
+          "path": ".agents/skills/doc_builder/SKILL_detail.md",
+          "when": "executing §3 screenshot plan, §4 playwright script, §5 MECE update, or §6 build HTML",
+          "how": "full_ok"
+        }
+      ],
+      "skip_when": "user only wants to read/explain existing docs, not generate new manual pages",
+      "activates_at": [
+        "B2",
+        "manual"
+      ],
+      "tools": {
+        "primary": [
+          "Write",
+          "Bash",
+          "WebFetch"
+        ],
+        "avoid": [
+          "Workflow"
+        ]
+      }
+    },
+    "project_presenter": {
+      "path": ".agents/skills/project_presenter/SKILL.md",
+      "name": "Project Presenter",
+      "bucket": "on_demand",
+      "trigger": "user wants to create a sales presentation, HTML pitch pages, or story-telling page for a web app project",
+      "keywords": [
+        "present",
+        "presentation",
+        "sales page",
+        "นำเสนองาน",
+        "present project",
+        "สร้าง present",
+        "project presenter",
+        "demo page",
+        "pitch",
+        "นำเสนอ",
+        "HTML present",
+        "สร้าง presentation"
+      ],
+      "on_demand_files": [
+        {
+          "path": ".agents/skills/project_presenter/SKILL_detail.md",
+          "when": "executing §2 interview loop, §4 storytelling .md, or §5 HTML generation",
+          "how": "full_ok"
+        },
+        {
+          "path": "docs/session_templates/storytelling_template.md",
+          "when": "writing knowledge/storytelling_<slug>.md in §4",
+          "how": "full_ok"
+        }
+      ],
+      "skip_when": "user only wants to read/explain existing presentation files, not generate new ones",
+      "activates_at": [
+        "B2",
+        "manual"
+      ],
+      "tools": {
+        "primary": [
+          "Write",
+          "Bash",
+          "WebFetch"
+        ],
+        "avoid": [
+          "Workflow"
+        ]
+      }
+    },
+    "skill_auditor": {
+      "path": ".agents/skills/skill_auditor/SKILL.md",
+      "bucket": "stable",
+      "trigger": "Auditing SKILL.md files for missing or weak framework components — gap analysis, quality check, BC over-enforcement detection",
+      "keywords": [
+        "audit this skill",
+        "review SKILL.md",
+        "skill gap analysis",
+        "what is missing in this skill",
+        "check skill quality",
+        "is this skill complete",
+        "ตรวจ skill",
+        "skill ขาดอะไร",
+        "audit harness skill",
+        "skill over-enforcement"
+      ],
+      "activates_at": [
+        "Phase3",
+        "manual"
+      ],
+      "tools": {
+        "primary": [
+          "Bash",
+          "Read"
+        ],
+        "avoid": [
+          "Edit",
+          "Write"
+        ]
+      },
+      "on_demand_files": [
+        {
+          "path": "knowledge/9arm-skills-skill-building-framework-2026-06-04.md",
+          "when": "Step 1 load before any assessment"
+        }
+      ]
+    },
+    "user-coach": {
+      "path": ".agents/skills/user-coach/SKILL.md",
+      "bucket": "stable",
+      "trigger": "After completing a substantial task — quiz the user (2-3 plain-Thai questions), record results to a JSON proficiency profile, and adapt glossing depth to their tracked strengths/weaknesses",
+      "keywords": [
+        "quiz me",
+        "ควิซ",
+        "ทดสอบความเข้าใจ",
+        "post-task quiz",
+        "learning profile",
+        "how am i progressing",
+        "coach me",
+        "user-coach",
+        "เก่งขึ้น",
+        "สอนเพิ่ม"
+      ],
+      "activates_at": [
+        "Phase3",
+        "manual"
+      ],
+      "tools": {
+        "primary": [
+          "Bash",
+          "Read"
+        ],
+        "avoid": []
+      }
     }
   },
   "fallback": {

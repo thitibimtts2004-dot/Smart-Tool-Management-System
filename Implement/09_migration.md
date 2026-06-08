@@ -344,11 +344,49 @@ For existing mece_plan.md with ≥3 sections predating T-067 — insert `/compac
 
 Formula: `sections ≥ 3 OR (sections × 6) > 30 → insert after ceil(N/2)`
 
-### Step 5 — Verify all M5 steps
+### Step 5 — error_index.md: migrate entries to new schema + add BC hooks
+
+Each existing ERR-XXX entry must be converted to new schema (topic/problem/trigger/fix/it_work/occurrences/failed_approaches).
+
+```bash
+grep -c "^## ERR-" knowledge/error_index.md  # count entries to migrate
+grep -c "^topic:" knowledge/error_index.md   # 0 → need migration · ≥1 → already migrated
+```
+
+Add BC enforcement blocks to CLAUDE.md R9 (if not already present):
+```bash
+grep -c "BC-topic-lookup\|BC-active-fix" CLAUDE.md  # → ≥ 2 (one per BC block)
+```
+
+**Behavior Contract — Topic Lookup (fires before writing any new ERR-XXX entry):**
+```
+Pre:    new ERR-XXX being documented
+Contract: grep knowledge/error_topics.md for matching topic id
+          match found → set topic: <id> · proceed
+          no match → emit [topic-missing] domain:<desc> · add topic to error_topics.md first · then write entry
+Post:   every ERR-XXX entry has a valid topic: field from error_topics.md
+Enforce: entry without topic: field = [violation] BC-topic-lookup → add topic before continuing
+```
+
+**Behavior Contract — Active Fix (fires when it_work=false entry found during debug):**
+```
+Pre:    grep error_index.md for ERR-XXX → entry found with it_work: false
+Contract: MUST read failed_approaches: list → choose approach NOT in that list
+          emit [active-fix] ERR-XXX · Avoiding: <prior> · Trying: <new approach>
+          after fix confirmed → update it_work: true + append to occurrences:
+Post:   [active-fix] emitted before any fix attempt · entry updated on success
+Enforce: debug without reading failed_approaches = [violation] BC-active-fix → read first · re-attempt
+```
+
+Verify: `grep -c "^topic:" knowledge/error_index.md` → = entry count · `grep -c "it_work:" knowledge/error_index.md` → = entry count
+
+### Step 6 — Verify all M5 steps
 
 ```bash
 grep -c "TURN_COUNT\|LOOP_WEIGHT" .sessions/session_tokens.md  # → 2
 python3 -m json.tool .claude/settings.json 2>/dev/null | grep -c "PostToolUse"  # → ≥ 1
 grep -c "\[C0\.5\]" AGENTS.md  # → ≥ 1
 grep -c "Loop_W" CLAUDE.md  # → ≥ 1
+grep -c "BC-topic-lookup\|BC-active-fix" CLAUDE.md  # → ≥ 2
+grep -c "^topic:" knowledge/error_index.md  # → = ERR entry count
 ```

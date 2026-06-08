@@ -104,7 +104,7 @@ Expected: ≥ 10 matches
   Verify: `grep -c "LOOP_WEIGHT\|TURN_COUNT" .sessions/session_tokens.md` → 2
 - [ ] **PostToolUse hook present**: `.claude/settings.json` has `PostToolUse` event incrementing LOOP_WEIGHT by weight (Agent/Workflow/WebFetch/WebSearch=3 · Write/mcp__*=2 · others=1)
   Verify: `python3 -m json.tool .claude/settings.json 2>/dev/null | grep -c "PostToolUse"` → ≥ 1
-- [ ] **C0.5 BC gate in AGENTS.md**: Per-Turn Routing has C0.5 between C0 and C1 with full Behavior Contract (Pre/Contract/Post/Enforce) · >30→[compact-warn] · >50→[compact-required]
+- [ ] **C0.5 BC gate in AGENTS.md**: Per-Turn Routing has C0.5 between C0 and C1 with full Behavior Contract (Pre/Contract/Post/Enforce) · CHAT>80k→[compact-rec] strong (primary) · LOOP_WEIGHT>50→[compact-rec] light (secondary) · hard STOP at SESSION>90k/CHAT>120k→[compact-STOP]
   Verify: `grep -A4 "\[C0\.5\]" AGENTS.md | grep -c "Pre:\|Contract:"` → ≥ 1
 - [ ] **Footer Loop_W field**: every response footer includes `Loop_W: N` field · rule written as Behavior Contract with Enforce: pointing to R1 step 7
   Verify: `grep -c "Loop_W" CLAUDE.md` → ≥ 1
@@ -120,7 +120,8 @@ Expected: ≥ 10 matches
 - [ ] **Never-Full-Load list** in CLAUDE.md §R5: 7 files listed (CLAUDE.md, index_files.json, index_variables.json, master_roadmap.md, CODING_FAILURE_PATTERNS.md, INVARIANTS.md, error_index.md) with `[violation] never-full-load` emit on breach
 - [ ] **Full-Read whitelist** present: SKILL.md (B3 ≤80L) · src/ ≤80L (Phase 1 G2) · REPO_MAP.md · session files · `.sessions/compact_state.md` (3-line, B1)
 - [ ] Verify with: `grep -c "Never-Full-Load\|Full-Read whitelist" CLAUDE.md` → ≥ 2
-- [ ] **L4.5 PURGE step**: drops raw tool results after Cycle N aggregation · keeps only verdict + artifact path
+- [ ] **L4.5 PURGE step**: drops raw tool results after each section · keeps only verdict + artifact path
+  Verify: `grep -c "PURGE\|L4\.5\|tool result >50L" AGENTS.md` → ≥ 2 (moved from CLAUDE.md per file-size contract T-071)
 - [ ] **Delegation Contract ≤800 tokens**: `constraints:` = rule numbers only · `cycle_context:` = ≤5 bullets ≤150 chars
 - [ ] **MECE plan size caps**: ≤5 steps/section · ≤2 verify commands/section (≤60 chars each) · total ≤120 lines
 - [ ] **mece_plan Phase 0-3 Template enforcement**: `docs/session_templates/mece_plan_schema.md` has full Phase 0-3 blocks + Phase 3 Close Checklist + PATH A/B/C · AGENTS.md M5 references template + "no simplified format (CFP-019)" · mece/SKILL.md S1-E validates all 4 Phase blocks on write · no simplified format accepted
@@ -383,17 +384,38 @@ Fix: if any knowledge file is missing, create it from the schemas in `Implement/
 - `error_index.md` → single line: `# Error Index`
 - `index_cfp_fix.json` → keyed by CFP ID (NOT `{ "variables": {} }`) — see `Implement/02_setup.md` Step 4 for correct schema
 
-Entry template (each ERR-XXX must include this structure):
+Entry template (each ERR-XXX must use new schema):
 ```markdown
-## ERR-XXX: <Short title>
-- Task: T-{N}-{BugID}-{AttemptID}
-- File: <path>
-- Symptom: <what user saw>
-- Root Cause: <why it happened>
-- Resolution: <what fixed it>
+## ERR-XXX
+topic: <id from error_topics.md>
+problem: <one-line description of the bug>
+trigger: <what code pattern causes it>
+fix: <what to do instead>
+it_work: true|false
+occurrences:
+  - T-ID: T-{N}-{BugID}-{AttemptID} · context: <where/when>
+failed_approaches:
+  - <approach that did NOT work>
+```
 
-### Failed Approaches:
-- [YYYY-MM-DD] T-{N}-{BugID}-01: <approach tried> → verify failed · Reason: <why it didn't resolve>
+**Behavior Contract — Topic Lookup (fires before writing any new ERR-XXX entry):**
+```
+Pre:    new ERR-XXX being documented
+Contract: grep knowledge/error_topics.md for matching topic id
+          match found → set topic: <id> · proceed
+          no match → emit [topic-missing] domain:<desc> · add topic to error_topics.md first · then write entry
+Post:   every ERR-XXX entry has a valid topic: field from error_topics.md
+Enforce: entry without topic: field = [violation] BC-topic-lookup → add topic before continuing
+```
+
+**Behavior Contract — Active Fix (fires when it_work=false entry found during debug):**
+```
+Pre:    grep error_index.md for ERR-XXX → entry found with it_work: false
+Contract: MUST read failed_approaches: list → choose approach NOT in that list
+          emit [active-fix] ERR-XXX · Avoiding: <prior> · Trying: <new approach>
+          after fix confirmed → update it_work: true + append to occurrences:
+Post:   [active-fix] emitted before any fix attempt · entry updated on success
+Enforce: debug without reading failed_approaches = [violation] BC-active-fix → read first · re-attempt
 ```
 
 ---

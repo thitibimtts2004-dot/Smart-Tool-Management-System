@@ -133,11 +133,11 @@
 
 ## Harness Doctor — CFP-025 Structural Fix
 
-- [ ] T-063.1: mece_plan_schema.md PATH A Clear + NEVER ad-hoc rule
-- [ ] T-063.2: CLAUDE.md PATH A Clear enforcement rule
-- [ ] T-063.3: AGENTS.md PATH A Clear enforcement rule
-- [ ] T-063.4: index_cfp_fix.json CFP-025 status → fixed
-- [ ] T-063.5: Implement/03_config.md sync
+- [X] T-063.1: mece_plan_schema.md PATH A Clear + NEVER ad-hoc rule · attempts:1 · tool_calls:2
+- [X] T-063.2: CLAUDE.md PATH A Clear enforcement rule · attempts:1 · tool_calls:1
+- [X] T-063.3: AGENTS.md PATH A Clear enforcement rule · attempts:1 · tool_calls:1
+- [X] T-063.4: index_cfp_fix.json CFP-025 status → fixed · attempts:1 · tool_calls:1
+- [X] T-063.5: Implement/03_config.md sync · attempts:1 · tool_calls:1
 
 ## Token Formula Accuracy Fix — T-064
 
@@ -205,3 +205,396 @@
 
 - [X] T-072.1: .claude/settings.json — ROOT pattern + python3 LOOP_WEIGHT + PreToolUse gate (all Edit/Write except .sessions/) · attempts:1 · tool_calls:2
 - [X] T-072.2: Implement/03_config.md — PostToolUse template python3 + PreToolUse template + Cross-Platform Notes block · attempts:1 · tool_calls:1
+
+## harness_doctor Topic Matching + BC Enforcement — T-073
+
+- [X] T-073.1: knowledge/cfp_topics.md — canonical topic registry · 8 topics · 26 CFPs assigned · attempts:1 · tool_calls:2
+- [X] T-073.2: knowledge/index_cfp_fix.json — schema update (topic/recurrences[]/count/approved_proposal) · 20 entries · attempts:1 · tool_calls:1
+- [X] T-073.3: CODING_FAILURE_PATTERNS.md — CFP template block (topic:/count:/recurrences:) · attempts:1 · tool_calls:2
+- [X] T-073.4: .agents/skills/harness_doctor/SKILL_detail.md — §1 rewrite: BC-A Resume + BC-B Keyword + BC-C AI Judge + BC-D Exhaustion Gate + BC-E Threshold · attempts:1 · tool_calls:2
+- [X] T-073.5: .agents/skills/harness_doctor/SKILL.md — Resume Gate BC + Threshold BC + Output Contract 11 signals · attempts:1 · tool_calls:3
+
+## T-076 · BC Retrofit — Behavior Contract enforcement across all harness skills
+- [X] T-076.1: harness_editor/SKILL.md — 4 BC blocks: Refusal Gate · Scope Probe · MECE Gate · Docs Close · attempts:1 · tool_calls:4
+- [X] T-076.2: self_improve/SKILL.md — 2 BC blocks: Cooldown Gate · Approval Gate · attempts:1 · tool_calls:2
+- [X] T-076.3: self_improve/SKILL_detail.md — 3 BC blocks: Pre-Edit Backup · Hard Rules · Audit Log Write · attempts:1 · tool_calls:3
+- [X] T-076.4: session_manager/SKILL.md — 2 BC blocks: Handoff Validation · 5-file Completion Gate · attempts:1 · tool_calls:2
+- [X] T-076.5: mece/SKILL.md — 2 BC blocks: Validation Gate · mece-fail Halt · attempts:1 · tool_calls:2
+
+## T-077 · harness_doctor CFP-006 — Loop_W footer reads stale boot value
+- [X] T-077.1: .claude/settings.json — C0.5 hook >&2 → stdout · agent now sees [compact-warn] · attempts:1 · tool_calls:1
+- [X] T-077.2: CLAUDE.md R1 footer BC — Pre strengthened: MUST read file · stale Loop_W detection · BC-footer-read enforce · attempts:1 · tool_calls:1
+
+## T-075 — error_index redesign
+- [X] T-075.1: Create knowledge/error_topics.md (6 topics: database-d1, edge-runtime, csv-parsing, auth-token, api-external, type-safety)
+- [X] T-075.2: Rewrite knowledge/error_index.md (Topic→Problem→Occurrences schema + ERR-007 seed)
+- [X] T-075.3: Edit CLAUDE.md R9 — Topic Lookup BC + Active Fix BC
+- [X] T-075.4: R8 index sync (index_files.json + roadmap)
+
+## T-079 — Implement/03_config.md + 04_skills.md — error_index schema + BC hooks
+- [X] T-079.1: 04_skills.md ~361 — ERR-XXX template → new schema + BC Topic Lookup inline · attempts:1 · tool_calls:2
+- [X] T-079.2: 04_skills.md ~480 — grep search example + it_work/topic fields + BC Active Fix note · attempts:1 · tool_calls:2
+- [X] T-079.3: 03_config.md R9 — BC Topic Lookup + BC Active Fix (Pre/Contract/Post/Enforce) · attempts:1 · tool_calls:2
+- [X] T-079.4: 04_skills.md Phase 2 ~740 — BC Write-Before-Present (mirror AGENTS.md) · attempts:1 · tool_calls:2
+
+## T-080 — Implement/08_checklist.md + 09_migration.md — error_index schema + BC hooks
+- [X] T-080.1: 08_checklist.md ~387 — ERR-XXX template → new schema + BC Topic Lookup + BC Active Fix · attempts:1 · tool_calls:2
+- [X] T-080.2: 09_migration.md ~347 — M5 Step 5 add BC Topic Lookup + BC Active Fix + Step 6 verify · attempts:1 · tool_calls:2
+
+## T-081 — CLAUDE.md + AGENTS.md — BC format for all enforcement points
+- [X] T-081.1: CLAUDE.md — Phase Transition Gate + R8 + R12 + R14 + R15 → BC format · attempts:1 · tool_calls:5
+- [X] T-081.2: AGENTS.md — schema-gate + Completion Gate → BC format · attempts:1 · tool_calls:2
+
+## T-082 — CLAUDE.md — BC format for remaining enforcement gaps
+- [X] T-082.1: Phase 3 close sequence → BC (Behavior Contract — Phase 3 Close Sequence) · attempts:1 · tool_calls:1
+- [X] T-082.2: R5 Index-First Lookup → BC (Behavior Contract — Index-First Lookup) · attempts:1 · tool_calls:1
+- [X] T-082.3: Never-Full-Load → BC (Behavior Contract — Never-Full-Load) · attempts:1 · tool_calls:1
+
+## T-083 — Loop_W hook fix + mece schema enforce + BC-B find-existing-first
+- [X] T-083.1: mece/SKILL.md S1-E + AGENTS.md M5 BC — schema Read mandatory before mece_plan.md write (CFP-019 fix) · attempts:1 · tool_calls:4
+- [X] T-083.2: CLAUDE.md R1 footer BC — [token-state] hook inject mandate · NEVER cached/estimated (CFP-031) · attempts:1 · tool_calls:2
+- [X] T-083.3: .claude/settings.json — UserPromptSubmit hook exit-0 bug fix · token-state echo before exit · attempts:1 · tool_calls:2
+- [X] T-083.4: CLAUDE.md R16 BC-B — 4-step find-existing-first mandate (grep index_cfp_fix.json → cfp_topics.md → AI judge → new-topic-proposed) · attempts:1 · tool_calls:2
+- [X] T-083.5: CODING_FAILURE_PATTERNS.md — CFP-031 added (Loop_W stale 0) · index_cfp_fix.json CFP-006 recurrence + CFP-028 + CFP-031 registered · attempts:1 · tool_calls:4
+- [X] T-083.6: compact_state.md mece_h updated 9fec9499→039c2b26 · session_handoff + active_thread updated · attempts:1 · tool_calls:3
+
+## T-084 — T-083 Roadmap Backfill + T-063 CFP-025 PATH A Clear Fix
+- [X] T-084.1: docs/master_roadmap.md — T-083 section backfill · attempts:1 · tool_calls:2
+- [X] T-084.2: mece_plan_schema.md — PATH A NEVER ad-hoc rule · attempts:1 · tool_calls:2
+- [X] T-084.3: CLAUDE.md + AGENTS.md — PATH A Clear enforcement rule · attempts:1 · tool_calls:3
+- [X] T-084.4: index_cfp_fix.json CFP-025 status→fixed + Implement/03_config.md sync · attempts:1 · tool_calls:3
+
+## T-085 — BC Gaps Fix + File Size Enforcement ≤250L
+- [X] T-085.1: CLAUDE.md — Boot Gate BC added · Boot section condensed · R1 formula pointer · attempts:1 · tool_calls:4
+- [X] T-085.2: AGENTS.md — TOKEN PAUSE BC + C3 Topic Switch BC · 250L ✅ · attempts:1 · tool_calls:4
+- [X] T-085.3: token_auditor/SKILL.md — Halt Threshold BC · agent/SKILL.md — Cycle HALT BC · attempts:1 · tool_calls:3
+- [X] T-085.4: Roadmap [X] + Index Sync · attempts:1 · tool_calls:2
+- [X] T-085.5: CLAUDE.md Move strategy — R3/R4/R10-R11 → 03_config.md + R13 BC · 250L ✅ · attempts:1 · tool_calls:10
+- [X] T-085.6: symbol_indexer.py run → Asset Plan index 74 symbols ✅ · attempts:2 · tool_calls:3
+
+## T-086 · Repo Researcher Skill
+- [X] T-086.1: .agents/skills/repo_researcher/SKILL.md — 91L ≤250 · 3 BCs ✅ · attempts:1 · tool_calls:2
+- [X] T-086.2: scripts/repo_scout.py — clone+validate+enumerate+lang detect → JSON ✅ · attempts:1 · tool_calls:2
+- [X] T-086.3: 3 research templates (summary+improvement+repo_map) ✅ · attempts:1 · tool_calls:3
+- [X] T-086.4: skill-manifest.json + tool-manifest.json + knowledge/research/ ✅ · attempts:1 · tool_calls:4
+- [X] T-086.5: index_files.json synced — 5 new entries ✅ · attempts:1 · tool_calls:2
+
+## T-087 · Harness Health Checklist
+- [X] T-087.1: docs/harness_health_checklist.md — 362L · 17 checks · all BC/Rule domains ✅ · attempts:1 · tool_calls:1
+- [X] T-087.2: harness_doctor/SKILL.md — BC-pre-audit added · checklist ref ✅ · attempts:1 · tool_calls:1
+- [X] T-087.3: index_files.json synced + roadmap [X] ✅ · attempts:1 · tool_calls:1
+
+## T-089 · BC Enforcement: Logic Connector Skills
+- [X] T-089.1: file_manager — BC-Index-Return ✅ · attempts:1 · tool_calls:1
+- [X] T-089.2: variable_manager — BC-Symbol-Return ✅ · attempts:1 · tool_calls:1
+- [X] T-089.3: coder — BC-Index-Sync-Gate ✅ · attempts:1 · tool_calls:1
+- [X] T-089.4: editor — BC-Error-Index-Gate + BC-Symbol-Change-Gate ✅ · attempts:1 · tool_calls:1
+- [X] T-089.5: ascii_flow — BC-Invoke-Gate + BC-Ascii-Return ✅ · attempts:1 · tool_calls:1
+- [X] T-089.6: skeptical_reviewer — BC-Output-Format ✅ · attempts:1 · tool_calls:1
+- [X] T-089.7: harness_flow Y37 + roadmap [X] ✅ · attempts:1 · tool_calls:2
+
+## T-088 · doc_builder Skill
+- [X] T-088.1: .agents/skills/doc_builder/SKILL.md ✅ · attempts:1 · tool_calls:1
+- [X] T-088.2: .agents/skills/doc_builder/SKILL_detail.md ✅ · attempts:1 · tool_calls:1
+- [X] T-088.3: skill-manifest.json — doc_builder entry added ✅ · attempts:1 · tool_calls:1
+- [X] T-088.4: index_files.json + roadmap [X] ✅ · attempts:1 · tool_calls:2
+
+## T-090 · project_presenter Skill
+- [X] T-090.1: .agents/skills/project_presenter/SKILL.md ✅ · attempts:1 · tool_calls:2
+- [X] T-090.2: .agents/skills/project_presenter/SKILL_detail.md ✅ · attempts:1 · tool_calls:1
+- [X] T-090.3: docs/session_templates/storytelling_template.md ✅ · attempts:1 · tool_calls:1
+- [X] T-090.4: skill-manifest.json — project_presenter entry added ✅ · attempts:1 · tool_calls:3
+
+## T-091 · harness_doctor structural fixes P1–P5
+- [X] T-091.1: index_cfp_fix.json CFP-033/034/037 count=3 status=fixing ✅ · attempts:1 · tool_calls:1
+- [X] T-091.2: AGENTS.md BC-M5-verify added (P1) ✅ · attempts:2 · tool_calls:2
+- [X] T-091.3: AGENTS.md close-gate-check+pre-read-L1+L4.5-purge-signal (P2+P3+P5) ✅ · attempts:1 · tool_calls:3
+- [X] T-091.4: mece_plan_schema.md r8-sync-check added (P4) ✅ · attempts:1 · tool_calls:1
+- [X] T-091.5: index_files.json T-090 files indexed (R8) ✅ · attempts:1 · tool_calls:1
+
+## T-092 · Hybrid BC Migration
+- [X] T-092.1: harness_editor/SKILL.md — §BC Selection Guide added · 178L · attempts:1 · tool_calls:3
+- [X] T-092.2: AGENTS.md — 8→4 BCs (C3/M5-present/Bash-filter/Schema-gate → Signal Contracts) · attempts:1 · tool_calls:5
+- [X] T-092.3: CLAUDE.md — 15→6 BCs (Footer/Cache/Index-First/Never-Full-Load/Index-Sync/Topic-Lookup/Active-Fix/Post-Edit/Escalation → Signal Contracts) · attempts:1 · tool_calls:7
+
+## T-093 · Enforcement Gap Fix (3 gaps post-T-092)
+- [X] T-093.1: .claude/settings.json — PreToolUse hook: add Read tool + PROHIBITED file list (never-full-load machine block) · attempts:1 · tool_calls:3
+- [X] T-093.2: AGENTS.md — C0.5 BC (10L) → Signal Contract (1L) · BC count 4→3 · attempts:1 · tool_calls:2
+- [X] T-093.3: docs/session_templates/mece_plan_schema.md — tick gate note (×2: S1+SN templates) · attempts:1 · tool_calls:2
+
+## T-094 · BC Selection Guide Expand + Manifest Trigger Fix
+- [X] T-094.1: harness_editor/SKILL.md — §BC Selection Guide: add Anti-patterns table + real examples + expanded decision tree
+- [X] T-094.2: skill-manifest.json — harness_editor trigger + keywords: add BC/hook/signal/tier selection triggers
+
+## T-095 · Manifest Tool Routing + MECE Schema Integration
+- [X] T-095.1: skill-manifest.json — activates_at[] + tools{} added to 17 skills · attempts:1 · tool_calls:2
+- [X] T-095.2: mece_plan_schema.md — Avoid: field + M2 grep note · attempts:1 · tool_calls:2
+- [X] T-095.3: AGENTS.md — M2 Signal Contract added · attempts:1 · tool_calls:1
+
+## T-096 · harness_doctor BC Upgrade + BLOCK Gate
+- [X] T-096.1: mece_plan_schema.md — harness_doctor close item → full BC · attempts:1 · tool_calls:2
+- [X] T-096.2: CODING_FAILURE_PATTERNS.md CFP-038 — BLOCK/HALT enforcement · attempts:1 · tool_calls:2
+
+## T-097 · settings.json PreToolUse Close-Gate Hook
+- [X] T-097.1: .claude/settings.json — close-gate block: Edit active_thread.md phase:done blocked until .close_checklist_ack exists · attempts:1 · tool_calls:2
+
+## T-098 · mece_plan_schema.md Phase 3 Execution Complete Pause BC
+- [X] T-098.1: docs/session_templates/mece_plan_schema.md — BC-exec-pause block inserted before §Close Checklist · attempts:1 · tool_calls:2
+
+## T-099 · CFP-039 Close Checklist Output Gap
+- [X] T-099.1: CODING_FAILURE_PATTERNS.md CFP-039 + index_cfp_fix.json + cfp_topics.md session-close updated · attempts:1 · tool_calls:3
+
+## T-100 · kcc bug fix L183 AttributeError
+- [X] T-100.1: scripts/knowledge_conflict_checker.py — isinstance(entry_b, dict) guard added at L183 · attempts:1 · tool_calls:2
+
+## T-101 · BC-mece-compact — Force /compact Before Phase 3
+- [X] T-101.1: AGENTS.md — BC-mece-compact added after BC-M5-verify · [mece-complete] + /compact prompt · attempts:1 · tool_calls:3
+- [X] T-101.2: mece_plan_schema.md — compact note added after Phase 2 TOKEN CHECK · attempts:1 · tool_calls:2
+
+## T-102 · skill_auditor — New Skill: Audit SKILL.md Against 9arm Framework
+- [X] T-102-A.1: .agents/skills/skill_auditor/SKILL.md created (197L) · 8 components + 6 connection types · adversarial stance · BC over-enforcement detection · attempts:1 · tool_calls:8
+- [X] T-102-A.2: skill-manifest.json — skill_auditor entry added · keywords + on_demand_files · attempts:1 · tool_calls:1
+- [X] T-102-A.3: index_files.json + harness_flow Y45 + roadmap [X] · attempts:1 · tool_calls:1
+
+## T-105 · harness_editor SKILL.md — 9arm Framework Upgrade
+- [X] T-105.1: .agents/skills/harness_editor/SKILL.md — add Operating Stance + When NOT to Use + Signal Contract + Output Contract labels + Tone Guide + Hard Rules + YAML keywords
+
+## T-106 · mece/SKILL.md — 9arm Framework Upgrade
+- [X] T-106.1: .agents/skills/mece/SKILL.md — add Operating Stance + Prerequisites + Hard Rules + Tone Guide + YAML keywords · 146L → 180L 🟢 · BC count: 2 (unchanged) · attempts:1 · tool_calls:6
+
+## T-107 · Over-Prescription Fixes: AGENTS.md + CLAUDE.md + mece/SKILL.md
+- [X] T-107.1: AGENTS.md — BC-M5-verify: replace 4 grep commands with principle-based assessment · attempts:1 · tool_calls:2
+- [X] T-107.2: AGENTS.md — C2 freshness check: replace mechanical grep with intent-based description · attempts:1 · tool_calls:2
+- [X] T-107.3: CLAUDE.md — R16 Doctor Flow: replace keyword scoring (score ≥ 2) with judgment-based matching · attempts:1 · tool_calls:2
+- [X] T-107.4: mece/SKILL.md — add Signal Contract: write mece_plan.md before presenting plan to user · attempts:1 · tool_calls:1
+
+## T-108 · Index System Fixes: variable_manager + AGENTS.md Index Sync Invariant
+- [X] T-108.1: variable_manager/SKILL.md — diagnose current trigger + schema · attempts:1 · tool_calls:2
+- [X] T-108.2: variable_manager/SKILL.md — judgment-based trigger + schema (used_in/signature/last_modified) · attempts:1 · tool_calls:3
+- [X] T-108.3: AGENTS.md — Index Sync Invariant trigger → cross-file dependency judgment · attempts:1 · tool_calls:2
+- [X] T-108.4: harness_flow + roadmap close · attempts:1 · tool_calls:2
+
+## T-109 · mece Close/Handoff Flow Fixes: BC-exec-pause + Close Checklist + Hard Rules
+- [X] T-109.1: mece_plan_schema.md — confirm BC-exec-pause line numbers · attempts:1 · tool_calls:1
+- [X] T-109.2: mece_plan_schema.md — replace keyword matching with intent assessment + PATH A pointer · attempts:1 · tool_calls:2
+- [X] T-109.3: mece/SKILL.md — Hard Rule 8: post-exec new task routing · attempts:1 · tool_calls:2
+- [X] T-109.4: harness_flow + roadmap close · attempts:1 · tool_calls:3
+
+## T-110 · Skill Manifest Discovery & Match Signal
+- [X] T-110.1: AGENTS.md B2 — head-80 → head-160 · attempts:1 · tool_calls:2
+- [X] T-110.2: AGENTS.md B2 — add skill-match/miss/explicit signal contract · attempts:1 · tool_calls:1
+- [X] T-110.3: skill-manifest.json — move skill_auditor into skills{} block · attempts:1 · tool_calls:3
+- [X] T-110.4: harness_flow Y49 + roadmap close · attempts:1 · tool_calls:2
+
+## T-112 · harness_editor ↔ skill_auditor Wiring
+- [X] T-112.1: harness_editor/SKILL.md Step 1 — add conditional audit wiring (Why/How/Judgment-call) · attempts:1 · tool_calls:1
+- [X] T-112.2: harness_editor/SKILL.md Hard Rules — add structural-edit audit rule · attempts:1 · tool_calls:1
+- [X] T-112.3: harness_flow Y50 + roadmap close · attempts:1 · tool_calls:2
+
+## T-113 · coder + editor + skill_auditor 9arm Upgrade
+- [X] T-113.1: editor/SKILL.md — Operating Stance + When NOT to Use · attempts:1 · tool_calls:2
+- [X] T-113.2: editor/SKILL.md — Tone Guide + Error→Thai · attempts:1 · tool_calls:2
+- [X] T-113.3: editor/SKILL.md — Cross-skill routing + Dead Loop + Hard Rules · attempts:1 · tool_calls:2
+- [X] T-113.4: coder/SKILL.md — Error→editor routing + Never invent root cause · attempts:1 · tool_calls:2
+- [X] T-113.5: coder/SKILL.md — Context-aware proactive offer · attempts:1 · tool_calls:2
+- [X] T-113.6: skill_auditor/SKILL.md — Failure Mode Map + SKILL_detail.md split · attempts:1 · tool_calls:4
+
+## T-114 · Editor Lightweight Fix Path + error_index Schema Extension
+- [X] T-114.1: editor/SKILL.md — Lightweight path criteria in Operating Stance + Trigger · attempts:1 · tool_calls:2
+- [X] T-114.2: editor/SKILL.md — Lightweight Close sub-section in Workflow Section 3 · attempts:1 · tool_calls:1
+- [X] T-114.3: knowledge/error_index.md — severity field + lightweight annotation entry type + decision table · attempts:1 · tool_calls:2
+
+## T-115 · harness_doctor + self_improve 9arm Upgrade
+- [X] T-115.1: harness_doctor/SKILL.md — Operating Stance + Hard Rules + Tone Guide · attempts:1 · tool_calls:2
+- [X] T-115.2: self_improve/SKILL.md — Operating Stance + Hard Rules (rename Invariants + extend) · attempts:1 · tool_calls:2
+- [X] T-115.3: YAML Headers — harness_doctor + self_improve + skill-manifest.json keywords sync · attempts:1 · tool_calls:3
+
+## T-116 · Token Tracking System Fixes
+- [X] T-116.1: 03_config.md — B1 script compact-restore CHAT_TOTAL logic sync
+- [X] T-116.2: AGENTS.md + 03_config.md — CHAT_TOTAL ×1.5 threshold note
+- [X] T-116.3: 03_config.md — LOOP_WEIGHT tiebreak rule (LW>50 + SESSION<10k)
+- [X] T-116.4: AGENTS.md + 03_config.md — Turn-1 footer note + JSONL bucket required rule
+
+## T-117 · Token Management Skills Sync
+- [X] T-117.1: token_tracker/SKILL.md — LOOP_WEIGHT + footer format + sys_fixed + CHAT_TOTAL file + compact-restore + JSONL + Hard Rules (TT-1→9)
+- [X] T-117.2: token_auditor/SKILL.md — >80k threshold + path fix + LOOP_WEIGHT check + R5→R8 + CHAT_TOTAL audit (TA-1→5)
+- [X] T-117.3: session_manager/SKILL.md — CHAT_TOTAL health + 6-field reset + >80k threshold (SM-1→3)
+- [X] T-117.4: agent/SKILL.md — threshold sync >60k + LOOP_WEIGHT per-spawn tracking (AG-1→2)
+
+## T-118 · Skill Behavioral Gap Fix (skill_auditor + harness_editor)
+- [X] T-118.1: harness_editor/SKILL.md — add Scripts section + When new data arrives later
+- [X] T-118.2: skill_auditor/SKILL.md — add When new data arrives later
+
+## T-119 · ascii_flow/SKILL.md Behavioral Gap Fix
+- [X] T-119.1: add Operating Stance + Prerequisites
+- [X] T-119.2: add Output Tone + Hard Rules
+- [X] T-119.3: fix framework gaps (YAML keywords + When NOT to Use redirects + Workflow stop condition)
+- [X] T-119.4: close + index sync
+
+## T-120 · doc_builder/SKILL.md Behavioral Gap Fix
+- [X] T-120.1: add YAML header
+- [X] T-120.2: restructure Refusal Contract → Prerequisites + When NOT to Use
+- [X] T-120.3: add Operating Stance + Output Tone + Hard Rules
+- [X] T-120.4: close + index sync
+
+## T-121 · session_manager §3 Close Checklist Gate
+- [X] T-121.1: add mece_plan Close Checklist pre-check to §3 Workflow
+- [X] T-121.2: close + sync
+
+## T-122 · harness_doctor Hard Rules fix_plan Mandate
+- [X] T-122.1: add count≥5 fix_plan constraint to Hard Rules + Output Contract
+- [X] T-122.2: close + sync
+
+## T-123 · self_improve/SKILL.md 9arm gap fix
+- [X] T-123.1: add Prerequisites checklist (3 items)
+- [X] T-123.2: fix scatter cooldown + remove over-prescription §2 Step 4
+- [X] T-123.3: close + sync (harness_flow Y58)
+
+## T-124 · harness_doctor/SKILL.md 9arm gap fix
+- [X] T-124.1: add Prerequisites checklist (3 items)
+- [X] T-124.2: de-duplicate Trigger section + fix scatter "attempt 3"
+- [X] T-124.3: close + sync (harness_flow Y59)
+
+## T-125 · harness_editor/SKILL.md 9arm gap fix
+- [X] T-125.1: fix Prerequisites Why + remove File Size Contract dup + MECE rule scatter
+- [X] T-125.2: close + sync + active_thread phase:done (harness_flow Y60)
+
+## T-126 · CFP recurrence schema — fixes[] + prior-fix logic
+- [X] T-126.1: fix index_cfp_fix.json CFP-037 entry (status:fixed + fixes[] T-121+T-122)
+- [X] T-126.2: close + sync
+
+## T-127 · file_manager/SKILL.md 9arm gap fix
+- [X] T-127.1: add Operating Stance + Prerequisites (2 behavioral ❌)
+- [X] T-127.2: YAML triggers + Output Tone + Hard Rules consolidation (4 framework ⚠️)
+- [X] T-127.3: structure fixes (emit dup A + skip scatter B + grep over-prescription C)
+- [X] T-127.4: add When NOT to Use → redirect to variable_manager (redundancy clarify)
+- [X] T-127.5: close + sync (harness_flow Y61)
+
+## T-128 · skill redundancy boundary clarification
+- [X] T-128.1: token_tracker/auditor "Do NOT" notes
+- [X] T-128.2: coder/editor keyword dedup + boundary redirects
+- [X] T-128.3: close + sync (harness_flow Y62)
+
+## T-129 · CFP-037 structural fix — harness_editor BC-docs-close add Close Checklist gate
+- [X] T-129.1: add [E] item to BC-docs-close Contract + Enforce line
+- [X] T-129.2: update index_cfp_fix.json CFP-037 fixes[] + status
+- [X] T-129.3: close + sync (harness_flow Y63)
+
+## T-130 · agent/SKILL.md 9arm gap fix (Batch A)
+- [X] T-130.1: add YAML triggers + When NOT to Use + Operating Stance 2→4 bullets
+- [X] T-130.2: Prerequisites add Why/Missing + Output Tone section + Hard Rules 3→5
+- [X] T-130.3: structure fixes (B/A/C) + close + sync (harness_flow)
+
+## T-131 · variable_manager/SKILL.md 9arm gap fix (Batch A)
+- [X] T-131.1: add YAML triggers + Operating Stance (absent → 4 bullets)
+- [X] T-131.2: Prerequisites add Why/Missing + Hard Rules 1→5
+- [X] T-131.3: structure fix (B/C) + close + sync (harness_flow)
+
+## T-132 · skeptical_reviewer/SKILL.md 9arm gap fix (Batch A)
+- [X] T-132.1: add YAML triggers + Prerequisites (absent → 3 items) + Operating Stance 1→4
+- [X] T-132.2: Workflow stop condition + Hard Rules 1→5
+- [X] T-132.3: structure fix (B/C) + close + sync (harness_flow)
+
+## T-133 · mece/SKILL.md Cycle syntax support
+- [X] T-133.1: Plan Format Cycle block syntax + S1-A.5 decision rule + Hard Rule 7 exception + On-Demand trigger row
+
+## T-134 · session_manager/SKILL.md 9arm gap fix (Batch B)
+- [X] T-134.1: YAML triggers + When NOT to Use + Operating Stance + Prerequisites + Hard Rules + Tone Guide
+
+## T-135 · token_tracker/SKILL.md 9arm gap fix (Batch B)
+- [X] T-135.1: YAML triggers + When NOT to Use + Operating Stance + Prerequisites + Tone Guide
+
+## T-136 · token_auditor/SKILL.md 9arm gap fix (Batch B)
+- [X] T-136.1: YAML triggers + When NOT to Use + Operating Stance + Prerequisites + Hard Rules + Tone Guide
+
+## T-137 · LOOP_WEIGHT gate fix
+- [X] T-137.1: AGENTS.md close-gate + LOOP_WEIGHT check → hook-value-only
+- [X] T-137.2: session_manager SKILL.md Hard Rule + Step 2 → preserve on close
+
+## T-138 · repo_researcher/SKILL.md 9arm gap fix (Batch C)
+- [X] T-138.1: YAML triggers + When NOT + Op Stance + Prerequisites + Hard Rules + Tone Guide
+
+## T-139 · project_presenter/SKILL.md 9arm gap fix (Batch C)
+- [X] T-139.1: YAML triggers + When NOT + Op Stance + Prerequisites + Hard Rules + Tone Guide
+
+## T-140 · identity/SKILL.md 9arm gap fix (Batch C)
+- [X] T-140.1: YAML triggers + Prerequisites
+
+## T-141 · ascii_flow/SKILL.md 9arm gap fix (Batch C)
+- [X] T-141.1: YAML triggers + When NOT + Tone Guide
+
+## T-142 · doc_builder/SKILL.md 9arm gap fix (Batch C)
+- [X] T-142.1: YAML triggers + Tone Guide
+
+## T-143 · self_improve/SKILL.md 9arm gap fix (Batch D)
+- [X] T-143.1: When NOT to Use + Tone Guide
+
+## T-144 · identity/SKILL.md 9arm gap fix (Batch D)
+- [X] T-144.1: Invoke section ≥3 bullets + Workflow halt condition
+
+## T-145 · editor/SKILL.md 9arm gap fix (Batch D)
+- [X] T-145.1: YAML triggers array + Prerequisites section
+
+## T-146 · coder/SKILL.md 9arm gap fix (Batch D)
+- [X] T-146.1: YAML triggers fix + Prerequisites Why/Missing reformat
+
+## T-147 · mece/SKILL.md 9arm gap fix (Batch D)
+- [X] T-147.1: Invoke 3rd bullet + Refusal Contract → When NOT to Use
+
+## T-148 · repo_researcher/SKILL.md 9arm gap fix (Batch D)
+- [X] T-148.1: Prerequisites Why:/Missing: reformat
+
+## [X] T-149 · CFP Decay System — last_seen + window_count + stale
+- [X] T-149.1: Create scripts/cfp_decay.py
+- [X] T-149.2: Migrate index_cfp_fix.json (30 entries)
+- [X] T-149.3: Update self_improve/SKILL.md BC-B + BC-E
+- [X] T-149.4: Update session_manager/SKILL.md §3 Step 0
+- [X] T-149.5: Close — harness_flow Y83 + roadmap + active_thread
+
+## T-150 · Session Index Schema Upgrade + session_analyzer.py
+> Constraint: ถ้าสร้าง SKILL.md ใหม่ → ต้องผ่าน 9arm audit (9/9) ก่อน merge
+- [X] T-150.1: Upgrade index_sessions.json schema — topic/skill/actions/friction/promoted fields
+- [X] T-150.2: Create scripts/session_analyzer.py — cross-session pattern detection (≥3 repeats → promotions.md candidate)
+- [X] T-150.3: Create .sessions/promotions.md template + seeding logic in session_manager SKILL.md
+- [X] T-150.4: Harness flow Y84 + roadmap + active_thread
+
+## T-151 · Reflection Step + Promotion Loop [X]
+> Constraint: ถ้าสร้าง SKILL.md ใหม่ → ต้องผ่าน 9arm audit (9/9) ก่อน merge
+- [X] T-151.1: Add reflection step to mece_plan_schema.md Close Checklist (intent/outcome/friction/lesson)
+- [X] T-151.2: Add reflection write to session_manager SKILL.md §3 Step 0 (reflections.md append)
+- [X] T-151.3: Promotion filter logic in promotions.md — deterministic? → tool | contextual? → skill rule
+- [X] T-151.4: Harness flow Y85 + roadmap + active_thread
+
+## T-152 · verify_runner.py — Verify-N Automation Tool [X]
+> Constraint: ถ้าสร้าง SKILL.md ใหม่ → ต้องผ่าน 9arm audit (9/9) ก่อน merge
+- [X] T-152.1: Create scripts/verify_runner.py — reads mece_plan.md Verify-N lines → runs each → PASS/FAIL report
+- [X] T-152.2: Update AGENTS.md Phase 3 L4 — call verify_runner.py instead of inline grep (optional AI verify only)
+- [X] T-152.3: Update tool-manifest.json — register verify_runner
+- [X] T-152.4: Harness flow Y86 + roadmap + active_thread
+
+## T-153 · session_close.py — 5-File Close Automation Tool
+> Constraint: ถ้าสร้าง SKILL.md ใหม่ → ต้องผ่าน 9arm audit (9/9) ก่อน merge
+- [X] T-153.1: Create scripts/session_close.py — writes all 5 mandatory files (session JSON + tokens + thread + handoff + index)
+- [X] T-153.2: Update session_manager SKILL.md §3 Steps 1-5 — call session_close.py instead of manual file writes
+- [X] T-153.3: Update tool-manifest.json — register session_close
+- [X] T-153.4: Harness flow Y87 + roadmap + active_thread
+
+## T-154 · Code Audit — session_close.py + verify_runner.py
+- [X] T-154.1: Audit scripts/session_close.py — pattern · error handling · edge cases
+- [X] T-154.2: Audit scripts/verify_runner.py — pattern · edge cases · condition parsing
+- [X] T-154.3: Fix critical gaps found (if any) + harness_flow Y88 + close
+
+## T-155 · user-coach Learning System — post-task quiz + adaptive glossing [X]
+> Constraint: new SKILL.md → must pass 9arm audit before merge
+- [X] T-155.1: knowledge/user_learning_profile.json — JSON proficiency store (global + topics[] + history[])
+- [X] T-155.2: scripts/learning_profile.py — record + analyze engine (usage layer)
+- [X] T-155.3: .agents/skills/user-coach/SKILL.md — 8-component skill, USE->QUIZ->RECORD->ADAPT
+- [X] T-155.4: .claude/settings.json — additive UserPromptSubmit hook -> analyze -> [learning-state]
+- [X] T-155.5: register user-coach in skill-manifest.json + skill-index.md
+
+[/] T-156: harness_editor cycle rewrite — 5-stage lifecycle (AUDIT->PLAN->EDIT->CLOSE . CFP loop-back) + Implement-map table + trim/bugfix
+  [ ] T-156.1: Workflow -> 5 cyclic stages . audit-first mandatory . CFP loop-back . fix L96 grep
+  [ ] T-156.2: Implement-map table (edit file -> Implement doc)
+  [ ] T-156.3: trim redundancy + <=180L
+  [ ] T-156.4: sync Implement/04_skills.md
+  [ ] T-156.5: skill_auditor re-audit + close

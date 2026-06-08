@@ -43,8 +43,12 @@ Extended procedures for `mece/SKILL.md`. Load on-demand during Section 1 or as n
 
 ### Bug Fix (target: editor)
 ```
-Section 1 — Diagnose:
+# Serial chain — each section waits for the prior · <5 files → run in main context (Input_From = prior section in-context) · spawned → read the cycle JSON
+Section 1 — Diagnose:                             [Cycle 1 · serial]
+  Context:  Locate the bug + map blast radius (used_in) via the 3 indexes before touching code.
   Skill:    editor
+  Model:    model_low
+  Input_From: none
   Tool:     Bash · Read
   Constraints:
     - [pre-read] T0 lookup → emit [pre-read] · [post-read] verdict · skip = [violation R5/CFP-004]
@@ -56,8 +60,11 @@ Section 1 — Diagnose:
   Data_Sent: Thai ___ch | ENG: ___ch
   Token:    ___k
 
-Section 2 — Edit & Verify:
+Section 2 — Edit & Verify:                        [Cycle 2 · serial]
+  Context:  Apply the targeted fix at the confirmed line + prove the symptom is gone.
   Skill:    editor
+  Model:    model_high
+  Input_From: cycle_1_S1.json (blast radius + confirmed line)
   Tool:     Edit · Bash
   Constraints:
     - [pre-edit] grep `used_in` → emit [pre-edit] before symbol Edit · skip = [violation R5-edit]
@@ -72,8 +79,11 @@ Section 2 — Edit & Verify:
   Data_Sent: Thai ___ch | ENG: ___ch
   Token:    ___k
 
-Section 3 — Sync & Close:
+Section 3 — Sync & Close:                         [Cycle 3 · serial]
+  Context:  Sync symbol index + write the ERR entry + mark the roadmap done.
   Skill:    editor
+  Model:    model_low
+  Input_From: cycle_2_S2.json (changed files)
   Tool:     Bash · Edit
   Constraints:
     - R8: `python scripts/symbol_indexer.py` mandatory · ERR-N entry required for every bug fix
@@ -91,8 +101,12 @@ Section 3 — Sync & Close:
 
 ### New Feature (target: coder)
 ```
-Section 1 — Scope & Index:
+# Serial chain — scope → build → sync · <5 files → run in main context (Input_From = prior section in-context)
+Section 1 — Scope & Index:                        [Cycle 1 · serial]
+  Context:  Probe scope + check indexes so no duplicate symbol or path gets created.
   Skill:    coder
+  Model:    model_low
+  Input_From: none
   Tool:     Bash
   Constraints:
     - [pre-read] T0 lookup → emit [pre-read] · [post-read] verdict · skip = [violation R5/CFP-004]
@@ -103,8 +117,11 @@ Section 1 — Scope & Index:
   Data_Sent: Thai ___ch | ENG: ___ch
   Token:    ___k
 
-Section 2 — Build:
+Section 2 — Build:                                [Cycle 2 · serial]
+  Context:  Create the new file(s) per spec + verify each exists.
   Skill:    coder
+  Model:    model_high
+  Input_From: cycle_1_S1.json (scope + no-conflict list)
   Tool:     Write · Bash
   Constraints:
     - [✓ written] verify each file after creation — mandatory
@@ -118,8 +135,11 @@ Section 2 — Build:
   Data_Sent: Thai ___ch | ENG: ___ch
   Token:    ___k
 
-Section 3 — Sync & Close:
+Section 3 — Sync & Close:                         [Cycle 3 · serial]
+  Context:  Update file + variable indexes, run symbol_indexer, mark roadmap done.
   Skill:    file_manager
+  Model:    model_low
+  Input_From: cycle_2_S2.json (created file paths)
   Tool:     Bash · Edit
   Constraints:
     - Creation: append to backlinks[] of every imported file · size object required
@@ -137,8 +157,12 @@ Section 3 — Sync & Close:
 
 ### Refactor / Rename (target: editor)
 ```
-Section 1 — Diagnose:
+# Serial chain — diagnose blast radius → rename all sites → sync · <5 files → run in main context
+Section 1 — Diagnose:                             [Cycle 1 · serial]
+  Context:  Build the full used_in blast-radius list before any rename.
   Skill:    editor
+  Model:    model_low
+  Input_From: none
   Tool:     Bash
   Constraints:
     - blast radius: full used_in list required before any rename begins
@@ -148,8 +172,11 @@ Section 1 — Diagnose:
   Data_Sent: Thai ___ch | ENG: ___ch
   Token:    ___k
 
-Section 2 — Edit & Verify:
+Section 2 — Edit & Verify:                        [Cycle 2 · serial]
+  Context:  Rename across every call site + prove 0 old refs remain.
   Skill:    editor
+  Model:    model_high
+  Input_From: cycle_1_S1.json (used_in file list)
   Tool:     Edit · Bash
   Constraints:
     - [pre-edit] emit before every rename · [✓ written] verify 0 old refs remain
@@ -163,8 +190,11 @@ Section 2 — Edit & Verify:
   Data_Sent: Thai ___ch | ENG: ___ch
   Token:    ___k
 
-Section 3 — Sync & Close:
+Section 3 — Sync & Close:                         [Cycle 3 · serial]
+  Context:  Rename the index key, run symbol_indexer, mark roadmap done.
   Skill:    variable_manager
+  Model:    model_low
+  Input_From: cycle_2_S2.json (renamed sites)
   Tool:     Bash · Edit
   Constraints:
     - python scripts/symbol_indexer.py mandatory · [✓ written] verify index updated
@@ -180,8 +210,11 @@ Section 3 — Sync & Close:
 
 ### Multi-skill / Complex Feature (target: agent)
 ```
-Section 1 — Scope & Design:
+Section 1 — Scope & Design:                       [Cycle 1 · serial]
+  Context:  Probe scope, split work into coder/editor/sync sections, pre-assign all T-IDs + cycle grouping.
   Skill:    agent
+  Model:    model_high
+  Input_From: none
   Tool:     Bash · Read
   Constraints:
     - Pre-assign ALL T-IDs before any spawn (INVARIANTS.md §I6)
@@ -194,8 +227,11 @@ Section 1 — Scope & Design:
   Data_Sent: Thai ___ch | ENG: ___ch
   Token:    ___k
 
-Section 2 — Build New Files:
+Section 2 — Build New Files:                      [Cycle 2 · parallel]
+  Context:  Create all new files per spec (no edits to existing code) — independent of S3.
   Skill:    coder · Tool: Write · Bash
+  Model:    model_high
+  Input_From: cycle_1_S1.json (section spec + T-IDs)
   Constraints:
     - [✓ written] verify each file · Do NOT edit indexes directly
     - Edge Runtime: no Node.js APIs · R15: src/db/ → [db-gate] → HALT
@@ -207,8 +243,11 @@ Section 2 — Build New Files:
   Data_Sent: Thai ___ch | ENG: ___ch
   Token:    ___k
 
-Section 3 — Modify Existing Code:
+Section 3 — Modify Existing Code:                 [Cycle 2 · parallel]
+  Context:  Apply targeted edits to existing files — independent of S2 (no shared file).
   Skill:    editor · Tool: Edit · Bash
+  Model:    model_high
+  Input_From: cycle_1_S1.json (section spec + T-IDs)
   Constraints:
     - [pre-edit] before every symbol Edit · R14: [gate] batch >5 files · R15: src/db/
   Steps:    [E] targeted edits · [✓ written] verify each
@@ -219,8 +258,11 @@ Section 3 — Modify Existing Code:
   Data_Sent: Thai ___ch | ENG: ___ch
   Token:    ___k
 
-Section 4 — Sync & Close:
+Section 4 — Sync & Close:                         [Cycle 3 · serial]
+  Context:  After the S2+S3 barrier, cascade index updates, run symbol_indexer, mark all T-IDs done.
   Skill:    file_manager + variable_manager · Tool: Bash · Edit
+  Model:    model_low
+  Input_From: cycle_2_S2.json, cycle_2_S3.json (created + modified paths)
   Constraints:
     - backlinks[] cascade update · size object required · python scripts/symbol_indexer.py mandatory
   Steps:    [F] file_manager: update index_files.json + backlinks
@@ -234,9 +276,10 @@ Section 4 — Sync & Close:
   Token:    ___k
 
 Cycle grouping:
-  Cycle 1: [S1]        ← scope first (serial)
-  Cycle 2: [S2, S3]    ← parallel (no mutual dependency)
-  Cycle 3: [S4]        ← depends on S2+S3 · context-input: cycle_2_S2.json, cycle_2_S3.json
+  Cycle 1 — serial   · agents: 1                          → S1   (scope + design first)
+  Cycle 2 — parallel · agents: 2 · cap: 2                 → S2, S3   (no shared file · no mutual dep)
+    Barrier: all cycle_2_*.json status:done → Cycle 3
+  Cycle 3 — serial   · agents: 1 · Input_From: cycle_2_*  → S4   (pulls cycle_2_S2.json + cycle_2_S3.json)
 ```
 
 ### Harness Skill Editing (target: editor · path: .agents/)
@@ -244,9 +287,13 @@ Cycle grouping:
 # Use when: editing SKILL.md files, AGENTS.md, CLAUDE.md, or other harness config.
 # Key difference from Bug Fix: no src/ edits, no symbol_indexer needed, no ERR-XXX.
 # File Size Contract: SKILL.md ≤200L ideal · 201-250L acceptable · >250L must split.
+# Serial chain — diagnose → edit → close · single context (no spawn for harness .md edits)
 
-Section 1 — Diagnose & Plan:
+Section 1 — Diagnose & Plan:                      [Cycle 1 · serial]
+  Context:  Size the target harness files + grep the exact edit lines (no full-load).
   Skill:    editor
+  Model:    model_low
+  Input_From: none
   Tool:     Bash · Read
   Constraints:
     - [pre-read] grep for line number first · Read with offset+limit only
@@ -259,8 +306,11 @@ Section 1 — Diagnose & Plan:
   Expected_Traces: [pre-read] · [post-read] verdict · wc output
   Refusal_Path: [edit-refused] → halt · check trigger conditions satisfied · retry
 
-Section 2 — Edit & Verify:
+Section 2 — Edit & Verify:                        [Cycle 2 · serial]
+  Context:  Apply targeted edits, grep-verify each, split the file if it exceeds 250L.
   Skill:    editor
+  Model:    model_high
+  Input_From: cycle_1_S1.json (target lines + size flags)
   Tool:     Edit
   Constraints:
     - [pre-edit] emit for every named symbol / rule / section heading changed
@@ -274,8 +324,11 @@ Section 2 — Edit & Verify:
   Expected_Traces: [pre-edit] · [✓ written] · wc-l result
   Refusal_Path: [edit-refused] → halt · check never-full-load not violated · retry
 
-Section 3 — Close:
+Section 3 — Close:                                [Cycle 3 · serial]
+  Context:  Mark roadmap done; if a new skill was added, update the manifest + registry.
   Skill:    editor
+  Model:    model_low
+  Input_From: cycle_2_S2.json (edited files)
   Tool:     Bash
   Constraints:
     - roadmap `[ ]→[X]` mandatory

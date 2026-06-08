@@ -1,6 +1,12 @@
 ---
 name: Agent Core
 description: Fallback orchestration skill. Loaded when no keyword matches. Re-routes to correct skill via registry. Does not run main work loop directly.
+triggers:
+  - "spawn agent"
+  - "delegate to agent"
+  - "run in parallel"
+  - "orchestrate"
+  - "cycle fan-out"
 ---
 
 ## Sections
@@ -19,6 +25,12 @@ Activated when:
 - No skill keyword matches user intent → fallback orchestrator route
 - Task has ≥2 independent MECE sections → multi-agent Cycle fan-out needed
 - MECE plan Cycle grouping declares parallel sections to spawn
+
+## When NOT to Use
+- Task fits in main context (<5 tool calls, <5 files) → proceed inline · spawning adds overhead with no gain
+- Task requires interactive back-and-forth with user mid-execution → keep in main context · agents cannot interrupt
+- Cycle depth > 1 (agent spawning agents) → HALT · max spawn depth = 1 · escalate to orchestrator
+- No MECE plan written → do not spawn ad-hoc · write plan first · emit `[agent-refused] reason:no-plan`
 
 ## Refusal Contract
 Halt and emit `[agent-refused]` if:
@@ -42,13 +54,24 @@ Full orchestration detail: `## Orchestration Protocol` · `## Skill Delegation R
 | Any section blocked | `[blocked] Section: <S> · Cause: <reason> · Halting all remaining cycles` |
 | Completion | Reviewer sub-agent result: PASS or FAIL list |
 
+**Behavior Contract — Cycle HALT (fires when any section returns status: blocked):**
+```
+Pre:    cycle_N_<section>.json written with status: "blocked" · remaining sections still pending
+Contract: HALT all remaining cycle spawns → emit [blocked] Section: <S> · Cause: <reason> · Halting
+          do NOT spawn further sections · report blocked_count + cause to orchestrator
+          orchestrator MUST ask user "fix or skip?" before any further cycles
+Post:   [blocked] emitted · remaining sections NOT spawned · user decision received
+Enforce: spawning sections after blocked status = [violation] BC-cycle-halt → HALT + re-emit [blocked]
+```
+
 Required files written:
 - `.sessions/cycle_N_<section_id>.json` — every spawned section before Cycle N+1
 
-## Role
-Orchestrator skill. Handles two responsibilities:
-1. **Routing** — when no keyword matches, re-route to correct skill
-2. **Multi-agent orchestration** — when task has independent sections, spawn and coordinate sub-agents per R4
+## Operating Stance
+- Orchestrator, not executor. Coordinates only — never writes code or edits files directly.
+- MECE before spawn. Every cycle fan-out requires a written MECE plan with Cycle groupings declared.
+- Barrier discipline. Sequential dependencies go in Cycle N+1. Parallel work goes in Cycle N. Never mix.
+- LOOP_WEIGHT accounting. Each Agent() spawn = +3 LOOP_WEIGHT. Check before each Cycle — CHAT_TOTAL>80k = [compact-rec] strong (primary); LOOP_WEIGHT>50 = [compact-rec] light hint (secondary).
 
 ## Routing Protocol
 ```
@@ -92,9 +115,13 @@ Orchestrator skill. Handles two responsibilities:
       - Run R3 threshold check immediately after update
 **Token Check before spawning Cycle N+1:**
 - Read SESSION_TOTAL from .sessions/session_tokens.md
-- > 50k AND compact not yet run this transition? → run Mid-Session Compact → emit [compact] → then spawn
-- > 60k? → TOKEN PAUSE (do not spawn next cycle until user confirms resume)
-- ≤ 50k? → spawn immediately
+- > 80k? → write compact_state.md (section + step + compact_size) → /compact immediately — do NOT spawn
+- > 60k? → TOKEN PAUSE — do not spawn next cycle until user confirms resume
+- ≤ 60k? → spawn immediately
+- **LOOP_WEIGHT per-spawn:** each Agent/Workflow spawn = +3 LOOP_WEIGHT (PostToolUse hook automatic)
+  - N parallel agents in one Cycle → LOOP_WEIGHT += N×3 · check after every Cycle:
+    - CHAT_TOTAL >80k → emit [compact-rec] strong before spawning next Cycle (PRIMARY)
+    - LOOP_WEIGHT >50 → emit [compact-rec] light hint (secondary) · forced defer only at the real ceiling SESSION>90k OR CHAT>120k → [compact-STOP] → write compact_state.md → defer next Cycle until compact-restore confirmed
 6. Call `<spawn_tool>` for Cycle N+1 — inject cycle_N results as `cycle_context:` in each Subagent Prompt
 7. Repeat until all Cycles done → Completion Gate:
    **[Reviewer] Spawn haiku sub-agent (read-only) — BEFORE reporting done to user:**
@@ -165,6 +192,16 @@ Claude Code example: `Agent(subagent_type="task", prompt="<goal>...")`
 ```
 Path: `.sessions/cycle_N_<section_id>.json`
 
+**Behavior Contract — Sub-agent Result Gate (fires before any sub-agent returns to orchestrator):**
+```
+Pre:    sub-agent section complete · about to signal done to orchestrator
+Contract: MUST write cycle_N_<section_id>.json with status + verify_result + artifacts before returning
+          file must exist at path and be valid JSON
+          skip write → [violation] BC-result-gate → write file now · re-signal done
+Post:   cycle_N_<section_id>.json exists · orchestrator reads status field to route next action
+Enforce: orchestrator receives done signal without cycle JSON file = [violation] BC-result-gate → sub-agent writes file · re-signals
+```
+
 ## Skill Delegation Rules
 
 **Priority 1 — explicit `Skill:` field in MECE plan section:**
@@ -184,9 +221,19 @@ If section has `Skill: coder` → spawn coder sub-agent regardless of action typ
   X writes first, Y appends `"artifacts"` and updates `"status"`
 - If X fails → do not run Y → mark section blocked
 
-**Always:**
+## Tone Guide
+Keep:   `[cycle N]` · `[agent-refused]` + reason · `[spawn]` + label · `[barrier-wait]`
+Strip:  internal deliberation · spawn rationale prose
+Format: `[signal] Cycle: N · Spawning: N agents · Labels: <A,B,C>`
+Prohibited: "I'll now delegate this to..." · "Let me spawn an agent for..."
+
+**Hard Rules (NEVER):**
 - NEVER write code or run modifying Bash directly — always delegate to correct skill
 - Sub-agents MUST NOT spawn further agents (max depth = 1)
+- NEVER spawn without MECE plan declaring Cycle groupings — ad-hoc spawns skip the barrier gate
+- NEVER mix shared-file writers in the same Cycle — race condition = silent data corruption
+- NEVER spawn depth >1 — agent spawning agents prohibited · escalate to orchestrator
+- NEVER emit [cycle N] without TOKEN CHECK first — CHAT>80k = [compact-rec] strong · LOOP_WEIGHT>50 = [compact-rec] light · hard STOP only at SESSION>90k / CHAT>120k
 
 ## MECE Constraints Block (copy into mece_plan.md for sections using `agent`)
 ```

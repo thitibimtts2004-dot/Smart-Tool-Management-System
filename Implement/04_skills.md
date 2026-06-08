@@ -362,13 +362,27 @@ python scripts/symbol_indexer.py
 grep "## ERR-" knowledge/error_index.md | tail -1
 # → take highest number + 1 → assign as ERR-XXX
 
-# Write entry at bottom of knowledge/error_index.md:
-## ERR-XXX: <Short title>
-- **Task:** T-{N}-{BugID}-01 · **Session:** session_<NNN>
-- **File:** src/path/to/file.ts · **Line:** <N>
-- **Symptom:** <what the error looked like>
-- **Root Cause:** <why it happened>
-- **Resolution:** <exact fix applied>
+# Write entry at bottom of knowledge/error_index.md (new schema):
+## ERR-XXX
+topic: <id from error_topics.md>          ← grep error_topics.md first (BC Topic Lookup)
+problem: <one-line description of the bug>
+trigger: <what code pattern causes it>
+fix: <what to do instead>
+it_work: true|false                        ← true only after confirmed fix in production
+occurrences:
+  - T-ID: T-{N}-{BugID}-01 · context: <where/when>
+failed_approaches:
+  - <approach that did NOT work — prevents re-trying dead ends>
+
+**Behavior Contract — Topic Lookup (fires before writing any new ERR-XXX entry):**
+```
+Pre:    new ERR-XXX being documented
+Contract: grep knowledge/error_topics.md for matching topic id
+          match found → set topic: <id> · proceed
+          no match → emit [topic-missing] domain:<desc> · add topic to error_topics.md first · then write entry
+Post:   every ERR-XXX entry has a valid topic: field
+Enforce: entry without topic: field = [violation] BC-topic-lookup → add topic before continuing
+```
 
 # Step 4 — call variable_manager if any symbol body was changed
 \```
@@ -465,9 +479,13 @@ Then run the appropriate grep tier.
 
 4. **Bug Fixing — search error_index first:**
    \```bash
-   grep -A 12 'symptom_keyword\|ERR-00' knowledge/error_index.md | head -30
+   grep -A 15 'symptom_keyword\|ERR-00' knowledge/error_index.md | head -40
+   # New schema fields to check: topic: · it_work: · failed_approaches:
+   # grep "^it_work:" to filter confirmed-working entries (it_work: true)
+   # grep "^topic:" to find entries by domain (e.g. database-d1, edge-runtime)
    \```
-   Found matching ERR-XXX → apply resolution immediately, no re-analysis needed.
+   Found matching ERR-XXX with `it_work: true` → apply fix immediately, no re-analysis needed.
+   Found with `it_work: false` → read `failed_approaches:` first → choose different approach (BC Active Fix).
    Not found → follow CLAUDE.md R-Roadmap + R7 (create roadmap entry T-{N}-{BugID}-{AttemptID} → fix → assign ERR code)
 
 5. **Piping — always filter before returning:**
@@ -718,6 +736,18 @@ Section 2 — Confirm & Register:
 \```
 
 On failure → STOP → report which step failed → do not auto-recover.
+
+**Behavior Contract — M5 Write-Before-Present (CFP-027 fix):**
+```
+Pre:    M2 plan built · about to present to user
+Contract: MUST call Write tool for gather_complete.md + mece_plan.md BEFORE response text showing plan
+          order: [1] Write gather_complete.md → [2] Write mece_plan.md → [3] present summary → [4] ask confirm
+          plan summary in chat without both files written = CFP-027 violation
+Post:   both files on disk · dated today · THEN user sees plan
+Enforce: [✓ written] for both files MUST appear before plan markdown in same response
+         missing → write files now · re-present · emit [CFP-027-backfill]
+```
+
 
 ---
 

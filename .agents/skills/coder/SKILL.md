@@ -1,6 +1,12 @@
 ---
 name: Coder (Creator)
-description: Focused skill for implementing new features and creating application files.
+description: >
+  Implements new features and creates application files from scratch.
+  Trigger on: "create a new file", "build this feature", "implement X from scratch",
+  "write the component", "scaffold", "new route", "add a new page",
+  "สร้างไฟล์ใหม่", "implement feature", "build section".
+  Proactively: when MECE plan section type = "Build" or "Scope & Index".
+triggers: ["write this function", "implement this", "code this feature", "add this method", "เขียน code", "implement ให้หน่อย", "code ส่วนนี้"]
 ---
 
 ## Sections
@@ -18,62 +24,88 @@ description: Focused skill for implementing new features and creating applicatio
 
 # Coder Skill
 
-## Trigger
-Activated when:
+## Operating Stance
+- Minimal footprint first. Write only what the task requires — no extra helpers, no "while I'm here" additions.
+- Correctness over cleverness. Readable, predictable code beats elegant one-liners that break in edge cases.
+- Build to be read. Every file you create will be read by someone debugging it at 2am. Name, structure, and comment accordingly.
+- Narrow scope, hard boundary. If context reveals a better refactor opportunity — note it, don't act on it. Refactors go to `editor` skill.
+
+## When to Invoke
 - Orchestrator delegates a `Skill: coder` section from a MECE plan
-- Task requires creating new files, components, or features from scratch
+- "create a new file" / "build this feature" / "implement X from scratch" / "scaffold" / "new route"
 - `mece_plan.md` section type = "Scope & Index" / "Build" / "Sync & Close"
+- Proactively: when Phase 3 section is type Build and no existing file found at target path
 
-## Refusal Contract
-Halt and emit `[coder-refused]` if:
-- Task is editing/fixing *existing* code → delegate to `editor` skill instead
-- `gather_complete.md` or `mece_plan.md` missing/stale before any `src/` write
-- No T-ID assigned in roadmap before starting
+## When NOT to Use
+- Task targets an **existing** file (edit/fix/refactor) → delegate to `editor` skill · do not start coder
+- File at target path already exists → confirm intent first · creating over existing = data loss risk
+- Task scope is ambiguous ("clean this up", "improve X") → clarify with MECE plan first · do not interpret and build
+- **Rename all / global symbol rename** → delegate to `editor` + `variable_manager` · Do NOT use coder for renaming; coder creates, it does not rename
+- `mece_plan.md` scope exceeds 3 new files → escalate to orchestrator · do not self-expand scope
 
-On refusal: emit `[coder-refused] Reason: <edit-not-create | missing-plan | no-task-id>` → HALT.
+## Prerequisites
+- [ ] T-ID exists in roadmap
+      Why: code changes without task ID are untracked
+      Missing: emit `[coder-refused] reason:no-task-id` · halt
+- [ ] Scope is a single symbol or function (not new file)
+      Why: coder uses Edit only; new files require Write → harness_editor
+      Missing: if new file needed → delegate to harness_editor
+- [ ] No harness file targeted (src/ only)
+      Why: coder must not edit SKILL.md / CLAUDE.md / AGENTS.md
+      Missing: route to harness_editor for harness file changes
+- [ ] edit → editor skill route confirmed
+      Why: routing prevents scope creep into harness-level changes
+      Missing: re-assess task type before proceeding
 
 ## Workflow
-Sequential: Roadmap [/] → gather context (G2 targeted reads) → write new file(s) → verify (grep + build check) → Index Sync (file_manager + variable_manager) → Roadmap [X] → session close.
-Full per-step detail: `## Roadmap Protocol` · `## Responsibilities` · `## Coding Standards` below.
+Run in order. Do not skip ahead.
+
+1. **Roadmap [/]** — grep `master_roadmap.md` for existing T-ID · if none: assign next T-N · set status `[/]`
+2. **Scope check** — `gather_complete.md` + `mece_plan.md` present and dated today? · missing → STOP · emit `[coder-refused] missing-plan`
+3. **Context gather (G2)** — targeted reads only: index_files + index_variables for conflicts · existing related files for interface contracts
+4. **Write** — create file(s) per Coding Standards · emit `[✓ written] path` immediately after each Write
+5. **Verify** — `grep -n "export\|function\|const" <file> | head -20` to confirm structure · linter errors → fix inline before continuing — do NOT proceed past step 5 with unresolved TS errors
+   → **Linter error ≥3 attempts on existing-code path:** assess whether error is in code you wrote (new file → keep fixing) OR in existing code you're modifying (existing file → emit `[coder-handoff] reason:linter-loop · target:<file>` and delegate to `editor`)
+6. **Index Sync** — trigger `file_manager` → wait for `[file-index]` · trigger `variable_manager` → wait for `[symbol-index]` · BOTH required
+7. **Roadmap [X]** — mark complete only after step 6 signals received · emit done summary
+
+**Stop conditions:**
+- `gather_complete.md` missing → stop at step 2 · do not write any src/ file
+- Linter error on step 5 → fix before step 6 · never ship broken TypeScript
+- Index Sync missing signal → do not mark [X] · re-trigger missing skill
+
+**Quality heuristic:** one build attempt is normal · two = re-read the interface contract · three = diagnose root cause before a fourth attempt — stop and report `[blocked]`
 
 ## Output Contract
 Required outputs per section:
 
-| Action | Required |
-|---|---|
-| Every file created | `[✓ written]` + grep verify (file exists at path) |
-| Section 3 done | `index_files.json` + `index_variables.json` updated via `file_manager` + `variable_manager` |
-| Every task complete | Roadmap `[ ] → [X] T-<N>` annotation |
-| Linter error found | Fix inline before proceeding — never leave TS errors |
+| Action | Required | Label |
+|---|---|---|
+| Every file created | `[✓ written]` + grep verify (file exists at path) | **mandatory** |
+| Section 3 done | `[file-index]` + `[symbol-index]` emitted · `index_files.json` + `index_variables.json` updated | **mandatory** |
+| Every task complete | Roadmap `[ ] → [X] T-<N>` annotation | **mandatory** |
+| Linter error found | Fix inline before proceeding — emit `[ts-suppressed] reason` if unavoidable | **mandatory** |
+| Build summary | One-line done summary + next-step offer when returning to orchestrator | **optional** |
+
+**Behavior Contract — Index-Sync-Gate (fires before roadmap [X] on any file create):**
+```
+Pre:    file(s) created · about to mark roadmap [X]
+Contract: MUST trigger file_manager → wait for [file-index] emit
+          MUST trigger variable_manager → wait for [symbol-index] emit
+          BOTH signals required before roadmap [X] is written
+          missing either → [violation] BC-index-sync-gate → trigger missing skill now · wait for emit
+Post:   [file-index] + [symbol-index] both emitted · index_files.json + index_variables.json updated
+Enforce: roadmap [X] written without both emits = [violation] BC-index-sync-gate → trigger skills now · re-verify
+```
 
 ## Routing
 - Section 3 (Sync & Close) done → return to orchestrator / session_manager §3
 - `[blocked]` → halt · report `T-<N>: <cause>` · wait for orchestrator decision
 - File created → trigger `file_manager` + `variable_manager` before closing section
-
-## Responsibilities
-You are the "Builder". When the Agent delegates a new feature task to you, focus on writing robust, error-free code and establishing new files.
-
-## Roadmap Protocol (MANDATORY — before and after every task)
-
-**Before writing any code:**
-```
-1. python scripts/lookup.py "<feature topic>" --session --json
-   → check if a prior session already built or attempted this feature
-   → High-score match: Read that session JSON → review files_changed[] and History[]
-     to understand what was built, what approach was used, what was left incomplete
-   → No match or irrelevant: proceed to step 2
-2. grep docs/master_roadmap.md for existing task matching this work
-   → Found: note the Task ID (e.g. T-017) → set status [/] (in progress)
-   → Not found: assign next T-<N> → add [ ] T-<N>: <description> to roadmap
-3. Note the Task ID — all work in this session is under that ID
-```
-
-**After completing code:**
-```
-1. Mark roadmap: [X] T-<N>: <description> · session_<NNN>
-2. Call file_manager + variable_manager to sync indexes
-```
+- Build complete → context-aware offer (pick by target):
+  - Target is `*.SKILL.md` or `.agents/skills/` → offer: "Build done — want `skill_auditor` to audit this skill for 9arm coverage gaps?"
+  - Target is `src/` file → offer: "Build done — want `editor` to verify linter/type correctness on the new file?"
+  - Target involves `schema` or `src/db/` → offer: "Build done — check ERR-007 risk: D1 multi-row INSERT or `onConflictDoNothing()` present?"
 
 ## Coding Standards (Cloudflare & Next.js)
 1. **Framework Strictness**: Follow standard directory conventions for new files (`src/app/`, `src/components/`, etc.).
@@ -86,23 +118,22 @@ You are the "Builder". When the Agent delegates a new feature task to you, focus
 - Delete the staged file immediately
 - Emit `[staged-drop] <path>` to signal that this content must not appear in subsequent context or `context_files:`
 
-## Read Protocol
+## Tone Guide
 
-For every file read during task execution: follow R5 (grep → [pre-read] → offset+limit).
-After each Read result, emit verdict immediately:
-```
-**[post-read]** File: `<path>` · Verdict: relevant|partial|irrelevant
-```
-- `irrelevant` → drop from context · do NOT include in `context_files:` when spawning sub-agents
-- `partial` → keep excerpt only (note line range) · discard remaining content
-- `relevant` → keep in working context
+Code comments:
+Keep:   function intent · param meaning · non-obvious constraints (e.g. "D1 D1 doesn't support multi-row INSERT")
+Strip:  task IDs · session references · "TODO: ask user" comments — never ship uncommitted annotations
+Avoid:  obvious comments (`// increment i`) · restating the code in English
 
-Skipping verdict = CFP-004 violation. Every Read needs a verdict.
+Emit messages (during execution):
+Keep:   [✓ written] + path · [pre-read] + target · [coder-refused] + reason
+Strip:  internal deliberation · preamble before action
+Format: `[signal] File: path · Verdict: result` — single line, no prose wrap
+Prohibited: "I'm now going to write..." · "Let me create..." · "I'll proceed with..." · "As requested, I will..."
 
-## Limitations
-- Do **NOT** manipulate `.agents/` or `*.json` index files directly — call `file_manager` + `variable_manager` skills after creating files.
-- **DO** update `docs/master_roadmap.md` — roadmap entries are mandatory (see Roadmap Protocol above).
-- Source work scope: `src/`, `wrangler.toml`, `package.json`, `next.config.ts`.
+Error → Thai (when audience is non-technical):
+"TypeError: Cannot read properties of undefined" → "ระบบเรียกข้อมูลที่ไม่มีอยู่ — ตรวจสอบว่า object ถูก initialize ก่อนใช้"
+"Edge Runtime does not support Node.js API" → "โค้ดเรียก Node.js API ที่ใช้ใน Edge Runtime ไม่ได้ — ต้องเปลี่ยนเป็น WebCrypto"
 
 ## Flow Diagram Rule
 Creating any `.md` file that contains a flow diagram or architecture chart → **load `ascii_flow` skill first**.
@@ -110,23 +141,6 @@ Creating any `.md` file that contains a flow diagram or architecture chart → *
 [→ ascii_flow] Before drawing any box diagram in <file>
 ```
 Style reference: `knowledge/harness_flow_20260525.md` · Skill: `.agents/skills/ascii_flow/SKILL.md`
-
-## File Size Contract (applies to all .md files created or edited)
-**Behavioral contract first:** every harness skill/rule file must have — Trigger · Refusal · Workflow · Output Contract · Routing.
-Prose rules without these 5 elements = incomplete contract → add before shipping.
-
-**Size zones:**
-| Zone | Lines | Action |
-|---|---|---|
-| 🟢 Ideal | ≤200L | No action needed |
-| 🟡 Acceptable | 201–250L | Must have `SKILL_detail.md` with `@` reference at bottom of Workflow |
-| 🔴 Must split | >250L | Split required — no exceptions |
-
-**Split rules:**
-1. `SKILL.md` = contract only (Trigger · Refusal · Workflow · Output Contract · Routing) — keep in 🟢 zone
-2. `SKILL_detail.md` = examples, templates, detailed procedures
-3. Add reference in primary: `@.agents/skills/<name>/SKILL_detail.md` at bottom of Workflow section
-4. Never split the contract itself — all 5 elements stay in SKILL.md
 
 ## MECE Constraints Block (copy into mece_plan.md for sections using `coder`)
 ```
@@ -136,6 +150,15 @@ Prose rules without these 5 elements = incomplete contract → add before shippi
 - Edge Runtime: no Node.js APIs — WebCrypto only
 - R15: any touch of src/db/ → [db-gate] → HALT for explicit confirm
 ```
+
+## Hard Rules
+- Never write to `src/` before `gather_complete.md` and `mece_plan.md` are both verified today.
+- Never create files without a T-ID assigned in `master_roadmap.md` first.
+- Never skip `[✓ written]` verify — every file created requires grep confirm before next step.
+- Never mark roadmap `[X]` without both `[file-index]` and `[symbol-index]` emitted.
+- Never write to `src/db/` without `[db-gate]` emitted and explicit "yes" from user (R15).
+- Never use Node.js APIs in Edge Runtime files — WebCrypto only.
+- Never invent root cause — read the full error message (file + line + message body) before writing a fix. "Probably an import issue" without reading the error is a guess, not a diagnosis.
 
 ## Context Gate
 If during this task a new hard constraint was discovered → add to INVARIANTS.md §I2 before closing task

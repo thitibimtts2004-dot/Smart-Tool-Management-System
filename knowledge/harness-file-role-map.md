@@ -23,7 +23,7 @@ When two files conflict, the higher layer wins.
 | **Identity/Policy** | Hard constraints, invariants, what agent may NEVER do | `CLAUDE.md` (global rules) · `INVARIANTS.md` (destructive gates) · `CODING_FAILURE_PATTERNS.md` (learned violations) |
 | **Bootstrap** | Session initialization, tool detection, state restore | `AGENTS.md §Boot` (B1–B4) · `.agents/platform/detected.md` · `.sessions/compact_state.md` |
 | **Routing** | Per-turn skill dispatch, topic switch, phase transition | `AGENTS.md §Per-Turn Routing` (C0–C3) · `.agents/skills/skill-manifest.json` · `.agents/skills/registry.md` |
-| **Continuity** | Session state, handoff, resume, token tracking | `.sessions/active_thread.md` · `.sessions/session_handoff.md` · `.sessions/mece_plan.md` · `.sessions/gather_complete.md` · `.sessions/session_tokens.md` · `.sessions/chat_tokens.md` · `.sessions/session_*.json` |
+| **Continuity** | Session state, handoff, resume, token tracking | `.sessions/active_thread.md` · `.sessions/session_handoff.md` · `.sessions/mece_plan.md` · `.sessions/gather_complete.md` · `.sessions/session_tokens.md` · `.sessions/session_*.json` |
 | **Operations** | Skill execution, task procedures, index management | `.agents/skills/*/SKILL.md` · `REPO_MAP.md` · `Implement/` docs · `knowledge/index_*.json` · `docs/master_roadmap.md` |
 
 ---

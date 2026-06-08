@@ -6,6 +6,23 @@
 
 ---
 
+## CFP Entry Template
+```
+## CFP-<N+1> · <title>
+topic: <topic_id>          ← REQUIRED · must match a topic in knowledge/cfp_topics.md
+count: 0                   ← recurrence count · doctor increments on each new occurrence
+recurrences: []            ← list of {date, cause} appended by doctor §1
+
+**Symptom:** <what the agent did wrong>
+**Root cause:** <why it happened>
+**Prevention:** <rule or BC that prevents it>
+**Detection signal:** <keyword/emit that doctor §1 matches against>
+```
+> topic must be one of: phase-gate-skip · mece-lifecycle · token-tracking · boot-routing · behavior-contract · harness-file-edit · session-close · data-safety
+> count + recurrences are managed by harness_doctor — do NOT edit manually.
+
+---
+
 ## CFP-005 · Skipping MECE Plan / Modifying Code Without Plan Alignment
 
 **Symptom:** Agent starts modifying or creating source files without first creating, updating, or aligning on a MECE plan (`.sessions/mece_plan.md` or similar). This leads to missed constraints, incorrect file edits, and tool/procedural violations.
@@ -448,3 +465,89 @@ Never present plan in chat before mece_plan.md exists on disk.
 **Detection signal:** `ls .sessions/session_*.json | wc -l` unchanged after close when src/ was modified · or user says "ไม่มี session file" · or index_sessions.json timestamp stale.
 
 **How to apply:** Before clearing mece_plan — run: `ls .sessions/session_*.json | wc -l` → if count unchanged AND task modified src/ → write session_<NNN>.json + `python scripts/session_indexer.py` → verify count +1 → then clear.
+
+## CFP-031 · Loop_W Shows Stale Value (0) — File Not Read Before Footer
+
+**Symptom:** Footer shows `Loop_W: 0` even after turn 2+ · PostToolUse hook has incremented the file · but response uses cached/estimated value instead of live file read.
+
+**Root cause:** Footer BC says "MUST run grep … before footer" but AI appends footer using in-context remembered value from boot (0) instead of running the grep. File is updated by hook but AI never re-reads it.
+
+**Prevention:** Footer step MUST be a live file read — not recalled from memory. Bash grep must run as a tool call in the SAME response, result used directly for Loop_W value.
+
+**Detection signal:** `Loop_W: 0` in footer when TURN_COUNT > 1 · OR user says "Loop_W ไม่นับ" / "Loop_W stuck" · OR footer grep result differs from displayed value.
+
+**How to apply:** Before every footer: `grep -E "^(SESSION_TOTAL|LOOP_WEIGHT):" .sessions/session_tokens.md` → use ONLY those values → never use boot-cached value. Loop_W: 0 on turn 2+ = immediate re-read signal.
+
+topic: token-tracking · count: 1 · recurrences: [2026-06-02]
+
+## CFP-032 · R2 Tool Budget Overflow — Multi-Section Work in Single Response
+Symptom: Executed S2→S6 (5 sections) in one response with ~37 tool calls, violating R2 ≤5 tool calls/turn. LOOP_WEIGHT spiked to 84.
+Root cause: No per-turn budget check between sections; task continued without pausing for user. Budget limit treated as advisory not hard stop.
+Prevention: After completing each MECE section, pause response and present result to user before proceeding to next section. Never chain S2→S3→…→SN in a single response.
+Detection signal: LOOP_WEIGHT >30 mid-response; multiple [X] marks in mece_plan.md within same response.
+topic: behavior-contract
+count: 1
+recurrences: [{date: 2026-06-04, session: T-085, note: S2-S6 all in one response}]
+
+## CFP-033 · L4.5 PURGE Skipped — Tool Results Retained in Context After Verdict
+Symptom: Read/Bash results kept in context after [post-read] or verify verdict emitted; no [dropped] signal; CHAT_TOTAL grows unnecessarily.
+Root cause: L4.5 PURGE step treated as optional; no habit of explicitly dropping after verdict. Partial/irrelevant reads stay in context.
+Prevention: After every [post-read] irrelevant → immediately note [dropped]; after verify bash → drop output; offload >50L via exec_log. Treat PURGE as mandatory step same weight as L4 VERIFY.
+Detection signal: [post-read] verdict emitted with no subsequent [dropped] or [result-offloaded]; tool result >50L without offload path.
+topic: token-tracking
+count: 2
+recurrences: [{date: 2026-06-04, session: T-085, note: multiple Read results kept; no [dropped] emitted}, {date: 2026-06-04, session: T-088, note: harness_doctor inline run — Read/grep results retained; [dropped] not emitted after verdicts}]
+
+## CFP-034 · R5 Index-First [pre-read] Emitted Inconsistently (~60% compliance)
+Symptom: [pre-read] Target/Tier/Line signal emitted before ~60% of Read calls; skipped on ~40% — especially under time pressure or when anchor line is already known from grep output.
+Root cause: [pre-read] treated as optional annotation instead of mandatory gate; when line is "obvious" from grep context, emission skipped to save tokens.
+Prevention: Make [pre-read] mechanical syntax — even one-line emit before every Read, no exceptions. Cost: 10 tokens. Skipping cost: R5 violation + rerun.
+Detection signal: Bash grep output followed directly by Read tool call without intervening [pre-read] line in response.
+topic: behavior-contract
+count: 2
+recurrences: [{date: 2026-06-04, session: T-085, note: ~40% of Read calls missing [pre-read]}, {date: 2026-06-04, session: T-088, note: harness_doctor inline — pre-read emitted inconsistently; skipped on known-line reads during fix execution}]
+
+## CFP-035 · R6/Bash Filter — safe_run.py Not Applied Consistently
+Symptom: Diagnostic bash calls (grep, python3, find) made without safe_run.py wrapper or grep filter, even when output could be >40L. Only S6 symbol_indexer used safe_run.py.
+Root cause: safe_run.py associated mentally with "scripts that scan" not "any bash with unknown output length"; diagnostic commands assumed short.
+Prevention: Before every Bash call — assess: could output be >40L? If yes → use safe_run.py or pipe \`2>&1 | grep -iE "error|warn|fail" | tail -20\`. Apply to ALL python3 script calls and find commands.
+Detection signal: Bash call with python3/find/git log/npm/yarn without grep filter or safe_run.py prefix.
+topic: behavior-contract
+count: 1
+recurrences: [{date: 2026-06-04, session: T-085, note: grep/find calls without filter; only symbol_indexer filtered}]
+
+## CFP-036 · Workflow Step Skip — Fix Applied Before Mandatory Log/Audit Step
+Symptom: AI jumps to a later step (fix/edit/write) without completing an earlier mandatory ordered step first (e.g. harness_doctor: log-to-optimization_logs.md → self-heal, not self-heal → log).
+Root: Multi-step workflow protocols (doctor, M5, R8) not enforced as strict sequence — AI treats them as optional checklist rather than ordered gates.
+Prevention: Every multi-step workflow with a mandatory order must have a BC Pre/Contract/Post/Enforce. Enforce field must reference the specific "step N must complete before step N+1" constraint explicitly.
+Detection: Response applies a fix (Edit/Write to offending file) before any [audit-finding] or [✓ written] log emit — grep response for Edit/Write without preceding audit/log signal.
+topic: workflow-step-skip
+count: 1
+recurrences: ["2026-06-04 T-086 harness_doctor — fixed SKILL.md file_manager ref without writing optimization_logs.md first"]
+
+## CFP-037 · Premature Close — Phase 3 Close Sequence Without User Confirm
+Symptom: AI marks task done / clears mece_plan / emits [harness-edit-done] without reading Close Checklist from mece_plan_schema.md — skips Reviewer spawn, [mece-audit], [session-health], knowledge_conflict_checker, Implement/ check
+Root: (1) Completion Gate BC misread as auto-trigger · (2) Close Checklist treated as "already known" — never actually read from schema file · AI self-certifies done without running items
+Prevention: MUST Read mece_plan_schema.md §Close Checklist EVERY close — not from memory · tick each item explicitly · [harness-edit-done] only after ALL items verified
+Detection: grep response for [mece-audit] AND [session-health] AND [r8-sync-check] → any missing after [harness-edit-done] = violation
+topic: premature-close
+count: 4
+recurrences: ["2026-06-04 T-086 harness_doctor — fixed SKILL.md without optimization_logs.md", "2026-06-04 T-095 harness_editor — reported Close Checklist done without reading schema · skipped Reviewer/mece-audit/session-health/kcc"]
+
+## CFP-038 · [fix-required] Signal Emitted But harness_doctor Not Triggered
+Symptom: AI emits [fix-required] CFP-N (count≥3) or [fix-escalated] (count≥5) in same response, then proceeds without triggering harness_doctor — threshold signal disconnected from mandatory escalation action
+Root: Threshold detection (count++) and escalation action (→ harness_doctor) treated as separate optional steps — AI logs the signal but concludes "not needed" without checking trigger definition
+Prevention: [fix-required] OR [fix-escalated] emitted → MUST immediately emit [doctor-invoked] + BLOCK (HALT all work) until [doctor-verdict] received · no exceptions · no deferral · "ไม่ต้องหมอ" = violation
+Detection: grep response for [fix-required]\|[fix-escalated] → next action MUST be [doctor-invoked] + HALT · anything else = violation · BC-doctor-gate in mece_plan_schema.md enforces this at Close
+topic: workflow-step-skip
+count: 2
+recurrences: ["2026-06-04 T-088: CFP-028 count=3 → [fix-required] emitted → AI said 'ไม่ต้องหมอ' and proceeded", "2026-06-04 T-095: CFP-037 count=4 → [fix-required] emitted → AI asked user permission instead of invoking immediately"]
+
+## CFP-039 · Close Checklist Run Without Output Display
+Symptom: AI completes Close Checklist items internally but shows no per-item result table to user — user cannot verify what was checked or passed.
+Root: "งานเสร็จ" summary replaces per-item output; AI conflates running checklist with reporting it.
+Prevention: After every Close Checklist run — MUST emit per-item table (item · result · note) before writing phase:done. Silent completion = violation.
+Detection: grep response for checklist table (| R8 | or | Roadmap | or | harness_doctor |) after every [session-health] — missing = violation → backfill immediately
+topic: session-close
+count: 1
+recurrences: []
