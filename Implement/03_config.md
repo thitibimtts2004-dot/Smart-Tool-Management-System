@@ -52,7 +52,15 @@ Two counters — both in working memory, sourced from files at Boot:
 - `CHAT_TOTAL` — resets only on /compact · B1 sets to sys_fixed (dynamic: (CLAUDE.md+AGENTS.md chars × 0.3)+3500 ≈ 11–13k) · compact-restore: compact_size + sys_fixed
 - `CACHE_READ` / `CACHE_WRITE` — from API usage fields · `cache_hit% = CACHE_READ / (CACHE_READ + uncached_input) × 100` · target ≥ 60%
 
-Formulas:
+**Provider formula selection (read `api_provider` / `token_formula` from detected.md — see §Provider Profiles):**
+- `anthropic` → use the baseline Formulas below as-is (calibrated for the Claude tokenizer). Cache read ≈ 0.1× input.
+- `openai` → tiktoken-style: English ≈ chars/4 (≈ 0.25/char); code/structured denser → 0.30/char; thinking tokens count as output; cache read ≈ 0.1× input.
+- `google` → multi-byte correction: Latin ≈ 0.27/char, CJK/Thai ≈ 1.0/char; ⚠️ input >200000 → reprice the WHOLE request (in+out) at long-context rate before logging (200K cliff).
+- `generic` (provider unknown) → average / generic fallback: use the baseline Formulas below AND assume NO cache discount (cold every turn — most conservative).
+- ⚠️ Never apply one provider's cache cost factor to another (§Provider Profiles). api_provider missing/unknown → generic fallback + no-cache assumption.
+- **PostToolUse hook (`scripts/posttool_track.py`, T-178)** consumes this profile: it imports `token_estimator.PROVIDER_MULTS` + `_load_provider_formula()` and accumulates SESSION_TOTAL/CHAT_TOTAL using the detected provider's `tool` multiplier (anthropic 0.3 / openai 0.27 / google 0.27 / generic 0.35). Import failure → generic 0.35 fallback (fail-safe). CHAT uses the same delta as SESSION (no ×1.5 — true API context ≈1.5–2× this lower bound, doc note only).
+
+Formulas: (baseline — `anthropic` and `generic` fallback)
 - Output = (thai_chars × 1.7) + (en_chars × 0.3)
 - Input = (user_msg_chars × 0.3) + tool_result_tokens
 - Per-turn CHAT_TOTAL growth: CHAT_TOTAL += 700 + turn_tokens × 1.5  (calibrated T-046: actual ≈ 1.5–2×)
@@ -63,6 +71,7 @@ Formulas:
 Each turn (in order):
 1. Compute turn_tokens → SESSION_TOTAL += turn_tokens · CHAT_TOTAL += 700 + turn_tokens × 1.5
 2. Write SESSION_TOTAL + CHAT_TOTAL to session_tokens.md EVERY turn, before the footer (persist-every-turn — closes CFP-031). Reset SESSION_TOTAL to 0 ONLY on: (1) user-confirmed /compact at an explicit mece compact-checkpoint (PATH B writes `session_reset=armed`), OR (2) task done + session close (PATH A/C). NEVER reset on stale/leftover compact_state.md or mid-task fresh boot. CHAT_TOTAL resets on /compact only.
+   · T-180 single-source: `scripts/compact_reset.py` is the ONE place that recomputes counters after a compact (CHAT=compact_size+sys_fixed, LOOP=0, SESSION=0 if armed|phase:done else preserve, flips armed→consumed, prints `[compact-reset]`). Called by the SessionStart:compact hook (claude-code, automatic) and the C0 plain-text-confirm path (other providers). It mirrors the B1 formula exactly so B1 / hook / confirm never drift. Stuck-counter guard (C0.5): [compact-STOP] with ~same CHAT (±2k) across ≥2 turns = didn't-reset bug, not a real ceiling → run compact_reset.py instead of nagging.
 3. Write JSONL entry → `.sessions/token_log.jsonl`: turn_id · timestamp · task_id · phase · session_total · chat_total · cache_read_tokens · cache_write_tokens · cache_hit_pct · bucket_sys/tools/hist/output · turn_tokens · hooks_overhead=700
    · bucket fields required — write 0 if value unknown (never omit fields from schema)
 4. Footer: `*(Turn: N · Loop_W: N | Session: ~NNNk | Chat: ~NNNk tokens)*` · if SESSION_TOTAL >5k add `[sys:Nk tools:Nk hist:Nk out:Nk]`
@@ -179,7 +188,7 @@ Routing shortcuts:
 **Set once at project setup. All harness files reference tier names — never hardcode model names.**
 
 ```
-MODEL_HIGH   = <your high-capability model>   # reasoning, MECE plan, multi-step execution
+MODEL_HIGH   = <your high-capability model>   # structural reasoning, MECE plan, architecture (reserved — not routine code edits)
 MODEL_MEDIUM = <your mid-tier model>           # analysis, code review, structured output
 MODEL_LOW    = <your fast/cheap model>         # lookup, grep, read-only, single-output tasks
 ```
@@ -188,18 +197,43 @@ MODEL_LOW    = <your fast/cheap model>         # lookup, grep, read-only, single
 
 | Tier | Anthropic (Claude) | Google (Gemini) | OpenAI |
 |---|---|---|---|
-| HIGH | claude-sonnet-4-6 | gemini-2.0-pro | gpt-4o |
-| MEDIUM | claude-haiku-4-5 | gemini-2.0-flash | gpt-4o-mini |
-| LOW | claude-haiku-4-5 | gemini-2.0-flash-lite | gpt-4o-mini |
+| HIGH | claude-opus-4-8 | gemini-3.1-pro | gpt-5.5 |
+| MEDIUM | claude-sonnet-4-6 | gemini-3.5-flash | gpt-5.4 |
+| LOW | claude-haiku-4-5 | gemini-3.1-flash-lite | gpt-5.4-nano |
+
+> Model IDs current as of Jun 2026 (see `knowledge/llm-api-pricing-comparison-2026-06.md`). Tier ladder: HIGH reserved for genuine structural reasoning; MEDIUM = capable workhorse writer (does the bulk of execution); LOW = grep/lookup/review.
 
 **How to configure:** Agent fills in actual model IDs during project setup (Phase 1 §1.1).
 Store in `.agents/platform/detected.md` under `model_high:` / `model_medium:` / `model_low:` fields.
-All spawn calls in AGENTS.md use tier names — runtime resolves to actual model ID via detected.md.
+The active provider is set in detected.md `api_provider:` — runtime resolves tier → that provider's column. All spawn calls in AGENTS.md use tier names — never hardcode model IDs.
 
-**Routing rule (R4):**
-- `MODEL_LOW` → lookup / grep / single-file read / Reviewer / Completion Gate
-- `MODEL_MEDIUM` → analysis / structured output / classify
-- `MODEL_HIGH` → MECE plan / multi-step execution / Phase 3 sections ≥2
+**Routing rule (R4) — model × EFFORT · baseline = Sonnet (MEDIUM) @ low-med effort · provider resolved via detected.md `api_provider` · robustness floor: every skill must run on a MEDIUM-tier model WITHOUT inference:**
+- `MODEL_LOW` @ low → lookup / grep / single-file read / Reviewer / Completion Gate
+- `MODEL_MEDIUM` (Sonnet) @ low → mechanical edit / edit-as-instructed / classify / structured output
+- `MODEL_MEDIUM` (Sonnet) @ medium → multi-step execution / code edits / Phase 3 sections ≥2 (workhorse — must produce complete detailed output without inference)
+- `MODEL_HIGH` (Opus) @ high → MECE planning / architecture / structural reasoning ONLY (reserved — NOT for routine code edits)
+- Rule: dial EFFORT first, tier second · escalate to MODEL_HIGH (Opus) ONLY for genuine structural reasoning (a strong model masking a vague step = the skill is still broken for weaker models)
+
+---
+
+## Provider Profiles — Cache & Token Rules per Provider
+
+**Why this section exists:** cache mechanics and token-cost behavior differ per provider. Applying one provider's cache rules to another **breaks immediately** (e.g. placing Anthropic explicit breakpoints on an OpenAI request, or ignoring Google's 200K repricing cliff). Runtime MUST read `api_provider:` from `.agents/platform/detected.md` and apply ONLY that provider's row. Source rates: `knowledge/llm-api-pricing-comparison-2026-06.md`.
+
+| api_provider | cache_mechanism | cache_write_cost | cache_read_cost | cache_TTL | context_cliff_tokens | token_formula |
+|---|---|---|---|---|---|---|
+| `anthropic` | explicit_breakpoint (must place `cache_control` on stable prefix) | 1.25× (5-min TTL) / 2× (1-hr TTL) | 0.1× (−90%) | 5 min / 1 hr | none (flat to 1M) | `anthropic` |
+| `openai` | auto_prefix (automatic when prefix stable >~1024 tokens) | none | ~0.1× (−90%) | 5–10 min | ~270000 | `openai` |
+| `google` | implicit + explicit | per-hour storage cost | ~0.1–0.25× (−75–90%) | varies | **200000** | `google` |
+| _unknown_ | treat as no-cache (assume cold every turn) | — | — | — | assume 200000 (most conservative) | `generic` |
+
+**Per-provider guardrails (hard):**
+- **anthropic** — keep CLAUDE.md + AGENTS.md as a stable cached prefix; any mid-session edit to that prefix pays write cost again → emit `[schema-changed]`. Never `cache_control` dynamic blocks (user msg / tool results).
+- **openai** — cache is automatic; just keep the prefix byte-stable. Short TTL (5–10 min) → compact before idle >10 min or lose the cached prefix.
+- **google** — ⚠️ **200K cliff**: crossing 200K *input* reprices the ENTIRE request (input **and** output) at long-context rate — silent cost spike. Guard: warn + consider compact when approaching 200K with a Google provider.
+- **unknown** — never assume a cache discount; never apply another provider's breakpoint syntax. Use `generic` token formula + the most conservative cliff.
+
+**Resolution order:** detected.md `api_provider` → match row → apply cache_mechanism + token_formula. Missing/unknown → `generic` row. This profile is set once at B4 Platform Probe and read by R1 (token formula) and the cache-discipline rules.
 
 ---
 
@@ -221,14 +255,15 @@ Run 1 Bash scope probe before any task.
 - Parallel spawn: pass all sections as array in single `invoke_subagents` Subagents[] (not sequentially)
 - Custom types: use `define_subagent` to register a new TypeName for the session before invoking
 
-**Phase routing (override task-type tier when phase is known):**
-| Phase | Tier | Reason |
-|---|---|---|
-| G1 Scan / G2 Reads | MODEL_LOW | Grep + classify only |
-| MECE Plan M1-M3 | MODEL_HIGH | Reasoning heavy |
-| L1-L5 REACT Loop | MODEL_HIGH | Code edits need quality |
-| Reviewer (Completion Gate) | MODEL_LOW | Verify only — read-only |
-Savings: route G1+G2+Reviewer to MODEL_LOW → ~35% cost reduction vs all-HIGH
+**Phase routing (override task-type tier when phase is known) — model × effort:**
+| Phase | Tier | Effort | Reason |
+|---|---|---|---|
+| G1 Scan / G2 Reads | MODEL_LOW | low | Grep + classify only |
+| MECE Plan M1-M3 | MODEL_HIGH | high | Structural reasoning |
+| L1-L5 REACT Loop (mechanical / edit-as-instructed) | MODEL_MEDIUM | low | Explicit steps, no reasoning |
+| L1-L5 REACT Loop (multi-step / code edits) | MODEL_MEDIUM | medium | Workhorse writer — complete output w/o inference (HIGH reserved for planning) |
+| Reviewer (Completion Gate) | MODEL_LOW | low | Verify only — read-only |
+Baseline when phase unknown: Sonnet @ low-med effort. Savings: route lookups+reviewer to MODEL_LOW + dial effort low for mechanical work → ~35%+ cost reduction vs all-HIGH @ high-effort.
 
 **Harness Context in Sub-agent Prompts:**
 - Explore agents (read-only): no harness constraints needed

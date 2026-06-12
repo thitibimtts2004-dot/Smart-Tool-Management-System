@@ -45,6 +45,7 @@ Agent configuration and skill library.
     coder/               ← SKILL.md: TypeScript/Next.js code writing
     editor/              ← SKILL.md + SKILL_detail.md: file editing
     file_manager/        ← SKILL.md: file create/move/delete
+    harness_doc_auditor/ ← SKILL.md: audits rule/directive .md (CLAUDE/AGENTS/INVARIANTS/REPO_MAP/Implement) via shared engine
     harness_doctor/      ← SKILL.md + SKILL_detail.md: structural CFP fix agent
     harness_editor/      ← SKILL.md: harness config file editor (CLAUDE.md/AGENTS.md/SKILL.md)
     identity/            ← SKILL.md: project identity / orientation (persona — no behavioral contract)
@@ -94,6 +95,7 @@ knowledge/
   harness-file-role-map.md   ← role map for all harness config files
   harness_flow_20260525.md   ← ASCII flow diagram snapshot 2026-05-25
   harness_flow_20260526.md   ← ASCII flow diagram snapshot 2026-05-26 (current)
+  behave_test_log.jsonl      ← Stage 3.5 behavioral-verify log + regression suite (T-161)
   cfp-proposals/
     applied/                 ← CFP proposals already merged
     pending/                 ← CFP proposals queued for review
@@ -134,6 +136,7 @@ scripts/
   bootstrap_sessions.py   ← initializes .sessions/ from docs/session_templates/ (--dry-run/--force)
   session_compactor.py    ← pre-commit health gate: validates 8 .sessions/ files + required fields
   token_estimator.py      ← estimates SESSION_TOTAL + CHAT_TOTAL for harness agents
+  compact_reset.py        ← T-180 single-source token reset after /compact (CHAT/SESSION/LOOP) + [compact-reset] emit · called by SessionStart:compact hook + C0 confirm
   choose_tools.py         ← keyword search across skill-manifest + tool-manifest
 ```
 

@@ -20,3 +20,10 @@ result: [✓ harness-updated] — recurrence_count incremented to 1 · harness_d
 - Fix: AGENTS.md B1 cmd `CHAT_TOTAL: 0` → `CHAT_TOTAL: 7300` · AGENTS.md note + CLAUDE.md note updated
 - Detection: user observed `Chat: ~0k` at boot instead of `~7k`
 - Trigger: user said "เรียกหมอ" → harness_doctor refused (first-time CFP) → redirected to self_improve §3+§4
+
+[2026-06-09] knowledge_conflict_checker: behave_test_log.jsonl → review_recommended · no_action (data-log, no semantic conflict · T-161)
+
+## 2026-06-12 · T-180 close
+- kcc on harness_flow_20260526.md: candidates Y-T178/Y-T179 flagged (shared token topic) → action: no_action (sequential distinct entries, not duplicates).
+- CFP-040 added (topic:token-tracking · stale-counter-after-compact). CFP count 36→37.
+- T-180 LIVE-VALIDATED: SessionStart:compact hook fired in production → [compact-reset] trigger:hook CHAT→56770.

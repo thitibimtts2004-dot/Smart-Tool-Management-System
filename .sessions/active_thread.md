@@ -1,3 +1,3 @@
-task: T-157 token-tracking fix — DONE (persist-every-turn + consume-once reset marker · all 6 sections + close)
+task: T-180 — provider-aware compact-reset + visible [compact-reset] emit
 phase: done
-next: (none — pick next roadmap item)
+next: none — T-180 complete (S1-S6 + close). LIVE-validated: SessionStart:compact hook fired → [compact-reset]. Pending unrelated: stale REPO_MAP.md skill list (route via harness_editor).

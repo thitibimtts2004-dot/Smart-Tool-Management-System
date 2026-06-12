@@ -137,6 +137,21 @@
       ],
       "when": "Before large file reads or long operations — estimate cost first"
     },
+    "compact_reset_py": {
+      "type": "script",
+      "spawn_script": "python3 scripts/compact_reset.py [--dry-run] [--trigger=hook|user-confirm]",
+      "short": "Single-source token reset after /compact — recomputes CHAT/SESSION/LOOP in session_tokens.md + prints [compact-reset]",
+      "tags": [
+        "compact",
+        "reset",
+        "token",
+        "chat_total",
+        "session_total",
+        "stale counter"
+      ],
+      "when": "After /compact — wired into SessionStart:compact hook (auto) + C0 plain-text confirm (other providers). T-180.",
+      "note": "Mirrors B1 CHAT formula (compact_size+sys_fixed) + consume-once session_reset=armed→consumed. Never crashes a hook (exit 0)."
+    },
     "choose_tools_py": {
       "type": "script",
       "spawn_script": "python scripts/choose_tools.py --keywords \"<kw1,kw2>\" [--top N]",

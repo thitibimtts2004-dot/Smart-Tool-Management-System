@@ -609,6 +609,63 @@
 - [X] T-157.6: CFP-031 update + harness_flow Y-entry + roadmap [X] + close [Cycle3·serial]
 
 ## T-158 · mece skill fixes — 3 weak components (9arm audit CONDITIONAL 6/9)
-- [ ] T-158.1: mece/SKILL.md — consolidate Output Spec Structure (merge L54-70+L105-115+L141-154 into one block + pointer to schema) [Cycle1·serial·HIGH]
-- [ ] T-158.2: mece/SKILL.md — When NOT to Use: 3 refusals inline (single-file/read-only/resume + reason) [Cycle1·serial]
-- [ ] T-158.3: mece/SKILL.md — fix Tone Guide Prohibited (tone prohibitions, not enforcement echoes) [Cycle1·serial]
+- [X] T-158.1: mece/SKILL.md — consolidate Output Spec Structure (merge L54-70+L105-115+L141-154 into one block + pointer to schema) [Cycle1·serial·HIGH]
+- [X] T-158.2: mece/SKILL.md — When NOT to Use: 3 refusals inline (single-file/read-only/resume + reason) [Cycle1·serial]
+- [X] T-158.3: mece/SKILL.md — fix Tone Guide Prohibited (tone prohibitions, not enforcement echoes) [Cycle1·serial]
+
+## T-159 · skill_auditor — low-tier (Haiku spawn) support
+- [X] T-159.1: skill_auditor/SKILL.md — add Tier&effort block in Workflow + Routing line (mechanical-vs-judgment split + low-tier fallbacks) [Cycle1·serial]
+- [X] T-159.2: re-audit (Haiku low-tier) walkthrough + Implement sync (04_skills) + harness_flow Y-entry + close [Cycle1·serial]
+
+- [X] T-159.3: skill_auditor — add neutral-abstention line (skip != pass, bias rules apply every tier) [Cycle1·serial]
+
+- [X] T-160: skill_auditor 2-tier finalize — S1 guard (no Sonnet<medium · false-confidence) + S2 in-file Output section labels (convergent fix 3/4 audits) [Cycle1·serial]
+
+- [X] T-161: harness_editor Stage 3.5 BEHAVIORAL VERIFY — spawn floor(Haiku)+real(Sonnet) tiers vs edited harness, signal-grep scoring, behave_test_log.jsonl feedback log · attempts:1 · tool_calls:~16
+
+- [X] T-162: harness_editor Stage 3.5 → 3-config effort-aware ladder (Haiku floor → Sonnet@med → Sonnet@high · sequential early-exit · reuse [behave-gap]+effort:high) · attempts:1 · tool_calls:~24
+
+- [X] T-163: KMS backend security — write complete kms-api-secured.js Cloudflare Worker (JWT auth + PBKDF2 + 16 endpoints + D1) · attempts:1 · tool_calls:15
+- [X] T-164: harness_editor Stage 3.5 dogfood — behavioral-verify 3 doctor/improvement contracts (A Doctor Flow BC · B harness_doctor approach-diff · C self_improve blocked-self-edit) · all 3 behave-pass at floor (Haiku early-exit) · no gaps · test-only · attempts:1 · tool_calls:~22 [Cycle1·serial]
+- [X] T-165: BC coverage tracker — enumerate all 42 formal BCs (CLAUDE 6 · AGENTS 4 · skills 32) → knowledge/bc_coverage.md · cross-ref behave_test_log → 1/42 tested ≈ 2% · R8 index synced · test-only · attempts:1 · tool_calls:~12 [Cycle1·serial]
+
+- [X] T-166: skill_auditor Step 4.5 Cross-Model Comprehension Probe (3-tier spawn → diff → Suggested Additions for low-mid tier) · attempts:1 · tool_calls:~9
+
+- [X] T-167: KMS 3-role permission system (god/content_manager/content_creator) — API canWrite() + JWT managed_groups + endpoint guards + UI role dropdown + group checklist + button visibility · attempts:1 · tool_calls:~22
+- [X] T-168: skill_auditor self-audit fixes (A1 Step0 pre-flight · A2 stop Class A/B split · A3 [handoff-wait] · A4 [systemic-gap]) · re-probe Haiku Q2+Q4 fixed · attempts:1 · tool_calls:~12
+- [X] T-169: self_improve self-audit via skill_auditor (probe 3-tier) · fixes G1 V20-contradiction · G2 §4 fence repair · G3 [cfp-escalate] mechanism · G4 Thai-format pointer · G3b escalate cross-ref · re-probe: 3/4 RESOLVED + G3b fixed · Haiku floor Q4/Q6/Q7 now correct · 206→207L · 0 BC added · attempts:1 · tool_calls:~16
+- [X] T-170: skill model-certification sweep — 3-tier probe per skill → model_routing into skill-manifest.json · Pilot 4 (agent,coder,editor,harness_editor) → scale 14
+- [X] T-171: skill model-certification scale — 3-tier probe + flag-verify + model_routing for remaining 14 skills (5 cycles, /compact between) · follows T-170 pilot
+- [X] T-172: provider-aware harness enhancement — detected.md provider profile fields + 03_config §Model Tiers (3 tiers x 3 providers) + NEW §Provider Profiles + R1 formula branching + 04_skills MEDIUM robustness floor
+
+- [X] T-173: provider-aware functional — B4 auto-detect+fill provider fields (map from Known Provider Profiles, unknown->generic) + AGENTS routing sync (code edits->MODEL_MEDIUM, HIGH=opus) + 03_config table sync
+
+- [X] T-174: close all model-coverage gaps — certify self_improve+skill_auditor (3-tier probe) + audit provider-aware additions + wire token_formula into token_estimator.py + close T-171 -> 20/20 certified
+- [ ] T-175: reduce BC over-enforcement — 7 flagged (3 REMOVE/5 DOWNGRADE) · ~480 tok/invocation · findings: .sessions/bc_overenforcement_audit.md · CAUTION downgrade-not-remove: Self-Improve Gate + Symbol-Return (user-valued tracking) · attempts:0
+
+- [X] T-176-S1: per-BC recoverability review of CLAUDE.md+AGENTS.md (10 BCs) — read-only gate
+- [X] T-176-S2: apply confirmed BC downgrades (Operating Stance + soft signal)
+- [X] T-176-S3: consolidate token-threshold redundancy (13 dup -> single source)
+- [X] T-176-S4: verify + close
+
+- [X] T-177-S1: confirm token_estimator CLI + PostToolUse stdin contract (read-only) · field=tool_response
+- [X] T-177-S2: extend PostToolUse hook to estimate+accumulate SESSION/CHAT (→scripts/posttool_track.py · 3 standalone tests pass · live SESSION 101->201) · attempts:1
+- [X] T-177-S3: resolve "never estimate" contradiction in CLAUDE.md R1 (hook-estimate = source, labelled approx) · AGENTS.md L162 already consistent
+- [X] T-177-S4: verify counter moves (SESSION 0->50k, CHAT 14k->89k) + CFP-028 resolved-pending + fix-note
+- [X] T-178-S1: posttool_track.py provider-aware (reuse token_estimator _M table)
+- [X] T-178-S2: reword rules+CFP — provider-aware + still lower bound
+- [X] T-178-S3: live verify counter + provider-switch proof
+- [X] T-178-S4: close (roadmap/active_thread/Step-5/index/PATH A)
+- [X] T-179-S1: extract shared audit engine -> knowledge/audit_engine_rubric.md
+- [X] T-179-S2: slim skill_auditor (277L -> <230L) -> reference engine
+- [X] T-179-S3: new skill harness_doc_auditor (directive-file rubric, 8 items) · attempts:1
+- [X] T-179-S4: register in skill-manifest.json + index sync (manifest+index_files+REPO_MAP+registry) · attempts:1
+- [X] T-179-S5: behavioural verify both auditors + close (probe FOLLOWABLE · behave 4 cited findings · both <230L) · attempts:1
+
+[X] T-180: provider-aware compact-reset + visible [compact-reset] emit (skill: harness_editor)
+  [X] T-180-S1: scripts/compact_reset.py — single-source reset logic
+  [X] T-180-S2: SessionStart:compact hook in .claude/settings.json
+  [X] T-180-S3: AGENTS.md C0 plain-text confirm + C0.5 stuck guard + B1 note
+  [X] T-180-S4: CLAUDE.md R1/R3 cross-ref [compact-reset] emit
+  [X] T-180-S5: CFP-037 stale-counter-after-compact
+  [X] T-180-S6: docs + index sync (flow · Implement/03 · tool-manifest · REPO_MAP)
