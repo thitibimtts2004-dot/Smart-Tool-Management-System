@@ -28,7 +28,7 @@
 - on_demand_files = lookup table for G2 only — NEVER auto-load at B3
 - mece_plan.md has pending sections? Skip Phase 1+2 → resume Phase 3:
   `grep -n "^\- \[ \]\|^\- \[/\]" .sessions/mece_plan.md | head -3` → first pending item
-  Resume staleness gate (V3): compare mece_plan_hash in handoff vs sha1sum · git status src/ → [plan-stale] if changed
+  Resume staleness gate (V3): `sha1sum .sessions/mece_plan.md | cut -c1-8` vs mece_plan_hash in session_handoff.md · `git status src/` → emit [plan-stale] if either differs
 
 [B4] Platform Probe: `detected.md` platform: unknown → list tools → update detected.md · else skip
      Provider sub-probe (fills api_provider + 4 profile fields — run when `api_provider:` missing OR =unknown · else skip):
@@ -54,15 +54,15 @@ compact-restore reply: append ` · Resume: S<N> — <step>` when section= + step
 **Run C0→C0.5→C1→C2→C3 before any work. No exceptions.**
 
 ```
-[C0.5] → each turn before C1: read [token-state] hook (LOOP_W · SESSION · CHAT) · PRIMARY signal = CHAT_TOTAL (real context size) · LOOP_WEIGHT = SECONDARY tool-call-count hint only · CHAT_TOTAL >80k → [compact-rec] strong: surface recommendation block (Recommend/Why/MUST-vs-SHOULD=SHOULD/Resume brief/Your call) — NOT a STOP, user decides · LW >50 → [compact-rec] light hint only (secondary backstop · optional · no STOP) · HARD STOP only at the real ceiling SESSION_TOTAL >90k OR CHAT_TOTAL >120k → [compact-STOP] write compact_state.md → STOP · skip required tier = CFP-026
-       → STUCK-COUNTER GUARD (T-180): if [compact-STOP] fires with ~same CHAT_TOTAL (±2k) across ≥2 turns → the counter did NOT reset after a compact (the bug · CFP-037), NOT a real ceiling → run `python3 scripts/compact_reset.py --trigger=user-confirm` → surface the printed [compact-reset] line · do NOT keep re-nagging [compact-STOP]
-
 [C0] c0_resolved=true in memory → clear flag → skip to C1
      COMPACT-CONFIRM CHECK (T-180 · provider-aware): user message is a bare compact confirmation ("compact แล้ว" / "compacted" / "เคลียร์แล้ว" / "compact เสร็จแล้ว") → run `python3 scripts/compact_reset.py --trigger=user-confirm` → surface the printed [compact-reset] line to the user → resume C1. (Claude-code ALSO auto-resets via the SessionStart:compact hook in .claude/settings.json; this path is the fallback for providers with no compact hook + a manual re-sync for Claude.)
      COMPLAINT CHECK: "ลืม"/"you skipped"/"didn't log"/"harness says" + harness step name
      "ลืม" triggers ONLY on step names: roadmap/CFP/index/pre-read/session/boot/skill/gate/MECE
      "ลืมบอกให้เพิ่ม X" = feature request → pass to C1 normally
      YES → R16 self-improve → set c0_resolved=true → resume C1
+
+[C0.5] → each turn before C1: read [token-state] hook (LOOP_W · SESSION · CHAT) · PRIMARY signal = CHAT_TOTAL (real context size) · LOOP_WEIGHT = SECONDARY tool-call-count hint only · CHAT_TOTAL >80k → [compact-rec] strong: surface recommendation block (Recommend/Why/MUST-vs-SHOULD=SHOULD/Resume brief/Your call) — NOT a STOP, user decides · LW >50 → [compact-rec] light hint only (secondary backstop · optional · no STOP) · HARD STOP only at the real ceiling SESSION_TOTAL >90k OR CHAT_TOTAL >120k → [compact-STOP] write compact_state.md → STOP · skip required tier = CFP-026
+       → STUCK-COUNTER GUARD (T-180): if [compact-STOP] fires with ~same CHAT_TOTAL (±2k) across ≥2 turns → the counter did NOT reset after a compact (the bug · CFP-037), NOT a real ceiling → run `python3 scripts/compact_reset.py --trigger=user-confirm` → surface the printed [compact-reset] line · do NOT keep re-nagging [compact-STOP]
 
 [C1] Read active_thread.md → extract task: field
 [C2] Compare new topic vs task:
@@ -180,7 +180,7 @@ Proactive cache invalidation: at boot → `sha1sum .agents/skills/*/SKILL.md 2>/
 - Close-gate (do NOT auto-close — CFP-037): first emit `[close-gate-check] trigger: (user typed /compact)=Y/N · (SESSION_TOTAL>80k)=Y/N · (LOOP_WEIGHT>50)=Y/N` (LOOP_WEIGHT from hook [token-state] only — session_tokens.md is polluted by subagents). All N → emit `[session-health]` + summary → WAIT for user · Any Y → proceed to close.
 - Verify: Verify-N ≤3 + no src/ change → inline bash verify · Verify-N ≥4 OR src/ change → spawn MODEL_LOW reviewer.
 - Done-criteria (all): every [✓ written] · R8 Index Sync · Roadmap [X] · active_thread phase:done · SESSION_TOTAL written · Feedback sent · mece_plan.md Phase 1-3 cleared (PATH A · exact cmd in mece_plan_schema.md §PATH A · CFP-025).
-- Before /compact: run scripts/trim_exec_log.py + write session_summary to token_log.jsonl · SESSION >50k → compact first · 60-80k → TOKEN PAUSE.
+- Before /compact: run scripts/trim_exec_log.py + write session_summary to token_log.jsonl · SESSION >60k → compact first · 60-80k → TOKEN PAUSE.
 
 Session Health: <20k ✅ · 20–40k 💡 · 40–60k ⚠️ compact now · 60-80k 🛑 TOKEN PAUSE · emit `[session-health]` · Thai summary: `งานเสร็จแล้วครับ ✅`
 ⚠️ CHAT_TOTAL undercount: true API context ≈ CHAT_TOTAL × 1.5–2× (triangular re-send) · use as lower bound · compact before CHAT_TOTAL > 80k to avoid spike
@@ -191,14 +191,20 @@ Session Health: <20k ✅ · 20–40k 💡 · 40–60k ⚠️ compact now · 60-8
 
 Every create/modify/delete/rename **must** update indexes before task marked done.
 Backlink 3-tier check before editing: references[] · backlinks[] · related[] → **Implement/03_config.md §Backlink Rule**
-| Entity | Must update |
-|---|---|
-| File created/moved/deleted | `index_files.json` (file_manager) |
-| Symbol with cross-file dependency: created/renamed/deleted | `index_variables.json` (symbol_indexer.py) · skip if symbol is used only within its own file |
-| Session closed | `index_sessions.json` (session_indexer.py) |
-| SKILL.md created/renamed | `skill-manifest.json` + `skill-index.md` |
-| Tool script created/renamed | `tool-manifest.json` |
-| `knowledge/` file modified | `knowledge_conflict_checker.py --file <path> --no-trigger` · EXCLUDE: index_*.json · error_index.md |
+
+| Trigger event (when) | Must update | Regen command (how) | idempotent? |
+|---|---|---|---|
+| File created/moved/deleted | `index_files.json` (file_manager) | `python3 scripts/backlink_analyzer.py` | yes (auto-safe) |
+| Symbol with cross-file dependency: created/renamed/deleted | `index_variables.json` · skip if symbol used only within its own file | `python3 scripts/symbol_indexer.py` | yes (auto-safe) |
+| Code file (.py/.ts/.js under scripts/ or src/) created/edited/deleted | `imports[]`/`imported_by[]` (hard import edges) in `index_files.json` — distinct from semantic `references[]`/`related[]` (see `knowledge/code_linkage_index.md`) | `python3 scripts/code_graph.py --write` (Tier-A regex import graph · hash-locked) | yes (auto-safe · T-192) |
+| Session closed | `index_sessions.json` | `python3 scripts/session_indexer.py` | yes (auto-safe) |
+| Harness rule file edited (CLAUDE.md · AGENTS.md · Implement/* · */SKILL.md · INVARIANTS.md · CODING_FAILURE_PATTERNS.md) | `rules_defined[]`/`rules_referenced[]` in `index_files.json` | `python3 scripts/rule_indexer.py` | yes (auto-safe · T-182) |
+| SKILL.md created/renamed | `skill-manifest.json` | manual (file_manager registers entry) | no (judgment) |
+| Tool script created/renamed | `tool-manifest.json` | manual (register entry) | no (judgment) |
+| `knowledge/` file modified | conflict check | `python3 scripts/knowledge_conflict_checker.py --file <path> --no-trigger` · EXCLUDE: index_*.json · error_index.md | no (judgment) |
+| Top-level root file/dir OR nested folder added/moved/removed/renamed | `REPO_MAP.md` AUTO structure block (folders incl. nested + per-folder file counts) | `python3 scripts/repo_map_check.py --sync` (auto-run at Stop · regenerates AUTO block · carries content-renames via `git -M` · adds TODO placeholder rows for genuinely-new items) | structure block = yes (idempotent · auto-safe) · descriptions = judgment (never overwritten · T-185/T-190) |
+
+> **Safety net (T-183 · T-190):** the Stop-hook reconciler `scripts/index_reconcile.py` runs at session close — it diffs git-changed files vs `index_files.json`, emits `[index-drift]` for anything stale, and **auto-runs the idempotent regenerators** (rule_indexer · backlink_analyzer · code_graph · symbol_indexer) so a missed manual update is caught, not silently lost. (session_indexer is NOT auto-run by this reconciler — index_sessions.json is regenerated by the session-close path · T-193.) *idempotent = re-running produces the same result, so it is always safe to auto-run.* It also **auto-runs `repo_map_check.py --sync`** (T-190): the REPO_MAP.md AUTO structure block (folders incl. nested + per-folder file counts) is regenerated and content-renames carried via `git -M`. This is safe to auto-apply because `--sync` only ever touches the marker-delimited AUTO block + adds TODO placeholder rows — curated descriptions live OUTSIDE the markers and are NEVER overwritten. Remaining judgment-type updates (manifests, knowledge conflict check) are only flagged, never auto-applied.
 
 ---
 

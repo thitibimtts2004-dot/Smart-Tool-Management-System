@@ -535,8 +535,8 @@ Root: (1) Completion Gate BC misread as auto-trigger · (2) Close Checklist trea
 Prevention: MUST Read mece_plan_schema.md §Close Checklist EVERY close — not from memory · tick each item explicitly · [harness-edit-done] only after ALL items verified
 Detection: grep response for [mece-audit] AND [session-health] AND [r8-sync-check] → any missing after [harness-edit-done] = violation
 topic: premature-close
-count: 4
-recurrences: ["2026-06-04 T-086 harness_doctor — fixed SKILL.md without optimization_logs.md", "2026-06-04 T-095 harness_editor — reported Close Checklist done without reading schema · skipped Reviewer/mece-audit/session-health/kcc"]
+count: 7
+recurrences: ["2026-06-04 T-086 harness_doctor — fixed SKILL.md without optimization_logs.md", "2026-06-04 T-095 harness_editor — reported Close Checklist done without reading schema · skipped Reviewer/mece-audit/session-health/kcc", "2026-06-14 T-191 session_manager manual-close run from memory — handoff w/o 5-field contract + reflections.md skipped + no [handoff-valid]; gap: CFP-037 fix was harness_editor-side, manual-close path uncovered"]
 
 ## CFP-038 · [fix-required] Signal Emitted But harness_doctor Not Triggered
 Symptom: AI emits [fix-required] CFP-N (count≥3) or [fix-escalated] (count≥5) in same response, then proceeds without triggering harness_doctor — threshold signal disconnected from mandatory escalation action

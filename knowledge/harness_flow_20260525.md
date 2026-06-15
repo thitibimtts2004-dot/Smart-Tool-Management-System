@@ -739,3 +739,11 @@ New failure patterns documented: `CFP-008` (MECE staleness), `CFP-009` (parallel
 | T-082 | Phase 3 tool results accumulated in context | [L4.5] PURGE step: drop raw tool results after each verify, keep verdict + artifact only | `AGENTS.md §Phase 3` |
 | T-082 | Sub-agent R4 section verbose, duplicated CLAUDE.md | R4 section slimmed from 14 → 7 lines | `AGENTS.md §R4` |
 | T-082 | CODING_FAILURE_PATTERNS.md grows without bound | CFP Archive Gate: CFP >20 → archive oldest to `knowledge/cfp_archive.md`, keep 15 active | `self_improve/SKILL.md §1` |
+
+## Y-T160 (2026-06-09) · skill_auditor 2-tier finalize
+Trigger: 4-combo dogfood (Haiku/Sonnet low·med·high) revealed Sonnet-low = false-confidence (shallow, no [tier-low] signal).
+Decision: keep 2 tiers only (Haiku-low honest-skip · Sonnet-med+ full). Cut Sonnet-low support.
+S1 (L68): guard — "Two supported modes ONLY · never Sonnet<medium" (false confidence worse than explicit skip).
+S2 (L180): in-file Output section labels 1-5 mandatory/optional — convergent finding (3/4 audits flagged).
+Noise rejected: per-run one-off findings (L69/BC-threshold) had high variance + inconsistent line numbers → not acted on.
+No regression · 18 headers · 215L · R8 content-edit only (no manifest change).

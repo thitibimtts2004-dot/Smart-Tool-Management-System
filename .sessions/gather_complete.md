@@ -1,33 +1,42 @@
-# Gather Complete — T-158 mece SKILL.md fixes
-date: 2026-06-08
-task: T-158 fix mece skill — resolve 3 weak components found in 9arm audit (audit_mece.json, CONDITIONAL 6/9)
+# Gather Complete — T-196 Core/Domain Separation
+
+date: 2026-06-15
+task: Split core harness (project-agnostic) from coding-specific skills/tools into a swappable domain pack
+skill: harness_editor (planning by harness_doc_auditor)
+status: gather-done (design+plan phase only · execution deferred per user)
 
 ## Objective
-Raise mece/SKILL.md from CONDITIONAL (6/9) toward PASS by fixing the 3 weak components + reducing the 3 structure redundancies the audit flagged. No new behavior — clarity/consolidation only.
+Extract every coding-specific rule, skill, and tool out of the project-agnostic core so the
+harness can be reused for non-coding projects (e.g. construction quantity-takeoff) by swapping
+in a different `domain/<name>.md` pack. Core engine (Boot, routing, loop, tokens, MECE, CFP,
+gates framework, index sync) stays untouched and works for any project.
 
-## Source of gather
-9arm audit run this session (skill_auditor agent, full read of mece/SKILL.md 196L + framework). Findings persisted to .sessions/audit_mece.json with cited line numbers.
+## Constraints (hard)
+- LOW/MEDIUM-tier model followable: every moved rule keeps its FULL commands/paths/thresholds
+  INLINE inside `domain/coding.md` — never replaced by a bare pointer.
+- MOVE != DELETE: every rule removed from core MUST reappear in the pack (S1 verify enforces).
+- Core-file edits reset the prompt cache → batch all core edits, never trickle.
+- Co-config step: the user's AI must configure the domain WITH the user (extend existing
+  detected.md provider flow in Implement/02_setup.md).
 
-## Findings to fix (with audit line refs)
-1. [HIGH] Output Spec - Structure weak - artifact spec scattered across L54-70 (Plan Format), L105-115 (S1-E), L141-154 (Output Contract). No single block; agent reads 3 distant places to know a valid mece_plan.md shape.
-2. [MED] When NOT to Use weak - L49 is pointer-only ("see Prerequisites items 3,4"); 2 of 3 refusals (read-only, resume) not stated in situ.
-3. [LOW] Tone Guide Prohibited weak - L188 Prohibited holds enforcement echoes (from Hard Rules), not tone prohibitions.
+## Affected files (from Phase 1 grep sweep)
+Core rule files (coding contamination found):
+- CLAUDE.md: R14 (src/ paths), R15 (DB Hard Stop — TS types, src/db/, fully coding)
+- AGENTS.md: L2 (Next.js note), L234-236 (Critical Project Rules: Miniflare D1 / Edge / PapaParse)
+Implement/ docs with coding hardcode (hit counts): 01(2) 02(5) 03(7) 04(4) 05(3) 08(1)
+Skills to relocate (coding-domain): coder, editor, variable_manager
+Tools/scripts to relocate (coding-domain): scripts/code_graph.py, scripts/symbol_indexer.py
+Existing anchors to reuse: Implement/02_setup.md (detected.md co-config step + docs/domain_rules.md placeholder)
 
-## Structure redundancies (fold into fix 1/2)
-- validation gate restated 4x (L114-115, L117-126 BC, L159-160, L161)
-- [mece-skip] emit format defined 3x (L36, L50, L148)
-- Plan Format (L54-70) over-prescribed exact syntax - mark as example + pointer to mece_plan_schema.md (canonical)
-
-## Affected files
-- .agents/skills/mece/SKILL.md (ONLY) - content edits, no rename - no manifest change
-
-## Constraints
-- mece is load-bearing (Phase 2 of every task) - refine wording ONLY, never change the actual planning procedure/steps
-- harness_editor: Edit tool - grep/offset only (196L >80, no full-read) - re-read each section before edit (R5)
-- BC count must stay 1 (audit: appropriate, no overreach) - do not add new BCs
+## Classification (final · user-confirmed)
+- repo_researcher -> CORE (user decision: general repo survey, not coding-only)
+- Decision rule: works on code syntax/symbols/imports/.ts/.py/linter -> coding pack;
+  works on files/sessions/tokens/harness rules -> core.
 
 ## Acceptance criteria
-- AC1: single "## Output Spec - Structure" block exists; the 3 old scattered specs consolidated or pointer-only
-- AC2: When NOT to Use states all 3 refusals inline (single-file, read-only, resume) with reason
-- AC3: Tone Guide Prohibited lists tone prohibitions (no enforcement echoes)
-- AC4: no behavior/step change - workflow S1-A..S2-C + BC intact; re-audit would not drop any pass to weak/missing
+1. domain/_TEMPLATE.md + domain/coding.md exist; coding.md holds DB gate + 3 Critical Rules + Next.js note INLINE.
+2. grep -icE "miniflare|next\.js|src/db|papaparse" CLAUDE.md AGENTS.md -> 0 (core clean).
+3. Implement/ files point to the pack instead of hardcoding coding specifics.
+4. Implement/02_setup.md has a domain-pack selection co-config step.
+5. coder/editor/variable_manager + code_graph.py/symbol_indexer.py registered under the coding pack; core manifests no longer list them as core.
+6. No rule lost: each removed core rule is present in coding.md.

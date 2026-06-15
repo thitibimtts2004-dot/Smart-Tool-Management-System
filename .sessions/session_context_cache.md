@@ -1,12 +1,10 @@
-# Context Cache — 2026-06-08 18:54
-task: T-157 token-tracking fix — DONE (persist-every-turn + consume-once reset marker · all 6 sections + close)
+# Context Cache — 2026-06-15 10:20
+task: T-195 — 08_checklist.md reconcile + install-completeness audit (5 stale verify-cmds fixed · scripts/hooks/skills all resolve)
 phase: done
-next: (none — pick next roadmap item)
-session_total: ~0
-chat_total: ~24745
+next: optional — commit T-194+T-195 Implement/ edits + prior-session CLAUDE.md/AGENTS.md 9 fixes (awaiting user commit decision)
+session_total: ~8126
+chat_total: ~27533
 cache_read: 0
 cache_write: 0
 pending_sections:
-  - [ ] re-audit mece (skill_auditor) → confirm no ✅ dropped to ⚠️/❌ · BC count still 1
-  - [ ] R8: SKILL.md content edit (no rename) → no manifest change · emit [r8-sync-check]
-  - [ ] Roadmap [X]: T-158.1-3 (attempts + tool_calls)
+  - [ ] all S1-S7 [X] · [ ] rule_indexer run (R8) · [ ] roadmap T-194 [X] · [ ] active_thread phase:done · [ ] PATH A clear

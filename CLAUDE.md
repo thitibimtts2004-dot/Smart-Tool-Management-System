@@ -12,7 +12,7 @@ Reply: `**[Boot]** Thread: <done|in_progress> · Tasks: <N> · Skill: <name> · 
 After task → write `.sessions/active_thread.md`: `task: · phase: done|in_progress|blocked · next:`
 
 ## Per-Turn Routing (every message — before any work)
-Run C0→C1→C2→C3. → Full logic + topic switch criteria: **AGENTS.md §Per-Turn Routing**
+Run C0→C0.5→C1→C2→C3. → Full logic + topic switch criteria: **AGENTS.md §Per-Turn Routing**
 
 ## Loop Architecture
 → Full Phase 1–3 detail + REACT LOOP: **AGENTS.md §Loop Architecture**
@@ -37,7 +37,7 @@ Max 5 tool calls/turn. Retry max 2×; diagnose on 2nd fail.
 
 ## R3 · Session Pause Protocol
 → Full threshold table: **Implement/03_config.md §R3**
-Key: SESSION_TOTAL 60-80k → TOKEN PAUSE · 80-90k → /compact · >90k → HALT (hard) · CHAT_TOTAL 80-120k → [compact-rec] strong (primary · recommend+choice) · >120k → HALT (hard) · LOOP_WEIGHT >50 → [compact-rec] light hint (secondary)
+Key: SESSION_TOTAL 60-80k → TOKEN PAUSE · 80-90k → [compact-rec] strong (recommend · not forced) · >90k → HALT (hard) · CHAT_TOTAL 80-120k → [compact-rec] strong (primary · recommend+choice) · >120k → HALT (hard) · LOOP_WEIGHT >50 → [compact-rec] light hint (secondary)
 Stuck-counter guard (T-180): [compact-STOP] firing with ~same CHAT_TOTAL (±2k) across ≥2 turns = the post-compact counter did NOT reset (CFP-037 · /compact is invisible to the agent), NOT a real ceiling → run `scripts/compact_reset.py` → emit [compact-reset] · do NOT keep nagging. Post-compact reset is provider-aware: claude-code auto via the SessionStart:compact hook · other providers via the C0 plain-text confirm path.
 
 ## R4 · Sub-agent Decision
@@ -52,7 +52,7 @@ Spawn: read `spawn_tool` from `detected.md` · platform-unknown → run B4 first
 ## Never-Full-Load (hard — no exceptions)
 
 Never-Full-Load: prohibited files → grep/offset only:
-- CLAUDE.md → NEVER re-read · index_variables.json / index_files.json → grep ONLY
+- CLAUDE.md → NEVER re-read · knowledge/index_variables.json / knowledge/index_files.json → grep ONLY
 - CODING_FAILURE_PATTERNS.md → grep -c + offset=N limit=30 · docs/master_roadmap.md → grep -n or tail -30
 - INVARIANTS.md → on-demand R14/R15 only · error_index.md → grep → ≤40L · index_cfp_fix.json → full ok ≤30 entries
 - Full-Read ok: SKILL.md ≤80L · src/ ≤80L · active_thread.md · session_handoff.md · compact_state.md · REPO_MAP.md
@@ -64,11 +64,11 @@ R6: `cmd 2>&1 | grep -iE "error|warn|fail" | tail -20` · R7: table/bullet > pro
 
 ## R8 · Index Sync (fire on file changes)
 
-→ after file create/delete/move: update index_files.json + backlink_analyzer.py · edit imports → backlinks[] · symbol create/rename → symbol_indexer.py · session close → session_indexer.py · emit `[r8-sync-check]` · skip = [violation] R8-index-sync
+→ after file create/delete/move: run `python3 scripts/backlink_analyzer.py` (updates index_files.json) · edit imports → backlinks[] · symbol create/rename → `python3 scripts/symbol_indexer.py` · session close → `python3 scripts/session_indexer.py` · emit `[r8-sync-check]` · skip = [violation] R8-index-sync
 
 ## R9 · Error Protocol
 Step 0: "still broken"/"same error"/same ERR-XXX → grep roadmap prior AttemptID → read `### Failed Approaches:` → different approach → `[recurring] ERR-XXX · Prior: N · Previous: <summary> · New: <different>`
-Pre-debug: grep error_index.md · index_variables.json · index_files.json
+Pre-debug: grep error_index.md · knowledge/index_variables.json · knowledge/index_files.json
 New error: `T-{Parent}-{BugID}-{Attempt}` · write error_index + `### Failed Approaches:`
 
 → before new error_index.md entry: grep error_topics.md for topic id · no match → emit `[topic-missing]` · add topic first · then write entry · entry without topic: field = [violation] BC-topic-lookup
@@ -91,7 +91,7 @@ R11: `.sessions/`, `knowledge/`, comments, commits → English only. Thai: user 
 
 **Behavior Contract — Destructive Gate (fires before delete/overwrite/batch actions):**
 ```
-Pre:    about to delete/overwrite src/ or knowledge/ · OR any src/db/ edit · OR batch >5 files
+Pre:    about to delete/overwrite src/ or knowledge/ or .sessions/mece_plan.md · OR any src/db/ edit · OR batch >5 files
 Contract: MUST emit [gate] signal and HALT — no execution until explicit user confirm received
           emit: [gate] Action: `<what>` · Scope: `<files>` · Risk: `<why>` · Waiting: confirm
 Post:   action proceeds ONLY after user types explicit confirmation
@@ -123,6 +123,6 @@ Signals: "ทำไมไม่ทำตาม" · "you skipped" · "didn't log"
 `[ ] T-<N>: desc · [ ]→[/]→[X]` · grep before creating — no dupes · Completion: `[X] T-N: desc (→ERR-XXX) · attempts:N · tool_calls:N`
 
 ## Knowledge Base Paths
-`knowledge/index_files.json` · `index_variables.json` · `error_index.md` · `docs/master_roadmap.md` · `INVARIANTS.md` · `REPO_MAP.md` · `.sessions/session_*.json` · `CODING_FAILURE_PATTERNS.md`
+`knowledge/index_files.json` · `knowledge/index_variables.json` · `error_index.md` · `docs/master_roadmap.md` · `INVARIANTS.md` · `REPO_MAP.md` · `.sessions/session_*.json` · `CODING_FAILURE_PATTERNS.md`
 
 @AGENTS.md

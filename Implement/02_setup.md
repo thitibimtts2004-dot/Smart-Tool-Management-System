@@ -45,17 +45,53 @@ Step 4: Initialize indexes
     }
     Init: copy CFP IDs from CODING_FAILURE_PATTERNS.md → one key per ## CFP-XXX header
 
-Step 4b: Initialize platform config
-  .agents/platform/detected.md → always initialize with platform: unknown
-    (B4 will auto-detect and overwrite on first boot — never hardcode a platform here)
+Step 4b: Configure platform + model tiers WITH the user (interactive — AI-guided · NOT a silent default)
+  The harness needs 3 things it CANNOT guess. The AI walks the user through each, then writes detected.md.
+  (model tiers ALWAYS need the user — the AI cannot know which models the user pays for.)
+
+  ── 4b.1 · Map model tiers (ASK the user — never assume) ──
+    AI asks: "คุณมี model อะไรใช้ได้บ้างครับ? (ชื่อ + เร็ว/ถูก หรือ แรง/แพง)"
+    Map the answer to the 3 harness tiers (all spawn calls in AGENTS.md use TIER NAMES, never raw model IDs):
+      MODEL_HIGH   = strongest reasoning model → MECE planning / architecture ONLY (reserved · not routine edits)
+      MODEL_MEDIUM = mid-tier workhorse        → code edits / multi-step execution / structured output (baseline)
+      MODEL_LOW    = fast/cheap model          → lookup / grep / read-only / Reviewer / Completion Gate
+    Rule (canonical home: 03_config.md §Model Tiers): dial EFFORT first (low/med/high), tier second.
+    Every skill MUST be followable by MODEL_MEDIUM with NO inference — MODEL_HIGH is reserved, not the default.
+    Only ONE model available → set all 3 tiers to it + differentiate by EFFORT alone.
+    Only TWO → MODEL_HIGH = MODEL_MEDIUM = stronger one · MODEL_LOW = cheaper one.
+
+  ── 4b.2 · Confirm API provider (auto-probe, THEN ask to confirm) ──
+    AI runs the B4 provider heuristic (AGENTS.md §Boot B4): platform→provider, else model-id —
+      id contains `claude`→anthropic · `gpt`/`o[0-9]`→openai · `gemini`→google · else→unknown.
+    Show the guess, ask the user to confirm. Provider decides cache + token-cost behaviour;
+    applying the wrong provider's cache rule breaks immediately (see 03_config.md §Provider Profiles).
+    Copy the matching row from §Provider Profiles into detected.md:
+      api_provider / cache_mechanism / context_cliff_tokens / token_formula / cache_write_cost
+    Unknown → token_formula: generic · cache_mechanism: none · context_cliff_tokens: 200000 (conservative floor).
+
+  ── 4b.3 · Spawn tool (sub-agent capability) ──
+    platform recognised (Known Mappings, 07_platform.md) → fill spawn_tool automatically.
+    platform unknown → run the 4-question co-development dialogue (07_platform.md §Co-development Dialogue).
+
+  ── Write .agents/platform/detected.md (fill ALL fields from 4b.1–4b.3 · never hardcode model IDs in skills) ──
     Template:
-      platform: unknown
-      spawn_tool: unknown
-      explore_type: unknown
-      execution_type: unknown
-      parallel_mode: unknown
-      define_tool: none
+      platform: <name | unknown>
+      spawn_tool: <tool | unknown>
+      explore_type: <value | unknown>
+      execution_type: <value | unknown>
+      parallel_mode: <value | unknown>
+      define_tool: <value | none>
+      model_high: <model id chosen in 4b.1>
+      model_medium: <model id chosen in 4b.1>
+      model_low: <model id chosen in 4b.1>
+      api_provider: <anthropic | openai | google | unknown>
+      cache_mechanism: <from §Provider Profiles | none>
+      context_cliff_tokens: <from §Provider Profiles | 200000>
+      token_formula: <anthropic | openai | google | generic>
+      cache_write_cost: <from §Provider Profiles | n/a>
       notes:
+    (Leaving platform/provider = unknown is OK — B4 auto-detects on first boot. But run 4b.1 explicitly:
+     model tiers always need the user.)
 
 Step 4c: Configure Claude Code settings (.claude/settings.json)
   Recommended values:
@@ -66,6 +102,23 @@ Step 4c: Configure Claude Code settings (.claude/settings.json)
     → inject via managed settings or invocation-level config only
     → create separate presets for: exploration mode vs CI/verification mode
   Note: non-interactive runs (-p flag) abort on repeated classifier blocks — no human fallback
+
+  Harness hooks (REQUIRED — wire into the "hooks" block of .claude/settings.json · these automate the loop):
+    SessionStart (matcher "compact") → scripts/compact_reset.py --trigger=hook
+        recomputes counters after /compact (CHAT=compact_size+sys_fixed · LOOP_WEIGHT=0 · SESSION=0 if session_reset=armed)
+    UserPromptSubmit → inline token-state emitter (reads .sessions/session_tokens.md →
+        prints `[token-state] SESSION/LOOP_W/CHAT` · emits [compact-rec] at CHAT>80k / [compact-STOP] at SESSION>90k|CHAT>120k
+        per C0.5 thresholds · consumes session_reset=armed) + scripts/learning_profile.py analyze
+    PreToolUse (matcher Edit|Write|Read|NotebookEdit) → inline python gate (3 guards):
+        · never-full-load — blocks Read of prohibited files (knowledge/index_*.json · CODING_FAILURE_PATTERNS.md · docs/master_roadmap.md · INVARIANTS.md · knowledge/error_index.md)
+        · phase gate — blocks Edit/Write to src/ unless gather_complete.md AND mece_plan.md are BOTH dated today
+        · close-gate — blocks writing "phase: done" to active_thread.md until .sessions/.close_checklist_ack exists
+    PostToolUse → scripts/posttool_track.py (auto-accumulates SESSION_TOTAL + CHAT_TOTAL per tool call · provider-aware via detected.md token_formula)
+    Stop → scripts/write_context_cache.sh + scripts/index_reconcile.py
+        (index_reconcile = safety net: diffs git-changed files vs index_files.json, auto-runs idempotent regenerators
+         — rule_indexer · backlink_analyzer · code_graph · symbol_indexer — plus repo_map_check.py --sync)
+  All hook commands resolve ROOT via `${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel)}` → cross-platform, no hardcoded paths.
+  Non-claude-code providers (no compact hook): the C0 plain-text-confirm path calls compact_reset.py manually instead (same single source · T-180).
 
 Step 5: Initialize session state
   Run: python3 scripts/bootstrap_sessions.py

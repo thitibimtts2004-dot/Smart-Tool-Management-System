@@ -1,3 +1,3 @@
-task: T-180 — provider-aware compact-reset + visible [compact-reset] emit
+task: T-195 — 08_checklist.md reconcile + install-completeness audit (5 stale verify-cmds fixed · scripts/hooks/skills all resolve)
 phase: done
-next: none — T-180 complete (S1-S6 + close). LIVE-validated: SessionStart:compact hook fired → [compact-reset]. Pending unrelated: stale REPO_MAP.md skill list (route via harness_editor).
+next: optional — commit T-194+T-195 Implement/ edits + prior-session CLAUDE.md/AGENTS.md 9 fixes (awaiting user commit decision)

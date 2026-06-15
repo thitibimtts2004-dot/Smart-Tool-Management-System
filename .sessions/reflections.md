@@ -31,3 +31,17 @@ promoted_patterns: parallel spawn for independent small tasks — confirmed effe
 ## 2026-06-08 · T-157 token-tracking fix
 What worked: consume-once marker design verified live via the /compact reboot this session (B1 [reset-skip] marker=consumed) — the fix tested itself. B1 byte-identity kept across 3 copies + JSON-escaped hook variant via replace_all + diff check.
 Watch: stale compact_state.md still produces a misleading resume-hint at boot (resolved by cross-checking active_thread/mece) — the marker fix prevents the wrongful RESET but not the stale hint; future cleanup could neutralize p3 on close.
+
+## T-183 (2026-06-13) · index-sync reconciler
+- intent: user spotted that rule_indexer (T-182) had no defined regen trigger; wanted index sync to stop depending on agent memory
+- outcome: 4-col trigger matrix in AGENTS.md + fail-safe Stop-hook reconciler (index_reconcile.py) that detects drift + auto-runs idempotent regenerators (guarded)
+- friction: backlink_analyzer.py is broken (pre-existing) → had to guard auto-run so its crash is non-fatal; validated live
+- lesson: deterministic/idempotent indexes should AUTO-RUN at session close, not rely on R8 memory; only judgment-type updates need an agent decision. Enforcement > documentation.
+- promoted_patterns: fail-safe hook script (always exit 0, swallow exceptions, like compact_reset.py) · idempotent-vs-judgment split for deciding what to automate
+
+## T-191 · 2026-06-14 · Topic-Facet Backlink Schema v2
+- intent: design+build 2-facet weighted backlink schema; fix "AI not stable" concern raised by user
+- outcome: 80 entries -> v2 (type+topic, per-file major/minor, hash-lock determinism); off-vocab 84->0; analyzer weighted-score rewrite
+- friction: index was 80 files not the assumed ~13; 84 off-vocab tags; 7 harness files are Never-Full-Load so tagged from description not line-ranges; 1 stale entry (deleted file still indexed)
+- lesson: SCOPE-PROBE index size before promising scope — 13 vs 80 changes the whole plan; do not assume from prior memory
+- promoted_patterns: sub-agents WRITE batch results to files + return only a 1-line summary (keeps main context lean — 385k subagent tokens stayed out of context); deterministic type-from-path + AI-only-for-judgment split; close-checklist must be verified against the skill, not from memory

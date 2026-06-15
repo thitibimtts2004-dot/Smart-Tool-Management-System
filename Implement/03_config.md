@@ -171,12 +171,11 @@ Routing shortcuts:
 | Counter | Threshold | Action |
 |---|---|---|
 | SESSION_TOTAL | >40k + turns ≥8 | rolling summary: summarize prior 4 turns → `.sessions/session_memory.md` · keep last 2 raw |
-| SESSION_TOTAL | >30k + sections ≥3 remaining | compact after current section (cache-warm) |
 | SESSION_TOTAL | >60k | finish current step → TOKEN PAUSE |
-| SESSION_TOTAL | >80k | `/compact` immediately |
+| SESSION_TOTAL | 80-90k | 🟡 [compact-rec] strong — recommend /compact (NOT forced · user choice) |
 | SESSION_TOTAL | >90k | HALT → save state → report |
 | CHAT_TOTAL | >80k | 🟡 [compact-rec] strong — PRIMARY trigger: recommend /compact + user choice (NOT a STOP) |
-| CHAT_TOTAL | >120k | 🛑 /compact บังคับ |
+| CHAT_TOTAL | >120k | 🛑 HALT (hard ceiling) — save state → report |
 ⚠️ CHAT_TOTAL undercount: true API context ≈ CHAT_TOTAL × 1.5–2× (triangular re-send) · use as lower bound · compact before CHAT_TOTAL > 80k to avoid spike
 | LOOP_WEIGHT | >50 | 🟡 [compact-rec] light hint only — SECONDARY: high call-count, not context size (no STOP) |
 > Hard STOP = SESSION_TOTAL >90k OR CHAT_TOTAL >120k only. PRIMARY rec signal = CHAT_TOTAL >80k (real context size); LOOP_WEIGHT >50 is a secondary call-count hint, never hard-stops (Phase C+D).
@@ -326,7 +325,7 @@ Cannot fill Line? → grep not done yet → run grep first.
 T1 partial match (path found but no line number) → proceed to T2. Still no line? → T3.
 
 **Config files load ONCE at Boot (B1–B3) — never re-read mid-session:**
-CLAUDE.md · index_files.json · index_variables.json → in working memory after Boot.
+CLAUDE.md · knowledge/index_files.json · knowledge/index_variables.json → in working memory after Boot.
 Re-read only after TOKEN PAUSE + resume.
 
 | Prohibited | Required instead |
@@ -420,7 +419,7 @@ R11: `.sessions/`, `knowledge/`, comments, commits → English only. Thai: user 
 |---|---|
 | Edit `src/` | Re-read changed section · check no broken imports |
 | DB schema | No ERR-007 violations |
-| Create/delete file | `index_files.json` updated + backlinks resolved |
+| Create/delete file | `knowledge/index_files.json` updated + backlinks resolved |
 | Error fix | ERR-XXX in error_index.md + roadmap `[X]` |
 
 ---
@@ -599,7 +598,7 @@ Set `[/]` when starting → `[X]` when done.
   5. **MANDATORY tool call (same response):** Edit CODING_FAILURE_PATTERNS.md → append CFP entry immediately · no deferral
      CFP format: `## CFP-<N+1> · <title>` · Symptom · Root cause · Prevention · Detection signal
      After Edit: grep -c "^## CFP-" → verify count = N+1 · emit `[✓ CFP-<N+1>]`
-  6. Set c0_resolved = true → re-run C0→C1→C2→C3 with original user message
+  6. Set c0_resolved = true → re-run C0→C0.5→C1→C2→C3 with original user message
      (C0 detects c0_resolved → clears it → skips complaint check → proceeds to C1)
 ```
 
@@ -679,7 +678,7 @@ Reply line 1: `**[Boot]** Thread: <done|in_progress> · Tasks: <N open> · Skill
 
 ---
 
-## Per-Turn Routing (every user message — run C0→C1→C2→C3 before any work)
+## Per-Turn Routing (every user message — run C0→C0.5→C1→C2→C3 before any work)
 
 **Hard rule:** Agent detects topic switch autonomously — user must NOT need to say "close session".
 
@@ -689,7 +688,14 @@ Reply line 1: `**[Boot]** Thread: <done|in_progress> · Tasks: <N open> · Skill
   "ลืมบอกให้เพิ่ม X" = feature request → NOT C0
 - c0_resolved flag set → clear → skip C0 → proceed to C1 (prevents infinite C0 loop)
 - YES → [self-improve] → backfill → CFP log → c0_resolved=true → re-run C0-C3
-- NO → C1
+- NO → C0.5
+
+**C0.5 — Compact / Token Pre-Check (every turn, before C1):**
+- Read the `[token-state]` hook values: LOOP_W · SESSION · CHAT. PRIMARY signal = CHAT_TOTAL (real context size); LOOP_WEIGHT = secondary tool-call-count hint only.
+- CHAT_TOTAL > 80k → emit `[compact-rec]` strong (recommend /compact · NOT a stop · user decides)
+- LOOP_WEIGHT > 50 → emit `[compact-rec]` light hint only (secondary · optional · no stop)
+- HARD STOP only at the real ceiling: SESSION_TOTAL > 90k OR CHAT_TOTAL > 120k → emit `[compact-STOP]` → write compact_state.md → STOP
+- Stuck-counter guard: `[compact-STOP]` firing with ~same CHAT_TOTAL (±2k) across ≥2 turns = the counter did NOT reset after a compact (the bug), NOT a real ceiling → run `python3 scripts/compact_reset.py --trigger=user-confirm` → surface its `[compact-reset]` line · do NOT keep nagging
 
 **C1 — Load:** Read `.sessions/active_thread.md` → extract task: field
 
@@ -758,8 +764,8 @@ Same topic   → match keywords[] → re-read SKILL.md if skill changes
 
 Completion Gate:
 **Token Check (run first):**
-- SESSION_TOTAL > 50k AND compact not yet run? → compact first → then run Completion Gate checks
-- SESSION_TOTAL > 60k? → TOKEN PAUSE before Completion Gate
+- SESSION_TOTAL > 60k AND compact not yet run? → compact first → then run Completion Gate checks
+- SESSION_TOTAL 60-80k (still high after compact)? → TOKEN PAUSE before Completion Gate · > 90k → HALT
 ```
 □ All sections executed  □ Writes [✓ written]  □ Index Sync
 □ Roadmap [X]           □ phase: done          □ SESSION_TOTAL written → .sessions/session_tokens.md
@@ -850,7 +856,7 @@ Before any of these actions → emit `[gate]` → ask user → wait for explicit
 Triggers (any one is enough):
 - Edit to any file in `src/db/` (schema, migration, seed, connection, queries)
 - Rename, remove, or change TypeScript type/interface that has DB column fields
-- Any symbol in `index_variables.json` with type `DBTable`, `DBColumn`, or `DrizzleSchema`
+- Any symbol in `knowledge/index_variables.json` with type `DBTable`, `DBColumn`, or `DrizzleSchema`
 - Adding/removing columns, changing column types, altering table relationships
 
 Gate — emit and WAIT before any tool call:
@@ -1254,8 +1260,8 @@ All valid trace tokens agents must emit. Include in `CLAUDE.md` Quick Reference.
 | `**[db-gate]**` | Before any DB schema change (I2) — wait for confirm |
 | `**[R8]**` | After file create/edit/delete — running symbol_indexer.py |
 | `**[loop]**` | After each MECE section completes |
-| `**[compact]**` | When SESSION_TOTAL > 50k — compact fires, continue working |
-| `**[pause]**` | When SESSION_TOTAL > 60k — TOKEN PAUSE, save state, ask user |
+| `**[compact-rec]**` | When SESSION_TOTAL > 60k — recommend /compact (not forced · user decides), continue working |
+| `**[pause]**` | When SESSION_TOTAL 60-80k — TOKEN PAUSE, save state, ask user · > 90k → HALT |
 | `**[resume]**` | When resuming an in_progress thread |
 | `**[tokens]**` | Token checkpoint (A=before, B=after, C=final) |
 | `**[MECE]**` | MECE plan sent to user — waiting confirm |
