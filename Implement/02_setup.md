@@ -120,6 +120,37 @@ Step 4c: Configure Claude Code settings (.claude/settings.json)
   All hook commands resolve ROOT via `${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel)}` → cross-platform, no hardcoded paths.
   Non-claude-code providers (no compact hook): the C0 plain-text-confirm path calls compact_reset.py manually instead (same single source · T-180).
 
+Step 4d: Choose & configure the DOMAIN PACK with the user (interactive — AI-guided · the project layer)
+  CORE (CLAUDE.md / AGENTS.md / Implement/) is project-agnostic. Everything project-specific
+  (gates, framework rules, domain skills/tools) lives in ONE domain pack under domain/.
+  Exactly one pack is active per project. The AI asks the 5 questions, then fills the pack —
+  never silently defaulted (same co-config style as Step 4b for the provider).
+
+  ── 4d.1 · Pick or create the pack ──
+    An existing pack fits?  ls domain/*.md   → set that pack's `active: true`, all others `active: false`.
+    None fits → copy the template:   cp domain/_TEMPLATE.md domain/<name>.md
+      <name> = short project kind: coding · takeoff · legal · ...  (AI suggests, user confirms)
+      then set its meta:  name: <name> · active: true · created: <today>
+
+  ── 4d.2 · Co-config Q&A (AI asks each · user answers · AI writes the matching slot) ──
+    Q1  What kind of project is this?                         → meta.name
+    Q2  Where do the main work files live?                    → ## paths  work_root (+ protected: any must-not-touch folder · code_exts)
+    Q3  Any folder/action that must HALT for a confirm first? → ## domain_gates  (write the FULL Pre/Contract/emit/Post/Enforce contract INLINE — no pointers)
+    Q4  Any framework/library with non-obvious rules?         → ## framework  +  ## critical_rules  (one line each, with the why / ERR-id)
+    Q5  Domain-specific skills/tools to register?             → ## skills  +  ## tools
+    Record every answer verbatim under the pack's `## co-config Q&A` block.
+
+  ── 4d.3 · Auto-detect to PRE-FILL Q4 (AI proposes · user confirms — never silent) ──
+    package.json has "next"            → propose framework "Next.js — read node_modules/next/dist/docs/ first" + critical_rule "Edge Runtime: WebCrypto only, no Node APIs"
+    drizzle.config.* present           → propose critical_rules "Miniflare D1: no multi-row INSERT / no onConflictDoNothing()" (ERR-007)
+    requirements.txt / pyproject.toml  → propose Python framework notes
+    Cargo.toml                         → propose Rust framework notes
+    These only PRE-FILL the Q4 answer — the user confirms before they enter the pack.
+
+  ── Verify ──
+    grep -c "^## paths\|^## domain_gates\|^## critical_rules" domain/<name>.md   → expect 3
+    grep -c "^  active: true" domain/*.md                                        → expect exactly 1
+
 Step 5: Initialize session state
   Run: python3 scripts/bootstrap_sessions.py
   → Creates all 7 .sessions/ files from docs/session_templates/ (skips existing)
@@ -161,12 +192,12 @@ Step 2.5: Auto-discover project context
      find . -maxdepth 3 -not -path "*/node_modules/*" -not -path "*/.git/*" -type d
      → Write result to REPO_MAP.md (replace <!-- EDIT: Document your project's source tree --> placeholder)
 
-  b. Detect stack + infer I2 hard stop rules:
-     - Found package.json with "next" → Next.js: add "NO Node.js APIs in edge runtime — WebCrypto only"
-     - Found drizzle.config.* → Drizzle ORM + D1: add "NO multi-row INSERT", "NO onConflictDoNothing()"
-     - Found requirements.txt / pyproject.toml → Python: add relevant constraints
-     - Found Cargo.toml → Rust: add relevant constraints
-     → Write inferred rules to INVARIANTS.md §I2 (replace <!-- EDIT --> placeholder)
+  b. Detect stack → PRE-FILL the active DOMAIN PACK (these feed Step 4d.3 · not core INVARIANTS):
+     - Found package.json with "next" → Next.js: framework "read node_modules/next/dist/docs/ first" + critical_rule "Edge Runtime: WebCrypto only, no Node APIs"
+     - Found drizzle.config.* → Miniflare D1: critical_rules "NO multi-row INSERT", "NO onConflictDoNothing()" (ERR-007)
+     - Found requirements.txt / pyproject.toml → Python: relevant constraints
+     - Found Cargo.toml → Rust: relevant constraints
+     → AI proposes → user confirms → write into the active pack's ## critical_rules + ## framework (domain/<name>.md · Step 4d). Core INVARIANTS.md stays project-agnostic.
 
   c. Detect key libraries + patterns:
      grep -r "^import\|^from\|^require" src/ --include="*.ts" --include="*.tsx" --include="*.py" | \

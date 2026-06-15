@@ -95,6 +95,7 @@
       "note": "High score = already exists — prevents duplicate scaffolding"
     },
     "symbol_indexer_py": {
+      "domain": "coding",
       "type": "script",
       "spawn_script": "python scripts/symbol_indexer.py",
       "short": "Refresh line numbers in knowledge/index_variables.json after symbol changes",
@@ -300,6 +301,7 @@
     "note": "Fail-safe: always exit 0, never blocks session close. S3 adds guarded auto-run of regenerators."
   },
   "code_graph_py": {
+    "domain": "coding",
     "type": "script",
     "spawn_script": "python3 scripts/code_graph.py [--dry-run|--write]",
     "short": "Tier-A code import-graph extractor — regex-parses import/from statements (py + ts/js) into hard file→file edges (imports[]/imported_by[]) in index_files.json, kept separate from semantic edges",

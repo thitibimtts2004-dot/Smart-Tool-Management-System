@@ -114,6 +114,7 @@
       }
     },
     "coder": {
+      "domain": "coding",
       "path": ".agents/skills/coder/SKILL.md",
       "model_routing": {
         "floor": "haiku",
@@ -183,6 +184,7 @@
       }
     },
     "editor": {
+      "domain": "coding",
       "path": ".agents/skills/editor/SKILL.md",
       "model_routing": {
         "floor": "haiku",
@@ -311,6 +313,7 @@
       }
     },
     "variable_manager": {
+      "domain": "coding",
       "path": ".agents/skills/variable_manager/SKILL.md",
       "model_routing": {
         "floor": "sonnet",

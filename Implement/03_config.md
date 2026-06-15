@@ -273,7 +273,7 @@ Baseline when phase unknown: Sonnet @ low-med effort. Savings: route lookups+rev
     - No src/ edit without gather_complete.md AND mece_plan.md written today
     - No new file without updating knowledge/index_files.json backlinks
     - No symbol create/rename without python scripts/symbol_indexer.py after edit
-    - DB edits (src/db/): emit [db-gate] and halt — main agent must confirm
+    - Domain-gated edits (per active domain pack `## domain_gates`, e.g. coding's src/db/): emit the pack's gate signal and halt — main agent must confirm
   ```
 - Missing `constraints:` block in execution sub-agent prompt = CFP violation
 
@@ -433,15 +433,15 @@ AttemptID=02 / tool error 2× / R12 FAIL twice → emit and halt:
 ---
 
 ## R14 · Destructive Action Gates
-Emit `[gate]` + wait confirm before: delete/overwrite `src/` or `knowledge/` · any `src/db/` edit · batch >5 files.
+Emit `[gate]` + wait confirm before: delete/overwrite `knowledge/` or `.sessions/mece_plan.md` · any path in the active domain pack `## paths` `protected:` field (e.g. coding's `src/`, `src/db/`) · batch >5 files.
 ```
 [gate] Action: `<what>` · Scope: `<files>` · Risk: `<why>` · Waiting: confirm
 ```
 
 ---
 
-## R15 · DB Hard Stop
-Any `src/db/` edit or TS type with DB columns → HALT immediately:
+## R15 · Domain Hard Stop
+Any edit matching the active domain pack `## domain_gates` `Pre:` condition (e.g. coding's `src/db/` or TS type with DB columns) → HALT immediately:
 ```
 [db-gate] File: `<path>` · Symbol: `<name>` · Change: `<what>` · DB impact: `<tables>` · → Waiting for explicit "yes"
 ```
@@ -853,11 +853,11 @@ Before any of these actions → emit `[gate]` → ask user → wait for explicit
 
 **Any trigger below = HALT immediately. Do NOT touch anything until user says "yes" explicitly.**
 
-Triggers (any one is enough):
-- Edit to any file in `src/db/` (schema, migration, seed, connection, queries)
-- Rename, remove, or change TypeScript type/interface that has DB column fields
+Triggers (any one is enough — per active domain pack `## domain_gates` · defaults shown are coding pack examples):
+- Edit to any file matching the domain pack gate path (e.g. coding's `src/db/`: schema, migration, seed, connection, queries)
+- Rename, remove, or change a protected type/interface listed in the domain pack gate (e.g. coding's TS type with DB column fields)
 - Any symbol in `knowledge/index_variables.json` with type `DBTable`, `DBColumn`, or `DrizzleSchema`
-- Adding/removing columns, changing column types, altering table relationships
+- Domain-specific structural change listed in the pack `## domain_gates` (e.g. coding's adding/removing columns, changing column types)
 
 Gate — emit and WAIT before any tool call:
 ```
@@ -869,7 +869,7 @@ Gate — emit and WAIT before any tool call:
 **"It's just a TypeScript type" is NOT an exemption.**
 Drizzle derives DB schema from TypeScript types — a type rename silently breaks migrations and queries.
 
-> ⚠️ EDIT THIS for project-specific additional rules (multi-row INSERT, edge runtime constraints, CSV parsing, etc.)
+> ⚠️ Project-specific hard rules now live in the active domain pack (`domain/<name>.md` `## critical_rules` + `## domain_gates`), not here — e.g. coding's Miniflare D1 multi-row INSERT restriction, edge runtime (WebCrypto only), CSV parsing rules.
 > Reference: INVARIANTS.md I2 for canonical source.
 
 ---

@@ -1,6 +1,6 @@
 # Agent Orientation — Asset Plan · ALL agents
-> Next.js: read `node_modules/next/dist/docs/` first — conventions may differ from training data.
-> Constraints → `CLAUDE.md` · Gates → `INVARIANTS.md` · Structure → `REPO_MAP.md`
+> Framework/library read-first hints are domain-specific → see the active domain pack `## framework` (domain/<name>.md).
+> Constraints → `CLAUDE.md` · Gates → `INVARIANTS.md` · Structure → `REPO_MAP.md` · Domain layer → `domain/<active>.md`
 
 ---
 
@@ -231,7 +231,5 @@ Max depth = 1 · pre-assign T-IDs before spawn · emit `[cycle N]` · HALT if bl
 ---
 
 ## Critical Project Rules
-- **Miniflare D1 (local):** No `onConflictDoNothing()` or multi-row INSERT — silent failures. Use SELECT+filter+single-row-insert. (ERR-007)
-- **Edge Runtime:** No Node.js APIs. WebCrypto only.
-- **CSV parsing:** Always PapaParse — never `split(",")` manually.
+Domain-specific non-negotiable rules (e.g. coding's Miniflare D1 / Edge Runtime / PapaParse) are NOT in core — they live INLINE in the active domain pack `## critical_rules` (domain/<name>.md). At task start, read the active pack and treat its `## critical_rules` as hard constraints.
 <!-- END:agent-orientation -->

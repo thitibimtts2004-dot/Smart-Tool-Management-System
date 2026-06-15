@@ -1703,7 +1703,6 @@
       "CFP-033",
       "CFP-034",
       "CFP-037",
-      "ERR-007",
       "R1",
       "R10",
       "R16",
@@ -18497,7 +18496,13 @@
   },
   "scripts/symbol_indexer.py": {
     "imports": [],
-    "extracted_at_hash": "51e02d2e",
+    "extracted_at_hash": "f238fc8c",
+    "imported_by": [],
+    "related": []
+  },
+  "scripts/._symbol_indexer.py": {
+    "imports": [],
+    "extracted_at_hash": "cea7df16",
     "imported_by": [],
     "related": []
   }

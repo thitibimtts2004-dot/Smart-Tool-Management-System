@@ -184,7 +184,7 @@ Fix if missing: `Implement/03_config.md` → CLAUDE.md template → copy missing
 | Loop Architecture | `grep -c "Loop Architecture\|Phase" AGENTS.md` | ≥ 3 |
 | Quick Reference table | `grep -c "Token footer\|File reads\|Symbol edits" AGENTS.md` | ≥ 3 |
 | Sub-agent Rules | `grep -c "Sub-agent Rules\|spawn_tool\|Cycle" AGENTS.md` | ≥ 3 |
-| Critical Rules | `grep -c "Critical\|Edge Runtime\|PapaParse\|D1" AGENTS.md` | ≥ 2 |
+| Critical Rules | `grep -c "^## critical_rules\|^## domain_gates\|^## paths" domain/coding.md 2>/dev/null \|\| grep -c "^## critical_rules\|^## domain_gates\|^## paths" domain/*.md` | ≥ 2 |
 
 Fix if missing: `Implement/03_config.md` → AGENTS.md template.
 

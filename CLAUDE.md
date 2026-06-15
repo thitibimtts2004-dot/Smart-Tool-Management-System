@@ -91,23 +91,25 @@ R11: `.sessions/`, `knowledge/`, comments, commits → English only. Thai: user 
 
 **Behavior Contract — Destructive Gate (fires before delete/overwrite/batch actions):**
 ```
-Pre:    about to delete/overwrite src/ or knowledge/ or .sessions/mece_plan.md · OR any src/db/ edit · OR batch >5 files
+Pre:    about to delete/overwrite knowledge/ or .sessions/mece_plan.md · OR any path listed under the active domain pack's `## paths` protected: field (domain/<name>.md) · OR batch >5 files
 Contract: MUST emit [gate] signal and HALT — no execution until explicit user confirm received
           emit: [gate] Action: `<what>` · Scope: `<files>` · Risk: `<why>` · Waiting: confirm
 Post:   action proceeds ONLY after user types explicit confirmation
 Enforce: destructive action without [gate] emit + confirm = [violation] R14 → HALT · re-emit [gate] immediately
 ```
+> Domain-specific protected paths (e.g. coding's `src/`, `src/db/`) live in the active domain pack `## paths`. Core enforces this generic mechanism for ALL projects.
 
-## R15 · DB Hard Stop
+## R15 · Domain Hard-Stop Gate
 
-**Behavior Contract — DB Gate (fires on any src/db/ edit or DB-column type change):**
+**Behavior Contract — Domain Gate (fires on any edit that matches a gate in the active domain pack's `## domain_gates`):**
 ```
-Pre:    about to edit any file under src/db/ OR modify a TS type that includes DB column fields
-Contract: HALT immediately — emit [db-gate] signal and wait for explicit "yes"
-          emit: [db-gate] File: `<path>` · Symbol: `<name>` · Change: `<what>` · DB impact: `<tables>` · → Waiting for explicit "yes"
-Post:   DB edit proceeds ONLY after user types explicit "yes" (not just "ok" or "continue")
-Enforce: any src/db/ write without [db-gate] + explicit "yes" = [violation] R15 → HALT · REVERT · re-emit [db-gate]
+Pre:    about to perform an edit whose target matches a gate defined in domain/<active>.md `## domain_gates` (Pre: condition)
+Contract: HALT immediately — emit the gate's exact signal (e.g. coding's [db-gate]) and wait for the explicit confirmation word that gate requires
+          the FULL Pre/Contract/emit/Post/Enforce contract is written INLINE in the domain pack — read it there and follow verbatim
+Post:   edit proceeds ONLY after the user types the explicit confirmation the gate demands (coding pack: explicit "yes" — not "ok"/"continue")
+Enforce: a gated edit without its signal + explicit confirm = [violation] R15 → HALT · REVERT · re-emit the gate signal
 ```
+> Core defines this hard-stop MECHANISM for all projects. The concrete trigger + signal + payload (e.g. coding's `src/db/` DB-gate) live INLINE in the active domain pack `## domain_gates` — read that block and enforce it exactly.
 
 ## R16 · Self-Improvement (C0 detection)
 Signals: "ทำไมไม่ทำตาม" · "you skipped" · "didn't log" · "ลืม" + harness step name → emit `[self-improve] Rule: <R-N> · Missed: <what>` → execute missed step → emit `[✓ backfilled]`

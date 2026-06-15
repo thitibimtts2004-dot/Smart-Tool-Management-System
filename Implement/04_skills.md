@@ -294,14 +294,16 @@ You are the "Builder". When the Agent delegates a new feature task to you, focus
 2. Call file_manager + variable_manager to sync indexes
 \```
 
-## Coding Standards (Cloudflare & Next.js)
-1. **Framework Strictness**: Follow standard directory conventions for new files (`src/app/`, `src/components/`, etc.).
-2. **Database Integrity**: When creating Drizzle schemas, ensure they match the Technical Requirements Document carefully.
-3. **Self-Correction (Linter)**: If you notice a TypeScript error or Linter warning while writing, fix it immediately before finishing your execution.
-4. **Aesthetics & UI**: Use TailwindCSS standard utility classes. Strive for a minimalist, modern enterprise look.
-5. **Local Staging**: When generating large files or major architectural components, write them to a temporary staging area (e.g., `/tmp/` or local `temp/` inside the project) first using your creation tools, verify their structure, and then move them to their final destination. This prevents token waste on failed direct file injections.
+## Domain Work Standards
 
-**Staged file cleanup:** If a staged write fails or is abandoned mid-task:
+Coding-specific standards (framework conventions, DB integrity, linting rules, UI guidelines, staging rules) live in the active domain pack:
+
+- `domain/coding.md` → `## critical_rules` (hard do/don't rules, e.g. no multi-row INSERT in Miniflare D1)
+- `domain/coding.md` → `## framework` (directory conventions, framework-specific patterns)
+
+**Read the active domain pack's `## critical_rules` and `## framework` sections before any coding work.** Never apply coding-pack rules to a non-coding domain.
+
+**Generic rule (all domains) — Staged file cleanup:** If a staged write fails or is abandoned mid-task:
 - Delete the staged file immediately
 - Emit `[staged-drop] <path>` to signal that this content must not appear in subsequent context or `context_files:`
 
