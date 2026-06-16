@@ -1,10 +1,12 @@
-# Context Cache — 2026-06-15 10:20
-task: T-195 — 08_checklist.md reconcile + install-completeness audit (5 stale verify-cmds fixed · scripts/hooks/skills all resolve)
+# Context Cache — 2026-06-16 09:05
+task: T-206 — add harness_editor single front-door rule (bundled skill-creator = scaffold draft only; every project skill passes through harness_editor for auditor bar + R8 index wiring) + reuse ideas not files
 phase: done
-next: optional — commit T-194+T-195 Implement/ edits + prior-session CLAUDE.md/AGENTS.md 9 fixes (awaiting user commit decision)
-session_total: ~8126
-chat_total: ~27533
+next: none — task closed; deferred ⚠️ findings still tracked on spawn_task chip (doc_builder 2 + harness_editor Output-Spec-labels/Type-6)
+session_total: ~41487
+chat_total: ~86118
 cache_read: 0
 cache_write: 0
 pending_sections:
-  - [ ] all S1-S7 [X] · [ ] rule_indexer run (R8) · [ ] roadmap T-194 [X] · [ ] active_thread phase:done · [ ] PATH A clear
+  - [ ] all sections [X]
+  - [ ] R8 index sync clean (rule_indexer exit 0 · index_reconcile no drift)
+  - [ ] roadmap T-206 [X]

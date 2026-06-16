@@ -226,12 +226,13 @@ SESSION: CHAT_TOTAL accumulates (never resets here)
 ```
 Pre:      grep "^phase:" .sessions/active_thread.md → confirm phase: done written
           ls .sessions/session_handoff.md → confirm handoff exists OR task is internal-only
-Contract: IF task modified src/ OR created new feature OR fixed a bug →
-            MUST write session_<NNN>.json (status: completed · summary_context) BEFORE clearing mece_plan
-            MUST run `python scripts/session_indexer.py` to update index_sessions.json
-          IF task is harness-only (no src/ change) →
-            session_<NNN>.json optional · session_indexer still recommended
-Post:     session_<NNN>.json missing when src/ was changed = invalid close
+Contract: EVERY completed task (src/, feature, bug, OR harness-only) is recorded →
+            session_<NNN>.json written for ALL tasks (the rich detail file)
+            + index_sessions.json refreshed (thin pointer)
+          This is normally AUTOMATIC: the Stop-hook reconciler (index_reconcile.py) fires
+            `session_close.py --record-only` once when phase==done and the task isn't recorded
+            (guarded + idempotent). Run session_close.py by hand only to force-close mid-flow.
+Post:     session_<NNN>.json missing after a completed task = invalid close
           index_sessions.json not updated = R8 violation
           Re-run session_manager §3 steps 1+5 before proceeding
 Enforce:  R8 Index Sync Invariant (AGENTS.md) · session_manager §3 (SKILL.md)

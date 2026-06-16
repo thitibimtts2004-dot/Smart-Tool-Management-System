@@ -468,6 +468,10 @@ Never present plan in chat before mece_plan.md exists on disk.
 
 **How to apply:** Before clearing mece_plan — run: `ls .sessions/session_*.json | wc -l` → if count unchanged AND task modified src/ → write session_<NNN>.json + `python scripts/session_indexer.py` → verify count +1 → then clear.
 
+**count:** 1
+**recurrences:** ["2026-06-15 T-199: confirmed root recurrence — session_close.py manual + unrun since 8 Jun (last detail file = session_003). STRUCTURAL FIX SHIPPED: session_close.py now has --record-only mode + the Stop-hook reconciler (index_reconcile.py session_close_guard) auto-fires it once when phase==done AND task not yet recorded (guarded + idempotent). Close is no longer a manual step the AI can forget — it self-heals at the same rhythm as backlink/symbol/repo_map. Detail file enriched (files_changed/task_ids/skill/summary); index_sessions thinned to a pointer."]
+**status:** structurally-resolved (auto-heal · no longer reliance on AI memory)
+
 ## CFP-031 · Loop_W Shows Stale Value (0) — File Not Read Before Footer
 
 **Symptom:** Footer shows `Loop_W: 0` even after turn 2+ · PostToolUse hook has incremented the file · but response uses cached/estimated value instead of live file read.

@@ -730,7 +730,8 @@
     "rules_defined": [],
     "rules_referenced": [
       "BC-docs-close",
-      "R4"
+      "R4",
+      "R8"
     ],
     "topic_map": [
       {
@@ -2535,7 +2536,8 @@
       "T-181",
       "T-182",
       "T-183",
-      "T-190"
+      "T-190",
+      "T-201"
     ],
     "topic_map": [
       {
@@ -12594,7 +12596,11 @@
       }
     ],
     "coverage": 0.91,
-    "tagged_at_hash": "1281863c"
+    "tagged_at_hash": "1281863c",
+    "rules_defined": [
+      "R10"
+    ],
+    "rules_referenced": []
   },
   ".agents/skills/project_presenter/SKILL.md": {
     "path": ".agents/skills/project_presenter/SKILL.md",
@@ -15762,7 +15768,7 @@
     "coverage": 0.9,
     "tagged_at_hash": "4515e4b1",
     "imports": [],
-    "extracted_at_hash": "4515e4b1",
+    "extracted_at_hash": "c75028d7",
     "imported_by": []
   },
   "scripts/compute_compact_size.py": {
@@ -17168,7 +17174,7 @@
     "coverage": 0.9,
     "tagged_at_hash": "62e12fec",
     "imports": [],
-    "extracted_at_hash": "24cb29a4",
+    "extracted_at_hash": "31e74c64",
     "imported_by": []
   },
   ".agents/skills/harness_editor/SKILL_detail.md": {
@@ -18490,7 +18496,7 @@
   },
   "scripts/session_indexer.py": {
     "imports": [],
-    "extracted_at_hash": "bba0c915",
+    "extracted_at_hash": "be5e4395",
     "imported_by": [],
     "related": []
   },

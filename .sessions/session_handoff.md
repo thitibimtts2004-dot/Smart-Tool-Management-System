@@ -1,30 +1,25 @@
-# Session Handoff
-skill_name: harness_editor
+# Session Handoff — T-204
+skill_name: file_manager · session_manager
 CFP_COUNT: 37
-task: T-192 Code-Linkage Index (hard-relationship) — DONE
+task: Install + adapt the full Harness Agent framework into /Volumes/BriteBrain/Projects/Money_Assistance (empty fresh project · Track A)
 
-## Outcome
-Index can now answer "who imports / is-imported-by which file" for code files.
-Hard structural edges (import) are extracted deterministically, separate from semantic topic edges.
+## outcome: DONE ✅ (all 7 sections verified · session_compactor STATUS: OK · 22-check all PASS)
 
-## Changes (all verified)
-- NEW knowledge/code_linkage_index.md — design spec: hard-vs-semantic classes, edge types
-  (import/call/type), schema (imports[]/imported_by[] file-level · per-symbol Tier-B), hash-lock,
-  Tier-A(now)/Tier-B(deferred), R5 query usage.
-- NEW scripts/code_graph.py — Tier-A regex import extractor (py+ts/js). Hash-locked (extracted_at_hash),
-  idempotent, internal edges only. CLI --dry-run/--write. Scanned 48 files -> 1 real edge
-  (posttool_track.py -> token_estimator.py).
-- EDIT .agents/tools/tool-manifest.json — registered code_graph_py.
-- EDIT scripts/index_reconcile.py — auto-runs `code_graph.py --write` at Stop when code files changed.
-- EDIT AGENTS.md R8 table — added code-file import-edge row (rule_indexer ran: 30 entries updated).
+## changes (in Money_Assistance/)
+- S1 framework engine copied: CLAUDE.md/AGENTS.md/CLAUDE.th.md/INVARIANTS.md/README.md/VERSION/Implement.md/CODING_FAILURE_PATTERNS.md/REPO_MAP.md + Implement/(10) + .agents/(skills 21 + platform + manifests) + scripts/(25 .py) + docs/session_templates/(11) + domain/(2)
+- S2 knowledge reset blank: index_files={"files":{}} · index_variables={"variables":{}} · error_index header-only · index_cfp_fix keyed from 36 CFP IDs · master_roadmap blank+T-001 · REPO_MAP stub w/ AUTO markers
+- S3 .sessions/ bootstrapped (9 files · SESSION_TOTAL:0)
+- S4 detected.md: anthropic · opus/sonnet/haiku · all fields filled (copied from source — same provider)
+- S5 domain pack finance_agents.md created (active:true · coding.md→false) — Python · Google Sheets DB · finance-data-gate · money=Decimal · grounded-advice rules
+- S6 .claude/settings.json hooks (5 events · CLAUDE_PROJECT_DIR portable) · git init · .gitignore
+- S7 verified: session_compactor STATUS:OK · 22-check PASS · index_sessions.json created
 
-## Validation
-S1 Verify-1 PASS (kw=44>=7) · S2 Verify-2a syntax OK + 2b edge=1>=1 · S3 Verify-3a manifest=2/reconcile=1 +
-3b AGENTS=1 · R12: hard edges written + semantic references[]/related[] preserved.
+## validation
+- session_compactor.py --verbose → STATUS: OK (9 .sessions files)
+- exactly 1 active domain pack (finance_agents)
+- settings.json valid JSON · 5 hook events · no hardcoded paths
 
-## Follow-ups (NOT blocking)
-- Tier-B AST call/type graph -> index_variables.json — DESIGNED in spec, build when src/ has TS app code.
-- Stop-hook reconciler will register the 2 NEW files in index_files.json (flagged as [index-drift]).
-- harness_editor Step 5: AGENTS.md R8 row is the only harness-flow change; already synced via rule_indexer.
-  Optional: mirror the new R8 row into knowledge/harness_flow_*.md next harness-doc pass.
-- Learning quizzes still owed (user-coach): T-187, T-190, T-191, T-192.
+## next
+- MA is ready. Open a session inside Money_Assistance → Boot runs → start T-001 (build first finance skill/tool).
+- MA not committed to git yet (user did not request commit) — git initialized, files ready to stage.
+- Source Harness Agent repo: only .sessions/ state files changed this session (no src/ · not pushed).

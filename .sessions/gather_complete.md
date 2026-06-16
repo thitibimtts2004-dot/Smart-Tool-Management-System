@@ -1,42 +1,36 @@
-# Gather Complete — T-196 Core/Domain Separation
+# Gather Complete — Install + adapt Harness into Money_Assistance
+dt: 2026-06-15
+task: Install the full Harness Agent framework into /Volumes/BriteBrain/Projects/Money_Assistance (currently EMPTY · 0 files · not a git repo) and ADAPT it to that project (per user: "ปรับให้เข้ากับโปรเจกต์นั้น"). Follow the harness's own documented install (Implement.md Track A + Implement/02_setup.md §7) but COPY the LIVE framework files (current evolved version) rather than regenerating stale templates.
+skill: file_manager (copy/scaffold) · mece (plan) · session_manager (bootstrap state)
 
-date: 2026-06-15
-task: Split core harness (project-agnostic) from coding-specific skills/tools into a swappable domain pack
-skill: harness_editor (planning by harness_doc_auditor)
-status: gather-done (design+plan phase only · execution deferred per user)
+## key findings (grounded by probe + Explore agent, 2026-06-15)
+- Money_Assistance = 0 files, NOT a git repo → pure Track A (fresh project)
+- Harness has a documented self-install: Implement.md (Track A/B/C, Phase 0-5) + Implement/02_setup.md §7 (8-step onboarding) + §11 (.gitignore pattern)
+- LIVE harness > doc baseline: ~22 skills on disk (doc says 10) · all helper scripts exist (bootstrap_sessions.py, session_compactor.py, symbol_indexer.py verified present) → copy live files, do NOT regenerate from Implement templates
+- detected.md (provider/model tiers) + domain pack are the two INTERACTIVE config points (Step 4b + 4d) — need user input
 
-## Objective
-Extract every coding-specific rule, skill, and tool out of the project-agnostic core so the
-harness can be reused for non-coding projects (e.g. construction quantity-takeoff) by swapping
-in a different `domain/<name>.md` pack. Core engine (Boot, routing, loop, tokens, MECE, CFP,
-gates framework, index sync) stays untouched and works for any project.
+## file classification (what to copy vs reset vs skip)
+- COPY AS-IS (framework engine): CLAUDE.md · AGENTS.md · CLAUDE.th.md · INVARIANTS.md · README.md · VERSION · Implement.md · Implement/ (20 files) · .agents/skills/ (22) · .agents/platform/ · scripts/ (58) · docs/session_templates/ (11) · CODING_FAILURE_PATTERNS.md (harness-behavior lessons = reusable)
+- RESET to blank template (project-specific state): .sessions/ (via bootstrap_sessions.py) · knowledge/index_files.json={"files":{}} · index_variables.json={"variables":{}} · error_index.md=empty · index_cfp_fix.json=keyed from CFP IDs · docs/master_roadmap.md=blank · REPO_MAP.md=blank/regen
+- SKIP ENTIRELY (Harness-Agent-project-specific content): knowledge/*.md research/audit/flow docs · knowledge/recipes/ · knowledge/research/ · .sessions/session_*.json · .sessions/cycle_*/audit logs
+- CREATE NEW (adapt to MA): domain/<name>.md from _TEMPLATE.md (project type TBD from user)
 
-## Constraints (hard)
-- LOW/MEDIUM-tier model followable: every moved rule keeps its FULL commands/paths/thresholds
-  INLINE inside `domain/coding.md` — never replaced by a bare pointer.
-- MOVE != DELETE: every rule removed from core MUST reappear in the pack (S1 verify enforces).
-- Core-file edits reset the prompt cache → batch all core edits, never trickle.
-- Co-config step: the user's AI must configure the domain WITH the user (extend existing
-  detected.md provider flow in Implement/02_setup.md).
+## constraints
+- TARGET = Money_Assistance only. Do NOT modify Harness Agent src/ or push either repo.
+- Batch copy >5 files → R14 destructive [gate] + explicit user confirm BEFORE bulk copy.
+- detected.md model tiers + domain pack MUST be filled WITH the user (never silent default) — Step 4b/4d.
+- Phase 4 verify is mandatory: session_compactor.py --verbose → STATUS: OK + 08_checklist.md 22 checks.
 
-## Affected files (from Phase 1 grep sweep)
-Core rule files (coding contamination found):
-- CLAUDE.md: R14 (src/ paths), R15 (DB Hard Stop — TS types, src/db/, fully coding)
-- AGENTS.md: L2 (Next.js note), L234-236 (Critical Project Rules: Miniflare D1 / Edge / PapaParse)
-Implement/ docs with coding hardcode (hit counts): 01(2) 02(5) 03(7) 04(4) 05(3) 08(1)
-Skills to relocate (coding-domain): coder, editor, variable_manager
-Tools/scripts to relocate (coding-domain): scripts/code_graph.py, scripts/symbol_indexer.py
-Existing anchors to reuse: Implement/02_setup.md (detected.md co-config step + docs/domain_rules.md placeholder)
+## affected_files (all under /Volumes/BriteBrain/Projects/Money_Assistance/)
+- new: CLAUDE.md, AGENTS.md, INVARIANTS.md, README.md, VERSION, Implement.md, Implement/*, .agents/**, scripts/*, docs/**, knowledge/* (reset), .sessions/* (bootstrap), domain/<name>.md, .claude/settings.json, .gitignore, .git/
 
-## Classification (final · user-confirmed)
-- repo_researcher -> CORE (user decision: general repo survey, not coding-only)
-- Decision rule: works on code syntax/symbols/imports/.ts/.py/linter -> coding pack;
-  works on files/sessions/tokens/harness rules -> core.
+## acceptance_criteria
+- All framework files present in MA (08_checklist.md: target ~22/22 checks pass)
+- .sessions/ bootstrapped · knowledge indexes blank-initialized · roadmap/REPO_MAP blank
+- detected.md filled (provider + 3 model tiers, user-confirmed)
+- exactly ONE domain pack active:true, adapted to MA project type (user-confirmed)
+- .claude/settings.json hooks wired (SessionStart/UserPromptSubmit/PreToolUse/PostToolUse/Stop)
+- git initialized + harness .gitignore written
+- python3 scripts/session_compactor.py --verbose → STATUS: OK
 
-## Acceptance criteria
-1. domain/_TEMPLATE.md + domain/coding.md exist; coding.md holds DB gate + 3 Critical Rules + Next.js note INLINE.
-2. grep -icE "miniflare|next\.js|src/db|papaparse" CLAUDE.md AGENTS.md -> 0 (core clean).
-3. Implement/ files point to the pack instead of hardcoding coding specifics.
-4. Implement/02_setup.md has a domain-pack selection co-config step.
-5. coder/editor/variable_manager + code_graph.py/symbol_indexer.py registered under the coding pack; core manifests no longer list them as core.
-6. No rule lost: each removed core rule is present in coding.md.
+[✓ gather]

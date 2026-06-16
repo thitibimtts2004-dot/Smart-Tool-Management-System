@@ -45,3 +45,41 @@ Watch: stale compact_state.md still produces a misleading resume-hint at boot (r
 - friction: index was 80 files not the assumed ~13; 84 off-vocab tags; 7 harness files are Never-Full-Load so tagged from description not line-ranges; 1 stale entry (deleted file still indexed)
 - lesson: SCOPE-PROBE index size before promising scope — 13 vs 80 changes the whole plan; do not assume from prior memory
 - promoted_patterns: sub-agents WRITE batch results to files + return only a 1-line summary (keeps main context lean — 385k subagent tokens stayed out of context); deterministic type-from-path + AI-only-for-judgment split; close-checklist must be verified against the skill, not from memory
+
+
+## T-196 · 2026-06-15 · Core ⟷ Domain Pack Split
+- intent: separate harness into project-agnostic CORE + swappable per-project domain pack (user wants future non-coding projects e.g. construction takeoff to add skills/tools without forking core)
+- outcome: 6 sections S0-S5 — _TEMPLATE.md + coding.md packs created; CLAUDE/AGENTS/Implement(02·03·04·08) cleaned to point at pack; R14/R15 gates genericized (mechanism in core, trigger in pack); 5 manifest entries tagged domain:coding; R8 index sync run
+- friction: stale SESSION counter (260k) kept firing false [compact-STOP] across turns — real signal was CHAT (42k, healthy); manual reset didn't stick until next boot; R2 5-call budget tight on multi-file probes (over-granular probing)
+- lesson: MOVE!=DELETE — write the pack slot BEFORE stripping core (verified S1→S2); illustrative "(e.g. coding's…)" pointers are NOT enforced rules — keep them for LOW/MED model followability; trust CHAT over SESSION when counters disagree
+- promoted_patterns: domain-pack template lets any project self-configure via co-config Q&A (Step 4d); tag-don't-move for logical relocation (manifest domain: field, files stay put); batch text-insertion + json.loads validate beats json re-dump (preserves formatting)
+
+
+## T-199 · 2026-06-15 · Session Record-Keeping — Rich Detail + Thin Index + Auto-Heal Close
+- intent: fix stale index_sessions.json (last detail = session_003, 8 Jun); user spotted the architecture was BACKWARDS (stub detail file vs bloated index) and that close was unreliable because it was a manual step
+- outcome: session_close.py detail writer enriched (files_changed from git, task_ids, skill, date, real summary) + new --record-only mode; session_indexer thinned to 7-key pointer + junk-keyword filter + fixed a latent dup-merge bug (was keying existing by path, fresh scan by id → duplicates); index_reconcile.py gained a guarded idempotent session_close_guard that auto-fires --record-only at Stop when phase==done and task not yet recorded; doc drift fixed (session_manager Step 1/6 + mece_plan_schema PATH A); verified end-to-end (session_004 created rich, guard skips on re-run); CFP-030 marked structurally-resolved
+- friction: my initial diagnosis was WRONG (claimed Step 1 ls-t|head-1 overwrote session_003) — user's "think neutrally, don't take your own side" + an independent auditor caught it; true cause was simpler (script fine, just never run). Verify-2 first run FAILED (dup entries) → surfaced the real merge-key bug → fixed in-scope
+- lesson: when the user asks for a NEUTRAL re-check, actually try to disprove your own theory — it caught a real bias here; idempotency belongs in the GUARD (the "already recorded?" check), not the writer (session_close.py is a dumb next-numbered writer by design); a failing verify is a gift — it exposed the latent dup bug
+- promoted_patterns: auto-heal at the Stop-hook rhythm (close self-heals beside backlink/symbol/repo_map — no reliance on AI memory); guarded-idempotent subprocess (read state → check-if-done → act-once); find-existing-CFP-first (appended CFP-030 recurrence instead of creating a duplicate CFP); detail-file=rich source-of-truth, index=thin greppable pointer (mirrors index_files.json philosophy)
+
+
+## T-200 · 2026-06-15 · Migration force-refreshes detected.md
+- intent: user installed harness via 09_migration.md and found detected.md kept OLD model IDs + token_formula — agent never refreshed it during migration
+- outcome: M2.4 was a silent no-op when detected.md already existed; combined with B4's skip-if-filled rule this left stale values forever. Rewrote M2.4 to back up old → reset platform/api_provider to unknown → MANDATE inline B4 re-detection THIS run → verify+diff. Added M0.3 hard rule + When-to-use signal row. Scope held to one file.
+- friction: roadmap is Never-Full-Load — used offset+limit (3 lines) but the PostToolUse hook still flagged it (heuristic false-positive on the protected list); harmless
+- lesson: "file exists → skip" is the wrong idempotency test for machine-specific files — existence ≠ currency; detected.md must be RE-DETECTED on migration, not preserved. The healing must live where the agent is live (migration step), because boot-time B4 deliberately won't re-detect a filled file.
+- promoted_patterns: distinguish copy-able harness files from machine-specific ones (detected.md = always re-detect, never copy/preserve); put the refresh where an agent is already running rather than deferring to a conditional next-boot probe
+
+
+## T-201 · 2026-06-15 · doc_builder audit + 6 fixes + model routing
+- intent: audit doc_builder via skill_auditor + fix 6 defects (scope leak into project tree·runaway loop·hallucination·log/token leak·not step-by-step·redundancy) + add model_medium→high routing for the understanding phase; harness-only, never touch target src/
+- outcome: fixes across SKILL.md + SKILL_detail.md (outputs relocated to doc_output/<project>/ outside target; Grounding Gate "no evidence=no write"; Loop Guard + [doc-builder-eject]; quiet capture script + mandatory safe_run; step-by-step walkthrough 1-step=1-instruction+1-image; Tone Guide/MECE-block dedup) + new ## Model Routing section; skill_auditor re-audit returned PASS 0🔴; rule_indexer run
+- friction: token pressure (SESSION ~80k, CHAT ~105k → mid-task /compact); R2 5-call budget overrun once on S4 (6 calls)
+- lesson: ground analysis via grep before asserting — avoid the very hallucination the skill guards against; spawn adversarial re-audit as a sub-agent to keep main context lean
+- promoted_patterns: adversarial re-audit by sub-agent after self-edits; grounding-gate ("no evidence=no write") reusable for any doc-gen skill
+- follow-up: T-202 opened for 2 residual gaps — Coverage Gate (anti-missing-feature, the inverse of grounding) + cross-role single-source link spec (target=_blank + deep anchor + owner-role chosen by most-used)
+
+## T-202 (2026-06-15) · doc_builder coverage + single-source
+What worked: distilled 7 user risk points → 2 real gaps by grepping the LIVE skill files (not memory), avoiding the hallucination risk being analyzed. Built Coverage Gate as the exact inverse of the existing Grounding Gate (reused structure → เรียบง่าย, no parallel prose). Offloaded close ceremony to sub-agent.
+What to improve: S2 had no checkbox line in the mece template — had to insert one mid-execution.
+Reusable: "gate twin" pattern — when a gate guards one direction (anti-extra), its inverse (anti-missing) can reuse the same shape (inventory + verify-back + signal + halt).

@@ -1,3 +1,3 @@
-task: T-195 — 08_checklist.md reconcile + install-completeness audit (5 stale verify-cmds fixed · scripts/hooks/skills all resolve)
+task: T-206 — add harness_editor "single front-door" rule (bundled skill-creator = scaffold draft only; every project skill passes through harness_editor for auditor bar + R8 index wiring) + reuse ideas not files
 phase: done
-next: optional — commit T-194+T-195 Implement/ edits + prior-session CLAUDE.md/AGENTS.md 9 fixes (awaiting user commit decision)
+next: none — task closed; deferred ⚠️ findings still tracked on spawn_task chip (doc_builder 2 + harness_editor Output-Spec-labels/Type-6)

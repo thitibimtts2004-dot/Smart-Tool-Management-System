@@ -1,0 +1,40 @@
+{
+  "session_id": "session_007",
+  "status": "completed",
+  "date": "2026-06-15",
+  "task": "T-202 doc_builder Coverage Gate + cross-role single-source link \u2014 CLOSED",
+  "task_ids": [
+    "T-202"
+  ],
+  "skill": "harness_editor",
+  "files_changed": [
+    ".agents/skills/doc_builder/SKILL.md",
+    ".agents/skills/doc_builder/SKILL_detail.md",
+    ".agents/skills/session_manager/SKILL_detail.md",
+    ".sessions/.close_checklist_ack",
+    ".sessions/active_thread.md",
+    ".sessions/compact_state.md",
+    ".sessions/gather_complete.md",
+    ".sessions/mece_plan.md",
+    ".sessions/reflections.md",
+    ".sessions/session_004.json",
+    ".sessions/session_005.json",
+    ".sessions/session_006.json",
+    ".sessions/session_context_cache.md",
+    ".sessions/session_handoff.md",
+    ".sessions/session_tokens.md",
+    ".sessions/token_log.jsonl",
+    "CODING_FAILURE_PATTERNS.md",
+    "Implement/09_migration.md",
+    "REPO_MAP.md",
+    "docs/master_roadmap.md",
+    "docs/session_templates/mece_plan_schema.md",
+    "knowledge/harness_flow_20260526.md",
+    "knowledge/index_files.json",
+    "knowledge/index_sessions.json",
+    "scripts/index_reconcile.py",
+    "scripts/session_close.py",
+    "scripts/session_indexer.py"
+  ],
+  "summary_context": "T-202 doc_builder Coverage Gate + cross-role single-source link \u2014 CLOSED"
+}
