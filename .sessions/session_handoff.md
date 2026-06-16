@@ -1,25 +1,21 @@
-# Session Handoff — T-204
-skill_name: file_manager · session_manager
-CFP_COUNT: 37
-task: Install + adapt the full Harness Agent framework into /Volumes/BriteBrain/Projects/Money_Assistance (empty fresh project · Track A)
+# Session Handoff — T-209 DONE (close-gate pending)
 
-## outcome: DONE ✅ (all 7 sections verified · session_compactor STATUS: OK · 22-check all PASS)
+skill_name: harness_editor
+CFP_COUNT: 38
+task: T-209 — tighten project_presenter SKILL.md (8 audited gaps), port doc_builder patterns
 
-## changes (in Money_Assistance/)
-- S1 framework engine copied: CLAUDE.md/AGENTS.md/CLAUDE.th.md/INVARIANTS.md/README.md/VERSION/Implement.md/CODING_FAILURE_PATTERNS.md/REPO_MAP.md + Implement/(10) + .agents/(skills 21 + platform + manifests) + scripts/(25 .py) + docs/session_templates/(11) + domain/(2)
-- S2 knowledge reset blank: index_files={"files":{}} · index_variables={"variables":{}} · error_index header-only · index_cfp_fix keyed from 36 CFP IDs · master_roadmap blank+T-001 · REPO_MAP stub w/ AUTO markers
-- S3 .sessions/ bootstrapped (9 files · SESSION_TOTAL:0)
-- S4 detected.md: anthropic · opus/sonnet/haiku · all fields filled (copied from source — same provider)
-- S5 domain pack finance_agents.md created (active:true · coding.md→false) — Python · Google Sheets DB · finance-data-gate · money=Decimal · grounded-advice rules
-- S6 .claude/settings.json hooks (5 events · CLAUDE_PROJECT_DIR portable) · git init · .gitignore
-- S7 verified: session_compactor STATUS:OK · 22-check PASS · index_sessions.json created
+## Status: DONE
+All 4 sections S1-S4 complete · Verify-N all PASS · [behave-test] PASS · R8 rule_indexer ran (31 entries · defined=342 referenced=526).
 
-## validation
-- session_compactor.py --verbose → STATUS: OK (9 .sessions files)
-- exactly 1 active domain pack (finance_agents)
-- settings.json valid JSON · 5 hook events · no hardcoded paths
+## What changed (1 file: .agents/skills/project_presenter/SKILL.md)
+- S1: added YAML name+description · hard Scope rule → output to present_output/<project_name>/ OUTSIDE target (was writing into customer repo public/present)
+- S2: added Model Routing + Grounding Gate + Loop Guard ([present-eject] / [grounding-drop])
+- S3: replaced §5 bullet hints with paste-ready standalone HTML+CSS template (dark #0f172a/#38bdf8 · nav · 5-page · {{...}} slots) — the user's main complaint
+- S4: converted BC-Screenshot-Check + BC-Interview-Gate → plain §-steps / Operating Stance · dropped MECE Constraints Block (dedup)
+Preserved: all trigger keywords · §3 hypothesis MC · §4 storytelling structure.
 
-## next
-- MA is ready. Open a session inside Money_Assistance → Boot runs → start T-001 (build first finance skill/tool).
-- MA not committed to git yet (user did not request commit) — git initialized, files ready to stage.
-- Source Harness Agent repo: only .sessions/ state files changed this session (no src/ · not pushed).
+## Remaining (close)
+- PATH A: clear mece_plan Phase 1-3 (keep Phase 0) — R14-gated, awaiting explicit user confirm. (Supersedes the old T-208 PATH A carry — mece_plan.md now holds T-209 content.)
+- post-task learning quiz (2-3 Q · user-coach)
+
+resume_at: close only — work complete

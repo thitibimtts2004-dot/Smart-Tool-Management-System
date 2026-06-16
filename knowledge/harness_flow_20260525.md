@@ -747,3 +747,12 @@ S1 (L68): guard — "Two supported modes ONLY · never Sonnet<medium" (false con
 S2 (L180): in-file Output section labels 1-5 mandatory/optional — convergent finding (3/4 audits flagged).
 Noise rejected: per-run one-off findings (L69/BC-threshold) had high variance + inconsistent line numbers → not acted on.
 No regression · 18 headers · 215L · R8 content-edit only (no manifest change).
+
+## Y-T208 (2026-06-16) · harness_editor — token-tracking 1-turn display lag (CFP-041)
+Trigger: user observed token figures lag the current loop by 1 iteration. Root cause confirmed real: `[token-state]` is surfaced by the UserPromptSubmit hook only at turn START (= prior turn's END), while the PostToolUse hook writes `.sessions/session_tokens.md` LIVE during the turn — but the agent decides off the stale snapshot.
+Decision: 3-file consistent fix (S1 CLAUDE.md §R1, S2 AGENTS.md §C0.5 + §Loop compact-check, S3 Implement/03_config.md §Token Tracking — paired-doc mandate).
+S1: per-turn step (6) — at any mid-turn DECISION point (compact_checkpoint · R3/C0.5 threshold · before continuing past a checkpoint on a heavy-tool turn) grep LIVE session_tokens.md instead of the start-of-turn snapshot; footer value relabelled as a start-of-turn / prior-turn total that lags by up to 1 turn.
+S2: C0.5 + compact-check both note the snapshot lag + force a LIVE re-read on heavy-tool turns (≥5 calls / clone / bulk-copy). Subagent-overwrite caveat PRESERVED (main-context turns only).
+S3: paired Implement doc synced with the same CFP-041 note + detection heuristic (single-turn CHAT jump >40k between consecutive [token-state] reports).
+Validated LIVE 2× this session: the new rule caught CHAT near the 120k ceiling AND caught the user typing the resume phrase without a real /compact — the exact failure mode it fixes.
+No regression · Verify-1/2/3 PASS · R8 rule_indexer synced (32 entries) · doc-only edits (no src/).

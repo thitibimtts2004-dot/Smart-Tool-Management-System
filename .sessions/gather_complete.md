@@ -1,36 +1,44 @@
-# Gather Complete — Install + adapt Harness into Money_Assistance
-dt: 2026-06-15
-task: Install the full Harness Agent framework into /Volumes/BriteBrain/Projects/Money_Assistance (currently EMPTY · 0 files · not a git repo) and ADAPT it to that project (per user: "ปรับให้เข้ากับโปรเจกต์นั้น"). Follow the harness's own documented install (Implement.md Track A + Implement/02_setup.md §7) but COPY the LIVE framework files (current evolved version) rather than regenerating stale templates.
-skill: file_manager (copy/scaffold) · mece (plan) · session_manager (bootstrap state)
+# Gather Complete — T-209 project_presenter tightening
+dt: 2026-06-16
+task: tighten project_presenter SKILL.md process + add real HTML template (8 gaps) — port doc_builder patterns
+skill: harness_editor
 
-## key findings (grounded by probe + Explore agent, 2026-06-15)
-- Money_Assistance = 0 files, NOT a git repo → pure Track A (fresh project)
-- Harness has a documented self-install: Implement.md (Track A/B/C, Phase 0-5) + Implement/02_setup.md §7 (8-step onboarding) + §11 (.gitignore pattern)
-- LIVE harness > doc baseline: ~22 skills on disk (doc says 10) · all helper scripts exist (bootstrap_sessions.py, session_compactor.py, symbol_indexer.py verified present) → copy live files, do NOT regenerate from Implement templates
-- detected.md (provider/model tiers) + domain pack are the two INTERACTIVE config points (Step 4b + 4d) — need user input
+## Objective
+Fix 8 audited gaps in `.agents/skills/project_presenter/SKILL.md` by porting the proven patterns
+from its sibling `doc_builder`. User confirmed: fix ALL 8 + realign file-output scope to match
+doc_builder (write OUTSIDE the target project, not into the customer repo).
 
-## file classification (what to copy vs reset vs skip)
-- COPY AS-IS (framework engine): CLAUDE.md · AGENTS.md · CLAUDE.th.md · INVARIANTS.md · README.md · VERSION · Implement.md · Implement/ (20 files) · .agents/skills/ (22) · .agents/platform/ · scripts/ (58) · docs/session_templates/ (11) · CODING_FAILURE_PATTERNS.md (harness-behavior lessons = reusable)
-- RESET to blank template (project-specific state): .sessions/ (via bootstrap_sessions.py) · knowledge/index_files.json={"files":{}} · index_variables.json={"variables":{}} · error_index.md=empty · index_cfp_fix.json=keyed from CFP IDs · docs/master_roadmap.md=blank · REPO_MAP.md=blank/regen
-- SKIP ENTIRELY (Harness-Agent-project-specific content): knowledge/*.md research/audit/flow docs · knowledge/recipes/ · knowledge/research/ · .sessions/session_*.json · .sessions/cycle_*/audit logs
-- CREATE NEW (adapt to MA): domain/<name>.md from _TEMPLATE.md (project type TBD from user)
+## The 8 gaps (audit verdict)
+1. YAML header broken — no `name:`, no `description:` (only `triggers:`)         → ❌ framework violation
+2. No Loop Guard — §2 interview "loop until stop" has no max-iter / eject        → loose process (main complaint)
+3. No real HTML template — §5 is bullet hints only, no paste-ready skeleton      → "no template" (main complaint)
+4. BC over-enforcement — 2 BCs + MECE block guard judgment/process, not destruction → [over-enforcement]
+5. No Grounding/Coverage gate — can drift/fabricate, only a soft Hard Rule        → can invent content
+6. Scope inconsistency — writes INTO target project; sibling writes outside       → align to doc_builder
+7. No Model Routing — reasoning phases (§2/§4) have no tier floor                  → weak model invents
+8. Scattered rules — Prerequisites + Refusal Contract + MECE block overlap 3×      → dedup
 
-## constraints
-- TARGET = Money_Assistance only. Do NOT modify Harness Agent src/ or push either repo.
-- Batch copy >5 files → R14 destructive [gate] + explicit user confirm BEFORE bulk copy.
-- detected.md model tiers + domain pack MUST be filled WITH the user (never silent default) — Step 4b/4d.
-- Phase 4 verify is mandatory: session_compactor.py --verbose → STATUS: OK + 08_checklist.md 22 checks.
+## Constraints
+- Edit ONE file only: `.agents/skills/project_presenter/SKILL.md` — NOT src/, NOT doc_builder
+- Behavioral skill edit → Stage 3.5 [behave-test] required at close
+- Preserve existing trigger keywords (back-compat) · preserve §3/§4 storytelling structure (it works)
+- Mirror doc_builder wording: YAML header · Scope rule · Model Routing · Grounding Gate · Loop Guard · Output Contract
+- R8 index sync after edit (rule_indexer — SKILL.md is a harness rule file)
 
-## affected_files (all under /Volumes/BriteBrain/Projects/Money_Assistance/)
-- new: CLAUDE.md, AGENTS.md, INVARIANTS.md, README.md, VERSION, Implement.md, Implement/*, .agents/**, scripts/*, docs/**, knowledge/* (reset), .sessions/* (bootstrap), domain/<name>.md, .claude/settings.json, .gitignore, .git/
+## Affected files
+| File | Action | Lines read |
+|---|---|---|
+| .agents/skills/project_presenter/SKILL.md | rewrite (target) | full 193L |
+| .agents/skills/doc_builder/SKILL.md | pattern source (read-only) | full 225L |
+| docs/session_templates/mece_plan_schema.md | plan template | 1-90 + PATH A |
 
-## acceptance_criteria
-- All framework files present in MA (08_checklist.md: target ~22/22 checks pass)
-- .sessions/ bootstrapped · knowledge indexes blank-initialized · roadmap/REPO_MAP blank
-- detected.md filled (provider + 3 model tiers, user-confirmed)
-- exactly ONE domain pack active:true, adapted to MA project type (user-confirmed)
-- .claude/settings.json hooks wired (SessionStart/UserPromptSubmit/PreToolUse/PostToolUse/Stop)
-- git initialized + harness .gitignore written
-- python3 scripts/session_compactor.py --verbose → STATUS: OK
-
-[✓ gather]
+## Acceptance criteria
+- [ ] YAML has `name: project_presenter` + `description:` block
+- [ ] Loop Guard section present (max 3 iter · Loop_W>50 eject · [present-eject] signal)
+- [ ] §5 has paste-ready HTML+CSS template skeleton (not bullets)
+- [ ] BC count reduced — interview/screenshot reframed as Operating Stance / steps
+- [ ] Grounding Gate present (every claim traces to §1 scan · [grounding-drop] signal)
+- [ ] Output paths OUTSIDE target project (present_output/<project>/ mirroring doc_output/)
+- [ ] Model Routing section present (§2/§4 floor = model_medium, never model_low)
+- [ ] Overlapping rules deduped into one home each
+- [ ] [behave-test] passes at close

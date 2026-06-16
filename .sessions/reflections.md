@@ -83,3 +83,8 @@ Watch: stale compact_state.md still produces a misleading resume-hint at boot (r
 What worked: distilled 7 user risk points → 2 real gaps by grepping the LIVE skill files (not memory), avoiding the hallucination risk being analyzed. Built Coverage Gate as the exact inverse of the existing Grounding Gate (reused structure → เรียบง่าย, no parallel prose). Offloaded close ceremony to sub-agent.
 What to improve: S2 had no checkbox line in the mece template — had to insert one mid-execution.
 Reusable: "gate twin" pattern — when a gate guards one direction (anti-extra), its inverse (anti-missing) can reuse the same shape (inventory + verify-back + signal + halt).
+## T-208 (2026-06-16) · harness_editor — CFP-041 token-lag fix
+- What worked: the fix validated ITSELF live mid-session — the new mid-turn live-grep rule caught CHAT near the 120k ceiling and caught a resume-phrase typed without a real /compact. Strongest possible behave-test evidence.
+- Tripwire avoided: rewrote stale compact_state.md (section=S1 → CLOSE) BEFORE recommending compact, so the real /compact resumed cleanly at CLOSE instead of bouncing back to S1.
+- Lean win: skipped the separate model_low Reviewer — Completion Gate allows inline verify for ≤3 Verify-N + no src/ change. Saved a subagent.
+- Carry-forward: paired-doc mandate (rule file + its Implement doc) held — S3 kept Implement/03_config.md in sync with CLAUDE.md §R1.

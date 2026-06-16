@@ -1,3 +1,3 @@
-task: T-206 — add harness_editor "single front-door" rule (bundled skill-creator = scaffold draft only; every project skill passes through harness_editor for auditor bar + R8 index wiring) + reuse ideas not files
+task: T-209 tighten project_presenter SKILL.md (8 gaps) — port doc_builder patterns
 phase: done
-next: none — task closed; deferred ⚠️ findings still tracked on spawn_task chip (doc_builder 2 + harness_editor Output-Spec-labels/Type-6)
+next: PATH A clear mece_plan Phase 1-3 (R14-gated · awaiting user confirm) + post-task learning quiz

@@ -56,8 +56,8 @@ _Auto-generated structure snapshot — repo_map_check.py --sync (2026-06-16). Do
 | `.agents/skills/user-coach/` | 1 | 0 |
 | `.agents/skills/variable_manager/` | 1 | 0 |
 | `.agents/tools/` | 1 | 0 |
-| `.sessions/` | 55 | 1 |
-| `.sessions/exec_log/` | 1 | 0 |
+| `.sessions/` | 60 | 1 |
+| `.sessions/exec_log/` | 0 | 0 |
 | `Implement/` | 10 | 0 |
 | `docs/` | 4 | 1 |
 | `docs/session_templates/` | 11 | 0 |

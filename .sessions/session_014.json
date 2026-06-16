@@ -1,0 +1,34 @@
+{
+  "session_id": "session_014",
+  "status": "completed",
+  "date": "2026-06-16",
+  "task": "T-208 \u2014 fix token-tracking 1-turn display lag (CFP-041) \u00b7 S1 CLAUDE.md R1 mid-turn live grep + footer label \u00b7 S2 AGENTS.md C0.5 + compact-check heavy-tool live re-read (subagent caveat preserved) \u00b7 S3 Implement/03_config.md paired-doc sync",
+  "task_ids": [
+    "T-208"
+  ],
+  "skill": "harness_editor",
+  "files_changed": [
+    ".sessions/active_thread.md",
+    ".sessions/behave_test_log.jsonl",
+    ".sessions/compact_state.md",
+    ".sessions/exec_log/provider_probe_T174.txt",
+    ".sessions/gather_complete.md",
+    ".sessions/mece_plan.md",
+    ".sessions/reflections.md",
+    ".sessions/session_013.json",
+    ".sessions/session_context_cache.md",
+    ".sessions/session_handoff.md",
+    ".sessions/session_tokens.md",
+    ".sessions/token_log.jsonl",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "CODING_FAILURE_PATTERNS.md",
+    "Implement/03_config.md",
+    "REPO_MAP.md",
+    "docs/master_roadmap.md",
+    "knowledge/harness_flow_20260525.md",
+    "knowledge/index_files.json",
+    "knowledge/index_sessions.json"
+  ],
+  "summary_context": "T-208 \u2014 fix token-tracking 1-turn display lag (CFP-041) \u00b7 S1 CLAUDE.md R1 mid-turn live grep + footer label \u00b7 S2 AGENTS.md C0.5 + compact-check heavy-tool live re-read (subagent caveat preserved) \u00b7 S3 Implement/03_config.md paired-doc sync"
+}
