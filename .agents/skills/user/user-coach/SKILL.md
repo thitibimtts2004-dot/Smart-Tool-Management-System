@@ -70,6 +70,41 @@ It recomputes mastery, status, weak/strong areas, and the next glossing depth.
 turn's `[learning-state]` already reflects the new data. Glossing depth and focus
 topics adjust automatically. No manual step.
 
+### 5. OBSERVE (at task close — person model · T-253)
+Steps 2-4 track WHAT the user knows (topic mastery). This step captures WHO they are
+— how they work and communicate — when a clear, repeatable behavior shows.
+Reinforce by canonical key (a repeat sighting bumps the tally; it is NOT a new line):
+```
+python3 scripts/learning_profile.py observe --key <stable-kebab-key> --label "<short behavior>" --example "<what they did this task>"
+```
+- STABLE key so the same behavior accumulates across sessions (e.g. `asks-to-scrutinize`, `prefers-plain-analogy`, `spots-own-over-engineering`).
+- First sighting = `provisional`; the engine promotes to `confirmed` only at tally ≥ 2 — never label a person off one observation (anti over-flag).
+- Observe SPARINGLY: a genuine repeatable trait, not a one-off mood. Nothing clear stood out → skip (do not force a trait).
+
+### 6. FILL-GAPS (optional · only when the person model has holes · T-253)
+OBSERVE (step 5) fills the person model from REAL behaviour — the trustworthy source. But
+early on, or for a field behaviour rarely reveals, the model can stay empty. This step asks
+2-3 short, targeted questions to seed those gaps — never a full interview.
+
+When to run (all must hold, else skip):
+- A substantial task just closed (same gate as the quiz).
+- The `[learning-state]` line shows a thin model — e.g. `dev-path: -`, an empty `strong: [-]`,
+  or `traits: [-]` after several tasks. A full model → do not ask.
+- The user is not rushed/frustrated. Offer gently: "ขอถามสั้น ๆ 2 ข้อเพื่อให้ผมเข้าใจสไตล์คุณมากขึ้นได้ไหมครับ?"
+
+Ask ONLY about the empty field(s) — pick 2-3 of: how they like answers (short vs detailed),
+what they want to get better at, what kind of work feels easy vs hard for them.
+
+Record each answer as a SELF-REPORTED, low-confidence signal — route it through `observe` so
+it lands as `provisional` and can NEVER promote itself to `confirmed` off one self-report:
+```
+python3 scripts/learning_profile.py observe --key self-reported-<stable-kebab-key> --label "<short behaviour>" --example "self-report 2026-..: <their words>"
+```
+- The `self-reported-` key prefix keeps it visibly distinct from observed traits.
+- It stays `provisional` (low-confidence) until REAL behaviour matches it (tally ≥ 2 via a normal
+  OBSERVE) — only then does it become `confirmed`. Self-report seeds; observation confirms.
+- Never overwrite an existing observed trait with a self-reported one — different key, no clash.
+
 ## Output Spec
 Quiz block in Thai, for example:
 ```

@@ -1,16 +1,16 @@
-# MECE Plan — T-224 · out_of_scope rejection memory
-date: 2026-06-22
-task: T-224 — add ONE design-DECISION rejection log knowledge/out_of_scope.md (problem/rationale/refs/keywords per rejected idea) + wire grep-first read & append-on-reject into skeptical_reviewer (the pre-execution necessity gate). Mirror T-229 glossary discipline · NEVER always-load · NO new dir/skill/script/hook.
-skill: harness_editor
+# MECE Plan — T-253 user-modeling / potential-development system
+date: 2026-06-23
+task: Build T-253 step-by-step — EXTEND the T-225 user-coach store with a PERSON model + coach layer (lightweight, single-user-fit). Grounding: knowledge/user_modeling_grounding.md
+skill: agent (per-section: coder for scripts · harness_editor for SKILL.md)
+status: in_progress
+mece_plan_hash: (set at first handoff)
 
 ## Phase 0 — Boot (once per session · keep [X] on resume · reset on topic switch only)
-- [X] B1: compact_state checked · session_reset consumed · SESSION_TOTAL=0 · CFP_COUNT=39
-- [X] B2-B3: skill=harness_editor · SKILL.md loaded
-- [X] C0-C3: routing confirmed · [topic-switch] T-228(done)→T-224 · NEW TASK · fresh Phase 1+2
+- [X] B1: boot_init ran · SESSION/CHAT/CFP loaded
+- [X] B2-B3: skill=agent identified · context loaded
+- [X] C0-C3: routing confirmed · same-topic T-253 build (S0 done → S1 build) · no topic switch
 
----
-
-## Phase 1 — Info Gather — status: gathered ([✓ gather] emitted)
+## Phase 1 — Info Gather
 
 ## Phase 1–3 — cleared
-status: task-complete (T-224 · 2026-06-22)
+status: task-complete

@@ -123,3 +123,24 @@ outcome: knowledge/out_of_scope.md (6 seed entries) + skeptical_reviewer read(St
 friction: backlink_analyzer.py does not take --file (schema said it did) · backfill_knowledge_index.py only enriches existing entries, won't register a brand-new file → added the index entry via a safe json load/dump snippet instead.
 lesson: for a NEW knowledge file the registration path is a manual json insert + backlink_analyzer (no-arg regen), NOT backfill --file. The Close-Checklist command hint (backlink_analyzer --file) is stale.
 promoted_patterns: scrutinize timing-check — "where does this fire, and is that BEFORE or AFTER the pain happens?" caught the scrutinize-vs-skeptical_reviewer relocation.
+
+## T-227 · git-guardrails hook · 2026-06-23
+intent: hard PreToolUse(Bash) block for dangerous git (R14/R15 were soft contracts only).
+outcome: scripts/git_guard.py + settings.json Bash matcher · 11/11 standalone + 2 live tests PASS.
+friction: (1) override-via-env-prefix was BROKEN — the hook reads its OWN env, not the command-string
+  prefix, so `GIT_GUARD_OK=1 git ...` stayed blocked. Only the LIVE dogfood test exposed it; the
+  standalone JSON-pipe test passed because it set the env directly. Fix: detect GIT_GUARD_OK=1 as a
+  command TOKEN. (2) `echo git push --force` false-blocked — fixed with a command-position check.
+lesson: a hook that inspects the command MUST be tested LIVE end-to-end, not just by piping JSON to
+  the script — standalone-green != live-green. Scrutinize "what could break" + live dogfood caught both.
+promoted_patterns: live-dogfood every command-inspecting hook before marking done.
+
+[2026-06-23] T-227 follow-up: scrutinize-on-artifact caught a real git -C bypass that scrutinize-on-plan missed. Lesson: always run a second scrutinize on the finished code, not only the design.
+
+[2026-06-23] T-252: the cheapest enforcement point was one that ALREADY existed. Scrutinize rejected a new Stop-hook block (infinite-loop + reverses T-183 fail-safe) for extending the PreToolUse close-gate that already intercepts the `phase: done` write. Lesson 1: before adding a new guard, check whether an existing seam already sits exactly where you need to block — reuse beats invention. Lesson 2: always test a gate's NEGATIVE case (must NOT block a normal tree), not just the positive — Verify caught a 2-bug over-block (every modified-unindexed file + JSON/dated-history grep noise) that would have recreated the exact false-ceiling trap the user fears. promoted_pattern: for any new hard-block, write the "must-pass-cleanly" test first.
+
+## 2026-06-23 · T-253 Cycle 2 (de-inert + single-source)
+- WHAT: surfaced goal as a short north-star tag, fixed verbosity to use quizzed-only topics, added back-compat selftest, made json self_reported the canonical store (memory = documented mirror + pointer), deleted 2 redundant strength-claim traits.
+- SCRUTINIZE CAUGHT: F1 goal-tag truncation dropped "AI harness engineering" (the salient half) → fixed via hand-authored goal_tag field. F2: planned trim of duplicated memory facts was intentionally NOT done (user required comprehensive storage) → recorded as honest deviation, not a silent pass. Verify-7b only checks the pointer, matching this.
+- LESSON: a Verify-N can be LOOSER than the plan intent (7b checked pointer-present, not trim-done). When a check cannot assert the full intent, say so at close rather than letting "verify passed" imply more than it tested.
+- REVIEW: independent model_low reviewer ran Verify-1..7 + logic scrutiny → all-pass, no new issues.

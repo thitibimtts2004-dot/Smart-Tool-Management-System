@@ -1,7 +1,7 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "user": "pongsada.p",
-  "updated": "2026-06-22",
+  "updated": "2026-06-23",
   "global": {
     "english_comfort": "low",
     "glossing_depth": "high",
@@ -12,6 +12,34 @@
       "out-of-scope"
     ]
   },
+  "person": {
+    "strengths": [],
+    "weaknesses": [],
+    "dev_path": "",
+    "answer_style": "plain-thai · reason-then-label · lean (no padding) · praise-only-hard-wins · vet-analogies · gloss-every-term",
+    "self_reported": {
+      "background": "civil-eng grad; strong logic; ~2yr vibe-coding web apps business-side; basic-and-below DB/UX-UI; limited tech vocab",
+      "strengths": ["system/process design", "efficiency optimization", "logic & reasoning", "big-picture across angles"],
+      "goal": "UNDERSTAND (not master) computer architecture + AI harness engineering — make AI work well/cheap/sharp; manager-depth",
+      "goal_tag": "understand comp-arch + AI-harness eng",
+      "engaged_by": "decision-making, process thinking, conditions, optimization",
+      "stuck_by": "forced to decide/assemble without understanding — feels like guessing",
+      "confidence": "low (self-report; confirm via behaviour)",
+      "captured": "2026-06-23"
+    }
+  },
+  "traits": [
+    {
+      "key": "self-reported-stuck-under-uncertainty",
+      "label": "engaged by optimizing decisions; stuck when forced to choose without understanding",
+      "tally": 1,
+      "status": "provisional",
+      "last_seen": "2026-06-23",
+      "examples": [
+        "self-report 2026-06-23: dislikes deciding under uncertainty - feels like guessing"
+      ]
+    }
+  ],
   "topics": [
     {
       "topic": "closed-learning-loop",

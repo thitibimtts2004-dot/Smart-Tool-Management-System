@@ -295,7 +295,7 @@
       "BC-mece-compact",
       "T-162",
       "T-164",
-      "T-165"
+      "T-238"
     ],
     "type": "knowledge",
     "topic_map": [
@@ -712,17 +712,17 @@
         "score": 3
       },
       {
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
         "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
         "path": ".agents/skills/knowledge/session_manager/SKILL.md",
-        "strength": "related",
-        "score": 3
-      },
-      {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -1221,7 +1221,7 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
         "strength": "strong",
         "score": 4
       },
@@ -1550,12 +1550,12 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -2067,12 +2067,12 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -2466,6 +2466,7 @@
       "CFP-031",
       "CFP-041",
       "CFP-042",
+      "CFP-043",
       "R1",
       "T-138",
       "T-139",
@@ -2489,7 +2490,11 @@
       "T-215",
       "T-217",
       "T-224",
-      "T-228"
+      "T-227",
+      "T-228",
+      "T-236",
+      "T-238",
+      "T-252"
     ],
     "rules_referenced": [
       "BC-Ascii-Return",
@@ -2654,7 +2659,8 @@
       "T-233",
       "T-234",
       "T-235",
-      "T-241"
+      "T-241",
+      "T-244"
     ],
     "topic_map": [
       {
@@ -2762,7 +2768,7 @@
       ".agents/skills/coding/coder/SKILL.md",
       ".agents/skills/coding/editor/SKILL.md",
       ".agents/skills/harness/mece/SKILL_detail.md",
-      ".agents/skills/knowledge/variable_manager/SKILL.md",
+      ".agents/skills/knowledge/index_manager/SKILL.md",
       "Implement/00_index.md",
       "Implement/01_overview.md"
     ],
@@ -2801,7 +2807,7 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -3669,7 +3675,7 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -3838,12 +3844,12 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -4016,12 +4022,12 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -5220,12 +5226,12 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -6384,7 +6390,8 @@
       "R8",
       "T-007",
       "T-017",
-      "T-042"
+      "T-042",
+      "T-238"
     ],
     "topic_map": [],
     "coverage": null,
@@ -7154,7 +7161,7 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -7618,7 +7625,7 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -10116,12 +10123,12 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -10388,17 +10395,17 @@
         "score": 3
       },
       {
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
         "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
         "path": ".agents/skills/knowledge/session_manager/SKILL.md",
-        "strength": "related",
-        "score": 3
-      },
-      {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -11169,12 +11176,12 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -12256,12 +12263,12 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -12593,12 +12600,12 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -13551,12 +13558,12 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -13848,12 +13855,12 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -14188,12 +14195,12 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -14459,17 +14466,17 @@
         "score": 3
       },
       {
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
         "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
         "path": ".agents/skills/knowledge/session_manager/SKILL.md",
-        "strength": "related",
-        "score": 3
-      },
-      {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -14736,12 +14743,12 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -15033,12 +15040,12 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -15193,238 +15200,6 @@
     ],
     "coverage": 0.93,
     "tagged_at_hash": "303213cd"
-  },
-  ".agents/skills/knowledge/variable_manager/SKILL.md": {
-    "type": "skill",
-    "description": "Variable Index Manager skill — tracks cross-file symbol definitions and usage in knowledge/index_variables.json. Triggered only when symbol has cross-file dependency.",
-    "topics": {
-      "major": [
-        "index_sync"
-      ],
-      "minor": [
-        "behavioral_contract",
-        "harness_editing",
-        "error_protocol"
-      ]
-    },
-    "backlinks": [],
-    "references": [
-      "knowledge/index_variables.json"
-    ],
-    "rules_defined": [],
-    "rules_referenced": [
-      "BC-symbol-return",
-      "R15"
-    ],
-    "related": [
-      {
-        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
-        "strength": "strong",
-        "score": 4
-      },
-      {
-        "path": "scripts/rule_indexer.py",
-        "strength": "strong",
-        "score": 4
-      },
-      {
-        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
-        "strength": "related",
-        "score": 3
-      },
-      {
-        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
-        "strength": "related",
-        "score": 3
-      },
-      {
-        "path": ".agents/skills/harness/harness_editor/SKILL.md",
-        "strength": "related",
-        "score": 3
-      },
-      {
-        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
-        "strength": "related",
-        "score": 3
-      },
-      {
-        "path": "knowledge/audit_engine_rubric.md",
-        "strength": "related",
-        "score": 3
-      },
-      {
-        "path": "scripts/index_reconcile.py",
-        "strength": "related",
-        "score": 3
-      },
-      {
-        "path": "scripts/repo_map_check.py",
-        "strength": "related",
-        "score": 3
-      },
-      {
-        "path": "../Document_Control/kms-api-secured.js",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/content/doc_builder/SKILL.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/harness/self_improve/SKILL.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/registry.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": "CLAUDE.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": "knowledge/9arm-skills-skill-building-framework-2026-06-04.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": "knowledge/9arm-skills-writing-techniques-concrete-examples-2026-06-04.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": "knowledge/behave_test_log.jsonl",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": "knowledge/harness-agent-skill-system-framework-2026-06-04.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": "knowledge/index_variables.json",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": "knowledge/topic_facet_schema.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": "knowledge/topic_registry.json",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": "scripts/backfill_knowledge_index.py",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": "scripts/backlink_analyzer.py",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": "scripts/knowledge_conflict_checker.py",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": "scripts/session_close.py",
-        "strength": "related",
-        "score": 2
-      }
-    ],
-    "topic_map": [
-      {
-        "topic": "index_sync",
-        "lines": [
-          [
-            1,
-            125
-          ]
-        ],
-        "critical": false
-      },
-      {
-        "topic": "behavioral_contract",
-        "lines": [
-          [
-            87,
-            96
-          ],
-          [
-            60,
-            66
-          ]
-        ],
-        "critical": true
-      },
-      {
-        "topic": "harness_editing",
-        "lines": [
-          [
-            69,
-            83
-          ]
-        ],
-        "critical": false
-      },
-      {
-        "topic": "error_protocol",
-        "lines": [
-          [
-            60,
-            66
-          ],
-          [
-            110,
-            116
-          ]
-        ],
-        "critical": false
-      }
-    ],
-    "coverage": 0.9,
-    "tagged_at_hash": "88c99f10"
   },
   "scripts/verify_runner.py": {
     "path": "scripts/verify_runner.py",
@@ -15766,7 +15541,7 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -16177,12 +15952,12 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -16411,12 +16186,12 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -16748,7 +16523,7 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
         "strength": "strong",
         "score": 4
       },
@@ -17059,7 +16834,7 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -17334,7 +17109,7 @@
     "coverage": 0.9,
     "tagged_at_hash": "62e12fec",
     "imports": [],
-    "extracted_at_hash": "e973876d",
+    "extracted_at_hash": "77d0804b",
     "imported_by": []
   },
   ".agents/skills/harness/harness_editor/SKILL_detail.md": {
@@ -17475,12 +17250,12 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -17709,12 +17484,12 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -18057,7 +17832,7 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -18429,12 +18204,12 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -18654,7 +18429,7 @@
   },
   "scripts/learning_profile.py": {
     "imports": [],
-    "extracted_at_hash": "a459baf1",
+    "extracted_at_hash": "3e8f3e97",
     "imported_by": [],
     "related": []
   },
@@ -18928,12 +18703,212 @@
     ],
     "related": [],
     "rules_defined": [
-      "T-229"
+      "T-229",
+      "T-236"
     ],
     "rules_referenced": [
       "T-222",
       "T-223",
-      "T-224"
+      "T-224",
+      "T-244"
+    ]
+  },
+  "scripts/git_guard.py": {
+    "path": "scripts/git_guard.py",
+    "purpose": "PreToolUse(Bash) git-guardrails hook (T-227): blocks 4 dangerous git patterns (force-push, reset --hard, clean -f, branch -D) with exit 2 before they run; shlex-tokenized command-position match, fail-open on parse error, GIT_GUARD_OK=1 opt-in override.",
+    "created": "2026-06-23",
+    "task": "T-227",
+    "related": [],
+    "imports": [],
+    "extracted_at_hash": "d85a6f87",
+    "imported_by": []
+  },
+  "scripts/._git_guard.py": {
+    "imports": [],
+    "extracted_at_hash": "cea7df16",
+    "imported_by": [],
+    "related": []
+  },
+  ".agents/skills/knowledge/index_manager/SKILL.md": {
+    "type": "skill",
+    "description": "Index Manager skill (T-238 merge) — maintains both knowledge indices via a mode split. mode:symbol -> index_variables.json (cross-file symbol defs + used_in). mode:file -> index_files.json (file lifecycle + backlinks). Caller-driven, index-only.",
+    "topics": {
+      "major": [
+        "index_sync"
+      ],
+      "minor": [
+        "behavioral_contract",
+        "harness_editing",
+        "error_protocol"
+      ]
+    },
+    "backlinks": [],
+    "references": [
+      "knowledge/index_files.json",
+      "knowledge/index_variables.json"
+    ],
+    "rules_defined": [],
+    "rules_referenced": [
+      "BC-index-return",
+      "BC-symbol-return",
+      "R15"
+    ],
+    "related": [
+      {
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
+        "strength": "strong",
+        "score": 4
+      },
+      {
+        "path": "scripts/rule_indexer.py",
+        "strength": "strong",
+        "score": 4
+      },
+      {
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "knowledge/audit_engine_rubric.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/index_reconcile.py",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/repo_map_check.py",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "../Document_Control/kms-api-secured.js",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/registry.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "CLAUDE.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/9arm-skills-skill-building-framework-2026-06-04.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/9arm-skills-writing-techniques-concrete-examples-2026-06-04.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/behave_test_log.jsonl",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/harness-agent-skill-system-framework-2026-06-04.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/index_variables.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/topic_facet_schema.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/topic_registry.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/backfill_knowledge_index.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/backlink_analyzer.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/knowledge_conflict_checker.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/session_close.py",
+        "strength": "related",
+        "score": 2
+      }
     ]
   }
 }
