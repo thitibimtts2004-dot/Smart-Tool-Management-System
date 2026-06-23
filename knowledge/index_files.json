@@ -269,6 +269,11 @@
         "score": 2
       },
       {
+        "path": "knowledge/user_modeling_grounding.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "scripts/index_reconcile.py",
         "strength": "related",
         "score": 2
@@ -2440,6 +2445,11 @@
         "score": 2
       },
       {
+        "path": "knowledge/user_modeling_grounding.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "scripts/compute_compact_size.py",
         "strength": "related",
         "score": 2
@@ -3013,6 +3023,11 @@
         "score": 2
       },
       {
+        "path": "knowledge/user_modeling_grounding.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "scripts/bootstrap_sessions.py",
         "strength": "related",
         "score": 2
@@ -3280,6 +3295,16 @@
       },
       {
         "path": "knowledge/topic_facet_schema.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/user_learning_profile.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/user_modeling_grounding.md",
         "strength": "related",
         "score": 2
       },
@@ -4585,6 +4610,16 @@
         "score": 2
       },
       {
+        "path": "knowledge/user_learning_profile.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/user_modeling_grounding.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "scripts/compute_compact_size.py",
         "strength": "related",
         "score": 2
@@ -4724,6 +4759,11 @@
         "score": 3
       },
       {
+        "path": "knowledge/user_modeling_grounding.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
         "path": "scripts/bootstrap_sessions.py",
         "strength": "related",
         "score": 3
@@ -4785,6 +4825,11 @@
       },
       {
         "path": "knowledge/index_sessions.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/user_learning_profile.json",
         "strength": "related",
         "score": 2
       },
@@ -4993,6 +5038,16 @@
       },
       {
         "path": "knowledge/telemetry-schema-harness-2026-06-01.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/user_learning_profile.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/user_modeling_grounding.md",
         "strength": "related",
         "score": 2
       },
@@ -5675,6 +5730,16 @@
         "score": 2
       },
       {
+        "path": "knowledge/user_learning_profile.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/user_modeling_grounding.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "scripts/compute_compact_size.py",
         "strength": "related",
         "score": 2
@@ -6059,6 +6124,11 @@
         "score": 3
       },
       {
+        "path": "knowledge/user_modeling_grounding.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
         "path": "scripts/bootstrap_sessions.py",
         "strength": "related",
         "score": 3
@@ -6120,6 +6190,11 @@
       },
       {
         "path": "knowledge/index_sessions.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/user_learning_profile.json",
         "strength": "related",
         "score": 2
       },
@@ -7444,6 +7519,16 @@
       },
       {
         "path": "knowledge/index_sessions.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/user_learning_profile.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/user_modeling_grounding.md",
         "strength": "related",
         "score": 2
       },
@@ -9401,6 +9486,16 @@
         "score": 2
       },
       {
+        "path": "knowledge/user_learning_profile.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/user_modeling_grounding.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "scripts/repo_map_check.py",
         "strength": "related",
         "score": 2
@@ -9597,6 +9692,16 @@
       },
       {
         "path": "knowledge/token-telemetry-schema-and-dashboard-spec-for-agent-systems-2026-05-31.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/user_learning_profile.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/user_modeling_grounding.md",
         "strength": "related",
         "score": 2
       },
@@ -9837,6 +9942,11 @@
       },
       {
         "path": "knowledge/telemetry-schema-harness-2026-06-01.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/user_modeling_grounding.md",
         "strength": "related",
         "score": 2
       },
@@ -10771,6 +10881,11 @@
       },
       {
         "path": "knowledge/harness-reference-forking-token-agent-application-2026-05-25.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/user_modeling_grounding.md",
         "strength": "related",
         "score": 2
       },
@@ -15328,6 +15443,11 @@
         "score": 2
       },
       {
+        "path": "knowledge/user_modeling_grounding.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "scripts/index_reconcile.py",
         "strength": "related",
         "score": 2
@@ -15577,6 +15697,16 @@
       },
       {
         "path": "knowledge/topic_facet_schema.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/user_learning_profile.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/user_modeling_grounding.md",
         "strength": "related",
         "score": 2
       },
@@ -17009,6 +17139,16 @@
         "score": 2
       },
       {
+        "path": "knowledge/user_learning_profile.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/user_modeling_grounding.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "scripts/bootstrap_sessions.py",
         "strength": "related",
         "score": 2
@@ -18429,7 +18569,7 @@
   },
   "scripts/learning_profile.py": {
     "imports": [],
-    "extracted_at_hash": "3e8f3e97",
+    "extracted_at_hash": "4ae72842",
     "imported_by": [],
     "related": []
   },
@@ -18910,5 +19050,202 @@
         "score": 2
       }
     ]
+  },
+  "knowledge/user_modeling_grounding.md": {
+    "description": "Grounding spec for T-253 user-modeling / potential-development system — design rationale extending the T-225 user-coach store with a person model + coach layer: behaviors-not-labels, two-tier append-log + one-page top-sheet, self-report-as-provisional epistemics, lightweight readiness gate, and a situational-leadership verbosity dial.",
+    "topics": {
+      "major": [
+        "session_management"
+      ],
+      "minor": [
+        "mece_planning"
+      ]
+    },
+    "backlinks": [],
+    "references": [
+      "knowledge/user_learning_profile.json",
+      "scripts/learning_profile.py",
+      ".agents/skills/user/user-coach/SKILL.md"
+    ],
+    "related": [
+      {
+        "path": "docs/session_templates",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "docs/session_templates/mece_plan_schema.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": ".agents/skills/harness/mece/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".sessions/exec_log/",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/bc_coverage.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/cfp_topics.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/harness_flow_20260526.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/index_cfp_fix.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/index_sessions.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/user_learning_profile.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/bootstrap_sessions.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/index_reconcile.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/session_close.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/session_compactor.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/trim_exec_log.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/verify_runner.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/write_context_cache.sh",
+        "strength": "related",
+        "score": 2
+      }
+    ],
+    "rules_defined": [],
+    "rules_referenced": [
+      "T-253",
+      "T-225"
+    ],
+    "type": "knowledge"
+  },
+  "knowledge/user_learning_profile.json": {
+    "description": "Canonical single-source store for the user-modeling system (schema_version 2) — person self-report, confirmed/provisional traits with tally, per-topic mastery + quiz history, weak/strong areas and dev_path. Read/written by scripts/learning_profile.py; surfaced each turn via the [learning-state] hook line.",
+    "topics": {
+      "major": [
+        "session_management"
+      ],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [
+      "scripts/learning_profile.py",
+      "knowledge/user_modeling_grounding.md"
+    ],
+    "related": [
+      {
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".sessions/exec_log/",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "docs/session_templates",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "docs/session_templates/mece_plan_schema.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/index_sessions.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/user_modeling_grounding.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/bootstrap_sessions.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/index_reconcile.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/session_close.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/session_compactor.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/trim_exec_log.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/write_context_cache.sh",
+        "strength": "related",
+        "score": 2
+      }
+    ],
+    "rules_defined": [],
+    "rules_referenced": [
+      "T-253",
+      "T-225"
+    ],
+    "type": "data"
   }
 }

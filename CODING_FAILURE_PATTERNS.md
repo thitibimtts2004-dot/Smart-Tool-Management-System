@@ -459,6 +459,10 @@ Never present plan in chat before mece_plan.md exists on disk.
 
 **How to apply:** Before running Clear command — verify in order: ① Reviewer PASS ② active_thread phase:done ③ THEN clear ④ compact_state.md written ⑤ SESSION_TOTAL written ⑥ CFP count check ⑦ Feedback + Ask user.
 
+**count:** 1
+**recurrences:** ["2026-06-23 T-253: NEW ANGLE — close was completed once, then post-close work continued (user-coach quiz + `learning_profile.py record` wrote user_learning_profile.json; user_modeling_grounding.md created in planning). The git commit step was ordered BEFORE these final state-writes → their output was structurally guaranteed uncommitted + never index-synced (both knowledge/ files absent from index_files.json). Root extension: (a) commit must be the LAST mutating step, OR any post-commit state-write must re-trigger a mini-close (re-stage + re-index + re-commit); (b) R8 index-sync must include knowledge/ file CREATE, not only code symbols. User caught it via 'เรียกหมอ' + 'forgot to close session'. Fix this session: ran index_reconcile.py (auto backlink+regen), backfilled both knowledge entries, re-committed surgically."]
+**status:** recurrence-logged (count 1 → prevention extended: commit-last + knowledge-file index-sync)
+
 ## CFP-030 · Session Close BC Skipped — No session_*.json + No index_sessions Update
 
 **Symptom:** Task completes (mece_plan cleared, active_thread phase:done) but no new `session_<NNN>.json` written and `python scripts/session_indexer.py` never run. Session history and index_sessions.json remain stale.
@@ -593,3 +597,13 @@ Detection: grep response for [harness-edit-done] on a turn that created/edited a
 topic: skill-quality
 count: 1
 recurrences: ["2026-06-17 T-217 scrutinize: skill closed as done with only test -f + grep; user 'ได้เช็ค Audit ยัง' forced retro-audit → CONDITIONAL, 3 gaps (Output Tone absent, Hard Rules absent, Prerequisites scope self-contradiction) → all 3 fixed same session"]
+
+## CFP-043 · Skill Merge/Delete Leaves Stale Doc-Prose Refs — No Backlink Fires for Doc→Skill Mentions
+Symptom: Merging/deleting a skill (T-238 file_manager+variable_manager → index_manager), the curated "live routing" set verifies clean (grep=0), but a later REPO-WIDE grep reveals ~10 live docs (Implement/00-08, REPO_MAP.md, domain/<pack>.md, session_templates/*) still name the deleted skill → would orphan on rm.
+Root: (1) R8 "fire index_manager on every file op" was batched to the close section, not fired per-operation. (2) backlink_analyzer.py computes only topic-based related[], NOT doc-prose reference backlinks → a doc that merely *mentions* a skill name is invisible to index/backlink. (3) Stop-hook reconciler runs at session close only → mid-session drift uncaught.
+Prevention: On ANY skill rename/merge/delete, BEFORE the destructive step run a repo-wide grep for the bare skill name (*.md/*.json/*.py/*.sh, minus history paths), classify live-vs-history, rename all live docs first. Scope = whole Implement/ + REPO_MAP + active domain pack + session_templates, NOT just .agents/skills + manifest.
+Detection: pre-delete `grep -rln '<skill>' . --include=*.md --include=*.json | grep -v <history>` must be 0 before [gate] R14 confirm.
+Fixed (T-252 · 2026-06-23): the PreToolUse close-gate now AUTO-runs this detection — `index_reconcile.py --check` greps live *.md prose for any deleted-skill-dir name (stale_skillname_refs) and BLOCKS the `phase: done` write on a hit (escape: HARNESS_SKIP_INDEX_BLOCK=1). No longer relies on the human remembering the manual pre-delete grep.
+topic: index_sync
+count: 0
+recurrences: []
