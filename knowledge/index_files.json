@@ -1,4 +1,80 @@
 {
+  "knowledge/mattpocock-skills-comparison-2026-06-19.md": {
+    "description": "Reference: structure of mattpocock/skills (34 skills/6 buckets, plugin-packaged) + comparison vs our harness. Standout: writing-great-skills authoring principles (leading words, kill no-ops, predictability), invocation-axis type system, .out-of-scope rejection memory, git-guardrails hook. Two-signal observation: both 9arm + mattpocock ship leaner skills than ours.",
+    "topics": {
+      "major": [
+        "skill_system"
+      ],
+      "minor": [
+        "skill_authoring",
+        "debug",
+        "user_coach"
+      ]
+    },
+    "references": [
+      "knowledge/9arm-skills-upstream-comparison-2026-06-18.md"
+    ],
+    "related": [
+      {
+        "path": "knowledge/9arm-skills-upstream-comparison-2026-06-18.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "docs/session_templates/handoff_block_schema.md",
+        "strength": "related",
+        "score": 2
+      }
+    ],
+    "rules_defined": [],
+    "rules_referenced": [
+      "R9",
+      "T-219",
+      "T-220",
+      "T-222"
+    ]
+  },
+  "knowledge/9arm-skills-upstream-comparison-2026-06-18.md": {
+    "description": "Reference: structure of upstream thananon/9arm-skills repo + skill-by-skill comparison vs our harness. Key insight: qwenchance counts signals instead of estimating tokens (sidesteps the CFP-028/031/037/041 estimation bug class). scrutinize/debug gaps (Trace+Verify, fail-path ladder). qwen-agent simpler than T-218 plan.",
+    "topics": {
+      "major": [
+        "skill_system"
+      ],
+      "minor": [
+        "token_tracking",
+        "debug",
+        "scrutinize"
+      ]
+    },
+    "references": [
+      "docs/session_templates/handoff_block_schema.md",
+      "knowledge/implement-plan-local-llm-deployment-2026-06-17.md"
+    ],
+    "related": [
+      {
+        "path": "knowledge/mattpocock-skills-comparison-2026-06-19.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "docs/session_templates/handoff_block_schema.md",
+        "strength": "related",
+        "score": 2
+      }
+    ],
+    "rules_defined": [
+      "T-218"
+    ],
+    "rules_referenced": [
+      "CFP-028",
+      "CFP-031",
+      "CFP-037",
+      "CFP-041",
+      "R3",
+      "R9",
+      "T-216"
+    ]
+  },
   "knowledge/bc_coverage.md": {
     "description": "Behavior Contract coverage tracker — all 42 BCs across harness (CLAUDE/AGENTS/skills) with tested/untested status cross-referenced from behave_test_log.jsonl",
     "topics": {
@@ -18,17 +94,17 @@
     ],
     "related": [
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "strong",
         "score": 6
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "strong",
         "score": 5
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "strong",
         "score": 5
       },
@@ -43,7 +119,7 @@
         "score": 5
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
@@ -63,32 +139,32 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -123,37 +199,37 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -349,7 +425,12 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": "scripts/tok.py",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -494,7 +575,7 @@
     "coverage": 0.97,
     "tagged_at_hash": "5c8bdb29"
   },
-  ".agents/skills/harness_editor/SKILL.md": {
+  ".agents/skills/harness/harness_editor/SKILL.md": {
     "type": "skill",
     "description": "Harness Editor skill — manages edits to CLAUDE.md, AGENTS.md, SKILL.md files, knowledge/, Implement/ with mandatory MECE plan gate and full close sequence.",
     "backlinks": [
@@ -522,31 +603,31 @@
       "knowledge/harness_flow_20260526.md",
       ".agents/skills/skill-manifest.json",
       ".agents/skills/registry.md",
-      ".agents/skills/harness_doctor/SKILL.md"
+      ".agents/skills/harness/harness_doctor/SKILL.md"
     ],
     "related": [
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "strong",
         "score": 6
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "strong",
         "score": 5
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "strong",
         "score": 5
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "strong",
         "score": 5
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
         "strength": "strong",
         "score": 5
       },
@@ -561,27 +642,27 @@
         "score": 5
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
@@ -616,32 +697,32 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -666,7 +747,7 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
@@ -682,6 +763,11 @@
       },
       {
         "path": "docs/session_templates",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "docs/session_templates/handoff_block_schema.md",
         "strength": "related",
         "score": 2
       },
@@ -731,7 +817,8 @@
     "rules_referenced": [
       "BC-docs-close",
       "R4",
-      "R8"
+      "R8",
+      "T-230"
     ],
     "topic_map": [
       {
@@ -863,7 +950,7 @@
     "description": "Token estimator — SESSION_TOTAL + CHAT_TOTAL formula per R1. Callable via Bash.",
     "backlinks": [
       "CLAUDE.md",
-      ".agents/skills/token_tracker/SKILL.md"
+      ".agents/skills/harness/token_tracker/SKILL.md"
     ],
     "exports": [
       "estimate_turn",
@@ -883,11 +970,16 @@
     },
     "references": [
       "CLAUDE.md",
-      ".agents/skills/token_tracker/SKILL.md"
+      ".agents/skills/harness/token_tracker/SKILL.md"
     ],
     "related": [
       {
         "path": "docs/token_benchmark.md",
+        "strength": "strong",
+        "score": 5
+      },
+      {
+        "path": "scripts/tok.py",
         "strength": "strong",
         "score": 5
       },
@@ -1047,18 +1139,19 @@
     "coverage": 0.91,
     "tagged_at_hash": "15454201",
     "imports": [],
-    "extracted_at_hash": "15454201",
+    "extracted_at_hash": "5cc8b8ae",
     "imported_by": [
-      "scripts/posttool_track.py"
+      "scripts/posttool_track.py",
+      "scripts/tok.py"
     ]
   },
-  ".agents/skills/harness_doctor/SKILL.md": {
+  ".agents/skills/harness/harness_doctor/SKILL.md": {
     "type": "skill",
     "description": "Structural fix agent for recurring CFP patterns — diagnose → propose → wait approval → execute. Delegates SKILL.md file edits to harness_editor.",
     "backlinks": [
-      ".agents/skills/harness_editor/SKILL.md",
-      ".agents/skills/mece/SKILL.md",
-      ".agents/skills/mece/SKILL_detail.md",
+      ".agents/skills/harness/harness_editor/SKILL.md",
+      ".agents/skills/harness/mece/SKILL.md",
+      ".agents/skills/harness/mece/SKILL_detail.md",
       ".agents/skills/skill-manifest.json",
       "Implement/03_config.md",
       "knowledge/harness_flow_20260526.md"
@@ -1078,32 +1171,32 @@
     "references": [
       "CODING_FAILURE_PATTERNS.md",
       "knowledge/index_cfp_fix.json",
-      ".agents/skills/harness_editor/SKILL.md",
-      ".agents/skills/self_improve/SKILL.md"
+      ".agents/skills/harness/harness_editor/SKILL.md",
+      ".agents/skills/harness/self_improve/SKILL.md"
     ],
     "related": [
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
         "strength": "strong",
         "score": 7
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "strong",
         "score": 6
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
         "strength": "strong",
         "score": 6
       },
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "strong",
         "score": 5
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "strong",
         "score": 5
       },
@@ -1113,22 +1206,22 @@
         "score": 5
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "strong",
         "score": 4
       },
@@ -1153,27 +1246,27 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -1193,17 +1286,17 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -1377,11 +1470,11 @@
     "type": "harness",
     "description": "Master hard constraints — R1–R16, R-Roadmap, Boot gates. Read first by every agent, every session.",
     "backlinks": [
-      ".agents/skills/agent/SKILL.md",
-      ".agents/skills/harness_doctor/SKILL.md",
-      ".agents/skills/harness_editor/SKILL.md",
-      ".agents/skills/identity/SKILL.md",
-      ".agents/skills/token_tracker/SKILL.md",
+      ".agents/skills/coding/agent/SKILL.md",
+      ".agents/skills/harness/harness_doctor/SKILL.md",
+      ".agents/skills/harness/harness_editor/SKILL.md",
+      ".agents/skills/user/identity/SKILL.md",
+      ".agents/skills/harness/token_tracker/SKILL.md",
       "Implement/00_index.md"
     ],
     "topics": {
@@ -1402,7 +1495,7 @@
     ],
     "related": [
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -1427,47 +1520,47 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
         "path": ".agents/skills/registry.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/session_manager/SKILL.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -1532,6 +1625,11 @@
         "score": 2
       },
       {
+        "path": "scripts/tok.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "scripts/token_estimator.py",
         "strength": "related",
         "score": 2
@@ -1589,8 +1687,10 @@
       "CFP-037",
       "CFP-041",
       "ERR-007",
-      "T-178",
-      "T-180"
+      "T-180",
+      "T-221",
+      "T-231",
+      "T-235"
     ],
     "topic_map": [],
     "coverage": null,
@@ -1600,11 +1700,11 @@
     "type": "harness",
     "description": "Agent orientation — Boot sequence B1-B4, Per-Turn Routing C0-C3, Loop Architecture Phases 1-3.",
     "backlinks": [
-      ".agents/skills/agent/SKILL.md",
-      ".agents/skills/harness_doctor/SKILL.md",
-      ".agents/skills/harness_editor/SKILL.md",
-      ".agents/skills/mece/SKILL_detail.md",
-      ".agents/skills/token_tracker/SKILL.md",
+      ".agents/skills/coding/agent/SKILL.md",
+      ".agents/skills/harness/harness_doctor/SKILL.md",
+      ".agents/skills/harness/harness_editor/SKILL.md",
+      ".agents/skills/harness/mece/SKILL_detail.md",
+      ".agents/skills/harness/token_tracker/SKILL.md",
       "Implement/00_index.md"
     ],
     "topics": {
@@ -1630,17 +1730,17 @@
         "score": 6
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -1700,26 +1800,22 @@
       "BC-L4",
       "CFP-019",
       "CFP-025",
-      "CFP-026",
       "CFP-027",
-      "CFP-033",
       "CFP-034",
       "CFP-037",
       "CFP-041",
       "R1",
-      "R10",
       "R16",
-      "R2",
-      "R5",
       "R6",
       "R8",
-      "T-180",
-      "T-182",
       "T-183",
-      "T-185",
       "T-190",
-      "T-192",
-      "T-193"
+      "T-221",
+      "T-224",
+      "T-228",
+      "T-230",
+      "T-234",
+      "T-235"
     ],
     "topic_map": [],
     "coverage": null,
@@ -1729,9 +1825,9 @@
     "type": "index",
     "description": "Machine-readable skill routing — keyword → skill mapping, on_demand_files, boot_read_policy. Read at Boot B2.",
     "backlinks": [
-      ".agents/skills/harness_editor/SKILL.md",
-      ".agents/skills/mece/SKILL_detail.md",
-      ".agents/skills/self_improve/SKILL.md",
+      ".agents/skills/harness/harness_editor/SKILL.md",
+      ".agents/skills/harness/mece/SKILL_detail.md",
+      ".agents/skills/harness/self_improve/SKILL.md",
       "Implement/01_overview.md",
       "Implement/02_setup.md",
       "Implement/03_config.md"
@@ -1765,7 +1861,7 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -1901,9 +1997,9 @@
     "type": "doc",
     "description": "Fast-match keyword→skill table + micro-rules. Secondary routing after skill-manifest.json.",
     "backlinks": [
-      ".agents/skills/agent/SKILL.md",
-      ".agents/skills/harness_editor/SKILL.md",
-      ".agents/skills/mece/SKILL_detail.md",
+      ".agents/skills/coding/agent/SKILL.md",
+      ".agents/skills/harness/harness_editor/SKILL.md",
+      ".agents/skills/harness/mece/SKILL_detail.md",
       ".agents/skills/skill-manifest.json",
       "Implement/01_overview.md",
       "Implement/02_setup.md"
@@ -1946,37 +2042,37 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -2081,9 +2177,9 @@
     "type": "knowledge",
     "description": "Main harness architecture flow diagram — Layer 0-3, Boot, Per-Turn Routing, Phase 1-3, signal glossary, patch history.",
     "backlinks": [
-      ".agents/skills/ascii_flow/SKILL.md",
-      ".agents/skills/coder/SKILL.md",
-      ".agents/skills/harness_editor/SKILL.md",
+      ".agents/skills/content/ascii_flow/SKILL.md",
+      ".agents/skills/coding/coder/SKILL.md",
+      ".agents/skills/harness/harness_editor/SKILL.md",
       ".agents/skills/skill-manifest.json",
       "Implement/02_setup.md",
       "knowledge/harness_flow_20260525.md"
@@ -2114,7 +2210,7 @@
         "score": 6
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "strong",
         "score": 4
       },
@@ -2154,12 +2250,12 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -2259,42 +2355,42 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
         "path": ".agents/skills/skill-manifest.json",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
@@ -2368,6 +2464,8 @@
     "key_claims_stale": false,
     "rules_defined": [
       "CFP-031",
+      "CFP-041",
+      "CFP-042",
       "R1",
       "T-138",
       "T-139",
@@ -2386,7 +2484,12 @@
       "T-152",
       "T-156",
       "T-157",
-      "T-158"
+      "T-158",
+      "T-214",
+      "T-215",
+      "T-217",
+      "T-224",
+      "T-228"
     ],
     "rules_referenced": [
       "BC-Ascii-Return",
@@ -2539,7 +2642,19 @@
       "T-182",
       "T-183",
       "T-190",
-      "T-201"
+      "T-201",
+      "T-212",
+      "T-213",
+      "T-221",
+      "T-223",
+      "T-229",
+      "T-230",
+      "T-231",
+      "T-232",
+      "T-233",
+      "T-234",
+      "T-235",
+      "T-241"
     ],
     "topic_map": [
       {
@@ -2644,10 +2759,10 @@
     "type": "index",
     "description": "Symbol index — component/function/hook definitions + used_in[] backlinks. Never-full-load: grep only.",
     "backlinks": [
-      ".agents/skills/coder/SKILL.md",
-      ".agents/skills/editor/SKILL.md",
-      ".agents/skills/mece/SKILL_detail.md",
-      ".agents/skills/variable_manager/SKILL.md",
+      ".agents/skills/coding/coder/SKILL.md",
+      ".agents/skills/coding/editor/SKILL.md",
+      ".agents/skills/harness/mece/SKILL_detail.md",
+      ".agents/skills/knowledge/variable_manager/SKILL.md",
       "Implement/00_index.md",
       "Implement/01_overview.md"
     ],
@@ -2686,7 +2801,7 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -2729,8 +2844,8 @@
     "type": "index",
     "description": "CFP occurrence + fix tracking index — recurrence count, last_fixed_session, status per CFP-XXX.",
     "backlinks": [
-      ".agents/skills/harness_doctor/SKILL.md",
-      ".agents/skills/mece/SKILL_detail.md",
+      ".agents/skills/harness/harness_doctor/SKILL.md",
+      ".agents/skills/harness/mece/SKILL_detail.md",
       ".agents/skills/skill-manifest.json",
       "Implement/02_setup.md",
       "Implement/03_config.md",
@@ -2757,37 +2872,37 @@
         "score": 7
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "strong",
         "score": 5
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "strong",
         "score": 4
       },
@@ -2812,17 +2927,17 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -2847,17 +2962,17 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
@@ -3018,8 +3133,8 @@
     "type": "index",
     "description": "Session history index — task summaries, files_changed[], lookup.py --session oracle source.",
     "backlinks": [
-      ".agents/skills/session_manager/SKILL.md",
-      ".agents/skills/session_manager/SKILL_detail.md",
+      ".agents/skills/knowledge/session_manager/SKILL.md",
+      ".agents/skills/knowledge/session_manager/SKILL_detail.md",
       ".agents/skills/skill-manifest.json",
       "Implement/02_setup.md",
       "Implement/05_scripts.md",
@@ -3068,22 +3183,22 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
         "path": ".agents/skills/registry.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/session_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -3267,11 +3382,11 @@
     "type": "knowledge",
     "description": "ERR-XXX error code registry — symptom, root cause, fix approach, failed approaches per error ID.",
     "backlinks": [
-      ".agents/skills/editor/SKILL.md",
-      ".agents/skills/editor/SKILL_detail.md",
-      ".agents/skills/harness_editor/SKILL.md",
-      ".agents/skills/mece/SKILL.md",
-      ".agents/skills/mece/SKILL_detail.md",
+      ".agents/skills/coding/editor/SKILL.md",
+      ".agents/skills/coding/editor/SKILL_detail.md",
+      ".agents/skills/harness/harness_editor/SKILL.md",
+      ".agents/skills/harness/mece/SKILL.md",
+      ".agents/skills/harness/mece/SKILL_detail.md",
       "Implement/00_index.md"
     ],
     "topics": {
@@ -3296,17 +3411,17 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
@@ -3394,7 +3509,7 @@
     "backlinks": [
       "CLAUDE.md",
       "AGENTS.md",
-      ".agents/skills/harness_editor/SKILL.md",
+      ".agents/skills/harness/harness_editor/SKILL.md",
       "scripts/backlink_analyzer.py"
     ],
     "related": [
@@ -3419,17 +3534,17 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
         "path": ".agents/skills/registry.md",
-        "strength": "related",
-        "score": 3
-      },
-      {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -3514,52 +3629,52 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
         "path": ".agents/skills/skill-manifest.json",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -3674,7 +3789,7 @@
     "backlinks": [
       "CLAUDE.md",
       "AGENTS.md",
-      ".agents/skills/harness_editor/SKILL.md"
+      ".agents/skills/harness/harness_editor/SKILL.md"
     ],
     "related": [
       {
@@ -3718,17 +3833,17 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -3812,7 +3927,7 @@
     "extracted_at_hash": "2dac76bb",
     "imported_by": []
   },
-  ".agents/skills/harness_doctor/SKILL_detail.md": {
+  ".agents/skills/harness/harness_doctor/SKILL_detail.md": {
     "type": "skill",
     "description": "Detailed procedures for harness_doctor sections 1-5: Diagnosis, Audit, Proposal, Approval Gate, Execute+Verify. Includes Python snippets for index_cfp_fix.json operations.",
     "topics": {
@@ -3829,29 +3944,29 @@
     "references": [
       "CODING_FAILURE_PATTERNS.md",
       "knowledge/error_index.md",
-      ".agents/skills/harness_doctor/SKILL.md"
+      ".agents/skills/harness/harness_doctor/SKILL.md"
     ],
     "backlinks": [
-      ".agents/skills/harness_doctor/SKILL.md"
+      ".agents/skills/harness/harness_doctor/SKILL.md"
     ],
     "related": [
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "strong",
         "score": 7
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "strong",
         "score": 6
       },
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "strong",
         "score": 5
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
         "strength": "strong",
         "score": 5
       },
@@ -3861,22 +3976,22 @@
         "score": 5
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
@@ -3896,17 +4011,17 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -3931,32 +4046,32 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -4126,12 +4241,12 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/registry.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/registry.md",
         "strength": "related",
         "score": 3
       },
@@ -4166,12 +4281,12 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -4379,7 +4494,7 @@
     ],
     "related": [
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "strong",
         "score": 4
       },
@@ -4429,12 +4544,12 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -4535,7 +4650,7 @@
     "coverage": 0.95,
     "tagged_at_hash": "9825f540",
     "imports": [],
-    "extracted_at_hash": "9825f540",
+    "extracted_at_hash": "e5a3762a",
     "imported_by": []
   },
   "docs/session_templates": {
@@ -4563,12 +4678,12 @@
         "score": 5
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "strong",
         "score": 4
       },
@@ -4578,7 +4693,7 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -4628,17 +4743,17 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -4747,11 +4862,11 @@
       "Implement/02_setup.md"
     ],
     "backlinks": [
-      ".agents/skills/identity/SKILL.md"
+      ".agents/skills/user/identity/SKILL.md"
     ],
     "related": [
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "strong",
         "score": 5
       },
@@ -4761,7 +4876,7 @@
         "score": 5
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "strong",
         "score": 4
       },
@@ -4796,7 +4911,7 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -4836,22 +4951,22 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -4980,7 +5095,7 @@
     "extracted_at_hash": "4485df86",
     "imported_by": []
   },
-  ".agents/skills/ascii_flow/SKILL_detail.md": {
+  ".agents/skills/content/ascii_flow/SKILL_detail.md": {
     "type": "skill",
     "description": "Detailed reference for ascii_flow: §1 Char Palette (box-drawing chars, arrows, annotations), §2 Box Templates (outer/inner/decision/note), §3 Detail Guidelines, §4 Flow Connector Patterns, §5 Doc Structure, §6 Invoke Rule.",
     "topics": {
@@ -4993,19 +5108,19 @@
       ]
     },
     "references": [
-      ".agents/skills/ascii_flow/SKILL.md"
+      ".agents/skills/content/ascii_flow/SKILL.md"
     ],
     "backlinks": [
-      ".agents/skills/ascii_flow/SKILL.md"
+      ".agents/skills/content/ascii_flow/SKILL.md"
     ],
     "related": [
       {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
@@ -5030,52 +5145,52 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -5090,27 +5205,27 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -5337,7 +5452,7 @@
     "coverage": null,
     "tagged_at_hash": "94037aa7"
   },
-  ".agents/skills/session_manager/SKILL.md": {
+  ".agents/skills/knowledge/session_manager/SKILL.md": {
     "description": "session_manager skill — session open/close, topic switch, token pause, compact_state write",
     "topics": {
       "major": [
@@ -5351,7 +5466,7 @@
       ]
     },
     "references": [
-      ".agents/skills/session_manager/SKILL_detail.md"
+      ".agents/skills/knowledge/session_manager/SKILL_detail.md"
     ],
     "backlinks": [
       "CLAUDE.md",
@@ -5359,7 +5474,7 @@
     ],
     "related": [
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "strong",
         "score": 5
       },
@@ -5369,7 +5484,7 @@
         "score": 5
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "strong",
         "score": 4
       },
@@ -5409,32 +5524,32 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
@@ -5479,42 +5594,42 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -5845,15 +5960,15 @@
     },
     "backlinks": [
       "AGENTS.md",
-      ".agents/skills/mece/SKILL.md",
-      ".agents/skills/mece/SKILL_detail.md"
+      ".agents/skills/harness/mece/SKILL.md",
+      ".agents/skills/harness/mece/SKILL_detail.md"
     ],
     "references": [
       ".sessions/mece_plan.md"
     ],
     "related": [
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "strong",
         "score": 7
       },
@@ -5878,17 +5993,17 @@
         "score": 5
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "strong",
         "score": 4
       },
@@ -5918,12 +6033,12 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -5953,22 +6068,22 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
@@ -6450,47 +6565,47 @@
     "references": [],
     "related": [
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -6530,42 +6645,42 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -6745,6 +6860,11 @@
     ],
     "related": [
       {
+        "path": "scripts/tok.py",
+        "strength": "strong",
+        "score": 5
+      },
+      {
         "path": "scripts/token_estimator.py",
         "strength": "strong",
         "score": 5
@@ -6775,7 +6895,7 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -6994,7 +7114,7 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -7019,27 +7139,27 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
         "path": ".agents/skills/skill-manifest.json",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -7216,7 +7336,7 @@
     ],
     "related": [
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "strong",
         "score": 4
       },
@@ -7291,12 +7411,12 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -7322,6 +7442,11 @@
       },
       {
         "path": "scripts/index_reconcile.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/tok.py",
         "strength": "related",
         "score": 2
       },
@@ -7453,7 +7578,7 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -7478,27 +7603,27 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
         "path": ".agents/skills/skill-manifest.json",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -8645,27 +8770,27 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -8896,6 +9021,11 @@
         "path": "scripts/token_estimator.py",
         "strength": "strong",
         "score": 4
+      },
+      {
+        "path": "scripts/tok.py",
+        "strength": "related",
+        "score": 3
       },
       {
         "path": "scripts/write_context_cache.sh",
@@ -9184,7 +9314,7 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -9224,7 +9354,7 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -9349,12 +9479,12 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -9404,7 +9534,7 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -9566,7 +9696,7 @@
     },
     "description": "Canonical CFP topic registry for harness_doctor §1 matching",
     "backlinks": [
-      ".agents/skills/harness_doctor/SKILL_detail.md"
+      ".agents/skills/harness/harness_doctor/SKILL_detail.md"
     ],
     "references": [
       "knowledge/index_cfp_fix.json",
@@ -9579,17 +9709,17 @@
         "score": 7
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "strong",
         "score": 4
       },
@@ -9614,27 +9744,27 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
@@ -9659,17 +9789,17 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
@@ -9828,7 +9958,7 @@
     "coverage": 0.97,
     "tagged_at_hash": "582dcac0"
   },
-  ".agents/skills/self_improve/SKILL.md": {
+  ".agents/skills/harness/self_improve/SKILL.md": {
     "description": "Self-improve skill — CFP logging, harness update workflow",
     "topics": {
       "major": [
@@ -9846,22 +9976,22 @@
     "references": [],
     "related": [
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "strong",
         "score": 6
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
         "strength": "strong",
         "score": 6
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
         "strength": "strong",
         "score": 5
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "strong",
         "score": 5
       },
@@ -9871,32 +10001,32 @@
         "score": 5
       },
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
@@ -9906,7 +10036,7 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
@@ -9966,32 +10096,32 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -10169,7 +10299,7 @@
     "coverage": 0.95,
     "tagged_at_hash": "66769daa"
   },
-  ".agents/skills/self_improve/SKILL_detail.md": {
+  ".agents/skills/harness/self_improve/SKILL_detail.md": {
     "description": "Self-improve skill detail — §S3 CFP logging, §S4 execution steps",
     "topics": {
       "major": [
@@ -10183,47 +10313,47 @@
       ]
     },
     "backlinks": [
-      ".agents/skills/self_improve/SKILL.md"
+      ".agents/skills/harness/self_improve/SKILL.md"
     ],
     "references": [],
     "related": [
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "strong",
         "score": 6
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
         "strength": "strong",
         "score": 5
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "strong",
         "score": 5
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "strong",
         "score": 5
       },
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
@@ -10243,32 +10373,32 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -10303,17 +10433,17 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -10430,7 +10560,7 @@
     "coverage": 0.86,
     "tagged_at_hash": "1844a7c2"
   },
-  ".agents/skills/mece/SKILL.md": {
+  ".agents/skills/harness/mece/SKILL.md": {
     "description": "MECE plan skill — Phase 2 plan creation and validation",
     "topics": {
       "major": [
@@ -10463,27 +10593,27 @@
         "score": 6
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "strong",
         "score": 5
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "strong",
         "score": 5
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "strong",
         "score": 4
       },
@@ -10518,22 +10648,22 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
@@ -10563,37 +10693,37 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -10664,7 +10794,8 @@
       "BC-mece-compact",
       "BC-mece-fail-halt",
       "CFP-019",
-      "R16"
+      "R16",
+      "T-202"
     ],
     "type": "skill",
     "topic_map": [
@@ -10799,17 +10930,17 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
@@ -10869,7 +11000,7 @@
     "coverage": 0.96,
     "tagged_at_hash": "fb2bb4a8"
   },
-  ".agents/skills/repo_researcher/SKILL.md": {
+  ".agents/skills/knowledge/repo_researcher/SKILL.md": {
     "type": "skill",
     "description": "Repo Researcher skill — clones or reads local git repos, maps structure, synthesizes 3 .md output files in knowledge/research/ for TS/Next.js harness adaptation.",
     "backlinks": [
@@ -10893,17 +11024,17 @@
     ],
     "related": [
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
@@ -10913,32 +11044,32 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
@@ -11008,27 +11139,42 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -11038,22 +11184,7 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/session_manager/SKILL.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
         "path": ".agents/skills/skill-manifest.json",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -11109,7 +11240,8 @@
       "BC-output-write",
       "BC-size-routing",
       "R5",
-      "R8"
+      "R8",
+      "T-202"
     ],
     "topic_map": [
       {
@@ -11180,7 +11312,7 @@
     "type": "tool",
     "description": "Repo scout tool — clone public repo or validate local path, enumerate files (skip noise dirs), detect primary language, output JSON metadata with size_tier + key_files + entry_points.",
     "backlinks": [
-      ".agents/skills/repo_researcher/SKILL.md",
+      ".agents/skills/knowledge/repo_researcher/SKILL.md",
       ".agents/tools/tool-manifest.json"
     ],
     "topics": {
@@ -11232,7 +11364,7 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -11267,17 +11399,17 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
@@ -11419,7 +11551,7 @@
     "type": "doc",
     "description": "Output template for repo_researcher skill — repo summary with Overview, Architecture, Flow, Code References sections.",
     "backlinks": [
-      ".agents/skills/repo_researcher/SKILL.md"
+      ".agents/skills/knowledge/repo_researcher/SKILL.md"
     ],
     "topics": {
       "major": [
@@ -11458,7 +11590,7 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -11478,22 +11610,22 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
         "path": ".agents/skills/skill-manifest.json",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
@@ -11592,7 +11724,7 @@
     "type": "doc",
     "description": "Output template for repo_researcher skill — improvement plan with findings + TS/Next.js adapted implementation plan.",
     "backlinks": [
-      ".agents/skills/repo_researcher/SKILL.md"
+      ".agents/skills/knowledge/repo_researcher/SKILL.md"
     ],
     "topics": {
       "major": [
@@ -11637,7 +11769,7 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -11652,32 +11784,32 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
         "path": ".agents/skills/skill-manifest.json",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
@@ -11703,6 +11835,11 @@
       },
       {
         "path": "REPO_MAP.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "docs/session_templates/handoff_block_schema.md",
         "strength": "related",
         "score": 2
       },
@@ -11801,7 +11938,7 @@
     "type": "doc",
     "description": "Output template for repo_researcher skill — repo map with file tree, key files (reference_count), entry points, symbol index.",
     "backlinks": [
-      ".agents/skills/repo_researcher/SKILL.md"
+      ".agents/skills/knowledge/repo_researcher/SKILL.md"
     ],
     "topics": {
       "major": [
@@ -11840,7 +11977,7 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -11860,22 +11997,22 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
         "path": ".agents/skills/skill-manifest.json",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
@@ -11970,8 +12107,8 @@
     "coverage": 0.82,
     "tagged_at_hash": "f5df2dae"
   },
-  ".agents/skills/doc_builder/SKILL.md": {
-    "path": ".agents/skills/doc_builder/SKILL.md",
+  ".agents/skills/content/doc_builder/SKILL.md": {
+    "path": ".agents/skills/content/doc_builder/SKILL.md",
     "type": "skill",
     "description": "doc_builder skill — overview, trigger, refusal contract, §1 analyze, §2 storyboard (≤80L)",
     "topics": {
@@ -11989,22 +12126,22 @@
       "skill-manifest.json"
     ],
     "backlinks": [
-      ".agents/skills/doc_builder/SKILL_detail.md"
+      ".agents/skills/content/doc_builder/SKILL_detail.md"
     ],
     "added": "2026-06-04",
     "related": [
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "strong",
         "score": 5
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "strong",
         "score": 5
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "strong",
         "score": 5
       },
@@ -12019,7 +12156,7 @@
         "score": 5
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
@@ -12039,32 +12176,32 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -12094,42 +12231,42 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
         "path": ".agents/skills/registry.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/self_improve/SKILL.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/session_manager/SKILL.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -12145,6 +12282,11 @@
       },
       {
         "path": "docs/session_templates",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "docs/session_templates/handoff_block_schema.md",
         "strength": "related",
         "score": 2
       },
@@ -12297,10 +12439,16 @@
       }
     ],
     "coverage": 0.92,
-    "tagged_at_hash": "4d6df113"
+    "tagged_at_hash": "4d6df113",
+    "rules_defined": [],
+    "rules_referenced": [
+      "R8",
+      "T-202",
+      "T-214"
+    ]
   },
-  ".agents/skills/doc_builder/SKILL_detail.md": {
-    "path": ".agents/skills/doc_builder/SKILL_detail.md",
+  ".agents/skills/content/doc_builder/SKILL_detail.md": {
+    "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
     "type": "skill",
     "description": "doc_builder detail — §1-scan grep commands, §3 screenshot plan, §4 playwright script template, §5 MECE update, §6 HTML build + PDF hook",
     "topics": {
@@ -12314,23 +12462,23 @@
       ]
     },
     "used_by": [
-      ".agents/skills/doc_builder/SKILL.md"
+      ".agents/skills/content/doc_builder/SKILL.md"
     ],
     "backlinks": [],
     "added": "2026-06-04",
     "related": [
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "strong",
         "score": 4
       },
@@ -12340,47 +12488,47 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
@@ -12430,32 +12578,32 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
         "path": ".agents/skills/registry.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/self_improve/SKILL.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/session_manager/SKILL.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -12604,8 +12752,8 @@
     ],
     "rules_referenced": []
   },
-  ".agents/skills/project_presenter/SKILL.md": {
-    "path": ".agents/skills/project_presenter/SKILL.md",
+  ".agents/skills/content/project_presenter/SKILL.md": {
+    "path": ".agents/skills/content/project_presenter/SKILL.md",
     "type": "skill",
     "description": "project_presenter skill — §1-§5 sales presentation generator, BC-Screenshot-Check, BC-Interview-Gate",
     "created": "2026-06-04",
@@ -12619,12 +12767,12 @@
     ],
     "related": [
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "strong",
         "score": 5
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "strong",
         "score": 5
       },
@@ -12634,7 +12782,7 @@
         "score": 5
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
@@ -12654,22 +12802,22 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
@@ -12699,47 +12847,47 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -12874,15 +13022,15 @@
     "coverage": 0.9,
     "tagged_at_hash": "877b0fbc"
   },
-  ".agents/skills/project_presenter/SKILL_detail.md": {
-    "path": ".agents/skills/project_presenter/SKILL_detail.md",
+  ".agents/skills/content/project_presenter/SKILL_detail.md": {
+    "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
     "type": "skill",
     "description": "project_presenter detail — interview loop, HTML templates, Q&A matrix, storytelling .md construction",
     "created": "2026-06-04",
     "task": "T-090",
     "related": [
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
@@ -12892,42 +13040,42 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -12957,37 +13105,37 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -13119,32 +13267,32 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -13293,7 +13441,7 @@
     "references": [],
     "related": [
       {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
         "strength": "strong",
         "score": 5
       },
@@ -13308,27 +13456,27 @@
         "score": 5
       },
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
@@ -13343,37 +13491,37 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -13388,32 +13536,32 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
         "path": ".agents/skills/registry.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/session_manager/SKILL.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -13565,7 +13713,7 @@
         "score": 7
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "strong",
         "score": 5
       },
@@ -13575,37 +13723,37 @@
         "score": 5
       },
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
@@ -13620,47 +13768,47 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
         "path": ".agents/skills/registry.md",
-        "strength": "related",
-        "score": 3
-      },
-      {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
-        "strength": "related",
-        "score": 3
-      },
-      {
-        "path": ".agents/skills/self_improve/SKILL.md",
-        "strength": "related",
-        "score": 3
-      },
-      {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
@@ -13700,17 +13848,17 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
         "path": ".agents/skills/skill-manifest.json",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -13930,22 +14078,22 @@
         "score": 5
       },
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
@@ -13955,67 +14103,67 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
         "path": ".agents/skills/registry.md",
-        "strength": "related",
-        "score": 3
-      },
-      {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
-        "strength": "related",
-        "score": 3
-      },
-      {
-        "path": ".agents/skills/self_improve/SKILL.md",
-        "strength": "related",
-        "score": 3
-      },
-      {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
@@ -14040,17 +14188,17 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
         "path": ".agents/skills/skill-manifest.json",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -14245,53 +14393,53 @@
       "Extracted from skill_auditor SKILL.md (T-179-S1, 2026-06-12)"
     ],
     "backlinks": [
-      ".agents/skills/skill_auditor/SKILL.md",
-      ".agents/skills/harness_doc_auditor/SKILL.md"
+      ".agents/skills/harness/skill_auditor/SKILL.md",
+      ".agents/skills/harness/harness_doc_auditor/SKILL.md"
     ],
     "references": [],
     "related": [
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "strong",
         "score": 5
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "strong",
         "score": 5
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
         "strength": "strong",
         "score": 5
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
@@ -14306,22 +14454,22 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -14351,27 +14499,27 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -14471,7 +14619,7 @@
     "coverage": 0.97,
     "tagged_at_hash": "a51a9cca"
   },
-  ".agents/skills/harness_doc_auditor/SKILL.md": {
+  ".agents/skills/harness/harness_doc_auditor/SKILL.md": {
     "description": "harness_doc_auditor — audits rule/directive .md files (CLAUDE.md, AGENTS.md, INVARIANTS.md, REPO_MAP.md, Implement/*.md, mece_plan_schema.md) against an 8-item directive rubric on top of the shared audit engine. Declines SKILL.md (→ skill_auditor) and src/ (→ harness_editor).",
     "topics": {
       "major": [
@@ -14498,22 +14646,22 @@
     ],
     "related": [
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "strong",
         "score": 6
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "strong",
         "score": 5
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
         "strength": "strong",
         "score": 5
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "strong",
         "score": 5
       },
@@ -14523,17 +14671,17 @@
         "score": 5
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
@@ -14563,37 +14711,37 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -14623,17 +14771,17 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -14748,7 +14896,7 @@
     "coverage": 0.95,
     "tagged_at_hash": "918dd4c0"
   },
-  ".agents/skills/skill_auditor/SKILL.md": {
+  ".agents/skills/harness/skill_auditor/SKILL.md": {
     "description": "skill_auditor — audits any SKILL.md against 9arm framework: 8 components, 6 connection types, BC over-enforcement detection. Produces verdict table + ready-to-paste suggested additions.",
     "topics": {
       "major": [
@@ -14775,7 +14923,7 @@
     ],
     "related": [
       {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "strong",
         "score": 6
       },
@@ -14785,47 +14933,47 @@
         "score": 5
       },
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "strong",
         "score": 4
       },
@@ -14855,12 +15003,12 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
@@ -14870,27 +15018,27 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -15046,7 +15194,7 @@
     "coverage": 0.93,
     "tagged_at_hash": "303213cd"
   },
-  ".agents/skills/variable_manager/SKILL.md": {
+  ".agents/skills/knowledge/variable_manager/SKILL.md": {
     "type": "skill",
     "description": "Variable Index Manager skill — tracks cross-file symbol definitions and usage in knowledge/index_variables.json. Triggered only when symbol has cross-file dependency.",
     "topics": {
@@ -15070,7 +15218,7 @@
     ],
     "related": [
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
@@ -15080,22 +15228,22 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
@@ -15120,47 +15268,47 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
         "path": ".agents/skills/registry.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/self_improve/SKILL.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
@@ -15285,7 +15433,7 @@
     "task": "T-152",
     "related": [
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "strong",
         "score": 6
       },
@@ -15295,7 +15443,7 @@
         "score": 6
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "strong",
         "score": 5
       },
@@ -15305,7 +15453,7 @@
         "score": 5
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "strong",
         "score": 4
       },
@@ -15325,7 +15473,7 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -15350,32 +15498,32 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -15538,7 +15686,7 @@
         "score": 5
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "strong",
         "score": 4
       },
@@ -15588,7 +15736,7 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -15603,22 +15751,22 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -15770,7 +15918,7 @@
     "coverage": 0.9,
     "tagged_at_hash": "4515e4b1",
     "imports": [],
-    "extracted_at_hash": "c75028d7",
+    "extracted_at_hash": "af78a5f8",
     "imported_by": []
   },
   "scripts/compute_compact_size.py": {
@@ -15779,7 +15927,7 @@
     "backlinks": [
       "Implement/03_config.md",
       "docs/session_templates/mece_plan_schema.md",
-      ".agents/skills/token_tracker/SKILL.md"
+      ".agents/skills/harness/token_tracker/SKILL.md"
     ],
     "exports": [
       "compact_size",
@@ -15798,7 +15946,7 @@
     "references": [
       "Implement/03_config.md",
       "docs/session_templates/mece_plan_schema.md",
-      ".agents/skills/token_tracker/SKILL.md"
+      ".agents/skills/harness/token_tracker/SKILL.md"
     ],
     "related": [
       {
@@ -15817,7 +15965,7 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -15858,6 +16006,11 @@
       },
       {
         "path": "scripts/session_compactor.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/tok.py",
         "strength": "related",
         "score": 2
       },
@@ -15928,23 +16081,23 @@
       ]
     },
     "backlinks": [
-      ".agents/skills/harness_editor/SKILL.md",
-      ".agents/skills/harness_editor/SKILL_detail.md"
+      ".agents/skills/harness/harness_editor/SKILL.md",
+      ".agents/skills/harness/harness_editor/SKILL_detail.md"
     ],
     "references": [],
     "related": [
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
@@ -15959,77 +16112,77 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -16143,47 +16296,47 @@
     "references": [],
     "related": [
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -16223,47 +16376,47 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -16424,7 +16577,12 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": "scripts/tok.py",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -16529,7 +16687,7 @@
     "imports": [
       "scripts/token_estimator.py"
     ],
-    "extracted_at_hash": "37ccf5e8",
+    "extracted_at_hash": "a96e11fb",
     "imported_by": []
   },
   "scripts/rule_indexer.py": {
@@ -16560,37 +16718,37 @@
     ],
     "related": [
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "strong",
         "score": 5
       },
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "strong",
         "score": 4
       },
@@ -16610,32 +16768,32 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -16685,22 +16843,22 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
         "path": ".agents/skills/registry.md",
-        "strength": "related",
-        "score": 2
-      },
-      {
-        "path": ".agents/skills/session_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -16842,7 +17000,7 @@
     "coverage": 0.9,
     "tagged_at_hash": "286532c5",
     "imports": [],
-    "extracted_at_hash": "286532c5",
+    "extracted_at_hash": "80478cc6",
     "imported_by": []
   },
   "scripts/index_reconcile.py": {
@@ -16896,12 +17054,12 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -16951,67 +17109,67 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -17176,10 +17334,10 @@
     "coverage": 0.9,
     "tagged_at_hash": "62e12fec",
     "imports": [],
-    "extracted_at_hash": "31e74c64",
+    "extracted_at_hash": "e973876d",
     "imported_by": []
   },
-  ".agents/skills/harness_editor/SKILL_detail.md": {
+  ".agents/skills/harness/harness_editor/SKILL_detail.md": {
     "type": "skill",
     "description": "BC Selection Guide Detail — decision tree, per-tier examples, anti-patterns for harness_editor",
     "topics": {
@@ -17193,41 +17351,41 @@
       ]
     },
     "backlinks": [
-      ".agents/skills/harness_editor/SKILL.md"
+      ".agents/skills/harness/harness_editor/SKILL.md"
     ],
     "related": [
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "strong",
         "score": 5
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "strong",
         "score": 5
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
@@ -17247,42 +17405,42 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -17317,12 +17475,12 @@
         "score": 2
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -17422,7 +17580,7 @@
     "coverage": 0.95,
     "tagged_at_hash": "a37b0848"
   },
-  ".agents/skills/skill_auditor/SKILL_detail.md": {
+  ".agents/skills/harness/skill_auditor/SKILL_detail.md": {
     "type": "skill",
     "skill": "skill_auditor",
     "topics": {
@@ -17437,41 +17595,41 @@
       ]
     },
     "backlinks": [
-      ".agents/skills/skill_auditor/SKILL.md"
+      ".agents/skills/harness/skill_auditor/SKILL.md"
     ],
     "related": [
       {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
         "strength": "strong",
         "score": 6
       },
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
         "strength": "strong",
         "score": 4
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "strong",
         "score": 4
       },
@@ -17501,27 +17659,27 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
@@ -17536,27 +17694,27 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/session_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/session_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -17894,12 +18052,12 @@
         "score": 4
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 3
       },
       {
-        "path": ".agents/skills/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 3
       },
@@ -17944,62 +18102,62 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/ascii_flow/SKILL_detail.md",
+        "path": ".agents/skills/content/ascii_flow/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL.md",
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_doctor/SKILL.md",
+        "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL.md",
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/harness_editor/SKILL_detail.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/mece/SKILL.md",
+        "path": ".agents/skills/harness/harness_editor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/project_presenter/SKILL_detail.md",
+        "path": ".agents/skills/harness/mece/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/self_improve/SKILL.md",
+        "path": ".agents/skills/harness/self_improve/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/self_improve/SKILL_detail.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL.md",
+        "path": ".agents/skills/harness/skill_auditor/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/skill_auditor/SKILL_detail.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -18266,17 +18424,17 @@
         "score": 3
       },
       {
-        "path": ".agents/skills/doc_builder/SKILL_detail.md",
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/repo_researcher/SKILL.md",
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
         "strength": "related",
         "score": 2
       },
       {
-        "path": ".agents/skills/variable_manager/SKILL.md",
+        "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
         "strength": "related",
         "score": 2
       },
@@ -18472,9 +18630,25 @@
     "imported_by": [],
     "related": []
   },
+  "scripts/boot_init.sh": {
+    "type": "tool",
+    "description": "Boot step B1 — compact-restore check + SESSION/CHAT/LOOP_WEIGHT reset in session_tokens.md + active_thread tail + roadmap [/] + CFP_COUNT. Extracted from inline AGENTS.md bash (T-212/D1). Mirrors compact_reset.py CHAT formula — KEEP IN SYNC.",
+    "references": [
+      ".sessions/compact_state.md",
+      ".sessions/active_thread.md",
+      ".sessions/session_tokens.md",
+      "docs/master_roadmap.md",
+      "CODING_FAILURE_PATTERNS.md"
+    ],
+    "backlinks": [
+      "AGENTS.md"
+    ],
+    "related": [],
+    "extracted_at_hash": "c7548f89"
+  },
   "scripts/compact_reset.py": {
     "imports": [],
-    "extracted_at_hash": "7861856a",
+    "extracted_at_hash": "27918ef6",
     "imported_by": [],
     "related": []
   },
@@ -18513,5 +18687,253 @@
     "extracted_at_hash": "cea7df16",
     "imported_by": [],
     "related": []
+  },
+  ".agents/skills/coding/delegate/SKILL.md": {
+    "type": "skill",
+    "description": "Delegate skill — hands a confirmed, mechanical, self-contained MECE Phase-3 section to a cheap Haiku sub-agent instead of running it in main context. Self-verify always mandatory; retry-once-then-escalate to MODEL_MEDIUM. Refuses planning/judgment/security/R14-R15-gated paths.",
+    "backlinks": [
+      ".agents/skills/skill-manifest.json",
+      "Implement/03_config.md"
+    ],
+    "topics": {
+      "major": [
+        "delegation",
+        "cheap_model_routing"
+      ],
+      "minor": [
+        "mece_planning",
+        "model_routing"
+      ]
+    },
+    "references": [
+      "Implement/03_config.md",
+      "CLAUDE.md",
+      "AGENTS.md",
+      ".agents/platform/detected.md",
+      ".agents/skills/harness/mece/SKILL.md"
+    ],
+    "related": [],
+    "summary": "Ports the 9arm qwen-agent delegation pattern to house style: a passed MECE section IS the standalone prompt; spawn Agent with model=model_low (Haiku resolved from detected.md), run the section Verify-N in main context, auto-retry once, then escalate. Never delegates gated/judgment work.",
+    "key_claims": [
+      "a confirmed mechanical MECE section is the standalone delegate prompt",
+      "self-verify via the section Verify-N is always mandatory",
+      "one retry then escalate to MODEL_MEDIUM + emit [delegate-escalated]",
+      "resolve model id from detected.md model_low — never hardcode",
+      "never delegate R14/R15-gated paths or work needing chat context"
+    ],
+    "supersedes": null,
+    "superseded_by": null,
+    "key_claims_generated_at": "2026-06-17",
+    "key_claims_stale": false,
+    "rules_defined": [],
+    "rules_referenced": [
+      "R13",
+      "R14",
+      "R15",
+      "R4"
+    ],
+    "topic_map": [
+      {
+        "topic": "delegation",
+        "lines": [
+          [
+            1,
+            11
+          ]
+        ],
+        "critical": true
+      },
+      {
+        "topic": "cheap_model_routing",
+        "lines": [
+          [
+            28,
+            79
+          ]
+        ],
+        "critical": true
+      }
+    ],
+    "coverage": 0.9,
+    "tagged_at_hash": "c6680a59"
+  },
+  "docs/session_templates/handoff_block_schema.md": {
+    "description": "Canonical spec for the ## hand-off block — skill chaining hand-off contracts (T-216 D5): producer->consumer artifact chains + standard INDEX variant. Single-source rule (T-202), required-inputs gate, on-missing HALT / on-present flow.",
+    "topics": {
+      "major": [
+        "skill_system"
+      ],
+      "minor": [
+        "mece_planning",
+        "index_sync"
+      ]
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [
+      {
+        "path": ".agents/skills/content/doc_builder/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/harness/harness_editor/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "docs/session_templates/research_improvement.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/9arm-skills-upstream-comparison-2026-06-18.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/mattpocock-skills-comparison-2026-06-19.md",
+        "strength": "related",
+        "score": 2
+      }
+    ],
+    "rules_defined": [],
+    "rules_referenced": [
+      "T-216",
+      "T-202",
+      "T-214"
+    ],
+    "type": "reference",
+    "topic_map": [],
+    "coverage": 1.0,
+    "tagged_at_hash": "manual-t216"
+  },
+  "scripts/tok.py": {
+    "type": "tool",
+    "description": "Per-file token estimator (pull helper, T-247) — answers \"how many tokens to load this file?\" before reading. Ratio single-sourced from token_estimator (EN_MULT/THAI_MULT). Supports --lines N partial-read predictor. Callable via Bash.",
+    "backlinks": [
+      "Implement/03_config.md"
+    ],
+    "exports": [
+      "est",
+      "main"
+    ],
+    "topics": {
+      "major": [
+        "token_estimation",
+        "token_tracking"
+      ],
+      "minor": [
+        "cost_optimization"
+      ]
+    },
+    "references": [
+      "scripts/token_estimator.py",
+      "Implement/03_config.md"
+    ],
+    "related": [
+      {
+        "path": "docs/token_benchmark.md",
+        "strength": "strong",
+        "score": 5
+      },
+      {
+        "path": "scripts/token_estimator.py",
+        "strength": "strong",
+        "score": 5
+      },
+      {
+        "path": "knowledge/telemetry-schema-harness-2026-06-01.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "knowledge/token-telemetry-schema-and-dashboard-spec-for-agent-systems-2026-05-31.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/posttool_track.py",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "CLAUDE.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/compute_compact_size.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/write_context_cache.sh",
+        "strength": "related",
+        "score": 2
+      }
+    ],
+    "imports": [
+      "scripts/token_estimator.py"
+    ],
+    "extracted_at_hash": "0ae01b6e",
+    "imported_by": []
+  },
+  "scripts/._tok.py": {
+    "imports": [],
+    "extracted_at_hash": "cea7df16",
+    "imported_by": [],
+    "related": []
+  },
+  "knowledge/glossary.md": {
+    "description": "On-demand term->plain-Thai glossary (T-229). One line per term: term(lowercase) | plain-Thai gloss | optional analogy. grep-only — NEVER always-loaded (T-226e). Appended by user-coach when a term is glossed; grepped first on recurrence to reuse the stored wording.",
+    "topics": [
+      "glossary",
+      "glossing",
+      "user-coach",
+      "learning",
+      "plain-language"
+    ],
+    "backlinks": [],
+    "references": [
+      ".agents/skills/user/user-coach/SKILL.md"
+    ],
+    "related": [],
+    "rules_defined": [
+      "T-229"
+    ],
+    "rules_referenced": [],
+    "type": "reference",
+    "topic_map": {},
+    "coverage": 1.0,
+    "tagged_at_hash": "e1820b68"
+  },
+  "knowledge/out_of_scope.md": {
+    "description": "Design-DECISION rejection log (T-224): settled \"we decided NOT to build X\" debates with problem/rationale/refs/keywords per rejected idea. Complements CFP (bugs). Grep-first read + append-on-reject via skeptical_reviewer M4.5 gate. NEVER always-loaded. Seeded with 6 rejected ideas from roadmap 815 (a-f).",
+    "topics": {
+      "major": [
+        "out-of-scope",
+        "design-decisions",
+        "rejection-memory"
+      ],
+      "minor": [
+        "skeptical_reviewer",
+        "leanness",
+        "YAGNI"
+      ]
+    },
+    "references": [
+      "docs/master_roadmap.md",
+      "knowledge/mattpocock-skills-comparison-2026-06-19.md"
+    ],
+    "related": [],
+    "rules_defined": [
+      "T-229"
+    ],
+    "rules_referenced": [
+      "T-222",
+      "T-223",
+      "T-224"
+    ]
   }
 }

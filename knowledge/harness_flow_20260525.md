@@ -29,15 +29,15 @@
 │                                                                      │
 │  .agents/skills/skill-manifest.json   ← keyword → skill mapping     │
 │  .agents/skills/registry.md           ← fast-match table            │
-│  .agents/skills/mece/SKILL.md         ← Phase 2 planning            │
-│  .agents/skills/editor/SKILL.md       ← code edit + [post-read] ★  │
-│  .agents/skills/coder/SKILL.md        ← new file + [post-read] ★   │
-│  .agents/skills/agent/SKILL.md        ← orchestration + merge ★    │
-│  .agents/skills/session_manager/SKILL.md ← pause/resume/close ★    │
-│  .agents/skills/self_improve/SKILL.md    ← CFP review + harness ✦  │
-│  .agents/skills/token_tracker/SKILL.md   ← estimation formulas      │
-│  .agents/skills/file_manager/SKILL.md    ← index_files sync         │
-│  .agents/skills/variable_manager/SKILL.md← index_variables sync     │
+│  .agents/skills/harness/mece/SKILL.md         ← Phase 2 planning            │
+│  .agents/skills/coding/editor/SKILL.md       ← code edit + [post-read] ★  │
+│  .agents/skills/coding/coder/SKILL.md        ← new file + [post-read] ★   │
+│  .agents/skills/coding/agent/SKILL.md        ← orchestration + merge ★    │
+│  .agents/skills/knowledge/session_manager/SKILL.md ← pause/resume/close ★    │
+│  .agents/skills/harness/self_improve/SKILL.md    ← CFP review + harness ✦  │
+│  .agents/skills/harness/token_tracker/SKILL.md   ← estimation formulas      │
+│  .agents/skills/knowledge/file_manager/SKILL.md    ← index_files sync         │
+│  .agents/skills/knowledge/variable_manager/SKILL.md← index_variables sync     │
 │  .agents/platform/detected.md         ← spawn_tool per platform     │
 └────────────────────────────┬─────────────────────────────────────────┘
                              ↓
@@ -239,12 +239,12 @@ Routing examples (after C2 confirms same topic):
 ## Phase 2 · MECE Plan
 
 ```
-[AGENTS.md §Phase 2 · .agents/skills/mece/SKILL.md · INVARIANTS.md §I6]
+[AGENTS.md §Phase 2 · .agents/skills/harness/mece/SKILL.md · INVARIANTS.md §I6]
 
 Runs ONCE per task. Resume → skip if plan is still valid.
 
 ┌─────────────────────────────────────────────────────────────────────┐
-│  [M1] Load .agents/skills/mece/SKILL.md                             │
+│  [M1] Load .agents/skills/harness/mece/SKILL.md                             │
 │                                                                     │
 │  [M2] Build plan 1:1 with Skill sections — REQUIRED per section:    │
 │   Section N — <name from Skill sections[]>:                         │

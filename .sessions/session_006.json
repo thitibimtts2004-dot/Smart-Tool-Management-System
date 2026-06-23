@@ -8,9 +8,9 @@
   ],
   "skill": "harness_editor",
   "files_changed": [
-    ".agents/skills/doc_builder/SKILL.md",
-    ".agents/skills/doc_builder/SKILL_detail.md",
-    ".agents/skills/session_manager/SKILL_detail.md",
+    ".agents/skills/content/doc_builder/SKILL.md",
+    ".agents/skills/content/doc_builder/SKILL_detail.md",
+    ".agents/skills/knowledge/session_manager/SKILL_detail.md",
     ".sessions/.close_checklist_ack",
     ".sessions/active_thread.md",
     ".sessions/compact_state.md",

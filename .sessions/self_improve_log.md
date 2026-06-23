@@ -27,3 +27,4 @@ result: [✓ harness-updated] — recurrence_count incremented to 1 · harness_d
 - kcc on harness_flow_20260526.md: candidates Y-T178/Y-T179 flagged (shared token topic) → action: no_action (sequential distinct entries, not duplicates).
 - CFP-040 added (topic:token-tracking · stale-counter-after-compact). CFP count 36→37.
 - T-180 LIVE-VALIDATED: SessionStart:compact hook fired in production → [compact-reset] trigger:hook CHAT→56770.
+2026-06-22 T-224 kcc: out_of_scope.md flagged vs mattpocock-comparison (score 1.0) + other comparison docs → no_action (source→implementation reference, not duplicate; cross-linked in references[])

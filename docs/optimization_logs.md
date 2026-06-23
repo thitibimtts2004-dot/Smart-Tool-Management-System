@@ -7,7 +7,7 @@ Root cause: Check 3 — SKILL.md referenced non-existent script `scripts/file_ma
   - Skill `repo_researcher` BC-output-write said: `python3 scripts/file_manager.py`
   - Reality: `file_manager` is an agent SKILL, not a Python script
   - Correct alternatives: `file_manager` skill (agent) OR `scripts/backfill_knowledge_index.py`
-Rule injected: BC-output-write in `.agents/skills/repo_researcher/SKILL.md` updated — removed wrong script ref, added correct alternatives
+Rule injected: BC-output-write in `.agents/skills/knowledge/repo_researcher/SKILL.md` updated — removed wrong script ref, added correct alternatives
 Audit check: Check 3 (Low-Overhead Tooling / wrong tool reference)
 Fix verified: grep "file_manager.py" SKILL.md → 0 matches ✅
 

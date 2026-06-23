@@ -9,28 +9,28 @@
       "status": "below_min",
       "insert_after_line": 6,
       "severity": "high",
-      "accept_criteria": "grep -c 'triggers:' .agents/skills/ascii_flow/SKILL.md → 1; triggers array must have ≥5 distinct phrases as a YAML list"
+      "accept_criteria": "grep -c 'triggers:' .agents/skills/content/ascii_flow/SKILL.md → 1; triggers array must have ≥5 distinct phrases as a YAML list"
     },
     {
       "component": "## When to Invoke",
       "status": "missing",
       "insert_after_line": 7,
       "severity": "medium",
-      "accept_criteria": "grep -c '^## When to Invoke' .agents/skills/ascii_flow/SKILL.md → 1"
+      "accept_criteria": "grep -c '^## When to Invoke' .agents/skills/content/ascii_flow/SKILL.md → 1"
     },
     {
       "component": "## When NOT to Use",
       "status": "missing",
       "insert_after_line": 25,
       "severity": "high",
-      "accept_criteria": "grep -c '^## When NOT to Use' .agents/skills/ascii_flow/SKILL.md → 1; section must have ≥4 bullets"
+      "accept_criteria": "grep -c '^## When NOT to Use' .agents/skills/content/ascii_flow/SKILL.md → 1; section must have ≥4 bullets"
     },
     {
       "component": "## Tone Guide",
       "status": "missing",
       "insert_after_line": 114,
       "severity": "low",
-      "accept_criteria": "grep -c '^## Tone Guide' .agents/skills/ascii_flow/SKILL.md → 1 (separate from existing '## Output Tone' section — both must coexist)"
+      "accept_criteria": "grep -c '^## Tone Guide' .agents/skills/content/ascii_flow/SKILL.md → 1 (separate from existing '## Output Tone' section — both must coexist)"
     }
   ],
   "present": [

@@ -24,11 +24,13 @@ import argparse
 import glob
 import json
 import os
+import re
 import subprocess
 import sys
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 INDEX = os.path.join(REPO, "knowledge", "index_files.json")
+MANIFEST = os.path.join(REPO, ".agents", "skills", "skill-manifest.json")
 
 # paths that should NEVER count as index drift (transient / self / generated)
 EXCLUDE_PREFIX = (".sessions/", ".git/", "node_modules/", "memory/")
@@ -46,6 +48,8 @@ INDEXABLE_EXT = (".md", ".py", ".ts", ".tsx", ".js", ".json")
 RULE_FILE_GLOBS = ["CLAUDE.md", "AGENTS.md", "CODING_FAILURE_PATTERNS.md",
                    "INVARIANTS.md", "REPO_MAP.md", "Implement/*.md",
                    ".agents/skills/*/SKILL.md", ".agents/skills/*/SKILL_detail.md",
+                   # T-215: skills bucketed 2 levels deep — keep BOTH so flat+nested resolve
+                   ".agents/skills/*/*/SKILL.md", ".agents/skills/*/*/SKILL_detail.md",
                    "knowledge/*.md", "docs/master_roadmap.md"]
 
 
@@ -124,6 +128,85 @@ def repo_map_drift_lines():
         return []  # fail-safe — never block session close
 
 
+def _skill_handoff_blocks():
+    """Map SKILL.md relpath -> set of downstream names declared in its `## hand-off`
+    block (the ARTIFACT hand-off block, NOT `## hand-off (index)`). SKILL.md is the
+    single source of truth (T-217); the manifest hand_off[] is a mirror of this."""
+    out = {}
+    for p in glob.glob(os.path.join(REPO, ".agents/skills/**/SKILL.md"), recursive=True):
+        rel = os.path.relpath(p, REPO)
+        try:
+            with open(p, encoding="utf-8") as fh:
+                lines = fh.read().splitlines()
+        except OSError:
+            continue
+        in_block, downs = False, set()
+        for ln in lines:
+            if ln.strip() == "## hand-off":          # exact — excludes "## hand-off (index)"
+                in_block = True
+                continue
+            if in_block:
+                if ln.startswith("## "):              # next header ends the block
+                    in_block = False
+                    continue
+                m = re.match(r"\s*downstream:\s*(\S+)", ln)
+                if m:
+                    downs.add(m.group(1))
+        if downs:
+            out[rel] = downs
+    return out
+
+
+def _manifest_handoff():
+    """Map producer SKILL.md relpath -> set of downstream names from manifest hand_off[]."""
+    out = {}
+    try:
+        with open(MANIFEST, encoding="utf-8") as fh:
+            data = json.load(fh)
+    except (OSError, ValueError):
+        return out
+
+    def walk(o):
+        if isinstance(o, dict):
+            if "hand_off" in o and "path" in o and isinstance(o["hand_off"], list):
+                downs = {h.get("downstream") for h in o["hand_off"]
+                         if isinstance(h, dict) and h.get("downstream")}
+                if downs:
+                    out[o["path"]] = downs
+            for v in o.values():
+                walk(v)
+        elif isinstance(o, list):
+            for v in o:
+                walk(v)
+
+    walk(data)
+    return out
+
+
+def handoff_consistency_lines():
+    """T-217: SKILL.md `## hand-off` blocks are the single source of truth. Flag any
+    drift where the manifest hand_off[] mirror disagrees (missing / extra / different
+    downstream). FLAG-ONLY — manifest edits are judgment-type, never auto-applied."""
+    try:
+        skill = _skill_handoff_blocks()
+        manifest = _manifest_handoff()
+    except Exception:
+        return []  # fail-safe — never block session close
+    lines = []
+    for path in sorted(set(skill) | set(manifest)):
+        s, m = skill.get(path, set()), manifest.get(path, set())
+        if s and not m:
+            lines.append(f"[handoff-drift] {path}: SKILL.md declares hand-off -> "
+                         f"{sorted(s)} but manifest has no hand_off[] entry")
+        elif m and not s:
+            lines.append(f"[handoff-drift] {path}: manifest hand_off[] -> {sorted(m)} "
+                         f"but SKILL.md has no `## hand-off` block")
+        elif s != m:
+            lines.append(f"[handoff-drift] {path}: downstream mismatch — "
+                         f"SKILL.md {sorted(s)} vs manifest {sorted(m)}")
+    return lines
+
+
 def reconcile():
     """Return (drift_lines, regen_plan). regen_plan = list of (cmd, reason)."""
     changes = git_changes()
@@ -162,6 +245,8 @@ def reconcile():
 
     # REPO_MAP.md drift — flag only (curated descriptions, never auto-regen · T-185)
     drift.extend(repo_map_drift_lines())
+    # hand-off SKILL.md <-> manifest consistency — flag only (manifest = judgment-type · T-217)
+    drift.extend(handoff_consistency_lines())
     return drift, regen
 
 

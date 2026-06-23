@@ -93,7 +93,7 @@ ls .sessions/ | grep -E "chat_tokens|session_tokens"
 # If chat_tokens.md exists → migrate
 CHAT=$(grep "CHAT_TOTAL:" .sessions/chat_tokens.md 2>/dev/null | awk '{print $2}')
 SESSION=$(grep "SESSION_TOTAL:" .sessions/chat_tokens.md 2>/dev/null | awk '{print $2}')
-printf "SESSION_TOTAL: ${SESSION:-0}\nCHAT_TOTAL: ${CHAT:-11070}\n" > .sessions/session_tokens.md
+printf "SESSION_TOTAL: ${SESSION:-0}\nCHAT_TOTAL: ${CHAT:-19500}\n" > .sessions/session_tokens.md
 rm .sessions/chat_tokens.md
 echo "✓ session_tokens.md written"
 ```
@@ -199,7 +199,7 @@ echo "✓ directories checked"
 [ -f .sessions/active_thread.md ] || printf "task: \nphase: done\nnext: \n" > .sessions/active_thread.md
 
 # session_tokens.md (if not migrated in M1.1)
-[ -f .sessions/session_tokens.md ] || printf "SESSION_TOTAL: 0\nCHAT_TOTAL: 11070\n" > .sessions/session_tokens.md
+[ -f .sessions/session_tokens.md ] || printf "SESSION_TOTAL: 0\nCHAT_TOTAL: 19500\n" > .sessions/session_tokens.md
 
 # compact_state.md (create blank if missing)
 [ -f .sessions/compact_state.md ] || printf "dt=\ns=0k\ntask=none\ncfp=0\nsk=\nsk_h=\nmece_h=\np1=\np2=\np3=\nsection=\nstep=\nresume_at=none\n" > .sessions/compact_state.md

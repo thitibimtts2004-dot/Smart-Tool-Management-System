@@ -174,7 +174,7 @@ In applications where dates are compared as strings (`YYYY-MM-DD` or `YYYY-MM`),
 - `[loop]` section progress marker not emitted at section boundaries
 
 **Prevention:**
-1. Before every Read call: emit `[pre-read] Target: X · Tier: T<N> · Line: <N>` — no exceptions
+1. Before every Read call: emit `[pre-read] Target: X · Line: <N>` — no exceptions
 2. After every Read result is processed: emit `[post-read] File: X · Verdict: relevant|partial|irrelevant`
 3. After every Edit/Write: run `grep` to confirm change exists → emit `[✓ written]`
 4. At each MECE section boundary: emit `[loop] Section N done · → Section N+1 next`
@@ -358,6 +358,8 @@ In applications where dates are compared as strings (`YYYY-MM-DD` or `YYYY-MM`),
 2. self_improve §4: write mece_plan.md + T-ID in roadmap BEFORE delegating edits to harness_editor.
 3. harness_doctor §5: already has mece_plan gate — verify it's followed.
 
+**Recurrence:** 2026-06-22 T-221 — a harness-behavior change (token signal-box) ran under the generic `agent` skill, not `harness_editor`; Step-5 docs-close (harness_flow Y-entry + affected Implement/ sweep — 07_platform field list) was skipped and only caught when the user asked "why didn't I see Implement/ edited". Confirms the root: the Step-5 gate is skill-gated — when skill≠harness_editor it never arms. Coupled with the B2 skill-routing miss (harness file edits not recognized as a harness_editor trigger). Backfilled same turn. Stronger fix candidate: B2 must hard-route harness/Implement/CLAUDE/AGENTS edits to harness_editor regardless of keyword match.
+
 **Detection signal:** Task marked done but harness_flow_*.md has no new entry matching task date. Or: grep "flow_updated: no" in session after harness file edits.
 
 ---
@@ -431,6 +433,7 @@ Never present plan in chat before mece_plan.md exists on disk.
 **How to apply:** At M5: Write tool call to `.sessions/mece_plan.md` MUST appear before the response text that presents the plan to the user. If Write fails → stop → fix → never skip to execution.
 
 ## CFP-028 · Footer Omitted or Missing Loop_W Field
+> **Superseded/mitigated by T-221**: signal-box (4 drift-proof booleans) is now the PRIMARY compact trigger; the footer's char-estimate fields are secondary display only, so a missing/stale Loop_W field can no longer drive a wrong compact decision.
 
 **Symptom:** Response footer missing entirely, or shows `*(Turn: N | Session: ~NNNk | Chat: ~NNNk)*` without `Loop_W: N` field.
 
@@ -473,6 +476,7 @@ Never present plan in chat before mece_plan.md exists on disk.
 **status:** structurally-resolved (auto-heal · no longer reliance on AI memory)
 
 ## CFP-031 · Loop_W Shows Stale Value (0) — File Not Read Before Footer
+> **Superseded/mitigated by T-221**: the compact decision now keys off drift-proof boolean signals (signal-box), not the Loop_W / CHAT numbers — a stale estimate field can no longer cause a false ceiling.
 
 **Symptom:** Footer shows `Loop_W: 0` even after turn 2+ · PostToolUse hook has incremented the file · but response uses cached/estimated value instead of live file read.
 
@@ -507,7 +511,7 @@ count: 2
 recurrences: [{date: 2026-06-04, session: T-085, note: multiple Read results kept; no [dropped] emitted}, {date: 2026-06-04, session: T-088, note: harness_doctor inline run — Read/grep results retained; [dropped] not emitted after verdicts}]
 
 ## CFP-034 · R5 Index-First [pre-read] Emitted Inconsistently (~60% compliance)
-Symptom: [pre-read] Target/Tier/Line signal emitted before ~60% of Read calls; skipped on ~40% — especially under time pressure or when anchor line is already known from grep output.
+Symptom: [pre-read] Target/Line signal emitted before ~60% of Read calls; skipped on ~40% — especially under time pressure or when anchor line is already known from grep output.
 Root cause: [pre-read] treated as optional annotation instead of mandatory gate; when line is "obvious" from grep context, emission skipped to save tokens.
 Prevention: Make [pre-read] mechanical syntax — even one-line emit before every Read, no exceptions. Cost: 10 tokens. Skipping cost: R5 violation + rerun.
 Detection signal: Bash grep output followed directly by Read tool call without intervening [pre-read] line in response.
@@ -534,6 +538,7 @@ count: 1
 recurrences: ["2026-06-04 T-086 harness_doctor — fixed SKILL.md file_manager ref without writing optimization_logs.md first"]
 
 ## CFP-037 · Premature Close — Phase 3 Close Sequence Without User Confirm
+> **Superseded/mitigated by T-221**: false ceilings from an un-reset counter no longer block work — signal-box (turns/files/outputs/steps-left) is the PRIMARY trigger; the char-counter is only a hard-ceiling backstop.
 Symptom: AI marks task done / clears mece_plan / emits [harness-edit-done] without reading Close Checklist from mece_plan_schema.md — skips Reviewer spawn, [mece-audit], [session-health], knowledge_conflict_checker, Implement/ check
 Root: (1) Completion Gate BC misread as auto-trigger · (2) Close Checklist treated as "already known" — never actually read from schema file · AI self-certifies done without running items
 Prevention: MUST Read mece_plan_schema.md §Close Checklist EVERY close — not from memory · tick each item explicitly · [harness-edit-done] only after ALL items verified
@@ -570,10 +575,21 @@ count: 0
 recurrences: []
 
 ## CFP-041 · [token-state] Is a Turn-Boundary Snapshot — Mid-Turn Decisions Use Stale Numbers
+> **Superseded/mitigated by T-221** (masked the symptom): the PRIMARY trigger is now signal-box — TURN_COUNT increments only on real user turns + per-tool counters; immune to the start-of-turn-snapshot lag and subagent pollution that made the char-estimate fragile.
+> **ROOT-FIXED by T-235** (2026-06-22): the subagent-pollution half is now eliminated at source — `scripts/posttool_track.py` early-exits when the PostToolUse payload carries `agent_id` (= a subagent's internal tool call), so subagents no longer write the main `session_tokens.md`. env CANNOT distinguish a subagent (shared session_id + identical env); `agent_id` in the hook stdin is the only reliable signal. Proven by integer check (subagent 3 Reads → main FILES_READ unchanged). The remaining `[token-state]` ≤1-turn snapshot lag is a separate, benign display property — grep LIVE session_tokens.md at decision points (now reliable on any turn).
 Symptom: The [token-state] line the agent trusts is surfaced by the UserPromptSubmit hook only at the START of each turn, so it reflects the PRIOR turn's END total. The PostToolUse hook updates session_tokens.md live DURING the turn, but the agent keeps making token decisions (compact_checkpoint, R3/C0.5 thresholds, footer) off the stale start-of-turn value. On a heavy-tool turn (clone / bulk copy / many reads) the real growth is invisible until the next turn. T-207 migration: agent judged "CHAT ~50k, continue" at the post-S2 compact_checkpoint while the turn actually crossed the 120k ceiling — only seen next turn as a single jump 47k→128k. Display lags reality by exactly 1 turn (user-observed, confirmed).
 Root: [token-state] is a turn-boundary snapshot treated as if it were a live gauge. No mid-turn re-read of the live PostToolUse-updated session_tokens.md at decision points; footer prints prior-turn-end without labelling it as such, so it reads as "current".
 Prevention: (a) at ANY mid-turn token decision point (compact_checkpoint · R3/C0.5 threshold check · before continuing a heavy-tool turn) → grep .sessions/session_tokens.md for the LIVE value, do NOT reuse the start-of-turn [token-state]; (b) footer value labelled explicitly "start-of-turn / prior-turn total (this turn's tool I/O not yet counted)"; (c) heavy-tool turns (≥5 tool calls OR clone/bulk-copy) force one mid-turn live re-check before proceeding past a checkpoint.
 Detection: single-turn CHAT jump >40k between consecutive [token-state] reports; OR a compact_checkpoint / threshold decision made on a turn that then ran ≥5 tool calls with no mid-turn live re-check emitted.
 topic: token-tracking
-count: 0
-recurrences: []
+count: 1
+recurrences: ["2026-06-22 (user-observed): footer showed hand-estimated ~55k while the header [token-state] / session_tokens.md held 139k — agent COMPUTED the footer instead of echoing the single source. Verified session_tokens.md is the ONE hook-written source (posttool_track.py writes it live every tool call; header is its start-of-turn snapshot). Fix (corrected by same-session scrutinize): footer must ECHO the [token-state] header values VERBATIM (= a start-of-turn snapshot, exactly as CLAUDE.md R1 already mandates) — so header and footer are one number shown twice, never divergent. A live `grep session_tokens.md` is reserved for MID-TURN DECISION points (R3/C0.5 thresholds, compact_checkpoint), NOT for the footer display. Initial in-session attempt over-corrected the other way (footer = live grep → more current than header → header≠footer again); scrutinize caught it. No new file/rule — R1 already prescribes echo-[token-state]; both failures (turn-1 fabricate-low, turn-2 grep-too-fresh) were discipline drift around the existing rule's middle path."]
+
+## CFP-042 · New SKILL.md Declared Done Without the Proactive skill_auditor 9arm Audit
+Symptom: harness_editor creates a new SKILL.md, runs only light Verify-N (test -f + grep keyword), then declares the skill "complete / publishable" and closes — the mandatory proactive skill_auditor pass (9arm framework) is never run. The skill ships with absent standard components (e.g. Output Tone, Hard Rules) that a real audit would have caught. T-217 scrutinize: closed as done; a user "did you audit?" prompt forced a retro-audit that returned CONDITIONAL with 3 gaps (2 absent components + 1 prerequisite self-contradiction).
+Root: file-exists + grep-keyword conflated with quality verification. skill_auditor's SKILL.md explicitly says "Proactively: after harness_editor creates or edits any SKILL.md" — but the proactive trigger has no enforcing gate in the close path, so it is silently skipped. Distinct from CFP-037 (skips the generic mece Close Checklist) — this is specifically the skill_auditor 9arm pass after SKILL.md creation. Related: [[CFP-037]] · [[CFP-036]].
+Prevention: harness_editor Stage 4 Close — when the changed artifact is a NEW or heavily-edited SKILL.md → MUST run skill_auditor (spawn or inline) and surface its verdict (PASS / CONDITIONAL / FAIL) BEFORE emitting [harness-edit-done]. A SKILL.md close with only test -f + grep = incomplete. Verdict CONDITIONAL/FAIL → fix flagged gaps, then re-confirm.
+Detection: grep response for [harness-edit-done] on a turn that created/edited a SKILL.md → there MUST be a preceding skill_auditor verdict signal ([scrutinize-verdict] is unrelated — look for an audit PASS/CONDITIONAL/FAIL or [handoff-wait]). Missing = violation → run audit now → backfill.
+topic: skill-quality
+count: 1
+recurrences: ["2026-06-17 T-217 scrutinize: skill closed as done with only test -f + grep; user 'ได้เช็ค Audit ยัง' forced retro-audit → CONDITIONAL, 3 gaps (Output Tone absent, Hard Rules absent, Prerequisites scope self-contradiction) → all 3 fixed same session"]

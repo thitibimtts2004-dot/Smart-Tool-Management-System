@@ -30,17 +30,17 @@ description: Lightweight index of all available skills. Agent reads skill-manife
 
 | Skill | Path | Load When | context_files |
 |-------|------|-----------|---------------|
-| `agent` | `.agents/skills/agent/SKILL.md` | Always loaded — orchestration and 6-step loop | `[.sessions/<latest>.json, docs/master_roadmap.md]` |
-| `identity` | `.agents/skills/identity/SKILL.md` | Always loaded — persona and communication rules | `[]` |
-| `coder` | `.agents/skills/coder/SKILL.md` | Creating new files or scaffolding new features | `[knowledge/index_files.json, docs/master_roadmap.md]` |
-| `editor` | `.agents/skills/editor/SKILL.md` | Modifying or debugging existing files | `[knowledge/index_variables.json, knowledge/index_files.json]` |
-| `file_manager` | `.agents/skills/file_manager/SKILL.md` | After any file is created, moved, or deleted | `[knowledge/index_files.json]` |
-| `variable_manager` | `.agents/skills/variable_manager/SKILL.md` | After any component, function, or variable is added/renamed/deleted | `[knowledge/index_variables.json]` |
-| `session_manager` | `.agents/skills/session_manager/SKILL.md` | At session start, context switch, or task completion | `[.sessions/<latest>.json]` |
-| `token_tracker` | `.agents/skills/token_tracker/SKILL.md` | At the end of every interaction turn (Step 6 of loop) | `[.sessions/<latest>.json]` |
-| `token_auditor` | `.agents/skills/token_auditor/SKILL.md` | Only when `estimated_tokens` exceeds 8,000 | `[knowledge/index_files.json, docs/optimization_logs.md]` |
-| `harness_editor` | `.agents/skills/harness_editor/SKILL.md` | Editing CLAUDE.md, AGENTS.md, SKILL.md files, knowledge/, Implement/ | `[knowledge/harness_flow_20260526.md]` |
-| `harness_doc_auditor` | `.agents/skills/harness_doc_auditor/SKILL.md` | Auditing rule/directive .md (CLAUDE/AGENTS/INVARIANTS/REPO_MAP/Implement) for contradictions, scatter, dead refs, gate/BC errors | `[knowledge/audit_engine_rubric.md]` |
+| `agent` | `.agents/skills/coding/agent/SKILL.md` | Always loaded — orchestration and 6-step loop | `[.sessions/<latest>.json, docs/master_roadmap.md]` |
+| `identity` | `.agents/skills/user/identity/SKILL.md` | Always loaded — persona and communication rules | `[]` |
+| `coder` | `.agents/skills/coding/coder/SKILL.md` | Creating new files or scaffolding new features | `[knowledge/index_files.json, docs/master_roadmap.md]` |
+| `editor` | `.agents/skills/coding/editor/SKILL.md` | Modifying or debugging existing files | `[knowledge/index_variables.json, knowledge/index_files.json]` |
+| `file_manager` | `.agents/skills/knowledge/file_manager/SKILL.md` | After any file is created, moved, or deleted | `[knowledge/index_files.json]` |
+| `variable_manager` | `.agents/skills/knowledge/variable_manager/SKILL.md` | After any component, function, or variable is added/renamed/deleted | `[knowledge/index_variables.json]` |
+| `session_manager` | `.agents/skills/knowledge/session_manager/SKILL.md` | At session start, context switch, or task completion | `[.sessions/<latest>.json]` |
+| `token_tracker` | `.agents/skills/harness/token_tracker/SKILL.md` | At the end of every interaction turn (Step 6 of loop) | `[.sessions/<latest>.json]` |
+| `token_auditor` | `.agents/skills/harness/token_auditor/SKILL.md` | Only when `estimated_tokens` exceeds 8,000 | `[knowledge/index_files.json, docs/optimization_logs.md]` |
+| `harness_editor` | `.agents/skills/harness/harness_editor/SKILL.md` | Editing CLAUDE.md, AGENTS.md, SKILL.md files, knowledge/, Implement/ | `[knowledge/harness_flow_20260526.md]` |
+| `harness_doc_auditor` | `.agents/skills/harness/harness_doc_auditor/SKILL.md` | Auditing rule/directive .md (CLAUDE/AGENTS/INVARIANTS/REPO_MAP/Implement) for contradictions, scatter, dead refs, gate/BC errors | `[knowledge/audit_engine_rubric.md]` |
 
 ---
 

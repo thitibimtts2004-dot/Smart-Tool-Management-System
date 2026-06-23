@@ -123,6 +123,12 @@ Constraints: → §Per-Section Invariants · PLUS skill-specific: <constraint fr
 Verify-N: <command> → <expected>
 - [ ] S<N>
 
+### Surgical Scope (canonical · T-230 · the ONE source — edit skills point here, never re-state)
+Every edit touches ONLY lines traceable to the request. No drive-by refactoring, no "while I'm here" cleanup — every unrequested change is an untested change that inflates review + regression risk (Karpathy "Surgical Changes").
+- Each section's `File:` line IS its declared scope (one or more paths · the close-gate's source of truth — no separate field needed).
+- Enforced at Close: compare files changed **since task start** against the union of all sections' `File:` entries → any task-changed-but-undeclared file = [scope-creep] (see Close Checklist).
+  - Baseline (mandatory · AUTO-captured · T-230b): the PostToolUse hook `scripts/posttool_track.py` writes `git status --porcelain | sort > .sessions/.scope_baseline` the moment `gather_complete.md` is written at Phase 1 close — no longer a manual agent step (Phase 1 is read-only, so the snapshot == the true task-start tree; it overwrites each task, so it is never stale). `.scope_baseline` is gitignored so it never self-flags. At Close diff the current porcelain vs that baseline (`comm -13`). Raw `git diff vs HEAD` is WRONG here — a dirty working tree (pre-existing uncommitted work) pollutes it with files this task never touched (verified T-230 dogfood: HEAD diff showed 80+ unrelated files).
+
 ### /compact checkpoint template (M1.5 inserts when: sections ≥ 3 OR sections × 6 > 30)
 Sequential notation: `[S1] → [S2] → [/compact] → [S3]`
 
@@ -164,6 +170,10 @@ Enforce: proceeding to Close Checklist without [exec-complete] = [violation] BC-
                 `python3 scripts/session_indexer.py` at session close
       emit: [r8-sync-check] files_indexed: N · backlinks: ok · symbols: ok
 - [ ] Roadmap [X]: all T-<N> sections annotated (attempts + tool_calls)
+- [ ] [scope-creep] gate (surgical-change · T-230 · see §Surgical Scope): files changed SINCE task start (`comm -13 .sessions/.scope_baseline <(git status --porcelain | sort)`) ⊆ union of all section `File:` declarations?
+      NOT raw `git diff vs HEAD` (a dirty tree pollutes it) — use the Phase-1 `.scope_baseline` snapshot
+      any task-changed file NOT declared in a section → emit `[scope-creep] file:<path>` → justify in-line (e.g. expected sibling) OR `git checkout <path>` before marking that section [X]
+      all task-changed files declared → emit `[scope-creep] clean`
 - [ ] Spawn Reviewer (model_low from detected.md — default: haiku · read-only):
       "Run each Verify-N: line exactly · Report: PASS list · FAIL list"
       On PASS → proceed · On FAIL → fix → retry 1× → R13 [blocked]

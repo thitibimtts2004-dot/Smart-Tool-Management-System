@@ -27,7 +27,10 @@
   },
   "skills": {
     "mece": {
-      "path": ".agents/skills/mece/SKILL.md",
+      "path": ".agents/skills/harness/mece/SKILL.md",
+      "hand_off": [
+        { "downstream": "skeptical_reviewer", "artifact": ".sessions/mece_plan.md", "role": "primary" }
+      ],
       "model_routing": {
         "floor": "haiku",
         "recommended": "sonnet-high",
@@ -70,8 +73,46 @@
         ]
       }
     },
+    "delegate": {
+      "path": ".agents/skills/coding/delegate/SKILL.md",
+      "model_routing": {
+        "floor": "haiku",
+        "recommended": "haiku",
+        "certified": "2026-06-17",
+        "method": "ported from 9arm qwen-agent pattern; runs the delegation gate + self-verify on the MEDIUM model without inference",
+        "notes": "Takes a confirmed mechanical MECE Phase-3 section, spawns a Haiku sub-agent (the model_low tier), self-verifies via the section Verify-N, auto-retries once, then escalates to MODEL_MEDIUM. Never delegates planning/judgment/R14-R15-gated paths."
+      },
+      "bucket": "in-progress",
+      "trigger": "Phase 3 — a confirmed, mechanical, self-contained [ ] S<N> section is routed to the cheap model instead of main context. Self-verify always mandatory; retry-once-then-escalate.",
+      "keywords": [
+        "delegate",
+        "offload",
+        "send to haiku",
+        "do this cheaply",
+        "cheap model",
+        "mechanical section",
+        "haiku",
+        "menial"
+      ],
+      "on_demand_files": [],
+      "skip_when": "section is planning/architecture/debug-judgment/security OR touches an R14/R15-gated path OR has no runnable Verify-N OR needs this conversation's context",
+      "activates_at": [
+        "Phase3-L1"
+      ],
+      "tools": {
+        "primary": [
+          "Agent",
+          "Bash"
+        ],
+        "avoid": [
+          "WebFetch",
+          "WebSearch",
+          "Workflow"
+        ]
+      }
+    },
     "identity": {
-      "path": ".agents/skills/identity/SKILL.md",
+      "path": ".agents/skills/user/identity/SKILL.md",
       "model_routing": {
         "floor": "haiku",
         "recommended": "haiku",
@@ -115,7 +156,7 @@
     },
     "coder": {
       "domain": "coding",
-      "path": ".agents/skills/coder/SKILL.md",
+      "path": ".agents/skills/coding/coder/SKILL.md",
       "model_routing": {
         "floor": "haiku",
         "recommended": "sonnet",
@@ -185,7 +226,7 @@
     },
     "editor": {
       "domain": "coding",
-      "path": ".agents/skills/editor/SKILL.md",
+      "path": ".agents/skills/coding/editor/SKILL.md",
       "model_routing": {
         "floor": "haiku",
         "recommended": "sonnet",
@@ -269,7 +310,7 @@
       }
     },
     "file_manager": {
-      "path": ".agents/skills/file_manager/SKILL.md",
+      "path": ".agents/skills/knowledge/file_manager/SKILL.md",
       "model_routing": {
         "floor": "haiku",
         "recommended": "haiku",
@@ -314,7 +355,7 @@
     },
     "variable_manager": {
       "domain": "coding",
-      "path": ".agents/skills/variable_manager/SKILL.md",
+      "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
       "model_routing": {
         "floor": "sonnet",
         "recommended": "sonnet",
@@ -359,7 +400,7 @@
       }
     },
     "session_manager": {
-      "path": ".agents/skills/session_manager/SKILL.md",
+      "path": ".agents/skills/knowledge/session_manager/SKILL.md",
       "model_routing": {
         "floor": "sonnet",
         "recommended": "sonnet-high",
@@ -432,7 +473,7 @@
       }
     },
     "token_tracker": {
-      "path": ".agents/skills/token_tracker/SKILL.md",
+      "path": ".agents/skills/harness/token_tracker/SKILL.md",
       "model_routing": {
         "floor": "haiku",
         "recommended": "haiku",
@@ -468,7 +509,7 @@
       }
     },
     "token_auditor": {
-      "path": ".agents/skills/token_auditor/SKILL.md",
+      "path": ".agents/skills/harness/token_auditor/SKILL.md",
       "model_routing": {
         "floor": "sonnet",
         "recommended": "sonnet",
@@ -506,7 +547,7 @@
       }
     },
     "self_improve": {
-      "path": ".agents/skills/self_improve/SKILL.md",
+      "path": ".agents/skills/harness/self_improve/SKILL.md",
       "bucket": "stable",
       "trigger": "At every session close (auto-called by session_manager §3 Step 0), OR user asks to review failure patterns or improve harness",
       "keywords": [
@@ -562,7 +603,7 @@
       }
     },
     "ascii_flow": {
-      "path": ".agents/skills/ascii_flow/SKILL.md",
+      "path": ".agents/skills/content/ascii_flow/SKILL.md",
       "model_routing": {
         "floor": "sonnet",
         "recommended": "sonnet",
@@ -613,7 +654,7 @@
       }
     },
     "agent": {
-      "path": ".agents/skills/agent/SKILL.md",
+      "path": ".agents/skills/coding/agent/SKILL.md",
       "model_routing": {
         "floor": "haiku",
         "recommended": "sonnet",
@@ -652,7 +693,7 @@
       }
     },
     "harness_doctor": {
-      "path": ".agents/skills/harness_doctor/SKILL.md",
+      "path": ".agents/skills/harness/harness_doctor/SKILL.md",
       "model_routing": {
         "floor": "haiku",
         "recommended": "sonnet-high",
@@ -701,7 +742,7 @@
       }
     },
     "harness_editor": {
-      "path": ".agents/skills/harness_editor/SKILL.md",
+      "path": ".agents/skills/harness/harness_editor/SKILL.md",
       "model_routing": {
         "floor": "haiku",
         "recommended": "sonnet-high",
@@ -766,7 +807,7 @@
       }
     },
     "skeptical_reviewer": {
-      "path": ".agents/skills/skeptical_reviewer/SKILL.md",
+      "path": ".agents/skills/harness/skeptical_reviewer/SKILL.md",
       "model_routing": {
         "floor": "sonnet",
         "recommended": "sonnet-high",
@@ -808,8 +849,86 @@
         ]
       }
     },
+    "debug": {
+      "path": ".agents/skills/harness/debug/SKILL.md",
+      "hand_off": [
+        { "downstream": "editor", "artifact": "root-cause record", "role": "primary" }
+      ],
+      "model_routing": {
+        "floor": "sonnet",
+        "recommended": "sonnet",
+        "certified": "pending",
+        "method": "authoring default — not yet probe-certified",
+        "probe_tiers": 0,
+        "notes": "Disproof-first root-cause debugging + breadcrumb ledger (P3 full form). Hypothesis ranking + falsification is reasoning-heavy -> floor sonnet. Locates cause only; fix delegated to coder/editor. Certify via 3-tier probe later."
+      },
+      "bucket": "draft",
+      "trigger": "Reproducible failure root-cause hunt; or R9 escalates a hard error case here",
+      "keywords": [
+        "debug",
+        "root cause",
+        "why does this fail",
+        "still broken",
+        "same error",
+        "find the bug"
+      ],
+      "on_demand_files": [],
+      "skip_when": "no reproducible failure (no-repro) · cause already obvious/trivial · design question (use skeptical_reviewer/scrutinize)",
+      "activates_at": [
+        "error",
+        "manual"
+      ],
+      "tools": {
+        "primary": [
+          "Read",
+          "Bash"
+        ],
+        "avoid": [
+          "Write"
+        ]
+      }
+    },
+    "scrutinize": {
+      "path": ".agents/skills/harness/scrutinize/SKILL.md",
+      "model_routing": {
+        "floor": "sonnet",
+        "recommended": "sonnet-high",
+        "certified": "pending",
+        "method": "authoring default — not yet probe-certified",
+        "probe_tiers": 0,
+        "notes": "Outsider review + mandatory simpler-way pass. Judging 'materially simpler, same outcome' is reasoning-heavy -> recommended sonnet-high. Certify via 3-tier probe later."
+      },
+      "bucket": "draft",
+      "trigger": "Post-build/refactor outsider review + mandatory simpler-way pass; or manual 'is there a simpler way?'",
+      "keywords": [
+        "scrutinize",
+        "outsider review",
+        "fresh eyes",
+        "simpler way",
+        "is there a simpler way"
+      ],
+      "on_demand_files": [],
+      "skip_when": "artifact still drafting · trivial (<=3 lines/typo) · pre-execution plan review (use skeptical_reviewer)",
+      "activates_at": [
+        "post-build",
+        "manual"
+      ],
+      "tools": {
+        "primary": [
+          "Read",
+          "Bash"
+        ],
+        "avoid": [
+          "Edit",
+          "Write"
+        ]
+      }
+    },
     "repo_researcher": {
-      "path": ".agents/skills/repo_researcher/SKILL.md",
+      "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
+      "hand_off": [
+        { "downstream": "doc_builder", "artifact": "knowledge/research/<repo>_summary.md", "role": "supplementary" }
+      ],
       "model_routing": {
         "floor": "haiku",
         "recommended": "sonnet",
@@ -867,7 +986,10 @@
       }
     },
     "doc_builder": {
-      "path": ".agents/skills/doc_builder/SKILL.md",
+      "path": ".agents/skills/content/doc_builder/SKILL.md",
+      "hand_off": [
+        { "downstream": "project_presenter", "artifact": "HTML system manual + screenshots", "role": "primary" }
+      ],
       "model_routing": {
         "floor": "haiku",
         "recommended": "sonnet-high",
@@ -894,7 +1016,7 @@
       ],
       "on_demand_files": [
         {
-          "path": ".agents/skills/doc_builder/SKILL_detail.md",
+          "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
           "when": "executing §3 screenshot plan, §4 playwright script, §5 MECE update, or §6 build HTML",
           "how": "full_ok"
         }
@@ -916,7 +1038,7 @@
       }
     },
     "project_presenter": {
-      "path": ".agents/skills/project_presenter/SKILL.md",
+      "path": ".agents/skills/content/project_presenter/SKILL.md",
       "model_routing": {
         "floor": "haiku",
         "recommended": "sonnet",
@@ -944,7 +1066,7 @@
       ],
       "on_demand_files": [
         {
-          "path": ".agents/skills/project_presenter/SKILL_detail.md",
+          "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
           "when": "executing §2 interview loop, §4 storytelling .md, or §5 HTML generation",
           "how": "full_ok"
         },
@@ -971,7 +1093,7 @@
       }
     },
     "skill_auditor": {
-      "path": ".agents/skills/skill_auditor/SKILL.md",
+      "path": ".agents/skills/harness/skill_auditor/SKILL.md",
       "bucket": "stable",
       "trigger": "Auditing SKILL.md files for missing or weak framework components — gap analysis, quality check, BC over-enforcement detection",
       "keywords": [
@@ -1016,7 +1138,7 @@
       }
     },
     "harness_doc_auditor": {
-      "path": ".agents/skills/harness_doc_auditor/SKILL.md",
+      "path": ".agents/skills/harness/harness_doc_auditor/SKILL.md",
       "bucket": "stable",
       "trigger": "Auditing rule/directive .md files (harness constitution) — CLAUDE.md, AGENTS.md, INVARIANTS.md, REPO_MAP.md, Implement/*.md, mece_plan_schema.md — for contradictions, scatter, ambiguous triggers, dead refs, token bloat, low-tier-unfollowable steps, wrong gate/BC enforcement, broken links",
       "keywords": [
@@ -1061,7 +1183,7 @@
       }
     },
     "user-coach": {
-      "path": ".agents/skills/user-coach/SKILL.md",
+      "path": ".agents/skills/user/user-coach/SKILL.md",
       "model_routing": {
         "floor": "haiku",
         "recommended": "sonnet",
@@ -1098,7 +1220,7 @@
     }
   },
   "fallback": {
-    "path": ".agents/skills/agent/SKILL.md",
+    "path": ".agents/skills/coding/agent/SKILL.md",
     "trigger": "No keyword matches any skill — use as default orchestration skill",
     "on_demand_files": [
       {

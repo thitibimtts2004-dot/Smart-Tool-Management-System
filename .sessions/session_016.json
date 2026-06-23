@@ -8,7 +8,7 @@
   ],
   "skill": "harness_editor",
   "files_changed": [
-    ".agents/skills/project_presenter/SKILL.md",
+    ".agents/skills/content/project_presenter/SKILL.md",
     ".sessions/active_thread.md",
     ".sessions/behave_test_log.jsonl",
     ".sessions/compact_state.md",

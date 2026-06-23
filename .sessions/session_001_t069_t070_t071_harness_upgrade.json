@@ -11,7 +11,7 @@
     "Implement/01_overview.md + 02_setup.md — 6-field session_tokens schema",
     "Asset Plan harness upgraded — backup at AP/.sessions/harness_backup_20260601/",
     "docs/session_templates/mece_plan_schema.md — PATH A+C Session Close BC",
-    ".agents/skills/mece/SKILL_detail.md — Phase 3 close Session Close BC",
+    ".agents/skills/harness/mece/SKILL_detail.md — Phase 3 close Session Close BC",
     ".claude/settings.json — UserPromptSubmit C0.5 LOOP_WEIGHT hook",
     "CLAUDE.md — 252L→198L (R1 trimmed + Cache Guardrail BC + bucket display rule)",
     "AGENTS.md — 281L→201L (Phase 1-3 detail → pointer + triangular undercount note)",

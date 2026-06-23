@@ -183,7 +183,7 @@
 
 | Signal to Find | Expected | Where to Look |
 |---|---|---|
-| `[pre-read]` before every Read | emitted with Target + Tier + Line | response |
+| `[pre-read]` before every Read | emitted with Target + Line | response |
 | `[post-read]` after every Read | verdict: relevant/partial/irrelevant | response |
 | `[pre-edit]` before every symbol Edit | emitted with Symbol + used_in | response |
 | python scripts/lookup.py run first | T0 before T1-T3 | tool call log |

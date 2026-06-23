@@ -138,6 +138,21 @@
       ],
       "when": "Before large file reads or long operations — estimate cost first"
     },
+    "boot_init_sh": {
+      "type": "script",
+      "spawn_script": "bash scripts/boot_init.sh",
+      "short": "Boot step B1 — compact-restore check + SESSION/CHAT/LOOP_WEIGHT reset in session_tokens.md + active_thread tail + roadmap [/] + CFP_COUNT",
+      "tags": [
+        "boot",
+        "b1",
+        "token",
+        "compact_restore",
+        "session_tokens",
+        "loop_weight"
+      ],
+      "when": "First tool call at Boot (AGENTS.md §Boot Sequence B1). Extracted from inline AGENTS.md bash by T-212/D1.",
+      "note": "Mirrors the same CHAT formula (compact_size+sys_fixed) + consume-once session_reset=armed→consumed as scripts/compact_reset.py — KEEP IN SYNC. Logic documented in Implement/07_platform.md §Boot Init. Do NOT remove the LOOP_WEIGHT python normalization (BUG-3)."
+    },
     "compact_reset_py": {
       "type": "script",
       "spawn_script": "python3 scripts/compact_reset.py [--dry-run] [--trigger=hook|user-confirm]",

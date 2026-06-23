@@ -83,4 +83,4 @@ Your call: "/compact" to do it now · "ทำต่อ" to continue (re-check in
 - A fresh session does NOT emit `[compact-required]` on turn 1 (proves BUG-3 fixed).
 
 ## Read these first in the impl session (NOT yet read this session)
-`.claude/settings.json` · `scripts/session_compactor.py` · `scripts/bootstrap_sessions.py` · `scripts/write_context_cache.sh` · `Implement/03_config.md §R3 + §Token Tracking` · `.agents/skills/session_manager/SKILL.md §3`
+`.claude/settings.json` · `scripts/session_compactor.py` · `scripts/bootstrap_sessions.py` · `scripts/write_context_cache.sh` · `Implement/03_config.md §R3 + §Token Tracking` · `.agents/skills/knowledge/session_manager/SKILL.md §3`

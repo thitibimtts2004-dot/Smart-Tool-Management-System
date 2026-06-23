@@ -35,6 +35,9 @@ FILE_GLOBS = [
     "Implement/*.md",
     ".agents/skills/*/SKILL.md",
     ".agents/skills/*/SKILL_detail.md",
+    # T-215: skills bucketed 2 levels deep — keep BOTH so flat+nested resolve
+    ".agents/skills/*/*/SKILL.md",
+    ".agents/skills/*/*/SKILL_detail.md",
     "knowledge/*.md",
     "docs/master_roadmap.md",
 ]

@@ -1,0 +1,65 @@
+{
+  "stack": "Google Apps Script (server-side JS, .gs) + Google Sheets (no Node/npm, no local runtime)",
+  "tree": [
+    "/Volumes/BriteBrain/Projects/DriverWedgeCal",
+    "/Volumes/BriteBrain/Projects/DriverWedgeCal/apps_script",
+    "/Volumes/BriteBrain/Projects/DriverWedgeCal/secrets"
+  ],
+  "key_files": [
+    {
+      "path": "/Volumes/BriteBrain/Projects/DriverWedgeCal/apps_script/ProcessSurveyData.gs",
+      "purpose": "Main Apps Script: reads raw delivery data from dataSheet, computes driver wage metrics (incentive zoning, condition lookups, parcel tier calc), and writes results to 6 half-month derived sheets"
+    },
+    {
+      "path": "/Volumes/BriteBrain/Projects/DriverWedgeCal/Schema_LM_Auto.md",
+      "purpose": "Full schema of the Google Sheet 11_66-LM-(Auto) — 16 sheets, data-flow diagram, key enums, column definitions"
+    },
+    {
+      "path": "/Volumes/BriteBrain/Projects/DriverWedgeCal/apps_script/Rules_and_Logic.md",
+      "purpose": "Business logic documentation: cut-off/Haft splitting rules, destination sheet routing, rate lookup (incentive zoning, condition sets), delivery metric tier calculation"
+    },
+    {
+      "path": "/Volumes/BriteBrain/Projects/DriverWedgeCal/PROJECT_CONTEXT.md",
+      "purpose": "Project context overview"
+    }
+  ],
+  "gs_functions": [
+    "onOpen",
+    "processSurveyDataFromActiveSheetOptimized",
+    "getEmployeeZoningData",
+    "getIncentiveZoning",
+    "getConditionSettingsData",
+    "getConditionSettings",
+    "getDailyConditionSettings",
+    "calculateDeliveryMetrics",
+    "clearAllTargetSheetsSafely"
+  ],
+  "apis": [
+    "SpreadsheetApp",
+    "getSheetByName",
+    "getRange",
+    "Logger"
+  ],
+  "domain_summary": "Last-Mile delivery-driver payroll and billing system for a Thai logistics operation. Raw daily delivery data (dataSheet, ~6,400 rows) is processed by Apps Script: each row is split into half-month periods (Haft 1/2), incentive zones are looked up per driver+hub+vehicle-type, wage tiers (base/incentive-1/incentive-2) are calculated using rate condition tables, and results are written to 6 derived sheets (2W/4W/Daily × Haft1/2). Final output is a payment summary and billing invoice per billing cycle.",
+  "secrets_present": {
+    "present": true,
+    "filenames": [
+      "README.md",
+      "tradingassistant-489807-cfc4ce6716da.json"
+    ]
+  },
+  "candidate_invariants": [
+    "Never write to the live production Google Sheet (ID: 15Eld0_v0epRy32Invx6ang6r1r6DCci9v1jbUAiauuo) without explicit user confirmation — all SpreadsheetApp write operations (setValues, clearContents, etc.) targeting this sheet must be gated.",
+    "Never read, print, commit, or expose any file inside secrets/ — especially tradingassistant-489807-cfc4ce6716da.json (service account key); treat the directory as off-limits.",
+    "Never overwrite or delete the SOURCE sheet (dataSheet) — it is the single raw fact table; all writes must target DERIVED or OUTPUT sheets only.",
+    "Cut-off day (dataSheet!U2) must be a valid integer 1–31 before any calculation run; abort and surface error if invalid — downstream half-month split depends entirely on this single cell."
+  ],
+  "candidate_domain_rules": [
+    "Apps Script runs server-side on Google's V8 runtime — no npm, no Node.js, no local file system; all I/O is via Google Services (SpreadsheetApp, DriveApp, etc.).",
+    "Respect Apps Script quotas: max 6 min execution per run (consumer), 30 min (Workspace); batch all reads before writes (avoid interleaved getRange/setValues which hits quota fast).",
+    "Always use batch read (getValues on a full range) and batch write (setValues on accumulated data array) — never read or write cell-by-cell in a loop.",
+    "Service account credentials (secrets/tradingassistant-489807-cfc4ce6716da.json) must be accessed only via PropertiesService or environment injection — never hardcoded or logged.",
+    "Date parsing in .gs uses new Date(dateValue) on mixed Thai/Gregorian date strings ('1-Nov-2023', '27/5/2568') — any change to date handling must account for Buddhist Era (B.E.) year offsets and normalize source format before parsing."
+  ],
+  "db_gate_target": "Any SpreadsheetApp write operation (setValues, clearContents, deleteRow, or equivalent) targeting the live Google Sheet ID 15Eld0_v0epRy32Invx6ang6r1r6DCci9v1jbUAiauuo, OR any code path that reads/uses the service account key file secrets/tradingassistant-489807-cfc4ce6716da.json — these must trigger a hard-stop gate requiring explicit user confirmation before execution."
+}

@@ -425,7 +425,7 @@ Emit trace:
 \```
 → Got source + line? Emit pre-read gate → Read → STOP. Do NOT go to Tier 2.
 \```
-**[pre-read]** Target: `SymbolName` · Tier: T1 · Line: 42 · Will read: offset=37 limit=60
+**[pre-read]** Target: `SymbolName` · Line: 42 · Will read: offset=37 limit=60
 \```
 
 ---
@@ -442,7 +442,7 @@ Emit trace:
 \```
 → Got line number? Emit pre-read gate → Read → STOP.
 \```
-**[pre-read]** Target: `SymbolName` · Tier: T2 · Line: <N> · Will read: offset=<N-5> limit=60
+**[pre-read]** Target: `SymbolName` · Line: <N> · Will read: offset=<N-5> limit=60
 \```
 → Still no line number? → proceed to Tier 3.
 
@@ -462,7 +462,7 @@ Emit trace:
 
 Step 3b — read only that range:
 \```
-**[pre-read]** Target: `SymbolName` · Tier: T3 · Line: 42 · Will read: offset=37 limit=60
+**[pre-read]** Target: `SymbolName` · Line: 42 · Will read: offset=37 limit=60
 Read  file_path=src/path/to/file.ts  offset=37  limit=60
 \```
 
@@ -1394,7 +1394,7 @@ Step 3: Handle user response:
 ## §Section 4 — Implementation (harness edit)
 
 **Invariants (hard rules — never violate):**
-- MUST NOT edit `.agents/skills/self_improve/SKILL.md` itself → emit [blocked-self-edit] → present diff to user manually
+- MUST NOT edit `.agents/skills/harness/self_improve/SKILL.md` itself → emit [blocked-self-edit] → present diff to user manually
 - MUST NOT edit `INVARIANTS.md` without explicit user confirm
 
 \```

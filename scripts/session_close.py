@@ -116,6 +116,8 @@ def write_session_tokens(chat_total, session_total=0, dry_run=False):
         "CACHE_WRITE: 0\n"
         "TURN_COUNT: 0\n"
         "LOOP_WEIGHT: 0\n"
+        "FILES_READ: 0\n"
+        "LONG_OUTPUTS: 0\n"
     )
     if dry_run:
         print(f"[dry-run] {path}")

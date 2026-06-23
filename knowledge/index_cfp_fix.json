@@ -557,19 +557,19 @@
         "task": "T-121+T-122",
         "approach": "structural gate in \u00a73 before Step 0 + Hard Rule blocking [clean] at count>=5",
         "files": [
-          ".agents/skills/session_manager/SKILL.md",
-          ".agents/skills/harness_doctor/SKILL.md"
+          ".agents/skills/knowledge/session_manager/SKILL.md",
+          ".agents/skills/harness/harness_doctor/SKILL.md"
         ],
-        "verified_by": "grep 'Close Checklist' .agents/skills/session_manager/SKILL.md | wc -l \u2192 \u22651"
+        "verified_by": "grep 'Close Checklist' .agents/skills/knowledge/session_manager/SKILL.md | wc -l \u2192 \u22651"
       },
       {
         "date": "2026-06-05",
         "task": "T-129",
         "approach": "Add [E] item to harness_editor BC-docs-close Contract \u2014 Phase 3 Close Checklist must be all [X] before [harness-edit-done]; executor-side gate (not caller-side)",
         "files": [
-          ".agents/skills/harness_editor/SKILL.md"
+          ".agents/skills/harness/harness_editor/SKILL.md"
         ],
-        "verified_by": "grep -c '\\[E\\]' .agents/skills/harness_editor/SKILL.md \u2192 \u22651"
+        "verified_by": "grep -c '\\[E\\]' .agents/skills/harness/harness_editor/SKILL.md \u2192 \u22651"
       },
       {
         "date": "2026-06-15",

@@ -9,63 +9,63 @@
       "status": "missing",
       "insert_after_line": 4,
       "severity": "high",
-      "accept_criteria": "grep -c 'triggers:' .agents/skills/repo_researcher/SKILL.md → 1"
+      "accept_criteria": "grep -c 'triggers:' .agents/skills/knowledge/repo_researcher/SKILL.md → 1"
     },
     {
       "component": "## When to Invoke",
       "status": "missing",
       "insert_after_line": 26,
       "severity": "high",
-      "accept_criteria": "grep -c '^## When to Invoke' .agents/skills/repo_researcher/SKILL.md → 1"
+      "accept_criteria": "grep -c '^## When to Invoke' .agents/skills/knowledge/repo_researcher/SKILL.md → 1"
     },
     {
       "component": "## When NOT to Use",
       "status": "missing",
       "insert_after_line": 26,
       "severity": "high",
-      "accept_criteria": "grep -c '^## When NOT' .agents/skills/repo_researcher/SKILL.md → 1"
+      "accept_criteria": "grep -c '^## When NOT' .agents/skills/knowledge/repo_researcher/SKILL.md → 1"
     },
     {
       "component": "## Operating Stance",
       "status": "missing",
       "insert_after_line": 26,
       "severity": "medium",
-      "accept_criteria": "grep -c '^## Operating Stance' .agents/skills/repo_researcher/SKILL.md → 1"
+      "accept_criteria": "grep -c '^## Operating Stance' .agents/skills/knowledge/repo_researcher/SKILL.md → 1"
     },
     {
       "component": "## Prerequisites",
       "status": "missing",
       "insert_after_line": 76,
       "severity": "medium",
-      "accept_criteria": "grep -c '^## Prerequisites' .agents/skills/repo_researcher/SKILL.md → 1"
+      "accept_criteria": "grep -c '^## Prerequisites' .agents/skills/knowledge/repo_researcher/SKILL.md → 1"
     },
     {
       "component": "## Hard Rules",
       "status": "missing",
       "insert_after_line": 89,
       "severity": "high",
-      "accept_criteria": "grep -c '^## Hard Rules' .agents/skills/repo_researcher/SKILL.md → 1"
+      "accept_criteria": "grep -c '^## Hard Rules' .agents/skills/knowledge/repo_researcher/SKILL.md → 1"
     },
     {
       "component": "## Tone Guide",
       "status": "missing",
       "insert_after_line": 93,
       "severity": "low",
-      "accept_criteria": "grep -c '^## Tone Guide' .agents/skills/repo_researcher/SKILL.md → 1"
+      "accept_criteria": "grep -c '^## Tone Guide' .agents/skills/knowledge/repo_researcher/SKILL.md → 1"
     },
     {
       "component": "YAML front-matter triggers: array (≥5 phrases)",
       "status": "missing",
       "insert_after_line": 4,
       "severity": "high",
-      "accept_criteria": "python3 -c \"import yaml,sys; d=yaml.safe_load(open('.agents/skills/repo_researcher/SKILL.md').read().split('---')[1]); print(len(d.get('triggers',[])) >= 5)\" → True"
+      "accept_criteria": "python3 -c \"import yaml,sys; d=yaml.safe_load(open('.agents/skills/knowledge/repo_researcher/SKILL.md').read().split('---')[1]); print(len(d.get('triggers',[])) >= 5)\" → True"
     },
     {
       "component": "## Workflow stop conditions",
       "status": "below_min",
       "insert_after_line": 79,
       "severity": "medium",
-      "accept_criteria": "grep -c 'stop\\|halt\\|HALT\\|STOP\\|abort' .agents/skills/repo_researcher/SKILL.md → ≥1 within Workflow section"
+      "accept_criteria": "grep -c 'stop\\|halt\\|HALT\\|STOP\\|abort' .agents/skills/knowledge/repo_researcher/SKILL.md → ≥1 within Workflow section"
     }
   ],
   "present": [

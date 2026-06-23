@@ -88,3 +88,38 @@ Reusable: "gate twin" pattern — when a gate guards one direction (anti-extra),
 - Tripwire avoided: rewrote stale compact_state.md (section=S1 → CLOSE) BEFORE recommending compact, so the real /compact resumed cleanly at CLOSE instead of bouncing back to S1.
 - Lean win: skipped the separate model_low Reviewer — Completion Gate allows inline verify for ≤3 Verify-N + no src/ change. Saved a subagent.
 - Carry-forward: paired-doc mandate (rule file + its Implement doc) held — S3 kept Implement/03_config.md in sync with CLAUDE.md §R1.
+
+## T-213 (2026-06-17) · D2 cheap-model delegation tier
+- intent: port 9arm qwen-agent offload pattern → route mechanical MECE Phase-3 sections to Haiku; keep expensive models for judgment.
+- outcome: 6 sections all Verify-N PASS; new delegate skill + R4 routing + manifest + index sync; 3-case end-to-end verify (happy/escalate/refuse) all green.
+- friction: (1) recurring false token ceilings (CFP-037) forced a /compact mid-task at the S3 checkpoint — handled via compact_state armed + compact_reset. (2) backfill_knowledge_index.py only fills excerpts for known entries, does NOT discover new files; had to hand-author the index_files.json entry (same shape an extraction pass produces). (3) momentarily misread T-214's larger scope as T-213's — caught by reading the actual roadmap entry before marking [X].
+- lesson: when a roadmap [X] is near, re-read the TASK's own entry (not adjacent ones) to confirm scope match before closing. For new skill files, the index entry needs manual authoring — backfill won't discover them.
+- promoted_patterns: "a confirmed MECE section IS the standalone delegate prompt" (no separate menial-classifier); self-verify-always + retry-once-then-escalate as the cheap-model trust contract.
+
+## T-215 (2026-06-18) — Bucket the skills
+- intent: group 24 flat skills into 5 category buckets + 2 lifecycle dirs, rewriting every path reference
+- outcome: done · 0 stale refs repo-wide · 24 skills intact · S0 glob-fix prevented false-green verification
+- friction: token counter false-ceiling (CFP-041 subagent pollution) fired [compact-STOP] repeatedly though real context was small; user opted to push through inline (no more sub-agents) for S5/S6
+- lesson: scrutinize caught a plan-breaking blocker (non-recursive skill glob) the audit missed — pre-move review paid off; for big migrations prefer ONE deterministic inline script over N sub-agents to keep the token counter honest
+- promoted_patterns: anchor grep/sed on full path string for generic skill names; fix discovery tooling BEFORE moving discovered items
+
+## T-229 · on-demand glossary (2026-06-22)
+- intent: persist term→plain-Thai gloss so terms accumulate across sessions (extend user-coach)
+- outcome: 1 new file + 1 skill edit + 1 index entry · no new script · all Verify-N PASS
+- friction: backfill_knowledge_index.py only fills existing entries (not new files) — added index entry by hand then ran backlink_analyzer
+- lesson: grep-first lookup doubles as the dedup check → no dedup engine needed (Simpler-Way win)
+- promoted: scrutinize refinement C (analogy OPTIONAL) directly applied the metaphor-confusion memory
+
+## T-228 scope-grill (2026-06-22)
+intent: user-invokable active scope-drill + persisted out_of_scope brief
+outcome: 3 doc edits (AGENTS C0 · 03_config G0 · gather template) · all Verify-N PASS · no new files
+friction: PreToolUse close-gate needs .close_checklist_ack before phase:done write
+lesson: a user-phrase trigger belongs at C0 (every-message, pre-skip) not inside a gate that may be skipped
+promoted_patterns: detect-before-the-skip; reuse existing questions + 1 delta instead of a new "mode"
+
+## T-224 — out_of_scope rejection memory (2026-06-22 · harness_editor)
+intent: ONE-file design-decision rejection log + wire read/write into existing flow · no new skill/script/hook.
+outcome: knowledge/out_of_scope.md (6 seed entries) + skeptical_reviewer read(Step2)/write(reject) + AGENTS M4.5 pointer + index entry. All 3 Verify-N PASS. scope-creep clean. kcc no_action (source-ref, not dup).
+friction: backlink_analyzer.py does not take --file (schema said it did) · backfill_knowledge_index.py only enriches existing entries, won't register a brand-new file → added the index entry via a safe json load/dump snippet instead.
+lesson: for a NEW knowledge file the registration path is a manual json insert + backlink_analyzer (no-arg regen), NOT backfill --file. The Close-Checklist command hint (backlink_analyzer --file) is stale.
+promoted_patterns: scrutinize timing-check — "where does this fire, and is that BEFORE or AFTER the pain happens?" caught the scrutinize-vs-skeptical_reviewer relocation.

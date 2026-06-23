@@ -1,44 +1,23 @@
-# Gather Complete — T-209 project_presenter tightening
-dt: 2026-06-16
-task: tighten project_presenter SKILL.md process + add real HTML template (8 gaps) — port doc_builder patterns
-skill: harness_editor
-
-## Objective
-Fix 8 audited gaps in `.agents/skills/project_presenter/SKILL.md` by porting the proven patterns
-from its sibling `doc_builder`. User confirmed: fix ALL 8 + realign file-output scope to match
-doc_builder (write OUTSIDE the target project, not into the customer repo).
-
-## The 8 gaps (audit verdict)
-1. YAML header broken — no `name:`, no `description:` (only `triggers:`)         → ❌ framework violation
-2. No Loop Guard — §2 interview "loop until stop" has no max-iter / eject        → loose process (main complaint)
-3. No real HTML template — §5 is bullet hints only, no paste-ready skeleton      → "no template" (main complaint)
-4. BC over-enforcement — 2 BCs + MECE block guard judgment/process, not destruction → [over-enforcement]
-5. No Grounding/Coverage gate — can drift/fabricate, only a soft Hard Rule        → can invent content
-6. Scope inconsistency — writes INTO target project; sibling writes outside       → align to doc_builder
-7. No Model Routing — reasoning phases (§2/§4) have no tier floor                  → weak model invents
-8. Scattered rules — Prerequisites + Refusal Contract + MECE block overlap 3×      → dedup
-
-## Constraints
-- Edit ONE file only: `.agents/skills/project_presenter/SKILL.md` — NOT src/, NOT doc_builder
-- Behavioral skill edit → Stage 3.5 [behave-test] required at close
-- Preserve existing trigger keywords (back-compat) · preserve §3/§4 storytelling structure (it works)
-- Mirror doc_builder wording: YAML header · Scope rule · Model Routing · Grounding Gate · Loop Guard · Output Contract
-- R8 index sync after edit (rule_indexer — SKILL.md is a harness rule file)
-
-## Affected files
-| File | Action | Lines read |
-|---|---|---|
-| .agents/skills/project_presenter/SKILL.md | rewrite (target) | full 193L |
-| .agents/skills/doc_builder/SKILL.md | pattern source (read-only) | full 225L |
-| docs/session_templates/mece_plan_schema.md | plan template | 1-90 + PATH A |
-
-## Acceptance criteria
-- [ ] YAML has `name: project_presenter` + `description:` block
-- [ ] Loop Guard section present (max 3 iter · Loop_W>50 eject · [present-eject] signal)
-- [ ] §5 has paste-ready HTML+CSS template skeleton (not bullets)
-- [ ] BC count reduced — interview/screenshot reframed as Operating Stance / steps
-- [ ] Grounding Gate present (every claim traces to §1 scan · [grounding-drop] signal)
-- [ ] Output paths OUTSIDE target project (present_output/<project>/ mirroring doc_output/)
-- [ ] Model Routing section present (§2/§4 floor = model_medium, never model_low)
-- [ ] Overlapping rules deduped into one home each
-- [ ] [behave-test] passes at close
+date: 2026-06-22
+objective: T-224 — add a design-DECISION rejection log so settled "we decided NOT to build X" debates are not reopened. ONE file knowledge/out_of_scope.md (problem/rationale/refs per rejected idea), complementing CFP which only logs bugs. Mirror the T-229 glossary discipline: grep-first lookup → append-on-new-rejection → NEVER always-loaded.
+constraints:
+  - ONE file knowledge/out_of_scope.md — NOT a dir, NOT a new skill, NOT a new script/hook (roadmap line 814 MERGES/FOLDS verdict — T-224 simplified)
+  - on-demand grep only — NEVER always-load (adds per-turn token weight · contradicts leanness · this exact pattern was rejected for CONTEXT.md glossary, roadmap 815e)
+  - reuse existing owners: scrutinize already owns the simpler-way / reject discipline → wire read+write there, do not invent a new gate
+  - seed content already exists: the 6 rejected ideas (a)-(f) in roadmap line 815 ARE the first entries (roadmap says so explicitly)
+affected_files:
+  - knowledge/out_of_scope.md  (NEW — usage-contract header + 6 seed entries)
+  - .agents/skills/harness/scrutinize/SKILL.md  (Simpler-Way Pass: grep out_of_scope first · reject verdict → append entry)
+  - knowledge/index_files.json  (R8 — register the new knowledge file)
+  - docs/master_roadmap.md  (T-224 [ ]→[X])
+out_of_scope:
+  - a .out-of-scope/ directory or any new skill/script/hook (the ORIGINAL T-224 shape — already rejected/folded to one file · roadmap 814)
+  - always-loading out_of_scope.md into every turn (rejected — leanness · roadmap 815e)
+  - editing CLAUDE.md R-Roadmap as the primary home (heavy core file · scrutinize is the lighter natural owner) — at most a 1-line pointer, only if needed
+  - any src/ file
+acceptance_criteria:
+  - knowledge/out_of_scope.md exists with a grep-first/append usage-contract header + the 6 seed entries (a)-(f), each with problem/rationale/refs
+  - scrutinize SKILL.md instructs: grep out_of_scope.md before proposing/justifying a build (HIT → surface rationale, do not reopen unless user overrides) AND append a new entry on a reject verdict
+  - file registered in knowledge/index_files.json (R8) · roadmap T-224 [X]
+  - no new dir / skill / script / hook added (git status confirms)
+verification_intent: grep knowledge/out_of_scope.md for the 6 idea slugs + header contract · grep scrutinize SKILL.md for out_of_scope (≥1) · grep index_files.json for out_of_scope.md · git status shows only the 1 new knowledge file (no new dir/skill/script)

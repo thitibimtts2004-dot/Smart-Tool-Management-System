@@ -1,9 +1,9 @@
-# Context Cache — 2026-06-16 15:12
-task: T-209 tighten project_presenter SKILL.md (8 gaps) — port doc_builder patterns
+# Context Cache — 2026-06-23 08:20
+task: T-224 — out_of_scope rejection memory: created knowledge/out_of_scope.md (6 seed entries · grep-first/append · never-always-load) + wired read(Step2)/write(reject) into skeptical_reviewer + AGENTS M4.5 pointer + index_files.json entry · roadmap [X] · NO new skill/script/hook
 phase: done
-next: PATH A clear mece_plan Phase 1-3 (R14-gated · awaiting user confirm) + post-task learning quiz
-session_total: ~7264
-chat_total: ~24793
+next: pick Group-2 (T-227 git-guardrails hook) OR commit the uncommitted batch (skill bucketing · T-249/250/251 · T-230b · T-229 · T-228 · T-224). Recommend /compact first — CHAT high (~264k lower-bound, climbing). NEW task → fresh Phase 1+2.
+session_total: ~2649
+chat_total: ~22459
 cache_read: 0
 cache_write: 0
 pending_sections:

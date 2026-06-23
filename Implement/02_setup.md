@@ -4,7 +4,7 @@ Follow these steps in order when setting up on a brand-new project.
 
 ```
 Step 1: Create directories
-  mkdir -p knowledge knowledge/cfp-proposals knowledge/cfp-proposals/applied knowledge/recipes .agents/skills/file_manager .agents/skills/variable_manager scripts .sessions
+  mkdir -p knowledge knowledge/cfp-proposals knowledge/cfp-proposals/applied knowledge/recipes .agents/skills/knowledge/file_manager .agents/skills/knowledge/variable_manager scripts .sessions
 
 Step 2: Write CLAUDE.md
   Use template from Section 4. Adjust R3 token thresholds to your model.
@@ -15,16 +15,16 @@ Step 2.5: Write governance docs
 
 Step 3: Write all agent infrastructure files
   a. Skill files (all 10) — copy from 04_skills.md Sections 5a–5j:
-     .agents/skills/file_manager/SKILL.md
-     .agents/skills/variable_manager/SKILL.md
-     .agents/skills/mece/SKILL.md
-     .agents/skills/coder/SKILL.md
-     .agents/skills/editor/SKILL.md
-     .agents/skills/session_manager/SKILL.md
-     .agents/skills/token_auditor/SKILL.md
-     .agents/skills/token_tracker/SKILL.md
-     .agents/skills/identity/SKILL.md
-     .agents/skills/agent/SKILL.md
+     .agents/skills/knowledge/file_manager/SKILL.md
+     .agents/skills/knowledge/variable_manager/SKILL.md
+     .agents/skills/harness/mece/SKILL.md
+     .agents/skills/coding/coder/SKILL.md
+     .agents/skills/coding/editor/SKILL.md
+     .agents/skills/knowledge/session_manager/SKILL.md
+     .agents/skills/harness/token_auditor/SKILL.md
+     .agents/skills/harness/token_tracker/SKILL.md
+     .agents/skills/user/identity/SKILL.md
+     .agents/skills/coding/agent/SKILL.md
   b. skill-manifest.json — copy from 03_config.md skill-manifest.json Template
   c. registry.md — copy from 03_config.md registry.md Template
   d. scripts/symbol_indexer.py — see 05_scripts.md
@@ -185,7 +185,7 @@ Step 1: Detect project type
   Adjust scan patterns in Step 4 accordingly.
 
 Step 2: Create agent directories (skip if exist)
-  mkdir -p knowledge knowledge/cfp-proposals knowledge/cfp-proposals/applied knowledge/recipes .agents/skills/file_manager .agents/skills/variable_manager scripts .sessions
+  mkdir -p knowledge knowledge/cfp-proposals knowledge/cfp-proposals/applied knowledge/recipes .agents/skills/knowledge/file_manager .agents/skills/knowledge/variable_manager scripts .sessions
 
 Step 2.5: Auto-discover project context
   a. Map directory structure:
@@ -267,11 +267,11 @@ Run after onboarding or integration. All items must pass before starting develop
 [ ] knowledge/index_variables.json — exists, valid JSON, "variables" key present
 [ ] knowledge/error_index.md     — exists (may be empty), uses T-{Parent}-{BugID}-{Attempt} format
 [ ] .agents/skills/skill-manifest.json — exists, valid JSON, keywords → skill routing defined
-[ ] .agents/skills/mece/SKILL.md — exists
-[ ] .agents/skills/coder/SKILL.md — exists, contains Roadmap Protocol
-[ ] .agents/skills/editor/SKILL.md — exists, contains Roadmap Protocol
-[ ] .agents/skills/file_manager/SKILL.md  — exists
-[ ] .agents/skills/variable_manager/SKILL.md — exists
+[ ] .agents/skills/harness/mece/SKILL.md — exists
+[ ] .agents/skills/coding/coder/SKILL.md — exists, contains Roadmap Protocol
+[ ] .agents/skills/coding/editor/SKILL.md — exists, contains Roadmap Protocol
+[ ] .agents/skills/knowledge/file_manager/SKILL.md  — exists
+[ ] .agents/skills/knowledge/variable_manager/SKILL.md — exists
 [ ] scripts/symbol_indexer.py    — exists, runs without error
 [ ] .sessions/active_thread.md   — exists, phase: done
 [ ] .sessions/mece_plan.md       — exists (may be empty template); if has [ ] sections → resume flow active
@@ -286,11 +286,11 @@ Run after onboarding or integration. All items must pass before starting develop
 [ ] knowledge/cfp-proposals/applied/ — exists (CFP archive)
 [ ] knowledge/recipes/          — exists (load-on-demand procedure notes)
 [ ] docs/master_roadmap.md      — exists, has at least T-000 entry
-[ ] .agents/skills/session_manager/SKILL.md — exists, contains session close flow
-[ ] .agents/skills/token_auditor/SKILL.md — exists, contains threshold gate
-[ ] .agents/skills/token_tracker/SKILL.md — exists
-[ ] .agents/skills/identity/SKILL.md — exists
-[ ] `.agents/skills/agent/SKILL.md` — contains Orchestration Protocol (Cycle fan-out, 7 steps) + Delegation Contract (goal/constraints/output_format/on_demand_files/cycle_context)
+[ ] .agents/skills/knowledge/session_manager/SKILL.md — exists, contains session close flow
+[ ] .agents/skills/harness/token_auditor/SKILL.md — exists, contains threshold gate
+[ ] .agents/skills/harness/token_tracker/SKILL.md — exists
+[ ] .agents/skills/user/identity/SKILL.md — exists
+[ ] `.agents/skills/coding/agent/SKILL.md` — contains Orchestration Protocol (Cycle fan-out, 7 steps) + Delegation Contract (goal/constraints/output_format/on_demand_files/cycle_context)
 [ ] python scripts/symbol_indexer.py — exits 0, reports symbol count > 0
 ```
 
