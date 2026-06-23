@@ -607,3 +607,12 @@ Fixed (T-252 · 2026-06-23): the PreToolUse close-gate now AUTO-runs this detect
 topic: index_sync
 count: 0
 recurrences: []
+
+## CFP-044 · Skill Invoked From Memory/External Source — Local SKILL.md Never Loaded → Wrong Skill Applied
+Symptom: Agent announced/performed a "scrutinize" pass but never loaded `.agents/skills/harness/scrutinize/SKILL.md` and never emitted `[skill-active]`. It improvised the method from an in-context EXTERNAL summary (9arm-skills web research) whose same-named concept has a DIFFERENT scope. Result: the wrong skill's definition was applied — the necessity/wrong-layer/flaw review of a PLAN-before-execution it ran is, by our taxonomy, `skeptical_reviewer`'s job (M4.5 gate); our `scrutinize` = Outsider Pass + Simpler-Way on a FINISHED artifact. The mandatory Outsider Pass was skipped entirely. Caught by user: "ทำไมไม่อ้างอิง Skill scrutinize เวลาเรียกใช้".
+Root: (1) No forcing function loads the local SKILL.md when a skill is invoked by name mid-conversation — skills are opt-in, not gated (the same exists-but-not-gated gap under repair this session). (2) Boot skill was the generic `agent` fallback; a user/self invocation of a skill NAME never triggered a B2-style re-route + SKILL.md load + `[skill-active]`. (3) Agent routed off an in-context external-research summary instead of the skill registry, importing a same-name/different-scope definition without checking the skill's own "When NOT to Use" boundary.
+Prevention: When ANY skill is invoked by name (user phrase OR self-initiated "let me <skill> this"), BEFORE running its method: resolve against `.agents/skills/skill-manifest.json` → Read the local SKILL.md (offset≤80) → emit `[skill-active] <name>`. NEVER run a skill's method from memory or an external source. When two skills share a name/concept (scrutinize vs skeptical_reviewer), the LOCAL registry definition wins — read the target skill's "When NOT to Use" + "Distinct from" lines before applying, to confirm it is the right tool.
+Detection: agent text says "scrutinize / review-as-outsider / <skill> this" OR emits a skill's verdict/output WITHOUT a preceding SKILL.md Read + `[skill-active]` emit in the same turn · OR user asks "why didn't you reference Skill <X>" · OR a skill is run whose `When NOT to Use` boundary actually excludes the current case.
+topic: boot-routing
+count: 0
+recurrences: []
