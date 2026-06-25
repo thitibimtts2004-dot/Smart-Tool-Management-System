@@ -211,18 +211,17 @@ Fix if missing: `Implement/03_config.md` → INVARIANTS.md template.
 
 All skill files must have: frontmatter (`name` + `description`) · `Sections[]` YAML · main content · Context Gate.
 
-Run this to check all 14 exist:
+Run this to check all 13 exist:
 ```bash
 ls .agents/skills/coding/agent/SKILL.md .agents/skills/content/ascii_flow/SKILL.md \
    .agents/skills/coding/coder/SKILL.md .agents/skills/coding/editor/SKILL.md \
-   .agents/skills/knowledge/file_manager/SKILL.md .agents/skills/harness/harness_doctor/SKILL.md \
+   .agents/skills/knowledge/index_manager/SKILL.md .agents/skills/harness/harness_doctor/SKILL.md \
    .agents/skills/harness/harness_editor/SKILL.md \
    .agents/skills/user/identity/SKILL.md .agents/skills/harness/mece/SKILL.md \
    .agents/skills/harness/self_improve/SKILL.md .agents/skills/knowledge/session_manager/SKILL.md \
-   .agents/skills/harness/token_auditor/SKILL.md .agents/skills/harness/token_tracker/SKILL.md \
-   .agents/skills/knowledge/variable_manager/SKILL.md 2>&1
+   .agents/skills/harness/token_auditor/SKILL.md .agents/skills/harness/token_tracker/SKILL.md 2>&1
 ```
-Expected: 14 paths printed, zero "No such file" errors.
+Expected: 13 paths printed, zero "No such file" errors.
 
 Run this to check all 13 have a Context Gate:
 ```bash
@@ -237,14 +236,13 @@ Expected: 13
 | `agent` | `Orchestration Protocol\|Delegation Contract\|on_demand_files\|PURGE\|tokens_estimated` | 5 |
 | `coder` | `Roadmap Protocol\|Coding Standards\|Sections\|Responsibilities` | 4 |
 | `editor` | `Roadmap Protocol\|3-Tier\|Edit\|Sections\|Responsibilities` | 5 |
-| `file_manager` | `Backlink\|Triggers\|Pre-Analysis\|Sections` | 4 |
+| `index_manager` | `Mode Router\|Backlink\|symbol_indexer\|Sections` | 4 |
 | `identity` | `Fatal Constraint\|session_compactor\|git.*commit\|push` | 3 |
 | `mece` | `Plan Format\|Skill:.*MANDATORY\|Verify Pattern\|Feedback.*Error Summary` | 4 |
 | `self_improve` | `cfp_boot_count\|cfp-tally\|cfp-skip\|proposal-mismatch\|blocked-self-edit` | 5 |
 | `session_manager` | `BLOCKED\|Resume Flow\|mece_plan_hash\|cfp_deferred\|self_improve` | 5 |
 | `token_auditor` | `token-drift\|audit-clean\|audit-done\|Flag Only` | 8 |
 | `token_tracker` | `SESSION_TOTAL\|TOKEN PAUSE\|tiered\|150 lines\|300 lines` | 4 |
-| `variable_manager` | `Triggers\|Pre-Analysis\|symbol_indexer\|Sections` | 4 |
 
 Verify a specific skill (swap in any skill name):
 ```bash
@@ -260,9 +258,9 @@ Fix if any skill is missing or incomplete: `Implement/04_skills.md` → find tha
 ### 3.1 `.agents/skills/registry.md`
 
 ```bash
-grep -c "agent\|coder\|editor\|file_manager\|identity\|mece\|session_manager\|token_auditor\|token_tracker\|variable_manager" .agents/skills/registry.md
+grep -c "agent\|coder\|editor\|identity\|index_manager\|mece\|session_manager\|token_auditor\|token_tracker" .agents/skills/registry.md
 ```
-Expected: ≥ 10 (at least one match per skill)
+Expected: ≥ 9 (at least one match per skill)
 
 ### 3.2 `.agents/skills/skill-manifest.json`
 

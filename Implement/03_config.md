@@ -63,12 +63,12 @@ Two counters — both in working memory, sourced from files at Boot:
 Formulas: (baseline — `anthropic` and `generic` fallback)
 - Output = (thai_chars × 1.7) + (en_chars × 0.3)
 - Input = (user_msg_chars × 0.3) + tool_result_tokens
-- Per-turn CHAT_TOTAL growth: CHAT_TOTAL += 700 + turn_tokens × 1.5  (calibrated T-046: actual ≈ 1.5–2×)
+- Per-turn CHAT_TOTAL growth: CHAT_TOTAL += turn_tokens (SAME delta as SESSION — the ×1.5/+700 was dropped in code T-178; real API context ≈1.5–2× this lower bound, kept as a display note only · T-261 doc-follows-code)
 - 4-bucket: sys=sys_fixed/turns · tools=tool_result_tokens · hist=SESSION_TOTAL×0.4 · output=output_tokens
 - ⚠️ Cache invalidation: tool schema edit → prefix reset → CHAT_TOTAL spike ≈ +sys_fixed · detected via [spike:cache-collapse]
 - bucket_sys note: if schema edited this session → actual cost ≈ sys_fixed added back once (not amortized)
 
-Accumulation is HOOK-OWNED (T-231): the PostToolUse hook (`scripts/posttool_track.py`) computes turn_tokens and accumulates SESSION_TOTAL += turn_tokens · CHAT_TOTAL += 700 + turn_tokens × 1.5, writing both to session_tokens.md every tool call (persist-every-turn — closes CFP-031). The agent runs NO token arithmetic and does NOT hand-write these counters — a second agent-side write would double-count.
+Accumulation is HOOK-OWNED (T-231): the PostToolUse hook (`scripts/posttool_track.py`) computes turn_tokens and accumulates SESSION_TOTAL += turn_tokens · CHAT_TOTAL += turn_tokens (SAME delta · no ×1.5/+700 · dropped in code T-178), writing both to session_tokens.md every tool call (persist-every-turn — closes CFP-031). turn_tokens = chars × provider tool_mult; mutations (Edit/Write/NotebookEdit) count tool_input only (echo dropped · T-261); single-delta backstop = 0.1 × WIN (12,800). The agent runs NO token arithmetic and does NOT hand-write these counters — a second agent-side write would double-count.
 
 Agent per-turn residual (in order): read `[token-state]` (absent → grep session_tokens.md) → JSONL (step 3 below) → R3 check → spike check → cache-warn → footer (step 4 below). Steps 3-4 keep their numbers below; steps 1-2 are now the hook's job, not the agent's.
 
@@ -94,13 +94,9 @@ Reset policy (reference — applied by `scripts/compact_reset.py` / B1, NOT by a
 **Cache Guardrail:** cache_hit_pct < 60% AND cache_read > 0 → emit `[cache-warn] hit%: NN% (target ≥60%)`
 - ⚠️ Do not define token formulas in other skill files — use R1 values exclusively
 
-### Tool Result Tokens (tiered — applied per result before adding to SESSION_TOTAL)
+### Tool Result Tokens (flat — matches the hook code · doc-follows-code T-261)
 
-| Result size | Formula | Minimum |
-|---|---|---|
-| ≤ 150 lines | `result_chars × 0.3` | 200 tokens |
-| 151–300 lines | `result_chars × 0.5` | 200 tokens |
-| > 300 lines | `result_chars × 0.5 + 1,000 flat buffer` | 200 tokens |
+Per tool call: `chars × tool_mult` — ONE flat provider multiplier (anthropic 0.3 / openai·google 0.27 / generic 0.35). No line-count tiers: the old tiered table (×0.3/×0.5/+1,000) was never implemented in `posttool_track.py` — removed to kill the doc↔code drift (T-261). Mutations (Edit/Write/NotebookEdit) count `tool_input` only — the echoed response scales with file SIZE, not real context, so it is dropped (this was the +77k false-ceiling spike · T-261). A generous backstop caps any single delta at 0.1 × WIN (12,800) as a sanity guard. CHAT delta = SESSION delta (no ×1.5 / +700).
 
 Never use UTF-8 bytes ÷ 3 — undercounts Thai by up to 1.7×.
 
@@ -118,10 +114,10 @@ Run C0 → C1 → C2 → C3 before any work. Topic switch = close current sessio
 **C0 Q3 (aka C0.5) — LOOP_WEIGHT Gate (Behavior Contract — runs every turn before C1):**
 ```
 Pre:      read [token-state] hook → B=signal-box N/4 · N=LOOP_W · S=SESSION_TOTAL · C=CHAT_TOTAL. PRIMARY signal = signal-box (4 drift-proof booleans · T-221); CHAT_TOTAL/SESSION/LOOP_WEIGHT = SECONDARY char-estimates (lower bound — tool I/O only; subagent pollution removed by T-235 · CFP-041 root-fixed) → never the primary trigger.
-Contract: HARD STOP (genuine ceiling · backstop): S >90k OR C >120k → MUST emit [compact-STOP] as FIRST line → write compact_state.md → STOP (no new work). This is the ONLY hard stop.
+Contract: HARD STOP (genuine ceiling · backstop): window-anchored — eff = CHAT × 1.75 (CF=175) compared to WIN=128k — AND signal-box ≥2, BOTH required → MUST emit [compact-STOP] as FIRST line → write compact_state.md → STOP (no new work). The estimate ALONE never hard-stops (T-247 · T-261): a lone over-threshold estimate with signal-box <2 is at most a [compact-rec]. Source of truth = the UserPromptSubmit hook in `.claude/settings.json` (these numbers describe it · doc-follows-code).
           Strong rec (PRIMARY): signal-box ≥2/4 → MUST emit [compact-rec] strong as FIRST line — a recommendation WITH a choice, NOT a STOP. User decides; continue if they say so.
           Light hint (SECONDARY): C >80k OR N >50 (below ceiling) → emit [compact-note] light (1 line, optional, no block) — flags estimate/call-count, not a primary trigger.
-          Precedence: ceiling (S>90k/C>120k) > strong (signal-box ≥2) > light (CHAT >80k / LOOP_WEIGHT >50). Ceiling met → emit [compact-STOP] only (skip rec tiers).
+          Precedence: ceiling (eff≥90%·WIN AND signal-box≥2) > strong (signal-box ≥2) > light (eff≥70%·WIN / CHAT >80k / LOOP_WEIGHT >50). Ceiling met → emit [compact-STOP] only (skip rec tiers).
 Post:     [compact-rec] strong MUST contain all 5 fields or response is invalid:
             Recommend /compact: <now | after this step | not yet>
             Why: <session ~Nk · what's heavy · pending task self-contained? y/n>
@@ -177,13 +173,13 @@ Routing shortcuts:
 | SESSION_TOTAL | >40k + turns ≥8 | rolling summary: summarize prior 4 turns → `.sessions/session_memory.md` · keep last 2 raw |
 | SESSION_TOTAL | >60k | finish current step → TOKEN PAUSE |
 | SESSION_TOTAL | 80-90k | 🟡 [compact-rec] strong — recommend /compact (NOT forced · user choice) |
-| SESSION_TOTAL | >90k | HALT → save state → report |
+| SESSION_TOTAL | >90k *(est)* | + signal-box ≥2 → HALT · estimate alone → [compact-rec] only (T-261) |
 | signal-box | ≥2/4 | 🟡 [compact-rec] strong — PRIMARY trigger (T-221): 4 drift-proof booleans · recommend /compact + user choice (NOT a STOP) |
 | CHAT_TOTAL | >80k | 🟡 [compact-note] light — SECONDARY estimate only (lower bound; subagent pollution removed by T-235 · CFP-041 root-fixed), not the primary trigger |
-| CHAT_TOTAL | >120k | 🛑 HALT (hard ceiling backstop) — save state → report |
+| CHAT_TOTAL | eff≥90%·WIN(128k) | 🛑 + signal-box ≥2 → HALT (window-anchored backstop · T-261) · estimate alone → rec only |
 ⚠️ CHAT_TOTAL undercount: true API context ≈ CHAT_TOTAL × 1.5–2× (triangular re-send) · use as lower bound · estimate only — trust signal-box for the compact decision
 | LOOP_WEIGHT | >50 | 🟡 [compact-note] light hint only — SECONDARY: high call-count, not context size (no STOP) |
-> Hard STOP = SESSION_TOTAL >90k OR CHAT_TOTAL >120k only (backstop). PRIMARY rec signal = signal-box ≥2/4 (4 drift-proof booleans · T-221); CHAT_TOTAL >80k / LOOP_WEIGHT >50 are secondary estimate/call-count hints, never hard-stop (Phase C+D).
+> Hard STOP = window-anchored eff (CHAT × 1.75) ≥ 90% of WIN=128k AND signal-box ≥2 — BOTH required (T-261); the estimate alone never hard-stops. PRIMARY rec signal = signal-box ≥2/4 (4 drift-proof booleans · T-221); eff ≥70%·WIN / CHAT_TOTAL >80k / LOOP_WEIGHT >50 are secondary estimate/call-count hints, never hard-stop (Phase C+D).
 
 ---
 
@@ -359,17 +355,19 @@ Every create/modify/delete/rename **must** update indexes before task marked don
 
 | Trigger event (when) | Must update | Regen command (how) | idempotent? |
 |---|---|---|---|
-| File created/moved/deleted | `index_files.json` (file_manager) | `python3 scripts/backlink_analyzer.py` | yes (auto-safe) |
+| File created/moved/deleted | `index_files.json` (index_manager mode:file) | `python3 scripts/backlink_analyzer.py` | yes (auto-safe) |
 | Symbol with cross-file dependency: created/renamed/deleted | `index_variables.json` · skip if symbol used only within its own file | `python3 scripts/symbol_indexer.py` | yes (auto-safe) |
 | Code file (.py/.ts/.js under scripts/ or src/) created/edited/deleted | `imports[]`/`imported_by[]` (hard import edges) in `index_files.json` — distinct from semantic `references[]`/`related[]` (see `knowledge/code_linkage_index.md`) | `python3 scripts/code_graph.py --write` (Tier-A regex import graph · hash-locked) | yes (auto-safe · T-192) |
 | Session closed | `index_sessions.json` | `python3 scripts/session_indexer.py` | yes (auto-safe) |
 | Harness rule file edited (CLAUDE.md · AGENTS.md · Implement/* · */SKILL.md · INVARIANTS.md · CODING_FAILURE_PATTERNS.md) | `rules_defined[]`/`rules_referenced[]` in `index_files.json` | `python3 scripts/rule_indexer.py` | yes (auto-safe · T-182) |
-| SKILL.md created/renamed | `skill-manifest.json` | manual (file_manager registers entry) | no (judgment) |
+| SKILL.md created/renamed | `skill-manifest.json` | manual (index_manager mode:file registers entry) | no (judgment) |
 | Tool script created/renamed | `tool-manifest.json` | manual (register entry) | no (judgment) |
 | `knowledge/` file modified | conflict check | `python3 scripts/knowledge_conflict_checker.py --file <path> --no-trigger` · EXCLUDE: index_*.json · error_index.md | no (judgment) |
 | Top-level root file/dir OR nested folder added/moved/removed/renamed | `REPO_MAP.md` AUTO structure block (folders incl. nested + per-folder file counts) | `python3 scripts/repo_map_check.py --sync` (auto-run at Stop · regenerates AUTO block · carries content-renames via `git -M` · adds TODO placeholder rows for genuinely-new items) | structure block = yes (idempotent · auto-safe) · descriptions = judgment (never overwritten · T-185/T-190) |
 
 > **Safety net (T-183 · T-190):** the Stop-hook reconciler `scripts/index_reconcile.py` runs at session close — it diffs git-changed files vs `index_files.json`, emits `[index-drift]` for anything stale, and **auto-runs the idempotent regenerators** (rule_indexer · backlink_analyzer · code_graph · symbol_indexer) so a missed manual update is caught, not silently lost. (session_indexer is NOT auto-run by this reconciler — index_sessions.json is regenerated by the session-close path · T-193.) *idempotent = re-running produces the same result, so it is always safe to auto-run.* It also **auto-runs `repo_map_check.py --sync`** (T-190): the REPO_MAP.md AUTO structure block is regenerated and content-renames carried via `git -M`. Safe to auto-apply because `--sync` only ever touches the marker-delimited AUTO block + adds TODO placeholder rows — curated descriptions live OUTSIDE the markers and are NEVER overwritten. Remaining judgment-type updates (manifests, knowledge conflict check) are only flagged, never auto-applied.
+
+> **HARD block (T-252 · closes CFP-043):** the Stop-hook reconciler above stays fail-safe (never blocks close). SEPARATELY, the **PreToolUse close-gate** now runs `python3 scripts/index_reconcile.py --check` (read-only HARD-drift detect — new file missing from `index_files.json` · deleted file still indexed · **deleted-skill-dir name still referenced in live `*.md` prose**, the CFP-043 gap that JSON-key/topic-backlink checks are blind to) and **BLOCKS the `phase: done` write** on any hit, printing the exact heal command (`python3 scripts/index_reconcile.py`). Escape hatch: `HARNESS_SKIP_INDEX_BLOCK=1`. A crash inside `--check` → exit 0 (fail-safe preserved — never traps the user). Net effect: index/backlink/doc-ref drift can no longer slip through to a session marked done. e2e-proven: clean tree→exit 0, injected un-indexed file→exit 2 BLOCK, cleanup→exit 0.
 
 ---
 
@@ -502,6 +500,19 @@ File: `.claude/settings.json` → `hooks.PostToolUse`
 ```
 
 ---
+
+## PreToolUse Hook — Git Guard (matcher "Bash" · T-227)
+
+File: `scripts/git_guard.py`, wired as a SECOND `hooks.PreToolUse` entry with `"matcher": "Bash"`
+(separate from the phase-gate entry below). Makes R14/R15's destructive-git contracts a HARD stop.
+
+Blocks (exit 2 = real block) 4 dangerous git patterns before they run: force-push
+(`--force`/`-f`/`--force-with-lease`) · `reset --hard` · `clean -f` · `branch -D`.
+- shlex-tokenized, COMMAND-POSITION match (git at start / after `&&`,`;`,`|`) — never raw substring,
+  so `echo git push --force` and a commit message containing the text do NOT false-block.
+- fail-OPEN on any parse error (a guard must never lock the agent out of git).
+- override: prefix `GIT_GUARD_OK=1 <cmd>` — detected as a command TOKEN (the hook sees the command
+  string, not the shell env the prefix would set). Use only after explicit user confirm.
 
 ## PreToolUse Hook — Phase Gate (ALL Edit/Write)
 
@@ -713,7 +724,7 @@ Reply line 1: `**[Boot]** Thread: <done|in_progress> · Tasks: <N open> · Skill
 - Read the `[token-state]` hook values: BOX=signal-box N/4 · LOOP_W · SESSION · CHAT. PRIMARY signal = signal-box (4 drift-proof booleans · T-221); CHAT_TOTAL/LOOP_WEIGHT = secondary char-estimate/call-count hints only.
 - signal-box ≥2/4 → emit `[compact-rec]` strong (recommend /compact · NOT a stop · user decides)
 - CHAT_TOTAL > 80k OR LOOP_WEIGHT > 50 → emit `[compact-note]` light hint only (secondary · optional · no stop)
-- HARD STOP only at the real ceiling: SESSION_TOTAL > 90k OR CHAT_TOTAL > 120k → emit `[compact-STOP]` → write compact_state.md → STOP
+- HARD STOP only at the real ceiling: window-anchored eff (CHAT × 1.75) ≥ 90%·WIN(128k) AND signal-box ≥2 (BOTH required · T-261; estimate alone never stops) → emit `[compact-STOP]` → write compact_state.md → STOP
 - Stuck-counter guard: `[compact-STOP]` firing with ~same CHAT_TOTAL (±2k) across ≥2 turns = the counter did NOT reset after a compact (the bug), NOT a real ceiling → run `python3 scripts/compact_reset.py --trigger=user-confirm` → surface its `[compact-reset]` line · do NOT keep nagging
 
 **C1 — Load:** Read `.sessions/active_thread.md` → extract task: field
@@ -744,7 +755,7 @@ Same topic   → match keywords[] → re-read SKILL.md if skill changes
 |---|---|
 | แก้ bug / fix / error / debug | editor |
 | สร้าง / implement / new / เพิ่ม | coder |
-| ย้าย / ลบ / rename file | file_manager |
+| ย้าย / ลบ / rename file | index_manager (mode:file) |
 | ปิด / close / done / จบ | session_manager |
 | plan / วางแผน / mece | mece |
 | review CFP / improve harness / self improve | self_improve |
@@ -1066,18 +1077,13 @@ Copy to `.agents/skills/skill-manifest.json`. Add or remove skills to match your
         { "path": "INVARIANTS.md",               "when": "R14/R15 gate fires (DB change or destructive op)", "how": "targeted" }
       ]
     },
-    "file_manager": {
-      "path": ".agents/skills/knowledge/file_manager/SKILL.md",
-      "keywords": ["move", "rename", "delete file", "restructure", "ย้าย", "ลบ", "เปลี่ยนชื่อ"],
+    "index_manager": {
+      "path": ".agents/skills/knowledge/index_manager/SKILL.md",
+      "keywords": ["move", "rename", "delete file", "restructure", "ย้าย", "ลบ", "เปลี่ยนชื่อ", "rename symbol", "refactor", "export", "symbol", "function name"],
+      "model_routing": { "floor_by_mode": { "file": "haiku", "symbol": "sonnet" } },
       "on_demand_files": [
-        { "path": "knowledge/index_files.json", "when": "updating backlinks for changed file", "how": "grep_only" }
-      ]
-    },
-    "variable_manager": {
-      "path": ".agents/skills/knowledge/variable_manager/SKILL.md",
-      "keywords": ["rename symbol", "refactor", "export", "symbol", "function name"],
-      "on_demand_files": [
-        { "path": "knowledge/index_variables.json", "when": "updating symbol entry after code change", "how": "grep_only" }
+        { "path": "knowledge/index_files.json",     "when": "(mode:file) updating backlinks for changed file",  "how": "grep_only" },
+        { "path": "knowledge/index_variables.json", "when": "(mode:symbol) updating symbol entry after code change", "how": "grep_only" }
       ]
     },
     "session_manager": {
@@ -1164,8 +1170,8 @@ Copy to `.agents/skills/registry.md`. Human-readable fallback routing table.
 |---|---|
 | แก้ bug / fix / debug | editor |
 | สร้างไฟล์ใหม่ / create / implement | coder |
-| ย้าย / ลบ / rename file | file_manager |
-| rename symbol / refactor export | variable_manager |
+| ย้าย / ลบ / rename file | index_manager (mode:file) |
+| rename symbol / refactor export | index_manager (mode:symbol) |
 | จบ session / close / สรุป | session_manager |
 | วางแผน / orchestrate multi-step | agent |
 | token limit warning | token_auditor |
@@ -1178,7 +1184,7 @@ No match → load `agent` skill (fallback to routing).
 
 ## Micro-rules
 - MECE plan required for tasks >3 steps or any irreversible action
-- MECE plan sections MUST include `Skill:` field (editor|coder|file_manager|variable_manager|agent)
+- MECE plan sections MUST include `Skill:` field (editor|coder|index_manager|agent)
 - token_auditor gates: >60k warn · >90k halt
 - session_manager closes with 5 mandatory writes: Step 0 = self_improve CFP review FIRST → then session JSON + active_thread.md + session_tokens.md + session_handoff.md
 - session_handoff.md must include: mece_plan_hash · cfp_boot_count · cfp_deferred · cfp_dismissed · last_self_improve_session

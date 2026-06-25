@@ -56,7 +56,7 @@ Emit format: `[mece-skip] reason: <read-only | single-file | resuming>` → retu
 ```
 Section N — <name from Skill sections[N]>:   [Cycle <N> · serial|parallel]
   Context:        <1 line: goal + why · cold-readable by a spawned agent with NO chat history>
-  Skill:          <editor|coder|file_manager|variable_manager|agent|ascii_flow|harness_doctor>
+  Skill:          <editor|coder|index_manager|agent|ascii_flow|harness_doctor>
   Model:          <low | medium | high> @ <low|med|high effort>   (baseline Sonnet @ low-med · high effort only for planning/reasoning · routing: Implement/03_config)
   Tool:           <Bash|Read|Edit|Write>
   Input_From:     <none | cycle_<N>_S<M>.json>   (prior-batch output this section pulls in · none = independent)

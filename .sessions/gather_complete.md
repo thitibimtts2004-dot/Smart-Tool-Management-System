@@ -1,23 +1,38 @@
-date: 2026-06-22
-objective: T-224 — add a design-DECISION rejection log so settled "we decided NOT to build X" debates are not reopened. ONE file knowledge/out_of_scope.md (problem/rationale/refs per rejected idea), complementing CFP which only logs bugs. Mirror the T-229 glossary discipline: grep-first lookup → append-on-new-rejection → NEVER always-loaded.
-constraints:
-  - ONE file knowledge/out_of_scope.md — NOT a dir, NOT a new skill, NOT a new script/hook (roadmap line 814 MERGES/FOLDS verdict — T-224 simplified)
-  - on-demand grep only — NEVER always-load (adds per-turn token weight · contradicts leanness · this exact pattern was rejected for CONTEXT.md glossary, roadmap 815e)
-  - reuse existing owners: scrutinize already owns the simpler-way / reject discipline → wire read+write there, do not invent a new gate
-  - seed content already exists: the 6 rejected ideas (a)-(f) in roadmap line 815 ARE the first entries (roadmap says so explicitly)
-affected_files:
-  - knowledge/out_of_scope.md  (NEW — usage-contract header + 6 seed entries)
-  - .agents/skills/harness/scrutinize/SKILL.md  (Simpler-Way Pass: grep out_of_scope first · reject verdict → append entry)
-  - knowledge/index_files.json  (R8 — register the new knowledge file)
-  - docs/master_roadmap.md  (T-224 [ ]→[X])
-out_of_scope:
-  - a .out-of-scope/ directory or any new skill/script/hook (the ORIGINAL T-224 shape — already rejected/folded to one file · roadmap 814)
-  - always-loading out_of_scope.md into every turn (rejected — leanness · roadmap 815e)
-  - editing CLAUDE.md R-Roadmap as the primary home (heavy core file · scrutinize is the lighter natural owner) — at most a 1-line pointer, only if needed
-  - any src/ file
-acceptance_criteria:
-  - knowledge/out_of_scope.md exists with a grep-first/append usage-contract header + the 6 seed entries (a)-(f), each with problem/rationale/refs
-  - scrutinize SKILL.md instructs: grep out_of_scope.md before proposing/justifying a build (HIT → surface rationale, do not reopen unless user overrides) AND append a new entry on a reject verdict
-  - file registered in knowledge/index_files.json (R8) · roadmap T-224 [X]
-  - no new dir / skill / script / hook added (git status confirms)
-verification_intent: grep knowledge/out_of_scope.md for the 6 idea slugs + header contract · grep scrutinize SKILL.md for out_of_scope (≥1) · grep index_files.json for out_of_scope.md · git status shows only the 1 new knowledge file (no new dir/skill/script)
+gather_complete — T-274 backlink-graph click-to-read panel
+date: 2026-06-25
+skill: coder (extend the existing generator + emitted HTML)
+
+## Task
+Turn the backlink graph from "look-only map" into a "walkable wiki": click a node →
+side panel showing the file's summary + clickable connected-file links (navigate in-graph)
++ an "open file" link to read the real file. Offline single-file preserved.
+
+## G1/G2 findings (verified from index_files.json — python probe, not full read)
+- 212 entries (nodes). Per-node fields available: description, topics, references[],
+  related[{path,strength,score}], backlinks[].
+- COVERAGE (the design driver): description present on only 94/212 (avg 75 chars, max 604).
+  → panel MUST degrade gracefully: show summary if present, else "no summary — open file".
+- Connected-file list: reuse the JS `adj` set already built from edges (symmetric, covers
+  both related[] and incoming) — no new data needed for neighbor links.
+- Open-file href: HTML lives at knowledge/diagrams/ → repo root is `../../` → href = "../../"+id
+  (uniform prefix for every node; opens raw file via file:// offline). Verified path shape.
+
+## G3 design decision
+- ONLY new embedded data needed = `desc` per node (truncate ~240 chars, ascii-safe). Everything
+  else (neighbors, open-file path) is computable in-browser from existing data → minimal size add.
+- Additive: Core graph + cooling (T-273) must keep working unchanged; panel is new UI only.
+- Single file, offline, idempotent — same invariants as T-273.
+
+## Scope (1 file)
+scripts/build_backlink_graph.py only (regenerates knowledge/diagrams/backlink-graph.html).
+NOT backfilling the 118 missing descriptions (separate future task).
+
+## Affected files
+- scripts/build_backlink_graph.py (edit) → regenerates knowledge/diagrams/backlink-graph.html
+
+## Acceptance criteria
+- Click node → panel with: title · path · topic · summary-or-fallback · clickable neighbor list · open-file link
+- Click a neighbor name → focuses that node + recenters (in-graph navigation)
+- Still 0 network refs · idempotent · 212 nodes · JS syntax valid
+
+[✓ gather]

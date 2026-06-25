@@ -37,7 +37,7 @@ Max 5 tool calls/turn. Retry max 2×; diagnose on 2nd fail.
 
 ## R3 · Session Pause Protocol
 → Full threshold table: **Implement/03_config.md §R3**
-Key: PRIMARY trigger = signal-box N/4 (4 drift-proof booleans from the UserPromptSubmit hook · N≥2 → [compact-rec] strong · T-221) — full logic in AGENTS.md C0 Q3. Char-estimate is SECONDARY/backstop only: SESSION_TOTAL >90k OR CHAT_TOTAL >120k → HALT (hard ceiling) · CHAT 80-120k / SESSION 60-90k / LOOP_WEIGHT >50 → light [compact-note] (optional · estimate is a lower bound — tool I/O only; subagent pollution removed by T-235 · CFP-041 root-fixed)
+Key: PRIMARY trigger = signal-box N/4 (4 drift-proof booleans from the UserPromptSubmit hook · N≥2 → [compact-rec] strong · T-221) — full logic in AGENTS.md C0 Q3. Char-estimate is SECONDARY/backstop only: window-anchored eff (CHAT×1.75) ≥90%·WIN(128k) AND signal-box ≥2 → HALT (hard ceiling · BOTH required · T-261; estimate alone never stops) · CHAT 80-120k / SESSION 60-90k / LOOP_WEIGHT >50 → light [compact-note] (optional · estimate is a lower bound — tool I/O only; subagent pollution removed by T-235 · CFP-041 root-fixed)
 Stuck-counter guard (T-180): [compact-STOP] firing with ~same CHAT_TOTAL (±2k) across ≥2 turns = the post-compact counter did NOT reset (CFP-037 · /compact is invisible to the agent), NOT a real ceiling → run `scripts/compact_reset.py` → emit [compact-reset] · do NOT keep nagging. Post-compact reset is provider-aware: claude-code auto via the SessionStart:compact hook · other providers via the C0 plain-text confirm path.
 
 ## R4 · Sub-agent Decision

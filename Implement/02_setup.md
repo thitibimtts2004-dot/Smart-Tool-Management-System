@@ -4,7 +4,7 @@ Follow these steps in order when setting up on a brand-new project.
 
 ```
 Step 1: Create directories
-  mkdir -p knowledge knowledge/cfp-proposals knowledge/cfp-proposals/applied knowledge/recipes .agents/skills/knowledge/file_manager .agents/skills/knowledge/variable_manager scripts .sessions
+  mkdir -p knowledge knowledge/cfp-proposals knowledge/cfp-proposals/applied knowledge/recipes .agents/skills/knowledge/index_manager scripts .sessions
 
 Step 2: Write CLAUDE.md
   Use template from Section 4. Adjust R3 token thresholds to your model.
@@ -14,9 +14,8 @@ Step 2.5: Write governance docs
   docs/domain_rules.md   → create empty file: "# Domain Rules\n\n<!-- Add business rules here -->"
 
 Step 3: Write all agent infrastructure files
-  a. Skill files (all 10) — copy from 04_skills.md Sections 5a–5j:
-     .agents/skills/knowledge/file_manager/SKILL.md
-     .agents/skills/knowledge/variable_manager/SKILL.md
+  a. Skill files (all 9) — copy from 04_skills.md Sections 5a–5j:
+     .agents/skills/knowledge/index_manager/SKILL.md
      .agents/skills/harness/mece/SKILL.md
      .agents/skills/coding/coder/SKILL.md
      .agents/skills/coding/editor/SKILL.md
@@ -113,6 +112,11 @@ Step 4c: Configure Claude Code settings (.claude/settings.json)
         · never-full-load — blocks Read of prohibited files (knowledge/index_*.json · CODING_FAILURE_PATTERNS.md · docs/master_roadmap.md · INVARIANTS.md · knowledge/error_index.md)
         · phase gate — blocks Edit/Write to src/ unless gather_complete.md AND mece_plan.md are BOTH dated today
         · close-gate — blocks writing "phase: done" to active_thread.md until .sessions/.close_checklist_ack exists
+    PreToolUse (matcher Bash) → scripts/git_guard.py (T-227 · separate entry from the gate above)
+        · git-guard — hard-blocks (exit 2) 4 dangerous git patterns BEFORE they run: force-push
+          (--force/-f/--force-with-lease) · reset --hard · clean -f · branch -D
+        · shlex command-position match (no substring false-block) · fail-open on parse error
+        · override: prefix `GIT_GUARD_OK=1` (detected as a command token, not shell env)
     PostToolUse → scripts/posttool_track.py (auto-accumulates SESSION_TOTAL + CHAT_TOTAL per tool call · provider-aware via detected.md token_formula)
     Stop → scripts/write_context_cache.sh + scripts/index_reconcile.py
         (index_reconcile = safety net: diffs git-changed files vs index_files.json, auto-runs idempotent regenerators
@@ -185,7 +189,7 @@ Step 1: Detect project type
   Adjust scan patterns in Step 4 accordingly.
 
 Step 2: Create agent directories (skip if exist)
-  mkdir -p knowledge knowledge/cfp-proposals knowledge/cfp-proposals/applied knowledge/recipes .agents/skills/knowledge/file_manager .agents/skills/knowledge/variable_manager scripts .sessions
+  mkdir -p knowledge knowledge/cfp-proposals knowledge/cfp-proposals/applied knowledge/recipes .agents/skills/knowledge/index_manager scripts .sessions
 
 Step 2.5: Auto-discover project context
   a. Map directory structure:
@@ -270,8 +274,7 @@ Run after onboarding or integration. All items must pass before starting develop
 [ ] .agents/skills/harness/mece/SKILL.md — exists
 [ ] .agents/skills/coding/coder/SKILL.md — exists, contains Roadmap Protocol
 [ ] .agents/skills/coding/editor/SKILL.md — exists, contains Roadmap Protocol
-[ ] .agents/skills/knowledge/file_manager/SKILL.md  — exists
-[ ] .agents/skills/knowledge/variable_manager/SKILL.md — exists
+[ ] .agents/skills/knowledge/index_manager/SKILL.md — exists (mode:file + mode:symbol)
 [ ] scripts/symbol_indexer.py    — exists, runs without error
 [ ] .sessions/active_thread.md   — exists, phase: done
 [ ] .sessions/mece_plan.md       — exists (may be empty template); if has [ ] sections → resume flow active

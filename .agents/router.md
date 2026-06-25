@@ -48,8 +48,8 @@ description: Routing tiers and fallback chain for skill/tool discovery. Read whe
 
 | Skill completes | Must also run |
 |---|---|
-| `coder` | `file_manager` + `variable_manager` |
-| `editor` (symbol changed) | `variable_manager` |
+| `coder` | `index_manager` |
+| `editor` (symbol changed) | `index_manager` (mode:symbol) |
 | Any session close | `self_improve` §3 Step 0 → `session_indexer.py` |
 | Any symbol change | `symbol_indexer.py` |
 

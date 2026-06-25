@@ -206,8 +206,8 @@ If section has `Skill: coder` → spawn coder sub-agent regardless of action typ
 **Priority 2 — heuristics (when `Skill:` not declared):**
 - Creating new files/features → `coder` skill
 - Modifying/fixing existing files → `editor` skill
-- Any file created/moved/deleted → also trigger `file_manager`
-- Any symbol created/renamed/deleted → also trigger `variable_manager`
+- Any file created/moved/deleted → also trigger `index_manager` (mode:file)
+- Any symbol created/renamed/deleted → also trigger `index_manager` (mode:symbol)
 
 **Multi-skill sections (`Skill: X + Y`):**
 - Execute X first → verify → then execute Y

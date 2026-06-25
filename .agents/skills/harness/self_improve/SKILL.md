@@ -22,6 +22,7 @@ activates_at: [session_close_auto, manual]
 - **One change per session, always.** Minimal means: removing one word breaks the prevention. Two ideas in one proposal → split.
 - **Cooldown is not laziness.** §4 cooldown gate exists because harness changes need sessions to validate. Skipping cooldown = proposing before previous fix was tested.
 - **self_improve cannot fix itself.** Circular dependency (V20) is a hard stop on *self-execution* — emit `[blocked-self-edit]` and hand the change to the user as a code block (§Refusal Contract · L37/L148). The hard stop blocks auto-applying the edit, NOT producing the proposal output.
+- **Blameless.** Name the pattern or gap, never the agent or person — the fix-flow targets the harness, not the operator. A CFP entry says "the rule lacked X", not "the agent was careless".
 
 ## Prerequisites
 - `CODING_FAILURE_PATTERNS.md` readable

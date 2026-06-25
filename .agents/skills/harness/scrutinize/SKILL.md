@@ -15,6 +15,12 @@ description: >
   name: "Outsider Pass"
   steps: ["read artifact cold (no prior context)", "flag unjustified / confusing / assumed parts", "list what an outsider cannot follow"]
 - id: 2
+  name: "Trace Pass"
+  steps: ["pick claimed behaviors", "walk the real end-to-end path (call-graph/step chain), not the diff", "note branches/side-effects/external touches", "emit [trace] path or BROKEN"]
+- id: 3
+  name: "Verify Pass"
+  steps: ["check each claim against the trace", "probe edge cases / silent changes / error paths / test coverage", "emit [verify] holds or GAP"]
+- id: 4
   name: "Simpler-Way Pass"
   steps: ["state the core approach in 1 line", "ask: simpler way for same outcome?", "propose simplest alternative OR justify none exists", "emit verdict"]
 ```
@@ -35,6 +41,7 @@ description: >
 - You need an adversarial PLAN review BEFORE execution (necessity, flaws, wrong-layer) → that is `skeptical_reviewer` (M4.5 gate) · scrutinize reviews an artifact's clarity + simplicity, it is not the pre-execution gate.
 - The task is trivial (≤3 lines · typo · single obvious change) → emit `[scrutinize-skip] reason:trivial` · no ceremony.
 - User wants praise / validation → scrutinize is outsider-critical by default · redirect to a presenter skill if encouragement is the goal.
+- You need correctness / bug-finding (does the code WORK?) → that is `code-review` (diff bugs) or `debug` (a live failure) · scrutinize judges clarity + simplicity of a finished artifact, not whether it is correct.
 
 ## When to Invoke
 **Phrase variants** (user says one of these):
@@ -60,7 +67,7 @@ description: >
       → Why: unbounded scope produces noise on every line
       → Missing: default to whole artifact · emit `[scrutinize-scope] defaulting:whole` so the caller can override
 
-## Workflow — 2 mandatory passes (Outsider → Simpler-Way · both required)
+## Workflow — 4 passes (Outsider → Trace → Verify → Simpler-Way · all required)
 
 ### Section 1 · Outsider Pass
 ```
@@ -73,7 +80,23 @@ description: >
        no findings → emit `[outsider] clean — newcomer can follow end-to-end`
 ```
 
-### Section 2 · Simpler-Way Pass  (MANDATORY — never skip)
+### Section 2 · Trace Pass  (walk the real artifact, not the diff)
+```
+[T1] Pick the artifact's main claimed behavior(s) — what it says it does.
+[T2] Walk the ACTUAL end-to-end path that delivers each one (call-graph / step chain / data flow) — read the real artifact, NOT its summary or the diff. A diff shows what changed; the trace shows what actually runs.
+[T3] Note every branch, side-effect, and external touch the path hits along the way.
+[T4] Emit per behavior: `[trace] <behavior> — <path: A→B→C>` · path won't resolve → `[trace] <behavior> — BROKEN at <step>`
+```
+> §Trace is distinct from debug [R1.5]: debug traces a LIVE failure symptom→origin (diagnosis) · scrutinize §Trace walks a FINISHED artifact to verify its claims (no failure required — verification).
+
+### Section 3 · Verify Pass  (claims vs the trace)
+```
+[V1] For each claimed behavior, check it against the §Trace path — does the path actually deliver the claim?
+[V2] Probe what a happy-path read skips: edge cases · silent behavior changes · error/empty paths · is there test coverage for the claim?
+[V3] Emit ONE per claim: `[verify] <claim> — holds` · `[verify] <claim> — GAP: <edge | silent-change | untested>`
+```
+
+### Section 4 · Simpler-Way Pass  (MANDATORY — never skip)
 ```
 [S1] State the core approach in ONE line (the essence of how it works now).
 [S2] Ask the forcing question: "Is there a materially simpler way to get the SAME outcome?"
@@ -82,15 +105,17 @@ description: >
        - `[simpler-way] YES — <concrete simpler alternative> · same outcome: <why it still meets the target>`
        - `[simpler-way] NO — <one-line reason the current approach is already minimal>`
        (a "NO" must be a reasoned decision, not a skipped step)
-[S4] Emit overall verdict: `[scrutinize-verdict] outsider:<clean|N findings> · simpler-way:<YES|NO>`
+[S4] Emit overall verdict: `[scrutinize-verdict] outsider:<clean|N findings> · trace:<ok|broken> · verify:<all-hold|N gaps> · simpler-way:<YES|NO>`
 ```
 
 ## Output Contract
 - `[scrutinize-refused] reason:<X>` — missing prerequisite · halt
 - `[scrutinize-skip] reason:trivial` — below ceremony threshold
 - `[outsider] <location> — <finding>` · or `[outsider] clean`
+- `[trace] <behavior> — <path>` · or `[trace] <behavior> — BROKEN at <step>`
+- `[verify] <claim> — holds` · or `[verify] <claim> — GAP: <edge|silent-change|untested>`
 - `[simpler-way] YES|NO — <alternative or reason>` (mandatory every run)
-- `[scrutinize-verdict] outsider:<...> · simpler-way:<...>` — closing line, always emitted
+- `[scrutinize-verdict] outsider:<...> · trace:<...> · verify:<...> · simpler-way:<...>` — closing line, always emitted
 - Read-only: never emits `[✓ written]` · proposes, never edits.
 
 ## Output Tone

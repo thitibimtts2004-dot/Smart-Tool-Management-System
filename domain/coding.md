@@ -43,7 +43,7 @@ meta:
 ## skills
 - coder: write new code to standards, self-correct linter errors, [✓ written] verify each file
 - editor: surgically edit/refactor/debug existing application code (R9 3-checks → read at line → assess blast radius)
-- variable_manager: sync code symbols → index_variables.json + run symbol_indexer.py
+- index_manager (mode:symbol): sync code symbols → index_variables.json + run symbol_indexer.py
 
 ## tools
 - code_graph.py: extract file→file IMPORT edges (hard structural edges) from code files
@@ -54,4 +54,4 @@ meta:
 - Q: Where do main work files live? → src/  (DB layer under src/db/)
 - Q: Any folder/action that must HALT? → src/db/ edits → [db-gate] + explicit "yes"
 - Q: Frameworks with non-obvious rules? → Next.js, Miniflare D1, Edge Runtime, PapaParse
-- Q: Domain skills/tools? → coder, editor, variable_manager · code_graph.py, symbol_indexer.py
+- Q: Domain skills/tools? → coder, editor, index_manager · code_graph.py, symbol_indexer.py

@@ -99,7 +99,7 @@ grep "## ERR-" knowledge/error_index.md | tail -1
 - **Root Cause:** <why it happened>
 - **Resolution:** <exact fix applied>
 
-# Step 4 — call variable_manager if any symbol body was changed
+# Step 4 — call index_manager (mode:symbol) if any symbol body was changed
 ```
 
 ## Workflow
@@ -158,8 +158,8 @@ Enforce: roadmap [X] on bug fix without [✓ err-indexed] = [violation] BC-error
 **Behavior Contract — Symbol-Change-Gate (fires when any symbol body is edited):**
 ```
 Pre:    Edit tool completed on a named symbol (function/component/type/hook)
-Contract: MUST trigger variable_manager → wait for [symbol-index] emit before returning
-          skip → [violation] BC-symbol-change-gate → trigger variable_manager now · wait for [symbol-index]
+Contract: MUST trigger index_manager (mode:symbol) → wait for [symbol-index] emit before returning
+          skip → [violation] BC-symbol-change-gate → trigger index_manager (mode:symbol) now · wait for [symbol-index]
 Post:   index_variables.json updated · [symbol-index] emitted
 Enforce: section close without [symbol-index] after symbol edit = [violation] BC-symbol-change-gate → trigger now
 ```
@@ -242,4 +242,4 @@ Prose rules without these 5 elements = incomplete contract → add before shippi
 ## Context Gate
 If during this task a new hard constraint was discovered → add to INVARIANTS.md §I2 before closing task
 
-> hand-off (index): file create/delete → file_manager · symbol change → variable_manager · folder move/rename → repo_map sync · enforced by R8 + scripts/index_reconcile.py · spec: docs/session_templates/handoff_block_schema.md §INDEX variant · reference only — file_manager/variable_manager stay sole owners.
+> hand-off (index): file create/delete → index_manager (mode:file) · symbol change → index_manager (mode:symbol) · folder move/rename → repo_map sync · enforced by R8 + scripts/index_reconcile.py · spec: docs/session_templates/handoff_block_schema.md §INDEX variant · reference only — index_manager stay sole owners.

@@ -1,9 +1,9 @@
-# Context Cache — 2026-06-23 08:20
-task: T-224 — out_of_scope rejection memory: created knowledge/out_of_scope.md (6 seed entries · grep-first/append · never-always-load) + wired read(Step2)/write(reject) into skeptical_reviewer + AGENTS M4.5 pointer + index_files.json entry · roadmap [X] · NO new skill/script/hook
+# Context Cache — 2026-06-25 14:46
+task: T-274 — backlink-graph click-to-read panel (preview desc + neighbour-nav + open-raw-file) on scripts/build_backlink_graph.py → knowledge/diagrams/backlink-graph.html
 phase: done
-next: pick Group-2 (T-227 git-guardrails hook) OR commit the uncommitted batch (skill bucketing · T-249/250/251 · T-230b · T-229 · T-228 · T-224). Recommend /compact first — CHAT high (~264k lower-bound, climbing). NEW task → fresh Phase 1+2.
-session_total: ~2649
-chat_total: ~22459
+next: none required. T-274 closed (+scrutinize fixes: ellipsis on 18 descs, </script> hardening — all re-verified). Optional future: T-275 (neighbour-list vs edge-filter design, recommended option A) — deferred by user, logged in roadmap.
+session_total: ~20666
+chat_total: ~72229
 cache_read: 0
 cache_write: 0
 pending_sections:

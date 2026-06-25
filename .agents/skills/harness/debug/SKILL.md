@@ -65,8 +65,14 @@ Before committing to a deep hunt, ask once: is there a materially simpler explan
 
 ### Section 1 · Reproduce & Rank
 ```
-[R1] Reproduce the failure yourself — confirm the exact trigger. Cannot reproduce → [debug-refused] reason:no-repro.
+[R1] Reproduce the failure yourself — confirm the exact trigger. Cannot reproduce → [debug-refused] reason:no-repro. Reproduced → persist the repro {trigger, check, reproducible} → ERR-N in `error_index.md` (repro-pin FORMAT = harness_doctor §3, single source) so harness_editor Stage 3.6 can validate the fix later.
+[R1.5] Trace symptom → origin — follow the failure from where it surfaces back to where it starts; emit `[trace] symptom:<x> → origin:<y>` BEFORE listing hypotheses. Skipping the trace = guessing at the cause.
+       Know the fail path (the HOW of this trace) — localize the origin with the cheapest rung that works, climb only if it does not:
+         rung 1 · attach a debugger / breakpoint at the symptom site — no code change · read live state first.
+         rung 2 · source trace + knob enumeration — read the path and toggle the knobs that flip it: flags · env vars · branches · timing/ordering. Tells you WHICH input changes the failure.
+         rung 3 · tagged in-code instrumentation — add temporary `[DBG-xxxx]` log lines (one tag → single-grep cleanup: `grep -rn "DBG-"` → remove before close). Last resort: only when live state + knobs do not reveal the origin.
 [R2] List ≥2 hypotheses for the cause — emit `[hypotheses] H1:<...> · H2:<...> [· H3:...]`. One hypothesis = confirmation bias; force at least a rival.
+[R2.5] Before ranking, grep `error_index.md` + `index_cfp_fix.json` for a prior similar failure (R9 Step-0 owns this — pointer, not a restate); a known prior fix or failed-approach re-prioritizes the ranking.
 [R3] Rank by cheapest-to-disprove FIRST — emit `[rank] H<n>(<cost>) → H<m>(<cost>) → ...`. Cost = effort to KILL it, not likelihood.
 ```
 
@@ -83,6 +89,8 @@ Before committing to a deep hunt, ask once: is there a materially simpler explan
 ## Output Contract
 - `[debug-refused] reason:<X>` — missing prerequisite · halt
 - `[debug-skip] reason:trivial` — cause already obvious · below ceremony
+- `[trace] symptom:<x> → origin:<y>` — symptom traced to its origin, before hypotheses ([R1.5])
+- `[DBG-xxxx] <probe>` — temporary tagged instrumentation from [R1.5] rung 3 · single-grep cleanup (`grep -rn "DBG-"`) before close
 - `[hypotheses] H1:… · H2:…` — ≥2, emitted before any test ([R2])
 - `[rank] H<n> → H<m>` — cheapest-to-disprove order ([R3])
 - `[ledger] H<n>: KILLED|SURVIVED — <reason>` — one line per hypothesis tested (the breadcrumb trail)

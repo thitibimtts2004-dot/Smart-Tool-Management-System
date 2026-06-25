@@ -603,5 +603,38 @@
     "last_seen": "2026-06-07",
     "window_count": 2,
     "stale": false
+  },
+  "CFP-044": {
+    "description": "Skill Invoked From Memory/External Source \u2014 Local SKILL.md Never Loaded \u2192 Wrong Skill Applied",
+    "topic": "boot-routing",
+    "status": "resolved",
+    "approved_proposal": "T-263 structural forcing function: .active_skill today-set marker (posttool_track.py) + manifest owns_paths + skill_gate.py PreToolUse hard block (ownership + review close-gate) + review_intent.py UserPromptSubmit arm. Skill invocation no longer opt-in.",
+    "count": 3,
+    "recurrences": [
+      {
+        "date": "2026-06-23",
+        "note": "T-254 plan verified by bare-eye read, no skill"
+      },
+      {
+        "date": "2026-06-24",
+        "note": "T-261 plan-check by hand, mis-named scrutinize for skeptical_reviewer"
+      },
+      {
+        "date": "2026-06-24",
+        "note": "T-262 post-build audit by hand-run bash, no scrutinize Outsider Pass"
+      }
+    ],
+    "recurred_after_fix": [],
+    "resolved_by": "T-263",
+    "resolved_date": "2026-06-24",
+    "last_seen": "2026-06-24",
+    "window_count": 3,
+    "stale": false,
+    "artifacts": [
+      "scripts/skill_gate.py",
+      "scripts/review_intent.py",
+      "scripts/posttool_track.py",
+      ".claude/settings.json"
+    ]
   }
 }

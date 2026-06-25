@@ -1,5 +1,5 @@
 # Behavior Contract — Coverage Tracker
-last_updated: 2026-06-09 (T-165)
+last_updated: 2026-06-23 (T-238 · two prior index skills merged → index_manager)
 source_of_truth: enumerated via Explore sub-agent + knowledge/behave_test_log.jsonl
 
 ## Summary
@@ -36,7 +36,7 @@ source_of_truth: enumerated via Explore sub-agent + knowledge/behave_test_log.js
 | BC-13 | agent/SKILL.md | L57 | Cycle HALT | section returns status: blocked | N | - | - |
 | BC-14 | agent/SKILL.md | L195 | Sub-agent Result Gate | sub-agent section complete | N | - | - |
 | BC-15 | coder/SKILL.md | L90 | Index-Sync-Gate | files created, about to mark roadmap [X] | N | - | - |
-| BC-16 | file_manager/SKILL.md | L66 | Index-Return | file_manager section complete | N | - | - |
+| BC-16 | index_manager/SKILL.md (mode:file) | L97 | Index-Return | index_manager file-mode section complete | N | - | - |
 | BC-17 | editor/SKILL.md | L146 | Error-Index-Gate | bug fix applied, about to mark [X] | N | - | - |
 | BC-18 | editor/SKILL.md | L156 | Symbol-Change-Gate | Edit on named symbol completed | N | - | - |
 | BC-19 | harness_editor/SKILL.md | L101 | Docs Close | all Stage 3 edits done | N | - | - |
@@ -62,7 +62,7 @@ source_of_truth: enumerated via Explore sub-agent + knowledge/behave_test_log.js
 | BC-39 | session_manager/SKILL.md | L128 | 5-File Completion Gate | Steps 1-5 claimed complete | N | - | - |
 | BC-40 | skeptical_reviewer/SKILL.md | L125 | Output-Format | review complete, returning to caller | N | - | - |
 | BC-41 | token_auditor/SKILL.md | L90 | Halt Threshold | SESSION_TOTAL >90k | N | - | - |
-| BC-42 | variable_manager/SKILL.md | L86 | Symbol-Return | variable_manager section complete | N | - | - |
+| BC-42 | index_manager/SKILL.md (mode:symbol) | L123 | Symbol-Return | index_manager symbol-mode section complete | N | - | - |
 
 ## Other tested contracts (signal-contracts/rules — outside the 42-BC set)
 | target | tested | test_ref | verdict |

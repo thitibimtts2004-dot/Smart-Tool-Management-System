@@ -56,11 +56,11 @@ owner-note: doc_builder remains the SOLE owner of the manual artifact; project_p
 # MUST reference R8 + the Stop-hook index_reconcile.py — does NOT re-own index ownership.
 
 ## hand-off (index)
-downstream: file_manager | variable_manager | repo_map sync
+downstream: index_manager (mode:file | mode:symbol) | repo_map sync
 trigger:
-  - file create/delete  -> file_manager       (owns knowledge/index_files.json)
-  - symbol change       -> variable_manager   (owns knowledge/index_variables.json)
-  - folder move/rename  -> repo_map sync       (REPO_MAP.md)
+  - file create/delete  -> index_manager (mode:file)    (owns knowledge/index_files.json)
+  - symbol change       -> index_manager (mode:symbol)  (owns knowledge/index_variables.json)
+  - folder move/rename  -> repo_map sync                (REPO_MAP.md)
 enforced-by: R8 Index Sync Invariant (AGENTS.md) + Stop-hook scripts/index_reconcile.py (idempotent safety net)
-owner-note: file_manager / variable_manager stay the SOLE owners. This block only makes the duty visible
+owner-note: index_manager (both modes) stays the SOLE owner. This block only makes the duty visible
             at the point of change — it does NOT duplicate or re-own the index.

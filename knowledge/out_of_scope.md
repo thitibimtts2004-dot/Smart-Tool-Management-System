@@ -78,3 +78,10 @@ rationale: no felt pain yet (YAGNI). The pain we actually hit is (1) reopening r
 refs:      roadmap line 815(f)
 keywords:  adr decision-record architecture-decision docs/adr
 date:      2026-06-22
+
+## T-236 · MERGE token_tracker + token_auditor — REJECTED 2026-06-23
+Reject (permanent). Reason: divergent cadence (always-on every-turn vs on-demand >60k),
+divergent model floor (haiku vs sonnet), divergent behavior (mechanical echo vs analytical
+diagnosis). Merging would force-load rare audit content on the hot path + raise the always-on
+floor to sonnet. The only real dedup (the token MODEL) was already single-sourced by T-244.
+Do NOT re-propose merging these two — same-topic ≠ same-job.

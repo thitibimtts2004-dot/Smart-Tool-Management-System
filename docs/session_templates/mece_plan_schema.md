@@ -135,7 +135,7 @@ Sequential notation: `[S1] → [S2] → [/compact] → [S3]`
 - [ ] /compact checkpoint
   Pre: compute compact_size:
     `python3 scripts/compute_compact_size.py`  → compact_size (formula + retention constant live in the script · single source)
-  Pre: write compact_state.md (section=S<N> · step=<last-step-desc> · skill=<name> · compact_size=<value>)
+  Pre: write compact_state.md (canonical `key: value` colon · readers tolerate `=` back-compat · T-262) (section: S<N> · step: <last-step-desc> · skill: <name> · compact_size: <value>)
   How: user runs `/compact` in terminal
   Post: SESSION_TOTAL=0 · LOOP_WEIGHT=0 · CHAT_TOTAL ≈ compact_size + sys_fixed
   Verify: `cat .sessions/session_tokens.md` → SESSION_TOTAL: 0 · LOOP_WEIGHT: 0
@@ -252,19 +252,19 @@ Enforce:  R8 Index Sync Invariant (AGENTS.md) · session_manager §3 (SKILL.md)
 ### PATH B — TOKEN PAUSE (SESSION_TOTAL > 60k)
 ```
 SESSION: /compact resets CHAT_TOTAL=0 · B1 at next boot reads compact_size → CHAT_TOTAL = compact_size + sys_fixed
-         SESSION_TOTAL reset to 0 ONLY via consume-once marker: PATH B writes `session_reset=armed` →
+         SESSION_TOTAL reset to 0 ONLY via consume-once marker: PATH B writes `session_reset: armed` →
          B1 (or UserPromptSubmit hook) consumes it ONCE at next boot → SESSION_TOTAL=0, flips marker→consumed.
          NOT unconditional on compact_restore (T-157 — prevents a stale/leftover compact_state.md from re-resetting mid-task)
 ```
 - [ ] Compute compact_size BEFORE /compact:
       `python3 scripts/compute_compact_size.py` → compact_size
-- [ ] Write compact_state.md:
-      dt=<YYYY-MM-DD> s=___k task=<desc> cfp=___
-      sk=<skill> sk_h=<8chars> mece_h=<8chars>
-      p1=done p2=done p3=<last_section> section=S<N> step=<last step desc>
-      resume_at=S<N>:step:<desc>
-      compact_size=<value from step above>
-      session_reset=armed   ← T-157: arms the consume-once reset · B1/hook flips →consumed at next boot · SESSION_TOTAL→0 exactly once
+- [ ] Write compact_state.md (canonical: `key: value` colon · one field per line · readers tolerate `=` back-compat only · T-262):
+      dt: <YYYY-MM-DD>  s: ___k  task: <desc>  cfp: ___
+      sk: <skill>  sk_h: <8chars>  mece_h: <8chars>
+      p1: done  p2: done  p3: <last_section>  section: S<N>  step: <last step desc>
+      resume_at: S<N>:step:<desc>
+      compact_size: <value from step above>
+      session_reset: armed   ← T-157: arms the consume-once reset · B1/hook flips →consumed at next boot · SESSION_TOTAL→0 exactly once
 - [ ] session_manager TOKEN PAUSE → emit [pre-compact-state] block → ask user confirm
 - [ ] claude-code: /compact · other platform: write compact_state.md → STOP
 

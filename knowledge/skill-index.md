@@ -14,9 +14,9 @@ description: Fast trigger-to-skill lookup. Read before skill-manifest.json — s
 |---|---|---|
 | fix, bug, error, not working, broken, issue, wrong, fail, แก้, ไม่ทำงาน, error | `editor` | + R7 first → if >1 file: `mece` before edit |
 | implement, refactor, restructure, build, rename all, migrate, multi-step, plan task, วางแผน, ปรับโครง | `mece` → then `coder` or `editor` | Phase 2 — runs once per task |
-| create, new file, scaffold, add page, add component, new api, new route, สร้าง, ไฟล์ใหม่ | `coder` → then auto `file_manager` + `variable_manager` | New files only — never modifies existing |
-| move file, delete file, rename file, file created, imports changed | `file_manager` | MANDATORY after any file op |
-| rename function, rename symbol, refactor component, rename variable | `variable_manager` | MANDATORY after any symbol change |
+| create, new file, scaffold, add page, add component, new api, new route, สร้าง, ไฟล์ใหม่ | `coder` → then auto `index_manager` | New files only — never modifies existing |
+| move file, delete file, rename file, file created, imports changed | `index_manager` (mode:file) | MANDATORY after any file op |
+| rename function, rename symbol, refactor component, rename variable | `index_manager` (mode:symbol) | MANDATORY after any symbol change |
 | new session, done, wrap up, switch task, pause, close, ปิด, จบ, จบงาน | `session_manager` | Session lifecycle + compact |
 | flow diagram, ascii flow, flowchart, architecture chart, draw flow | `ascii_flow` | .md files with diagrams |
 | spawn agents, parallel, orchestrate, cycle, fan-out, delegate | `agent` | Multi-section / sub-agent |
@@ -30,8 +30,8 @@ description: Fast trigger-to-skill lookup. Read before skill-manifest.json — s
 
 | Trigger | Chain |
 |---|---|
-| After `coder` completes | → `file_manager` + `variable_manager` |
-| After `editor` (symbol changed) | → `variable_manager` |
+| After `coder` completes | → `index_manager` |
+| After `editor` (symbol changed) | → `index_manager` (mode:symbol) |
 | Any session close | → `self_improve` §3 Step 0 |
 
 ## Always Active (loaded every turn)

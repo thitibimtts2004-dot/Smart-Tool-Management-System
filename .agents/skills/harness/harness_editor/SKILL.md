@@ -98,9 +98,14 @@ After a *behavioural* edit (BC / gate / signal-contract / step-sequence) — ski
 - Verdict (early-exit): Haiku PASS → `[behave-pass]` → Stage 4 · Haiku fail / Sonnet@medium PASS → `[behave-gap]` (rule too subtle for the robustness floor) → loop Stage 5 · only Sonnet@high PASS → `[behave-gap]` `effort:high` (rule clear but needs deep reasoning) → loop Stage 5 · all 3 fail → `[behave-fail]` → Stage 5. Log every run to `knowledge/behave_test_log.jsonl` (feedback + regression suite).
 → full procedure: @.agents/skills/harness/harness_editor/SKILL_detail.md §Stage 3.5
 
+### Stage 3.6 · FIX VALIDATION  (any bug-fix — CFP or code/ERR-N — gates Stage 4 close)
+→ if bug-fix: read the ORIGINAL failure repro BY FIX-TYPE (which branch? a CFP entry exists for this fix → CFP path · else → ERR-N path) — CFP/harness-fix → `index_cfp_fix.json` fixes[].repro · code/non-CFP fix → `error_index.md` ERR-N (trigger+check). Both use the repro-pin FORMAT defined by `harness_doctor` §3 (single source · reproducible:no → no on-demand repro → use count-proxy) → re-run repro.check against the edited harness →
+  gone: `[fix-validated] cfp:<id> repro:<how>` · still repros / cannot re-run: `[fix-unvalidated] reason:<x>`
+  `[fix-unvalidated]` BLOCKS Stage 4 [C] roadmap [X] → loop Stage 5 · non-fix task: `[fix-skip]`
+
 ### Stage 4 · CLOSE  (Index Sync + Docs Close — mandatory, same task)
 Edit a harness file → its paired Implement doc MUST update the same task (see §Implement Map).
-- Index sync: new skill → `skill-manifest.json` + `registry.md` · new `knowledge/`|`Implement/` file → `file_manager` + `python3 scripts/backlink_analyzer.py` (assign `topics[]` from `topic_registry.json`) · no `src/` symbol → skip `variable_manager`
+- Index sync: new skill → `skill-manifest.json` + `registry.md` · new `knowledge/`|`Implement/` file → `index_manager` (mode:file) + `python3 scripts/backlink_analyzer.py` (assign `topics[]` from `topic_registry.json`) · no `src/` symbol → skip `index_manager` (mode:symbol)
 
 **Behavior Contract — Docs Close (must complete before [harness-edit-done]):**
 ```
@@ -108,7 +113,7 @@ Pre:    all Stage 3 edits done · [✓ written] emitted per changed file
 Contract: complete ALL before [harness-edit-done]:
           [A] harness_flow updated (harness file changed) → [✓ written]
           [B] paired Implement/ doc updated (per §Implement Map) + REPO_MAP if new file/skill
-          [C] roadmap [/] T-N → [X]   ·   [D] active_thread.md phase:done
+          [C] roadmap [/] T-N → [X] (bug/CFP-fix → requires [fix-validated] from §Stage 3.6 first · [fix-unvalidated] blocks this)   ·   [D] active_thread.md phase:done
           [E] Phase 3 Close Checklist verified — all [X]
           any incomplete → flow_updated=no · DO NOT emit [harness-edit-done]
 Post:   [harness-edit-done] flow_updated:yes · all [A-E] verified
@@ -245,4 +250,4 @@ Before finalizing the edit, ask once: is there a materially simpler way to get t
 ## Context Gate
 If during this task a new hard constraint was discovered → add to INVARIANTS.md §I2 before closing task
 
-> hand-off (index): file create/delete → file_manager · symbol change → variable_manager · folder move/rename → repo_map sync · enforced by R8 + scripts/index_reconcile.py · spec: docs/session_templates/handoff_block_schema.md §INDEX variant · reference only — file_manager/variable_manager stay sole owners.
+> hand-off (index): file create/delete → index_manager (mode:file) · symbol change → index_manager (mode:symbol) · folder move/rename → repo_map sync · enforced by R8 + scripts/index_reconcile.py · spec: docs/session_templates/handoff_block_schema.md §INDEX variant · reference only — index_manager stay sole owners.

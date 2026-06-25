@@ -239,4 +239,4 @@ owner-note: doc_builder stays SOLE owner of the manual; project_presenter only r
 <!-- MECE Constraints Block merged into Hard Rules + Output Contract (S6 dedup · F6 fix) -->
 <!-- §1/§2 gates → Hard Rules · screenshot naming + PDF footer → Hard Rules · write/refusal signals → Output Contract -->>
 
-> hand-off (index): file create/delete → file_manager · symbol change → variable_manager · folder move/rename → repo_map sync · enforced by R8 + scripts/index_reconcile.py · spec: docs/session_templates/handoff_block_schema.md §INDEX variant · reference only — file_manager/variable_manager stay sole owners.
+> hand-off (index): file create/delete → index_manager (mode:file) · symbol change → index_manager (mode:symbol) · folder move/rename → repo_map sync · enforced by R8 + scripts/index_reconcile.py · spec: docs/session_templates/handoff_block_schema.md §INDEX variant · reference only — index_manager stay sole owners.

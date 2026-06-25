@@ -103,6 +103,77 @@ def load_index_keys():
         return set()
 
 
+def git_tracked_files():
+    """Return list of ALL git-tracked file paths (committed + staged), repo-relative.
+    Unlike git_changes() (this-session working tree only), this sees every tracked
+    file — so a file committed in a PRIOR session is visible and can be enrolled.
+    This is the authoritative source for ADD coverage (T-269). Best-effort."""
+    try:
+        out = subprocess.run(["git", "-C", REPO, "ls-files"],
+                             capture_output=True, text=True, timeout=15)
+        if out.returncode != 0:
+            return []
+    except (OSError, subprocess.SubprocessError):
+        return []
+    return [ln.strip() for ln in out.stdout.splitlines() if ln.strip()]
+
+
+def enroll_missing(dry_run=False):
+    """T-269: make the index AUTHORITATIVE over the working tree — ADD and DELETE both
+    ENFORCED, not remembered. Computed against every indexable file that ACTUALLY EXISTS
+    (git ls-files ∪ this-session untracked/modified) vs every index key:
+
+      ENROLL — an existing indexable file (tracked OR uncommitted-new) absent from the
+               index gets a stub entry. Empty description("") flags it for a later
+               backfill --extract pass; the present key lets the field-only regenerators
+               (backlink_analyzer etc.) populate related[]. Closes BOTH the pre-committed
+               leak (porcelain never saw prior-session commits) AND the uncommitted gap.
+      PRUNE  — an index key whose file is gone from disk AND untracked is removed, so a
+               deleted/renamed file leaves no ghost entry.
+
+    Returns (enrolled, pruned, wrote). Writes ONLY when not dry_run and there is a change.
+    Index written indent=2/ensure_ascii=False (canonical). PRUNE is skipped entirely when
+    `git ls-files` came back empty — never delete on a failed git signal. Fail-safe: any
+    I/O error → (…, …, False), never raises."""
+    keys = load_index_keys()
+    tracked = git_tracked_files()
+    changes = git_changes()
+    # DISK REALITY is the single authority: an index entry should exist iff the file
+    # exists on disk AND is indexable. Build the present-set from tracked ∪ untracked,
+    # then keep only paths that ACTUALLY EXIST (drops a tracked-but-deleted file so it is
+    # never re-enrolled — the bug that made enroll and prune flip-flop forever).
+    present = set(tracked) | {p for p, st in changes.items() if st != "deleted"}
+    present = {p for p in present
+               if is_indexable(p) and os.path.exists(os.path.join(REPO, p))}
+    missing = sorted(p for p in present if p not in keys)
+    # stale: an indexed key whose file is GONE from disk (covers committed-gone,
+    # renamed-away, and unstaged-deleted in one rule). Guarded by a non-empty tracked
+    # list so a failed `git ls-files` can never trigger a mass prune. present (on-disk)
+    # and stale (off-disk) are disjoint by construction → enroll/prune is idempotent.
+    # (A `git checkout` that restores a file simply re-enrolls it next run — self-heals.)
+    stale = (sorted(k for k in keys if not os.path.exists(os.path.join(REPO, k)))
+             if tracked else [])
+    if (not missing and not stale) or dry_run:
+        return missing, stale, False
+    try:
+        with open(INDEX, encoding="utf-8") as fh:
+            data = json.load(fh)
+    except (OSError, ValueError):
+        return missing, stale, False
+    for p in missing:
+        # fresh dict per path — no shared-reference aliasing between entries
+        data[p] = {"description": "", "topics": {"major": [], "minor": []},
+                   "backlinks": [], "references": [], "related": []}
+    for k in stale:
+        data.pop(k, None)
+    try:
+        with open(INDEX, "w", encoding="utf-8") as fh:
+            json.dump(data, fh, indent=2, ensure_ascii=False)
+    except OSError:
+        return missing, stale, False
+    return missing, stale, True
+
+
 def rule_files_changed(changes):
     rule_set = set()
     for pat in RULE_FILE_GLOBS:
@@ -207,11 +278,72 @@ def handoff_consistency_lines():
     return lines
 
 
-def reconcile():
+# history / changelog files where naming a JUST-deleted skill is LEGITIMATE (we record
+# the deletion there) — never flag these as stale doc-prose refs.
+_STALE_NAME_EXCLUDE = ("master_roadmap.md", "reflections.md", "CODING_FAILURE_PATTERNS.md",
+                       "cfp_archive.md", "self_improve_log.md", "session_handoff.md")
+
+
+def stale_skillname_refs(changes):
+    """T-252 (closes CFP-043): index/backlink sync is blind to free-text doc prose, so a
+    deleted/renamed skill NAME can linger in docs (it orphaned ~9 docs in T-238). When a
+    skill dir was deleted THIS session, grep the repo for the leftover name. The
+    'deleted this session' guard keeps it tight — historical mentions of OTHER past
+    deletions never trigger. FAIL-SAFE: any error → [] (never block close)."""
+    try:
+        names = set()
+        for path, st in changes.items():
+            if st == "deleted" and path.startswith(".agents/skills/") and "/SKILL" in path:
+                parts = path.split("/")            # .agents/skills/<bucket>/<name>/SKILL.md
+                if len(parts) >= 4:
+                    names.add(parts[-2])
+        lines = []
+        for name in sorted(names):
+            try:
+                # prose-only (.md): CFP-043 is about doc TEXT, not generated JSON/JSONL indexes.
+                # Exclude dated history files (both _YYYY and -YYYY- naming) + known logs.
+                r = subprocess.run(
+                    ["grep", "-rl", "--include=*.md",
+                     "--exclude-dir=.git", "--exclude-dir=.sessions",
+                     "--exclude-dir=node_modules", "--exclude-dir=research",
+                     "--exclude=*_2026*", "--exclude=*-2026-*",
+                     "--exclude=optimization_logs.md", name, REPO],
+                    capture_output=True, text=True, timeout=20)
+                hits = [os.path.relpath(h.strip(), REPO) for h in r.stdout.splitlines()
+                        if h.strip() and os.path.basename(h.strip()) not in _STALE_NAME_EXCLUDE]
+                if hits:
+                    lines.append(f"[index-drift] stale skill-name '{name}' (dir deleted) still "
+                                 f"referenced in {len(hits)} live file(s): {', '.join(hits[:4])}")
+            except (OSError, subprocess.SubprocessError):
+                continue
+        return lines
+    except Exception:  # noqa: BLE001 — fail-safe: never crash a Stop hook
+        return []
+
+
+def reconcile(dry_run=False):
     """Return (drift_lines, regen_plan). regen_plan = list of (cmd, reason)."""
     changes = git_changes()
-    keys = load_index_keys()
     drift, regen = [], []
+
+    # T-269: ENROLL pass FIRST — authoritative over `git ls-files` (every tracked file),
+    # not just this-session porcelain. Inserts a stub for any indexable tracked file
+    # missing from the index, so a file committed in a prior session can never leak
+    # forever. Runs only on the main/Stop path (never in --check, which is read-only).
+    enrolled, pruned, wrote = enroll_missing(dry_run=dry_run)
+    keys = load_index_keys()  # re-read AFTER enroll/prune so the set is current
+    if enrolled:
+        verb = "enrolled" if wrote else "would enroll (dry-run)"
+        head = ", ".join(enrolled[:5]) + (" …" if len(enrolled) > 5 else "")
+        drift.append(f"[index-enrolled] {verb} {len(enrolled)} missing file(s): {head}")
+    if pruned:
+        verb = "pruned" if wrote else "would prune (dry-run)"
+        head = ", ".join(pruned[:5]) + (" …" if len(pruned) > 5 else "")
+        drift.append(f"[index-pruned] {verb} {len(pruned)} stale entry(ies): {head}")
+    if wrote:
+        # enrolled stubs have empty related[]; a prune can leave dangling links → refresh
+        regen.append(("python3 scripts/backlink_analyzer.py",
+                      f"index changed (+{len(enrolled)}/-{len(pruned)}) — related[] may be stale"))
 
     indexable = {p: st for p, st in changes.items() if is_indexable(p)}
     for path, st in sorted(indexable.items()):
@@ -247,7 +379,16 @@ def reconcile():
     drift.extend(repo_map_drift_lines())
     # hand-off SKILL.md <-> manifest consistency — flag only (manifest = judgment-type · T-217)
     drift.extend(handoff_consistency_lines())
-    return drift, regen
+    # T-252: stale doc-prose refs to a skill dir deleted this session (CFP-043) — HARD drift
+    drift.extend(stale_skillname_refs(changes))
+    # dedupe regen by command (enroll + changed-path logic may both request
+    # backlink_analyzer) — running it once is enough (idempotent, but avoid waste)
+    seen, deduped = set(), []
+    for cmd, reason in regen:
+        if cmd not in seen:
+            seen.add(cmd)
+            deduped.append((cmd, reason))
+    return drift, deduped
 
 
 def execute_regen(regen):
@@ -314,9 +455,46 @@ def main():
                     help="report only — never write or regenerate")
     ap.add_argument("--no-regen", action="store_true",
                     help="detect + report, but do NOT auto-run the regenerators")
+    ap.add_argument("--check", action="store_true",
+                    help="T-252: read-only HARD-drift gate for the PreToolUse close-gate — no "
+                         "regen, no writes. exit 2 if unhealed index/doc-ref drift, else 0. "
+                         "Fail-safe: any internal error → exit 0 (never block on our own bug).")
     args = ap.parse_args()
+
+    # T-252 close-gate path: fast + read-only + NO side effects (deliberately does NOT call
+    # reconcile(), which would trigger repo_map_check.py --sync writes). Detects only HARD
+    # drift — un-indexed new/modified files, stale deleted entries, and stale skill-name
+    # doc-refs — then exit 2 so the close-gate can block the `phase: done` write.
+    if args.check:
+        try:
+            changes = git_changes()
+            keys = load_index_keys()
+            hard = []
+            for path, st in sorted(changes.items()):
+                if not is_indexable(path):
+                    continue
+                # block ONLY on genuinely NEW un-indexed files — a "modified" file absent from
+                # index_files.json is a pre-existing index gap this task did not create, so
+                # blocking on it would fire on nearly every edit (the over-block trap · T-252).
+                if st == "new" and path not in keys:
+                    hard.append(f"[index-drift] missing entry: {path} (new) — not in index_files.json")
+                elif st == "deleted" and path in keys:
+                    hard.append(f"[index-drift] stale entry: {path} (deleted) — still in index_files.json")
+            hard.extend(stale_skillname_refs(changes))
+            for line in hard:
+                print(line, file=sys.stderr)
+            if hard:
+                print("[index-blocked] unhealed index/doc-ref drift — run "
+                      "`python3 scripts/index_reconcile.py` to heal, then retry "
+                      "(or set HARNESS_SKIP_INDEX_BLOCK=1 to override).", file=sys.stderr)
+                return 2
+            return 0
+        except Exception as exc:  # noqa: BLE001 — fail-safe: never block on our own error
+            print(f"[index-reconcile-error] {exc} — --check skipped (not blocking)", file=sys.stderr)
+            return 0
+
     try:
-        drift, regen = reconcile()
+        drift, regen = reconcile(dry_run=args.dry_run)
         # T-199: auto-heal session close (guarded · idempotent) — runs even when the
         # index is clean, since a no-file-change session still needs its record.
         for line in session_close_guard(dry_run=args.dry_run):

@@ -66,6 +66,71 @@ try:
 except Exception:
     pass
 
+# --- T-263 S1: skill-activation marker (.active_skill today-set log) ---
+# Make skill activation a real FILE artifact so the PreToolUse skill_gate can
+# enforce "right skill is loaded" (hooks cannot see the agent's [skill-active]
+# text emit). On a Read of any .agents/skills/**/SKILL.md, derive the skill name
+# from the directory holding SKILL.md and APPEND `name|date|turn` to
+# .sessions/.active_skill. It is a today-set LOG, not a single slot (FINDING C):
+# a slot would be overwritten when a secondary skill (e.g. skeptical_reviewer) is
+# read while harness_editor still owns the task. "active today" = any line whose
+# date == today. Reading scrutinize/skeptical_reviewer also clears .review_intent
+# (the demanded review actually happened). Fail-safe: never throw — the tracker
+# must keep working even if the marker write fails.
+try:
+    _rp = (((data.get('tool_input') or {}).get('file_path') or '')
+           .replace(os.sep, '/'))
+    if tool == 'Read' and '.agents/skills/' in _rp and _rp.endswith('SKILL.md'):
+        _parts = _rp.rstrip('/').split('/')
+        _skill = _parts[-2] if len(_parts) >= 2 else ''
+        if _skill:
+            _today = __import__('datetime').date.today().isoformat()
+            # turn number: best-effort from session_tokens.md TURN_COUNT (else 0)
+            _turn = '0'
+            try:
+                _stf = os.path.join(root, '.sessions', 'session_tokens.md')
+                for _l in open(_stf):
+                    if _l.startswith('TURN_COUNT:'):
+                        _turn = _l.split(':', 1)[1].strip() or '0'
+                        break
+            except Exception:
+                _turn = '0'
+            with open(os.path.join(root, '.sessions', '.active_skill'), 'a') as _af:
+                _af.write('%s|%s|%s\n' % (_skill, _today, _turn))
+            if _skill in ('scrutinize', 'skeptical_reviewer'):
+                try:
+                    os.remove(os.path.join(root, '.sessions', '.review_intent'))
+                except OSError:
+                    pass
+except Exception:
+    pass
+
+# --- T-265 Gap 5: mark when a CFP STATUS field is touched (.cfp_touched) ---
+# Self-improvement-loop stage 5 (Record-the-solution) was "remembered, not
+# enforced": an agent could flip a CFP's status (resolve / reopen / fix-required)
+# in CODING_FAILURE_PATTERNS.md or index_cfp_fix.json WITHOUT also recording the
+# solution in self_improve_log.md. This writes a .sessions/.cfp_touched tripwire
+# ONLY when such a status-bearing edit happens (NOT on any edit) — the close-gate
+# (PreToolUse, settings.json) later refuses phase:done while the tripwire is set
+# but the log wasn't updated today. Cleared at boot (boot_init.sh). Fail-safe.
+try:
+    _cfp_fp = (((data.get('tool_input') or {}).get('file_path') or '')
+               .replace(os.sep, '/'))
+    if (tool in ('Write', 'Edit')
+            and (_cfp_fp.endswith('CODING_FAILURE_PATTERNS.md')
+                 or _cfp_fp.endswith('knowledge/index_cfp_fix.json'))):
+        _ti = data.get('tool_input') or {}
+        _payload = (_ti.get('new_string') or _ti.get('content') or '')
+        _status_tokens = ('"status"', 'status:', 'resolved', 'reopened',
+                          'fix-required', 'fix-escalated')
+        if any(_t in _payload for _t in _status_tokens):
+            with open(os.path.join(root, '.sessions', '.cfp_touched'), 'w') as _cf:
+                _cf.write('%s|%s\n' % (
+                    os.path.basename(_cfp_fp),
+                    __import__('datetime').date.today().isoformat()))
+except Exception:
+    pass
+
 # --- LOOP_WEIGHT increment (same weights as the prior inline hook) ---
 weights = {'Agent': 3, 'Workflow': 3, 'WebFetch': 3, 'WebSearch': 3,
            'Write': 2, 'NotebookEdit': 2}
@@ -97,7 +162,13 @@ try:
     tool_mult = _te.PROVIDER_MULTS.get(_prov, _te.PROVIDER_MULTS['generic'])['tool']
 except Exception:
     tool_mult = 0.35
+# T-261: mutations (Edit/Write/NotebookEdit) return an echo that scales with file SIZE,
+# not real context — count tool_input only, drop the echoed response (false-ceiling drift fix).
+if tool in ('Edit', 'Write', 'NotebookEdit'):
+    chars -= resp_chars
+    resp_chars = 0
 session_delta = round(chars * tool_mult)   # provider tool-mult · lower bound (tool I/O only)
+session_delta = min(session_delta, 12800)  # T-261: generous backstop = 0.1 x 128k window (sanity guard, not the main mechanism)
 chat_delta = session_delta                 # x1.5 dropped (T-178); true API context ~1.5-2x -> see docs note
 
 # --- counter deltas: FILES_READ (per Read tool) · LONG_OUTPUTS (output >8000 chars) (T-221 S1) ---

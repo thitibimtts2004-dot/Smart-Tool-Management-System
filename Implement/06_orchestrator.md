@@ -52,7 +52,7 @@ Phase 0 total: TH ___ch · EN ___ch → ~___tok
 **[✓ MECE]** Goal: ___
 
 Section 1 — <name>:
-  Skill:    ___   ← MANDATORY — editor|coder|file_manager|variable_manager|agent
+  Skill:    ___   ← MANDATORY — editor|coder|index_manager|agent
   Tool:     ___   ← primary tool (Read|Edit|Write|Bash)
   Constraints:
     - ___         ← from §MECE Constraints Block in the section's SKILL.md

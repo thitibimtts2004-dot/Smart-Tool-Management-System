@@ -19,7 +19,7 @@ triggers: ["write this function", "implement this", "code this feature", "add th
   steps: ["create files to standards", "write code", "self-correct linter errors", "[✓ written] verify each file"]
 - id: 3
   name: "Sync & Close"
-  steps: ["call file_manager", "call variable_manager", "python scripts/symbol_indexer.py", "roadmap [X]"]
+  steps: ["call index_manager (mode:file)", "call index_manager (mode:symbol)", "python scripts/symbol_indexer.py", "roadmap [X]"]
 ```
 
 # Coder Skill
@@ -40,7 +40,7 @@ triggers: ["write this function", "implement this", "code this feature", "add th
 - Task targets an **existing** file (edit/fix/refactor) → delegate to `editor` skill · do not start coder
 - File at target path already exists → confirm intent first · creating over existing = data loss risk
 - Task scope is ambiguous ("clean this up", "improve X") → clarify with MECE plan first · do not interpret and build
-- **Rename all / global symbol rename** → delegate to `editor` + `variable_manager` · Do NOT use coder for renaming; coder creates, it does not rename
+- **Rename all / global symbol rename** → delegate to `editor` + `index_manager` (mode:symbol) · Do NOT use coder for renaming; coder creates, it does not rename
 - `mece_plan.md` scope exceeds 3 new files → escalate to orchestrator · do not self-expand scope
 
 ## Prerequisites
@@ -66,7 +66,7 @@ Run in order. Do not skip ahead.
 4. **Write** — create file(s) per Coding Standards · emit `[✓ written] path` immediately after each Write
 5. **Verify** — `grep -n "export\|function\|const" <file> | head -20` to confirm structure · linter errors → fix inline before continuing — do NOT proceed past step 5 with unresolved TS errors
    → **Linter error ≥3 attempts on existing-code path:** assess whether error is in code you wrote (new file → keep fixing) OR in existing code you're modifying (existing file → emit `[coder-handoff] reason:linter-loop · target:<file>` and delegate to `editor`)
-6. **Index Sync** — trigger `file_manager` → wait for `[file-index]` · trigger `variable_manager` → wait for `[symbol-index]` · BOTH required
+6. **Index Sync** — trigger `index_manager` (mode:file) → wait for `[file-index]` · trigger `index_manager` (mode:symbol) → wait for `[symbol-index]` · BOTH required
 7. **Roadmap [X]** — mark complete only after step 6 signals received · emit done summary
 
 **Stop conditions:**
@@ -90,8 +90,8 @@ Required outputs per section:
 **Behavior Contract — Index-Sync-Gate (fires before roadmap [X] on any file create):**
 ```
 Pre:    file(s) created · about to mark roadmap [X]
-Contract: MUST trigger file_manager → wait for [file-index] emit
-          MUST trigger variable_manager → wait for [symbol-index] emit
+Contract: MUST trigger index_manager (mode:file) → wait for [file-index] emit
+          MUST trigger index_manager (mode:symbol) → wait for [symbol-index] emit
           BOTH signals required before roadmap [X] is written
           missing either → [violation] BC-index-sync-gate → trigger missing skill now · wait for emit
 Post:   [file-index] + [symbol-index] both emitted · index_files.json + index_variables.json updated
@@ -101,7 +101,7 @@ Enforce: roadmap [X] written without both emits = [violation] BC-index-sync-gate
 ## Routing
 - Section 3 (Sync & Close) done → return to orchestrator / session_manager §3
 - `[blocked]` → halt · report `T-<N>: <cause>` · wait for orchestrator decision
-- File created → trigger `file_manager` + `variable_manager` before closing section
+- File created → trigger `index_manager` before closing section
 - Build complete → context-aware offer (pick by target):
   - Target is `*.SKILL.md` or `.agents/skills/` → offer: "Build done — want `skill_auditor` to audit this skill for 9arm coverage gaps?"
   - Target is `src/` file → offer: "Build done — want `editor` to verify linter/type correctness on the new file?"
@@ -146,7 +146,7 @@ Style reference: `knowledge/harness_flow_20260525.md` · Skill: `.agents/skills/
 ```
 - Roadmap `[ ] T-<N>` written BEFORE any file creation begins (R-Roadmap gate)
 - [✓ written] verify each file immediately after Write — mandatory
-- Do NOT edit index files (index_files.json / index_variables.json) directly — call file_manager after
+- Do NOT edit index files (index_files.json / index_variables.json) directly — call index_manager (mode:file) after
 - Edge Runtime: no Node.js APIs — WebCrypto only
 - R15: any touch of src/db/ → [db-gate] → HALT for explicit confirm
 ```
@@ -167,4 +167,4 @@ Before finalizing the output, ask once: is there a materially simpler way to get
 ## Context Gate
 If during this task a new hard constraint was discovered → add to INVARIANTS.md §I2 before closing task
 
-> hand-off (index): file create/delete → file_manager · symbol change → variable_manager · folder move/rename → repo_map sync · enforced by R8 + scripts/index_reconcile.py · spec: docs/session_templates/handoff_block_schema.md §INDEX variant · reference only — file_manager/variable_manager stay sole owners.
+> hand-off (index): file create/delete → index_manager (mode:file) · symbol change → index_manager (mode:symbol) · folder move/rename → repo_map sync · enforced by R8 + scripts/index_reconcile.py · spec: docs/session_templates/handoff_block_schema.md §INDEX variant · reference only — index_manager stay sole owners.

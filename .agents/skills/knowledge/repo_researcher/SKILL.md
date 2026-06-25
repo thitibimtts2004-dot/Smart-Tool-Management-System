@@ -86,7 +86,7 @@ Contract: load templates: docs/session_templates/research_summary.md
           improvement.md: adapt ALL code refs to TS/Next.js ecosystem
           repo_map.md: every key file entry includes reference_count + line_range
           after write → R8 Index Sync: add entry to knowledge/index_files.json for each file
-            (file_manager skill OR python3 scripts/backfill_knowledge_index.py)
+            (index_manager (mode:file) skill OR python3 scripts/backfill_knowledge_index.py)
 Post:   3 files written · [✓ written] emitted per file · index_files.json updated · [research-done] emitted
 Enforce: writing output without loading template first = [violation] BC-output-write → load template · re-write
          missing index sync after write = R8 violation → update index_files.json before marking done
@@ -152,4 +152,4 @@ on-missing: skip the offer silently — supplementary means doc_builder proceeds
 on-present: offer to feed the summary to doc_builder as background reference for the manual
 owner-note: repo_researcher stays SOLE owner of the research files; doc_builder only reads them as supplementary context
 
-> hand-off (index): file create/delete → file_manager · symbol change → variable_manager · folder move/rename → repo_map sync · enforced by R8 + scripts/index_reconcile.py · spec: docs/session_templates/handoff_block_schema.md §INDEX variant · reference only — file_manager/variable_manager stay sole owners.
+> hand-off (index): file create/delete → index_manager (mode:file) · symbol change → index_manager (mode:symbol) · folder move/rename → repo_map sync · enforced by R8 + scripts/index_reconcile.py · spec: docs/session_templates/handoff_block_schema.md §INDEX variant · reference only — index_manager stay sole owners.

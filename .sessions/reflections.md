@@ -144,3 +144,31 @@ promoted_patterns: live-dogfood every command-inspecting hook before marking don
 - SCRUTINIZE CAUGHT: F1 goal-tag truncation dropped "AI harness engineering" (the salient half) → fixed via hand-authored goal_tag field. F2: planned trim of duplicated memory facts was intentionally NOT done (user required comprehensive storage) → recorded as honest deviation, not a silent pass. Verify-7b only checks the pointer, matching this.
 - LESSON: a Verify-N can be LOOSER than the plan intent (7b checked pointer-present, not trim-done). When a check cannot assert the full intent, say so at close rather than letting "verify passed" imply more than it tested.
 - REVIEW: independent model_low reviewer ran Verify-1..7 + logic scrutiny → all-pass, no new issues.
+
+## T-265 (2026-06-24 · harness_editor) — close 3 amber self-improvement-loop gaps
+- intent: make loop stages 5/7/8 (Record/Measure/Re-open) enforced/reliable, not "remembered" (per the T-264 loop-doc principle).
+- outcome: shipped artifacts-field backfill + cfp_fix_probe.py + cfp_recurrence.py + close-gate .cfp_touched teeth; gate proven live (BLOCK exit1 + allow + fail-open + override); wired into settings.json LAST.
+- friction: (1) Edit tool repeatedly errored "file not read" on .sessions/roadmap files I'd only Bash-tail'd — must Read before Edit even after grep. (2) my Verify-4a "garbage stdin→exit0" was mis-specified TWICE: the gate's top-level json.load is fail-CLOSED (pre-existing), and log-missing is a legitimate BLOCK not a fail-open case. Real fail-open = the try/except wrapper (defaults block_cfp False).
+- lesson: when designing a Verify-N for "fail-open", be precise about WHICH layer fails open — my added logic's except branch, not the whole hook. Phase-1 reading the LIVE files (not memory) caught the CFP-027 stub + the .scope_baseline-never-cleared facts that the plan needed.
+- promoted_patterns: anti-self-brick ordering (wire the gate into its own config LAST, after the block-case is proven live) — generalizes T-263's "only proved allow, never block" lesson.
+
+## T-266 (2026-06-24 · harness_editor) — Loop-doc + Backlink rollout
+- WORKED: template-first (S1 serial) → 8 sibling docs came out structurally identical; cycle-grouped fan-out (1 serial → 8 parallel cap-4 → 1 serial) matched the dependency map exactly. Delegating all doc-writes to subagents kept MAIN context lean (~each returned ≤400 tok) — the planned post-S5 /compact checkpoint became unnecessary because the bloat it guards never landed in main context. Lesson: when a multi-section plan is fully delegatable, in-plan compact checkpoints can be skipped (note it, don't blindly follow).
+- LEARNED: kcc verdict review_recommended overlap=1.0 on all 9 was a FALSE positive — root cause "WARN: no/stale key_claims" makes the checker degenerate (matched unrelated comparison/telemetry docs). Surfaced as out-of-scope chip (key_claims backfill) rather than scope-creeping into it.
+- VERIFY: inline bash ran every Verify-N (all pass) + independent haiku reviewer re-confirmed 11/11. Belt-and-suspenders satisfied Completion-Gate (Verify-N ≥4 → model_low reviewer).
+
+## T-267 reflection (2026-06-24)
+- Single-source discipline paid off: the skeptical_reviewer caught stale "12 categories"/"1-6/7-12" drift in the plan BEFORE exec — fixed at the source, no drift leaked into the doc. Reinforces the user-flagged weak-spot (single-source-of-truth).
+- Merged-scope from two divergent chats handled cleanly by folding the other chat's per-technique depth ADDITIVELY (13th family) rather than rewriting — 1-task-1-owner held.
+- kcc false-positive recurred (no key_claims -> degenerate overlap=1.0) — same as T-266. Pattern is now twice-seen; key_claims backfill (chip) would clear it. Not escalated (benign, known).
+- Closed at CHAT ~99k via PATH A (task done) rather than compact-resume — correct call: compacting mid-close would strand bookkeeping.
+
+## T-269 close reflection (2026-06-25)
+- Delivered: index_reconcile.py disk-truth fix (enroll 71 / prune 2 · idempotent x3 · --check exit 0) + LLM-Wiki lifecycle diagram v1+v2 (inline SVG + standalone .svg + 3 English docs). Roadmap T-269 [X].
+- R8 verified clean at close (reconciler --check exit 0) — no manual index drift.
+- Topic-switched to T-273 in SAME chat per user choice (CHAT ~141k accepted; user prefers continue over clear — known pref). Footer keeps flagging real-context ~2x as lower-bound caution.
+- T-273 [X]: built scripts/build_backlink_graph.py (generator, single-source) → knowledge/diagrams/backlink-graph.html. 212 nodes / 1257 deduped edges, color-by-topic, hand-written canvas force sim (NO CDN — offline self-contained), topic-cluster layout. Core UI: score-threshold slider, click-to-focus, zoom label fade, search, legend. Plus panel: 4 force sliders + settle/orphan/arrows toggles. attempts:1, tool_calls:~16.
+- Spec said "inline d3-force" — substituted a compact vanilla-JS velocity-Verlet sim (offline requirement makes embedding the real d3 file impossible without a fetch). Faithful to intent; flagged to user before building.
+- Verify: 3a offline=0 refs · 3b embedded==index(212) · 3c idempotent (diff empty x2) · 3d edges_kept=1257/avg_visible_degree 6.62 (~6, down from raw 26) · 3e both files in index_files.json.
+- Plan estimated 208 nodes; real index = 209 then 212 after R8 reconcile auto-enrolled the 2 new files + 1 other. Reinterpreted Verify-3b as embedded==current-index-count (the meaningful check), not the literal estimate.
+- Pre-existing repo-map drift (src/ gone from disk) surfaced by reconciler — left untouched (out of T-273 scope).

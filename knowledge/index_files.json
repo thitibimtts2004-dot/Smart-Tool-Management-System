@@ -1341,6 +1341,11 @@
         "score": 2
       },
       {
+        "path": "knowledge/wiki-index-integrity-audit-2026-06-24.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "scripts/index_reconcile.py",
         "strength": "related",
         "score": 2
@@ -1370,11 +1375,14 @@
     "rules_defined": [],
     "rules_referenced": [
       "BC-A",
+      "BC-E",
       "BC-approach-diff",
       "BC-fix-record",
       "BC-harness-editor-delegate",
       "BC-pre-audit",
-      "CFP-021"
+      "CFP-021",
+      "R16",
+      "T-265"
     ],
     "topic_map": [
       {
@@ -1695,7 +1703,8 @@
       "T-180",
       "T-221",
       "T-231",
-      "T-235"
+      "T-235",
+      "T-261"
     ],
     "topic_map": [],
     "coverage": null,
@@ -1809,6 +1818,7 @@
       "CFP-034",
       "CFP-037",
       "CFP-041",
+      "CFP-044",
       "R1",
       "R16",
       "R6",
@@ -1820,7 +1830,9 @@
       "T-228",
       "T-230",
       "T-234",
-      "T-235"
+      "T-235",
+      "T-261",
+      "T-263"
     ],
     "topic_map": [],
     "coverage": null,
@@ -2425,6 +2437,11 @@
         "score": 2
       },
       {
+        "path": "knowledge/diagrams/backlink-graph.html",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "knowledge/harness-agent-skill-system-framework-2026-06-04.md",
         "strength": "related",
         "score": 2
@@ -2446,6 +2463,11 @@
       },
       {
         "path": "knowledge/user_modeling_grounding.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/build_backlink_graph.py",
         "strength": "related",
         "score": 2
       },
@@ -2508,6 +2530,7 @@
     ],
     "rules_referenced": [
       "BC-Ascii-Return",
+      "BC-E",
       "BC-Error-Index-Gate",
       "BC-Fix-Record",
       "BC-Harness-Editor-Delegate",
@@ -2540,6 +2563,7 @@
       "CFP-024",
       "CFP-025",
       "CFP-026",
+      "CFP-027",
       "CFP-028",
       "CFP-033",
       "CFP-034",
@@ -2547,6 +2571,8 @@
       "CFP-038",
       "CFP-039",
       "CFP-040",
+      "CFP-044",
+      "CFP-045",
       "CFP-10",
       "ERR-007",
       "R10",
@@ -2660,6 +2686,8 @@
       "T-201",
       "T-212",
       "T-213",
+      "T-219",
+      "T-220",
       "T-221",
       "T-223",
       "T-229",
@@ -2670,7 +2698,19 @@
       "T-234",
       "T-235",
       "T-241",
-      "T-244"
+      "T-244",
+      "T-254",
+      "T-255",
+      "T-257",
+      "T-258",
+      "T-259",
+      "T-260",
+      "T-261",
+      "T-263",
+      "T-264",
+      "T-265",
+      "T-266",
+      "T-267"
     ],
     "topic_map": [
       {
@@ -2802,6 +2842,11 @@
         "score": 4
       },
       {
+        "path": "knowledge/diagrams/backlink-graph.html",
+        "strength": "related",
+        "score": 3
+      },
+      {
         "path": "knowledge/topic_registry.json",
         "strength": "related",
         "score": 3
@@ -2812,12 +2857,32 @@
         "score": 3
       },
       {
+        "path": "scripts/build_backlink_graph.py",
+        "strength": "related",
+        "score": 3
+      },
+      {
         "path": "scripts/knowledge_conflict_checker.py",
         "strength": "related",
         "score": 3
       },
       {
         "path": ".agents/skills/knowledge/index_manager/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/diagrams/wiki-index-sync-current-vs-fixed.svg",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/wiki-index-integrity-audit-2026-06-24.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/wiki-index-sync-diagram-guide-2026-06-24.md",
         "strength": "related",
         "score": 2
       },
@@ -3284,6 +3349,16 @@
         "score": 2
       },
       {
+        "path": "knowledge/diagrams/backlink-graph.html",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/diagrams/wiki-index-sync-current-vs-fixed.svg",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "knowledge/harness-agent-skill-system-framework-2026-06-04.md",
         "strength": "related",
         "score": 2
@@ -3309,6 +3384,16 @@
         "score": 2
       },
       {
+        "path": "knowledge/wiki-index-integrity-audit-2026-06-24.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/wiki-index-sync-diagram-guide-2026-06-24.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "scripts/backfill_knowledge_index.py",
         "strength": "related",
         "score": 2
@@ -3320,6 +3405,11 @@
       },
       {
         "path": "scripts/bootstrap_sessions.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/build_backlink_graph.py",
         "strength": "related",
         "score": 2
       },
@@ -3467,6 +3557,11 @@
         "score": 2
       },
       {
+        "path": "knowledge/wiki-index-integrity-audit-2026-06-24.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "scripts/rule_indexer.py",
         "strength": "related",
         "score": 2
@@ -3544,6 +3639,16 @@
       "scripts/backlink_analyzer.py"
     ],
     "related": [
+      {
+        "path": "knowledge/diagrams/backlink-graph.html",
+        "strength": "strong",
+        "score": 5
+      },
+      {
+        "path": "scripts/build_backlink_graph.py",
+        "strength": "strong",
+        "score": 5
+      },
       {
         "path": "knowledge/topic_facet_schema.md",
         "strength": "strong",
@@ -3720,12 +3825,27 @@
         "score": 2
       },
       {
+        "path": "knowledge/diagrams/wiki-index-sync-current-vs-fixed.svg",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "knowledge/harness-reference-forking-token-agent-application-2026-05-25.md",
         "strength": "related",
         "score": 2
       },
       {
         "path": "knowledge/harness_flow_20260526.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/wiki-index-integrity-audit-2026-06-24.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/wiki-index-sync-diagram-guide-2026-06-24.md",
         "strength": "related",
         "score": 2
       },
@@ -3829,6 +3949,11 @@
         "score": 5
       },
       {
+        "path": "knowledge/diagrams/backlink-graph.html",
+        "strength": "strong",
+        "score": 4
+      },
+      {
         "path": "knowledge/index_variables.json",
         "strength": "strong",
         "score": 4
@@ -3844,9 +3969,29 @@
         "score": 4
       },
       {
+        "path": "scripts/build_backlink_graph.py",
+        "strength": "strong",
+        "score": 4
+      },
+      {
         "path": "scripts/knowledge_conflict_checker.py",
         "strength": "strong",
         "score": 4
+      },
+      {
+        "path": "knowledge/diagrams/wiki-index-sync-current-vs-fixed.svg",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "knowledge/wiki-index-integrity-audit-2026-06-24.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "knowledge/wiki-index-sync-diagram-guide-2026-06-24.md",
+        "strength": "related",
+        "score": 3
       },
       {
         "path": "scripts/index_reconcile.py",
@@ -5446,6 +5591,11 @@
         "score": 2
       },
       {
+        "path": "knowledge/diagrams/backlink-graph.html",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "knowledge/harness-reference-forking-token-agent-application-2026-05-25.md",
         "strength": "related",
         "score": 2
@@ -5462,6 +5612,11 @@
       },
       {
         "path": "scripts/backfill_knowledge_index.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/build_backlink_graph.py",
         "strength": "related",
         "score": 2
       },
@@ -5502,11 +5657,14 @@
       "R14",
       "R15",
       "R16",
+      "R3",
       "R5",
       "R8",
+      "R9",
       "T-053",
       "T-161",
-      "T-180"
+      "T-180",
+      "T-267"
     ],
     "type": "doc",
     "topic_map": [],
@@ -5953,6 +6111,11 @@
         "score": 2
       },
       {
+        "path": "knowledge/diagrams/backlink-graph.html",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "knowledge/harness-agent-skill-system-framework-2026-06-04.md",
         "strength": "related",
         "score": 2
@@ -5969,6 +6132,11 @@
       },
       {
         "path": "scripts/backfill_knowledge_index.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/build_backlink_graph.py",
         "strength": "related",
         "score": 2
       },
@@ -6394,6 +6562,11 @@
         "score": 2
       },
       {
+        "path": "knowledge/diagrams/backlink-graph.html",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "knowledge/harness-agent-skill-system-framework-2026-06-04.md",
         "strength": "related",
         "score": 2
@@ -6410,6 +6583,11 @@
       },
       {
         "path": "scripts/backfill_knowledge_index.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/build_backlink_graph.py",
         "strength": "related",
         "score": 2
       },
@@ -6445,7 +6623,8 @@
       "R3",
       "R4",
       "R9",
-      "T-158"
+      "T-158",
+      "T-255"
     ],
     "rules_referenced": [
       "BC-topic-lookup",
@@ -6554,6 +6733,11 @@
         "score": 2
       },
       {
+        "path": "knowledge/diagrams/backlink-graph.html",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "knowledge/harness-agent-skill-system-framework-2026-06-04.md",
         "strength": "related",
         "score": 2
@@ -6570,6 +6754,11 @@
       },
       {
         "path": "scripts/backfill_knowledge_index.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/build_backlink_graph.py",
         "strength": "related",
         "score": 2
       },
@@ -7171,6 +7360,11 @@
         "score": 4
       },
       {
+        "path": "knowledge/diagrams/backlink-graph.html",
+        "strength": "strong",
+        "score": 4
+      },
+      {
         "path": "knowledge/topic_facet_schema.md",
         "strength": "strong",
         "score": 4
@@ -7182,6 +7376,11 @@
       },
       {
         "path": "scripts/backlink_analyzer.py",
+        "strength": "strong",
+        "score": 4
+      },
+      {
+        "path": "scripts/build_backlink_graph.py",
         "strength": "strong",
         "score": 4
       },
@@ -7201,12 +7400,27 @@
         "score": 3
       },
       {
+        "path": "knowledge/diagrams/wiki-index-sync-current-vs-fixed.svg",
+        "strength": "related",
+        "score": 3
+      },
+      {
         "path": "knowledge/harness_flow_20260526.md",
         "strength": "related",
         "score": 3
       },
       {
         "path": "knowledge/index_variables.json",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "knowledge/wiki-index-integrity-audit-2026-06-24.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "knowledge/wiki-index-sync-diagram-guide-2026-06-24.md",
         "strength": "related",
         "score": 3
       },
@@ -7645,6 +7859,11 @@
         "score": 4
       },
       {
+        "path": "knowledge/diagrams/backlink-graph.html",
+        "strength": "strong",
+        "score": 4
+      },
+      {
         "path": "knowledge/topic_facet_schema.md",
         "strength": "strong",
         "score": 4
@@ -7656,6 +7875,11 @@
       },
       {
         "path": "scripts/backlink_analyzer.py",
+        "strength": "strong",
+        "score": 4
+      },
+      {
+        "path": "scripts/build_backlink_graph.py",
         "strength": "strong",
         "score": 4
       },
@@ -7675,12 +7899,27 @@
         "score": 3
       },
       {
+        "path": "knowledge/diagrams/wiki-index-sync-current-vs-fixed.svg",
+        "strength": "related",
+        "score": 3
+      },
+      {
         "path": "knowledge/harness_flow_20260526.md",
         "strength": "related",
         "score": 3
       },
       {
         "path": "knowledge/index_variables.json",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "knowledge/wiki-index-integrity-audit-2026-06-24.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "knowledge/wiki-index-sync-diagram-guide-2026-06-24.md",
         "strength": "related",
         "score": 3
       },
@@ -8937,6 +9176,11 @@
         "score": 2
       },
       {
+        "path": "knowledge/diagrams/backlink-graph.html",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "knowledge/harness-agent-skill-system-framework-2026-06-04.md",
         "strength": "related",
         "score": 2
@@ -8948,6 +9192,11 @@
       },
       {
         "path": "scripts/backfill_knowledge_index.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/build_backlink_graph.py",
         "strength": "related",
         "score": 2
       },
@@ -11077,6 +11326,11 @@
         "score": 2
       },
       {
+        "path": "knowledge/wiki-index-integrity-audit-2026-06-24.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "scripts/rule_indexer.py",
         "strength": "related",
         "score": 2
@@ -11326,6 +11580,16 @@
         "score": 2
       },
       {
+        "path": "knowledge/diagrams/backlink-graph.html",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/diagrams/wiki-index-sync-current-vs-fixed.svg",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "knowledge/harness_flow_20260526.md",
         "strength": "related",
         "score": 2
@@ -11341,7 +11605,22 @@
         "score": 2
       },
       {
+        "path": "knowledge/wiki-index-integrity-audit-2026-06-24.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/wiki-index-sync-diagram-guide-2026-06-24.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "scripts/backlink_analyzer.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/build_backlink_graph.py",
         "strength": "related",
         "score": 2
       },
@@ -11496,6 +11775,11 @@
         "score": 3
       },
       {
+        "path": "knowledge/diagrams/backlink-graph.html",
+        "strength": "related",
+        "score": 3
+      },
+      {
         "path": "knowledge/index_sessions.json",
         "strength": "related",
         "score": 3
@@ -11507,6 +11791,11 @@
       },
       {
         "path": "knowledge/topic_registry.json",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/build_backlink_graph.py",
         "strength": "related",
         "score": 3
       },
@@ -11566,12 +11855,27 @@
         "score": 2
       },
       {
+        "path": "knowledge/diagrams/wiki-index-sync-current-vs-fixed.svg",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "knowledge/harness-reference-forking-token-agent-application-2026-05-25.md",
         "strength": "related",
         "score": 2
       },
       {
         "path": "knowledge/topic_facet_schema.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/wiki-index-integrity-audit-2026-06-24.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/wiki-index-sync-diagram-guide-2026-06-24.md",
         "strength": "related",
         "score": 2
       },
@@ -11717,12 +12021,22 @@
         "score": 3
       },
       {
+        "path": "knowledge/diagrams/backlink-graph.html",
+        "strength": "related",
+        "score": 3
+      },
+      {
         "path": "knowledge/harness_flow_20260526.md",
         "strength": "related",
         "score": 3
       },
       {
         "path": "knowledge/topic_registry.json",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/build_backlink_graph.py",
         "strength": "related",
         "score": 3
       },
@@ -11777,6 +12091,11 @@
         "score": 2
       },
       {
+        "path": "knowledge/diagrams/wiki-index-sync-current-vs-fixed.svg",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "knowledge/harness-reference-forking-token-agent-application-2026-05-25.md",
         "strength": "related",
         "score": 2
@@ -11788,6 +12107,16 @@
       },
       {
         "path": "knowledge/topic_facet_schema.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/wiki-index-integrity-audit-2026-06-24.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/wiki-index-sync-diagram-guide-2026-06-24.md",
         "strength": "related",
         "score": 2
       },
@@ -11896,7 +12225,17 @@
         "score": 3
       },
       {
+        "path": "knowledge/diagrams/backlink-graph.html",
+        "strength": "related",
+        "score": 3
+      },
+      {
         "path": "knowledge/topic_registry.json",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/build_backlink_graph.py",
         "strength": "related",
         "score": 3
       },
@@ -11976,6 +12315,11 @@
         "score": 2
       },
       {
+        "path": "knowledge/diagrams/wiki-index-sync-current-vs-fixed.svg",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "knowledge/harness-agent-skill-system-framework-2026-06-04.md",
         "strength": "related",
         "score": 2
@@ -11992,6 +12336,16 @@
       },
       {
         "path": "knowledge/topic_facet_schema.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/wiki-index-integrity-audit-2026-06-24.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/wiki-index-sync-diagram-guide-2026-06-24.md",
         "strength": "related",
         "score": 2
       },
@@ -12104,12 +12458,22 @@
         "score": 3
       },
       {
+        "path": "knowledge/diagrams/backlink-graph.html",
+        "strength": "related",
+        "score": 3
+      },
+      {
         "path": "knowledge/harness_flow_20260526.md",
         "strength": "related",
         "score": 3
       },
       {
         "path": "knowledge/topic_registry.json",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/build_backlink_graph.py",
         "strength": "related",
         "score": 3
       },
@@ -12164,6 +12528,11 @@
         "score": 2
       },
       {
+        "path": "knowledge/diagrams/wiki-index-sync-current-vs-fixed.svg",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "knowledge/harness-reference-forking-token-agent-application-2026-05-25.md",
         "strength": "related",
         "score": 2
@@ -12175,6 +12544,16 @@
       },
       {
         "path": "knowledge/topic_facet_schema.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/wiki-index-integrity-audit-2026-06-24.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/wiki-index-sync-diagram-guide-2026-06-24.md",
         "strength": "related",
         "score": 2
       },
@@ -12765,6 +13144,16 @@
         "score": 2
       },
       {
+        "path": "knowledge/diagrams/backlink-graph.html",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/diagrams/wiki-index-sync-current-vs-fixed.svg",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "knowledge/harness-reference-forking-token-agent-application-2026-05-25.md",
         "strength": "related",
         "score": 2
@@ -12785,12 +13174,27 @@
         "score": 2
       },
       {
+        "path": "knowledge/wiki-index-integrity-audit-2026-06-24.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/wiki-index-sync-diagram-guide-2026-06-24.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "scripts/backfill_knowledge_index.py",
         "strength": "related",
         "score": 2
       },
       {
         "path": "scripts/backlink_analyzer.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/build_backlink_graph.py",
         "strength": "related",
         "score": 2
       },
@@ -13464,6 +13868,11 @@
         "score": 2
       },
       {
+        "path": "knowledge/diagrams/backlink-graph.html",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "knowledge/harness-agent-skill-system-framework-2026-06-04.md",
         "strength": "related",
         "score": 2
@@ -13480,6 +13889,11 @@
       },
       {
         "path": "scripts/backfill_knowledge_index.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/build_backlink_graph.py",
         "strength": "related",
         "score": 2
       },
@@ -15681,6 +16095,11 @@
         "score": 2
       },
       {
+        "path": "knowledge/diagrams/wiki-index-sync-current-vs-fixed.svg",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "knowledge/index_cfp_fix.json",
         "strength": "related",
         "score": 2
@@ -15707,6 +16126,16 @@
       },
       {
         "path": "knowledge/user_modeling_grounding.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/wiki-index-integrity-audit-2026-06-24.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/wiki-index-sync-diagram-guide-2026-06-24.md",
         "strength": "related",
         "score": 2
       },
@@ -16346,6 +16775,11 @@
         "score": 2
       },
       {
+        "path": "knowledge/wiki-index-integrity-audit-2026-06-24.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "scripts/repo_scout.py",
         "strength": "related",
         "score": 2
@@ -16592,7 +17026,7 @@
     "imports": [
       "scripts/token_estimator.py"
     ],
-    "extracted_at_hash": "a96e11fb",
+    "extracted_at_hash": "567ca411",
     "imported_by": []
   },
   "scripts/rule_indexer.py": {
@@ -16713,6 +17147,11 @@
         "score": 3
       },
       {
+        "path": "knowledge/diagrams/wiki-index-sync-current-vs-fixed.svg",
+        "strength": "related",
+        "score": 3
+      },
+      {
         "path": "knowledge/harness-agent-skill-system-framework-2026-06-04.md",
         "strength": "related",
         "score": 3
@@ -16724,6 +17163,16 @@
       },
       {
         "path": "knowledge/topic_registry.json",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "knowledge/wiki-index-integrity-audit-2026-06-24.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "knowledge/wiki-index-sync-diagram-guide-2026-06-24.md",
         "strength": "related",
         "score": 3
       },
@@ -16798,6 +17247,11 @@
         "score": 2
       },
       {
+        "path": "knowledge/diagrams/backlink-graph.html",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "knowledge/error_index.md",
         "strength": "related",
         "score": 2
@@ -16819,6 +17273,11 @@
       },
       {
         "path": "knowledge/index_variables.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/build_backlink_graph.py",
         "strength": "related",
         "score": 2
       },
@@ -16979,12 +17438,27 @@
         "score": 3
       },
       {
+        "path": "knowledge/diagrams/wiki-index-sync-current-vs-fixed.svg",
+        "strength": "related",
+        "score": 3
+      },
+      {
         "path": "knowledge/harness_flow_20260526.md",
         "strength": "related",
         "score": 3
       },
       {
         "path": "knowledge/topic_facet_schema.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "knowledge/wiki-index-integrity-audit-2026-06-24.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "knowledge/wiki-index-sync-diagram-guide-2026-06-24.md",
         "strength": "related",
         "score": 3
       },
@@ -17119,6 +17593,11 @@
         "score": 2
       },
       {
+        "path": "knowledge/diagrams/backlink-graph.html",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "knowledge/harness-agent-skill-system-framework-2026-06-04.md",
         "strength": "related",
         "score": 2
@@ -17150,6 +17629,11 @@
       },
       {
         "path": "scripts/bootstrap_sessions.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/build_backlink_graph.py",
         "strength": "related",
         "score": 2
       },
@@ -17249,7 +17733,7 @@
     "coverage": 0.9,
     "tagged_at_hash": "62e12fec",
     "imports": [],
-    "extracted_at_hash": "77d0804b",
+    "extracted_at_hash": "a02487e4",
     "imported_by": []
   },
   ".agents/skills/harness/harness_editor/SKILL_detail.md": {
@@ -17992,6 +18476,16 @@
         "score": 3
       },
       {
+        "path": "knowledge/diagrams/backlink-graph.html",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "knowledge/diagrams/wiki-index-sync-current-vs-fixed.svg",
+        "strength": "related",
+        "score": 3
+      },
+      {
         "path": "knowledge/harness-reference-forking-token-agent-application-2026-05-25.md",
         "strength": "related",
         "score": 3
@@ -18012,7 +18506,22 @@
         "score": 3
       },
       {
+        "path": "knowledge/wiki-index-integrity-audit-2026-06-24.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "knowledge/wiki-index-sync-diagram-guide-2026-06-24.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
         "path": "scripts/backlink_analyzer.py",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/build_backlink_graph.py",
         "strength": "related",
         "score": 3
       },
@@ -18304,6 +18813,11 @@
         "score": 5
       },
       {
+        "path": "knowledge/diagrams/backlink-graph.html",
+        "strength": "strong",
+        "score": 4
+      },
+      {
         "path": "knowledge/index_variables.json",
         "strength": "strong",
         "score": 4
@@ -18319,9 +18833,29 @@
         "score": 4
       },
       {
+        "path": "scripts/build_backlink_graph.py",
+        "strength": "strong",
+        "score": 4
+      },
+      {
         "path": "scripts/knowledge_conflict_checker.py",
         "strength": "strong",
         "score": 4
+      },
+      {
+        "path": "knowledge/diagrams/wiki-index-sync-current-vs-fixed.svg",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "knowledge/wiki-index-integrity-audit-2026-06-24.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "knowledge/wiki-index-sync-diagram-guide-2026-06-24.md",
+        "strength": "related",
+        "score": 3
       },
       {
         "path": "scripts/index_reconcile.py",
@@ -18563,7 +19097,7 @@
   },
   "scripts/compact_reset.py": {
     "imports": [],
-    "extracted_at_hash": "27918ef6",
+    "extracted_at_hash": "d627acc2",
     "imported_by": [],
     "related": []
   },
@@ -18930,6 +19464,11 @@
         "score": 3
       },
       {
+        "path": "knowledge/wiki-index-integrity-audit-2026-06-24.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
         "path": "scripts/index_reconcile.py",
         "strength": "related",
         "score": 3
@@ -19010,6 +19549,11 @@
         "score": 2
       },
       {
+        "path": "knowledge/diagrams/wiki-index-sync-current-vs-fixed.svg",
+        "strength": "related",
+        "score": 2
+      },
+      {
         "path": "knowledge/harness-agent-skill-system-framework-2026-06-04.md",
         "strength": "related",
         "score": 2
@@ -19026,6 +19570,11 @@
       },
       {
         "path": "knowledge/topic_registry.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/wiki-index-sync-diagram-guide-2026-06-24.md",
         "strength": "related",
         "score": 2
       },
@@ -19159,11 +19708,10 @@
         "score": 2
       }
     ],
-    "rules_defined": [],
-    "rules_referenced": [
-      "T-253",
-      "T-225"
+    "rules_defined": [
+      "T-253"
     ],
+    "rules_referenced": [],
     "type": "knowledge"
   },
   "knowledge/user_learning_profile.json": {
@@ -19247,5 +19795,2494 @@
       "T-225"
     ],
     "type": "data"
+  },
+  "knowledge/obsidian-style-graph-knowledge-wiki-for-llm-2026-06-24.md": {
+    "description": "Research note: building an OFFLINE single-file HTML backlink graph (Obsidian-style) of repo files, colored by topic. Key finding: index_files.json already holds nodes/edges(backlinks,references,related)/color(topics) — it is a rendering problem, not a data problem. Library comparison (force-graph wins at ~2400 nodes Canvas); ref repos quartz/ObsidianHtml. Frames the graph as the human-facing read-model of the agent index + a harness-health audit (orphan/hub/cluster) + GraphRAG adjacency.",
+    "topics": {
+      "major": [
+        "knowledge_system"
+      ],
+      "minor": [
+        "backlink",
+        "index_sync",
+        "visualization"
+      ]
+    },
+    "references": [
+      "knowledge/index_files.json",
+      "scripts/backlink_analyzer.py",
+      "scripts/index_reconcile.py",
+      "knowledge/karpathy-llm-wiki-pattern-2026-06-24.md"
+    ],
+    "rules_defined": [],
+    "rules_referenced": [
+      "R8"
+    ],
+    "related": [
+      {
+        "path": "knowledge/karpathy-llm-wiki-pattern-2026-06-24.md",
+        "strength": "strong",
+        "score": 5
+      },
+      {
+        "path": "knowledge/wiki-index-sync-diagram-guide-2026-06-24.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "knowledge/diagrams/wiki-index-sync-current-vs-fixed.svg",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/wiki-index-integrity-audit-2026-06-24.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/build_backlink_graph.py",
+        "strength": "related",
+        "score": 2
+      }
+    ]
+  },
+  "scripts/._cfp_fix_probe.py": {
+    "imports": [],
+    "extracted_at_hash": "cea7df16",
+    "imported_by": [],
+    "related": []
+  },
+  "scripts/._cfp_recurrence.py": {
+    "imports": [],
+    "extracted_at_hash": "cea7df16",
+    "imported_by": [],
+    "related": []
+  },
+  "scripts/._review_intent.py": {
+    "imports": [],
+    "extracted_at_hash": "cea7df16",
+    "imported_by": [],
+    "related": []
+  },
+  "scripts/._skill_gate.py": {
+    "imports": [],
+    "extracted_at_hash": "cea7df16",
+    "imported_by": [],
+    "related": []
+  },
+  "scripts/cfp_fix_probe.py": {
+    "imports": [],
+    "extracted_at_hash": "0189e01c",
+    "imported_by": [],
+    "related": []
+  },
+  "scripts/cfp_recurrence.py": {
+    "imports": [],
+    "extracted_at_hash": "25720674",
+    "imported_by": [],
+    "related": []
+  },
+  "scripts/review_intent.py": {
+    "imports": [],
+    "extracted_at_hash": "4905e3f6",
+    "imported_by": [],
+    "related": []
+  },
+  "scripts/skill_gate.py": {
+    "imports": [],
+    "extracted_at_hash": "7d120c2b",
+    "imported_by": [],
+    "related": []
+  },
+  "knowledge/karpathy-llm-wiki-pattern-2026-06-24.md": {
+    "description": "Research note on Karpathy LLM-Wiki gist (gist 442a6bf): LLM incrementally builds+maintains an interlinked markdown knowledge base (vs RAG re-deriving each query). 3 layers (raw sources / wiki / schema=CLAUDE.md+AGENTS.md, named explicitly) · 3 ops (ingest/query/lint) · index.md+log.md, no embeddings at moderate scale. KEY: maps ~80% onto our harness (knowledge/+memory = wiki, index_files.json = index, index_reconcile/scrutinize = lint, the planned backlink graph = Obsidian graph view). Gaps to adopt: immutable raw-sources layer, inline contradiction-flagging, page frontmatter, qmd search at scale.",
+    "topics": {
+      "major": [
+        "knowledge_system"
+      ],
+      "minor": [
+        "backlink",
+        "index_sync",
+        "visualization",
+        "rag"
+      ]
+    },
+    "references": [
+      "knowledge/obsidian-style-graph-knowledge-wiki-for-llm-2026-06-24.md",
+      "CLAUDE.md",
+      "AGENTS.md",
+      "scripts/index_reconcile.py"
+    ],
+    "rules_defined": [],
+    "rules_referenced": [
+      "R5"
+    ],
+    "related": [
+      {
+        "path": "knowledge/obsidian-style-graph-knowledge-wiki-for-llm-2026-06-24.md",
+        "strength": "strong",
+        "score": 5
+      },
+      {
+        "path": "knowledge/wiki-index-sync-diagram-guide-2026-06-24.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "knowledge/diagrams/wiki-index-sync-current-vs-fixed.svg",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/wiki-index-integrity-audit-2026-06-24.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/build_backlink_graph.py",
+        "strength": "related",
+        "score": 2
+      }
+    ]
+  },
+  "knowledge/wiki-index-integrity-audit-2026-06-24.md": {
+    "description": "Verified audit: LLM-wiki index/backlink sync leaks on ADD (honor-system, no enroll script; index_reconcile.py:262/384 only PRINTS [index-drift] missing, never inserts; detector uses git status --porcelain=this-session so committed files leak forever → root cause of 76 missing entries). DELETE enforced (--check exit 2), EDIT drifts (topics never re-extracted), RENAME asymmetric. Fix: make reconciler ENROLL over git ls-files. Prioritized fix plan inside.",
+    "topics": {
+      "major": [
+        "index_sync"
+      ],
+      "minor": [
+        "knowledge_base",
+        "backlink",
+        "error_protocol"
+      ]
+    },
+    "references": [
+      "scripts/index_reconcile.py",
+      "scripts/backlink_analyzer.py",
+      "knowledge/karpathy-llm-wiki-pattern-2026-06-24.md",
+      "knowledge/wiki-index-sync-diagram-guide-2026-06-24.md"
+    ],
+    "rules_defined": [],
+    "rules_referenced": [
+      "R8",
+      "T-269",
+      "T-270",
+      "T-271",
+      "T-272"
+    ],
+    "related": [
+      {
+        "path": "knowledge/wiki-index-sync-diagram-guide-2026-06-24.md",
+        "strength": "strong",
+        "score": 4
+      },
+      {
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "knowledge/diagrams/wiki-index-sync-current-vs-fixed.svg",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "knowledge/topic_facet_schema.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/backfill_knowledge_index.py",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/backlink_analyzer.py",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/index_reconcile.py",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/knowledge_conflict_checker.py",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/repo_map_check.py",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/rule_indexer.py",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "../Document_Control/kms-api-secured.js",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/harness/harness_doctor/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "docs/session_templates/research_improvement.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "docs/session_templates/research_repo_map.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "docs/session_templates/research_summary.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/diagrams/backlink-graph.html",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/error_index.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/error_topics.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/index_sessions.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/index_variables.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/karpathy-llm-wiki-pattern-2026-06-24.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/obsidian-style-graph-knowledge-wiki-for-llm-2026-06-24.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/topic_registry.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/build_backlink_graph.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/repo_scout.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/session_close.py",
+        "strength": "related",
+        "score": 2
+      }
+    ]
+  },
+  "knowledge/wiki-index-sync-diagram-guide-2026-06-24.md": {
+    "description": "Visual guide (companion to the integrity audit): flow diagram of how a new file reaches the index. Two columns current(leaky) vs fixed(complete); only steps 3-4 differ — detection porcelain->git ls-files, missing-file print->auto-enroll stub. Core principle: ADD path moves from honor-system to enforced/automatic (same reason DELETE never leaks). References the SVG + scripts/index_reconcile.py. Ties to roadmap T-269.",
+    "topics": {
+      "major": [
+        "index_sync"
+      ],
+      "minor": [
+        "knowledge_base",
+        "backlink",
+        "visualization"
+      ]
+    },
+    "references": [
+      "knowledge/wiki-index-integrity-audit-2026-06-24.md",
+      "knowledge/diagrams/wiki-index-sync-current-vs-fixed.svg",
+      "scripts/index_reconcile.py"
+    ],
+    "rules_defined": [],
+    "rules_referenced": [
+      "T-269",
+      "T-270",
+      "T-271",
+      "T-272"
+    ],
+    "related": [
+      {
+        "path": "knowledge/diagrams/wiki-index-sync-current-vs-fixed.svg",
+        "strength": "strong",
+        "score": 4
+      },
+      {
+        "path": "knowledge/wiki-index-integrity-audit-2026-06-24.md",
+        "strength": "strong",
+        "score": 4
+      },
+      {
+        "path": "knowledge/karpathy-llm-wiki-pattern-2026-06-24.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "knowledge/obsidian-style-graph-knowledge-wiki-for-llm-2026-06-24.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "knowledge/topic_facet_schema.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/backfill_knowledge_index.py",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/backlink_analyzer.py",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/index_reconcile.py",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/knowledge_conflict_checker.py",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/repo_map_check.py",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/rule_indexer.py",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "docs/session_templates/research_improvement.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "docs/session_templates/research_repo_map.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "docs/session_templates/research_summary.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/diagrams/backlink-graph.html",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/index_sessions.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/index_variables.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/topic_registry.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/build_backlink_graph.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/repo_scout.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/session_close.py",
+        "strength": "related",
+        "score": 2
+      }
+    ]
+  },
+  "knowledge/diagrams/wiki-index-sync-current-vs-fixed.svg": {
+    "type": "diagram",
+    "description": "Standalone SVG: Wiki index sync current(leaky) vs fixed(complete) flow — the 4-step ADD-to-index path, steps 3-4 are the T-269 fix points (git ls-files + auto-enroll).",
+    "topics": {
+      "major": [
+        "index_sync"
+      ],
+      "minor": [
+        "visualization",
+        "knowledge_base"
+      ]
+    },
+    "references": [
+      "knowledge/wiki-index-sync-diagram-guide-2026-06-24.md"
+    ],
+    "related": [
+      {
+        "path": "knowledge/wiki-index-sync-diagram-guide-2026-06-24.md",
+        "strength": "strong",
+        "score": 4
+      },
+      {
+        "path": "knowledge/topic_facet_schema.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "knowledge/wiki-index-integrity-audit-2026-06-24.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/backfill_knowledge_index.py",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/backlink_analyzer.py",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/index_reconcile.py",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/knowledge_conflict_checker.py",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/repo_map_check.py",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/rule_indexer.py",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/knowledge/index_manager/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "docs/session_templates/research_improvement.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "docs/session_templates/research_repo_map.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "docs/session_templates/research_summary.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/diagrams/backlink-graph.html",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/index_sessions.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/index_variables.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/karpathy-llm-wiki-pattern-2026-06-24.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/obsidian-style-graph-knowledge-wiki-for-llm-2026-06-24.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/topic_registry.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/build_backlink_graph.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/repo_scout.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/session_close.py",
+        "strength": "related",
+        "score": 2
+      }
+    ]
+  },
+  ".agents/skills/coding/agent/SKILL.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [
+      "R4"
+    ],
+    "rules_referenced": [
+      "BC-cycle-halt",
+      "BC-result-gate",
+      "R13",
+      "R3",
+      "R5",
+      "R6",
+      "R8"
+    ]
+  },
+  ".agents/skills/coding/agent/SKILL_detail.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [],
+    "rules_referenced": [
+      "R5",
+      "R6",
+      "R8"
+    ]
+  },
+  ".agents/skills/coding/coder/SKILL.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [],
+    "rules_referenced": [
+      "BC-index-sync-gate",
+      "ERR-007",
+      "R15",
+      "R4",
+      "R8",
+      "T-230"
+    ]
+  },
+  ".agents/skills/coding/editor/SKILL.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [
+      "R9"
+    ],
+    "rules_referenced": [
+      "BC-error-index-gate",
+      "BC-symbol-change-gate",
+      "ERR-007",
+      "R14",
+      "R5",
+      "R8",
+      "T-230"
+    ]
+  },
+  ".agents/skills/coding/editor/SKILL_detail.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [
+      "R12",
+      "R9"
+    ],
+    "rules_referenced": [
+      "CFP-004",
+      "ERR-00",
+      "ERR-007",
+      "R13",
+      "R5"
+    ]
+  },
+  ".agents/skills/content/ascii_flow/SKILL.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [],
+    "rules_referenced": [
+      "BC-ascii-invoke",
+      "BC-ascii-return"
+    ]
+  },
+  ".agents/skills/harness/debug/SKILL.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [
+      "R9"
+    ],
+    "rules_referenced": [
+      "R1",
+      "R2",
+      "R3",
+      "T-202"
+    ]
+  },
+  ".agents/skills/harness/mece/SKILL_detail.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [],
+    "rules_referenced": [
+      "CFP-004",
+      "CFP-030",
+      "R12",
+      "R13",
+      "R14",
+      "R15",
+      "R4",
+      "R5",
+      "R8",
+      "R9"
+    ]
+  },
+  ".agents/skills/harness/scrutinize/SKILL.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [],
+    "rules_referenced": [
+      "R1",
+      "T-214"
+    ]
+  },
+  ".agents/skills/harness/skeptical_reviewer/SKILL.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [],
+    "rules_referenced": [
+      "BC-output-format",
+      "T-224"
+    ]
+  },
+  ".agents/skills/harness/token_auditor/SKILL.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [],
+    "rules_referenced": [
+      "BC-halt",
+      "R3",
+      "R5",
+      "R6"
+    ]
+  },
+  ".agents/skills/harness/token_tracker/SKILL.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [
+      "R1",
+      "R3"
+    ],
+    "rules_referenced": [
+      "CFP-028",
+      "CFP-031",
+      "CFP-041",
+      "T-177",
+      "T-244"
+    ]
+  },
+  ".agents/skills/knowledge/session_manager/SKILL_detail.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [],
+    "rules_referenced": [
+      "R13",
+      "T-007"
+    ]
+  },
+  ".agents/skills/user/identity/SKILL.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [],
+    "rules_referenced": [
+      "R1",
+      "R5"
+    ]
+  },
+  ".agents/skills/user/user-coach/SKILL.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [
+      "T-253"
+    ],
+    "rules_referenced": [
+      "T-225",
+      "T-229"
+    ]
+  },
+  "CLAUDE.th.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "CODING_FAILURE_PATTERNS.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [
+      "CFP-005",
+      "CFP-006",
+      "CFP-007",
+      "CFP-008",
+      "CFP-009",
+      "CFP-010",
+      "CFP-011",
+      "CFP-012",
+      "CFP-013",
+      "CFP-014",
+      "CFP-015",
+      "CFP-016",
+      "CFP-017",
+      "CFP-018",
+      "CFP-019",
+      "CFP-020",
+      "CFP-021",
+      "CFP-022",
+      "CFP-023",
+      "CFP-024",
+      "CFP-025",
+      "CFP-026",
+      "CFP-027",
+      "CFP-028",
+      "CFP-029",
+      "CFP-030",
+      "CFP-031",
+      "CFP-032",
+      "CFP-033",
+      "CFP-034",
+      "CFP-035",
+      "CFP-036",
+      "CFP-037",
+      "CFP-038",
+      "CFP-039",
+      "CFP-040",
+      "CFP-041",
+      "CFP-042",
+      "CFP-043",
+      "CFP-044",
+      "CFP-045",
+      "CFP-046",
+      "R2",
+      "R5",
+      "R6",
+      "T-263"
+    ],
+    "rules_referenced": [
+      "BC-doctor-gate",
+      "CFP-001",
+      "CFP-004",
+      "R1",
+      "R11",
+      "R14",
+      "R3",
+      "R8",
+      "T-034",
+      "T-035",
+      "T-036",
+      "T-085",
+      "T-086",
+      "T-088",
+      "T-095",
+      "T-157",
+      "T-177",
+      "T-178",
+      "T-191",
+      "T-199",
+      "T-207",
+      "T-217",
+      "T-221",
+      "T-235",
+      "T-238",
+      "T-252",
+      "T-253",
+      "T-254",
+      "T-261",
+      "T-262",
+      "T-267"
+    ]
+  },
+  "INVARIANTS.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [],
+    "rules_referenced": [
+      "CFP-009",
+      "R3"
+    ]
+  },
+  "Implement.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "Implement/00_index.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [],
+    "rules_referenced": [
+      "R4"
+    ]
+  },
+  "Implement/01_overview.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [],
+    "rules_referenced": [
+      "R4",
+      "T-001"
+    ]
+  },
+  "Implement/02_setup.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [],
+    "rules_referenced": [
+      "ERR-007",
+      "R19",
+      "R3",
+      "R4",
+      "R5",
+      "R8",
+      "R9",
+      "T-000",
+      "T-180",
+      "T-227"
+    ]
+  },
+  "Implement/03_config.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [
+      "R1",
+      "R10",
+      "R11",
+      "R12",
+      "R13",
+      "R14",
+      "R15",
+      "R16",
+      "R2",
+      "R3",
+      "R4",
+      "R5",
+      "R6",
+      "R7",
+      "R8",
+      "R9",
+      "T-000",
+      "T-001",
+      "T-002",
+      "T-003",
+      "T-227",
+      "T-261"
+    ],
+    "rules_referenced": [
+      "BC-active-fix",
+      "BC-topic-lookup",
+      "CFP-004",
+      "CFP-025",
+      "CFP-026",
+      "CFP-031",
+      "CFP-041",
+      "CFP-043",
+      "ERR-007",
+      "T-004",
+      "T-178",
+      "T-180",
+      "T-182",
+      "T-183",
+      "T-185",
+      "T-190",
+      "T-192",
+      "T-193",
+      "T-212",
+      "T-221",
+      "T-228",
+      "T-230",
+      "T-231",
+      "T-235",
+      "T-247",
+      "T-250",
+      "T-252"
+    ]
+  },
+  "Implement/05_scripts.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [],
+    "rules_referenced": [
+      "BC-E",
+      "R16",
+      "R5",
+      "R6",
+      "R8",
+      "T-001",
+      "T-055",
+      "T-178",
+      "T-180",
+      "T-182",
+      "T-183",
+      "T-190",
+      "T-192",
+      "T-193",
+      "T-265"
+    ]
+  },
+  "Implement/06_orchestrator.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [],
+    "rules_referenced": [
+      "BC-L4",
+      "CFP-033",
+      "CFP-034",
+      "CFP-041",
+      "R10",
+      "R2",
+      "R3",
+      "R5",
+      "R6",
+      "R8",
+      "T-235"
+    ]
+  },
+  "Implement/07_platform.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [
+      "T-212"
+    ],
+    "rules_referenced": [
+      "CFP-031",
+      "T-180",
+      "T-221",
+      "T-261",
+      "T-262"
+    ]
+  },
+  "README.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "docs/harness_health_checklist.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "docs/master_roadmap.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [
+      "BC-B",
+      "BC-M5-verify",
+      "BC-docs-close",
+      "BC-exec-pause",
+      "BC-mece-compact",
+      "CFP-006",
+      "CFP-024",
+      "CFP-025",
+      "CFP-028",
+      "CFP-031",
+      "CFP-037",
+      "CFP-039",
+      "CFP-041",
+      "CFP-043",
+      "R1",
+      "R12",
+      "R14",
+      "R15",
+      "R16",
+      "R2",
+      "R3",
+      "R4",
+      "R5",
+      "R8",
+      "R9",
+      "T-000",
+      "T-001",
+      "T-002",
+      "T-003",
+      "T-004",
+      "T-005",
+      "T-006",
+      "T-007",
+      "T-008",
+      "T-009",
+      "T-010",
+      "T-011",
+      "T-012",
+      "T-013",
+      "T-014",
+      "T-015",
+      "T-016",
+      "T-017",
+      "T-018",
+      "T-019",
+      "T-020",
+      "T-021",
+      "T-022",
+      "T-023",
+      "T-024",
+      "T-025",
+      "T-026",
+      "T-027",
+      "T-028",
+      "T-029",
+      "T-030",
+      "T-031",
+      "T-032",
+      "T-033",
+      "T-034",
+      "T-035",
+      "T-036",
+      "T-037",
+      "T-038",
+      "T-039",
+      "T-040",
+      "T-041",
+      "T-042",
+      "T-043",
+      "T-044",
+      "T-045",
+      "T-046",
+      "T-047",
+      "T-048",
+      "T-049",
+      "T-050",
+      "T-051",
+      "T-052",
+      "T-053",
+      "T-054",
+      "T-055",
+      "T-056",
+      "T-057",
+      "T-058",
+      "T-059",
+      "T-061",
+      "T-062",
+      "T-063",
+      "T-064",
+      "T-065",
+      "T-066",
+      "T-067",
+      "T-068",
+      "T-069",
+      "T-070",
+      "T-071",
+      "T-072",
+      "T-073",
+      "T-075",
+      "T-076",
+      "T-077",
+      "T-079",
+      "T-080",
+      "T-081",
+      "T-082",
+      "T-083",
+      "T-084",
+      "T-085",
+      "T-086",
+      "T-087",
+      "T-088",
+      "T-089",
+      "T-090",
+      "T-091",
+      "T-092",
+      "T-093",
+      "T-094",
+      "T-095",
+      "T-096",
+      "T-097",
+      "T-098",
+      "T-099",
+      "T-100",
+      "T-101",
+      "T-102",
+      "T-105",
+      "T-106",
+      "T-107",
+      "T-108",
+      "T-109",
+      "T-110",
+      "T-112",
+      "T-113",
+      "T-114",
+      "T-115",
+      "T-116",
+      "T-117",
+      "T-118",
+      "T-119",
+      "T-120",
+      "T-121",
+      "T-122",
+      "T-123",
+      "T-124",
+      "T-125",
+      "T-126",
+      "T-127",
+      "T-128",
+      "T-129",
+      "T-130",
+      "T-131",
+      "T-132",
+      "T-133",
+      "T-134",
+      "T-135",
+      "T-136",
+      "T-137",
+      "T-138",
+      "T-139",
+      "T-140",
+      "T-141",
+      "T-142",
+      "T-143",
+      "T-144",
+      "T-145",
+      "T-146",
+      "T-147",
+      "T-148",
+      "T-149",
+      "T-150",
+      "T-151",
+      "T-152",
+      "T-153",
+      "T-154",
+      "T-155",
+      "T-156",
+      "T-157",
+      "T-158",
+      "T-159",
+      "T-160",
+      "T-161",
+      "T-162",
+      "T-163",
+      "T-164",
+      "T-165",
+      "T-166",
+      "T-167",
+      "T-168",
+      "T-169",
+      "T-170",
+      "T-171",
+      "T-172",
+      "T-173",
+      "T-174",
+      "T-175",
+      "T-180",
+      "T-181",
+      "T-182",
+      "T-183",
+      "T-184",
+      "T-185",
+      "T-186",
+      "T-187",
+      "T-188",
+      "T-189",
+      "T-190",
+      "T-191",
+      "T-192",
+      "T-193",
+      "T-194",
+      "T-195",
+      "T-196",
+      "T-197",
+      "T-198",
+      "T-199",
+      "T-200",
+      "T-201",
+      "T-202",
+      "T-203",
+      "T-204",
+      "T-205",
+      "T-206",
+      "T-207",
+      "T-208",
+      "T-209",
+      "T-210",
+      "T-212",
+      "T-213",
+      "T-214",
+      "T-215",
+      "T-216",
+      "T-217",
+      "T-218",
+      "T-219",
+      "T-220",
+      "T-221",
+      "T-222",
+      "T-223",
+      "T-224",
+      "T-225",
+      "T-226",
+      "T-227",
+      "T-228",
+      "T-229",
+      "T-230",
+      "T-231",
+      "T-232",
+      "T-233",
+      "T-234",
+      "T-235",
+      "T-236",
+      "T-237",
+      "T-238",
+      "T-239",
+      "T-240",
+      "T-241",
+      "T-242",
+      "T-243",
+      "T-244",
+      "T-245",
+      "T-246",
+      "T-247",
+      "T-248",
+      "T-249",
+      "T-250",
+      "T-251",
+      "T-252",
+      "T-253",
+      "T-254",
+      "T-255",
+      "T-256",
+      "T-257",
+      "T-258",
+      "T-259",
+      "T-260",
+      "T-261",
+      "T-262",
+      "T-263",
+      "T-264",
+      "T-265",
+      "T-266",
+      "T-267",
+      "T-268",
+      "T-269",
+      "T-270",
+      "T-271",
+      "T-272",
+      "T-273",
+      "T-274",
+      "T-275"
+    ],
+    "rules_referenced": [
+      "BC-A",
+      "BC-Ascii-Return",
+      "BC-C",
+      "BC-D",
+      "BC-E",
+      "BC-Error-Index-Gate",
+      "BC-Index-Return",
+      "BC-Index-Sync-Gate",
+      "BC-Interview-Gate",
+      "BC-Invoke-Gate",
+      "BC-Output-Format",
+      "BC-Screenshot-Check",
+      "BC-Symbol-Change-Gate",
+      "BC-Symbol-Return",
+      "BC-footer-read",
+      "BC-pre-audit",
+      "CFP-019",
+      "CFP-020",
+      "CFP-021",
+      "CFP-022",
+      "CFP-023",
+      "CFP-026",
+      "CFP-030",
+      "CFP-033",
+      "CFP-038",
+      "CFP-044",
+      "CFP-046",
+      "ERR-007",
+      "R10",
+      "R11",
+      "R13",
+      "R6",
+      "R7",
+      "T-060",
+      "T-176",
+      "T-177",
+      "T-178",
+      "T-179"
+    ]
+  },
+  "docs/optimization_logs.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "docs/session_templates/active_thread.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "docs/session_templates/compact_state.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "docs/session_templates/gather_complete.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "docs/session_templates/self_improve_log.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "docs/session_templates/session_handoff.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "docs/session_templates/session_tokens.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "knowledge/9arm-skills-patterns-to-port-into-ai-agent-harness-2026-05-28.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "knowledge/9arm-skills-repo-scan-and-skill-taxonomy-2026-05-28.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "knowledge/agent-harness-skill-spec-closeout-writer-2026-05-28.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "knowledge/agent-harness-skill-spec-requirements-interviewer-2026-05-28.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "knowledge/agent-harness-skill-spec-skeptical-reviewer-2026-05-28.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "knowledge/agent-harness-skill-spec-verifier-orchestrator-2026-05-28.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "knowledge/cfp_archive.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [
+      "CFP-001",
+      "CFP-002",
+      "CFP-003",
+      "CFP-004"
+    ],
+    "rules_referenced": [
+      "R5"
+    ]
+  },
+  "knowledge/claude-code-compact-context-compression-2026-05-29.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [
+      "R3"
+    ],
+    "rules_referenced": [
+      "R6"
+    ]
+  },
+  "knowledge/claude-code-harness-research-notebooklm-summary-2026-05-28.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "knowledge/code_linkage_index.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [
+      "R5",
+      "R8"
+    ],
+    "rules_referenced": [
+      "T-191",
+      "T-192"
+    ]
+  },
+  "knowledge/context-compression-roadmap-vps-agent-2026-05-29.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [],
+    "rules_referenced": [
+      "R1"
+    ]
+  },
+  "knowledge/harness-file-role-map.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [],
+    "rules_referenced": [
+      "R1",
+      "R16",
+      "R7"
+    ]
+  },
+  "knowledge/harness-reference-file-role-clarity-2026-05-13.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "knowledge/harness_flow_20260525.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [
+      "CFP-041"
+    ],
+    "rules_referenced": [
+      "BC-threshold",
+      "CFP-001",
+      "CFP-004",
+      "CFP-008",
+      "CFP-009",
+      "CFP-011",
+      "CFP-10",
+      "R1",
+      "R10",
+      "R11",
+      "R12",
+      "R13",
+      "R16",
+      "R2",
+      "R3",
+      "R4",
+      "R5",
+      "R6",
+      "R7",
+      "R8",
+      "R9",
+      "T-078",
+      "T-079",
+      "T-080",
+      "T-081",
+      "T-082"
+    ]
+  },
+  "knowledge/implement-plan-local-llm-deployment-2026-06-17.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "knowledge/karpathy-skills-comparison-2026-06-21.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [],
+    "rules_referenced": [
+      "R1",
+      "R12",
+      "R3",
+      "R4",
+      "R5",
+      "R8",
+      "T-228",
+      "T-230",
+      "T-231",
+      "T-232",
+      "T-233",
+      "T-234"
+    ]
+  },
+  "knowledge/recipes/g0-interview-pattern.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "knowledge/recipes/reviewer-spawn.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "knowledge/skill-index.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [],
+    "rules_referenced": [
+      "R7"
+    ]
+  },
+  "knowledge/skill_authoring_principles.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "knowledge/skill_quality_checklist.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "docs/session_templates/loop_doc_schema.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": []
+  },
+  "knowledge/boot_loop.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [],
+    "rules_referenced": [
+      "T-266"
+    ]
+  },
+  "knowledge/error_debug_loop.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [],
+    "rules_referenced": [
+      "BC-E",
+      "BC-active-fix",
+      "BC-lookup",
+      "BC-topic-lookup",
+      "R1",
+      "R2",
+      "R3",
+      "R9",
+      "T-266"
+    ]
+  },
+  "knowledge/harness_authoring_techniques.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [],
+    "rules_referenced": [
+      "CFP-019",
+      "CFP-031",
+      "CFP-044",
+      "R10",
+      "R13",
+      "R14",
+      "R15",
+      "R16",
+      "R3",
+      "R4",
+      "R7",
+      "R8",
+      "T-224",
+      "T-230",
+      "T-234",
+      "T-261",
+      "T-263",
+      "T-267"
+    ]
+  },
+  "knowledge/info_gather_loop.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [],
+    "rules_referenced": [
+      "T-266"
+    ]
+  },
+  "knowledge/loops_catalog.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [],
+    "rules_referenced": [
+      "R3",
+      "R9"
+    ]
+  },
+  "knowledge/mece_plan_loop.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [],
+    "rules_referenced": [
+      "CFP-019",
+      "CFP-027",
+      "CFP-044",
+      "T-266"
+    ]
+  },
+  "knowledge/per_turn_routing_loop.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [],
+    "rules_referenced": [
+      "R16",
+      "T-266"
+    ]
+  },
+  "knowledge/react_execution_loop.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [],
+    "rules_referenced": [
+      "BC-L4",
+      "CFP-033",
+      "CFP-034",
+      "R16",
+      "R2",
+      "R5",
+      "R6",
+      "T-266"
+    ]
+  },
+  "knowledge/self_improvement_loop.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [
+      "T-265"
+    ],
+    "rules_referenced": [
+      "BC-E",
+      "CFP-044",
+      "R16",
+      "R8",
+      "T-263",
+      "T-264"
+    ]
+  },
+  "knowledge/session_close_loop.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [],
+    "rules_referenced": [
+      "CFP-025",
+      "CFP-037",
+      "CFP-044",
+      "T-263",
+      "T-266"
+    ]
+  },
+  "knowledge/token_tracking_loop.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [],
+    "rules_referenced": [
+      "R1",
+      "R3",
+      "T-178",
+      "T-180",
+      "T-221",
+      "T-231",
+      "T-235",
+      "T-266"
+    ]
+  },
+  "knowledge/obsidian-graph-view-principles-2026-06-25.md": {
+    "description": "",
+    "topics": {
+      "major": [],
+      "minor": []
+    },
+    "backlinks": [],
+    "references": [],
+    "related": [],
+    "rules_defined": [
+      "T-273"
+    ],
+    "rules_referenced": []
+  },
+  "scripts/build_backlink_graph.py": {
+    "type": "tool",
+    "description": "Generator (single source of truth) — reads knowledge/index_files.json and emits a self-contained OFFLINE HTML backlink graph (Obsidian-style force-directed view) to knowledge/diagrams/backlink-graph.html. Hand-written canvas force sim (no CDN), topic-cluster layout, score-threshold slider, click-to-focus, search, legend; Plus panel adds force sliders + settle/orphan/arrows toggles. Click-to-read detail panel (T-274): per-node embedded description preview, clickable neighbour navigation (walk backlinks in-graph), open-raw-file link. Deterministic/idempotent output. (T-273, T-274)",
+    "backlinks": [
+      "knowledge/index_files.json"
+    ],
+    "exports": [
+      "build_model",
+      "major_topic",
+      "main"
+    ],
+    "topics": {
+      "major": [
+        "topic_graph",
+        "knowledge_base"
+      ],
+      "minor": [
+        "index_sync",
+        "knowledge_system"
+      ]
+    },
+    "references": [
+      "knowledge/index_files.json",
+      "knowledge/obsidian-graph-view-principles-2026-06-25.md"
+    ],
+    "related": [
+      {
+        "path": "knowledge/diagrams/backlink-graph.html",
+        "strength": "strong",
+        "score": 5
+      },
+      {
+        "path": "knowledge/topic_registry.json",
+        "strength": "strong",
+        "score": 5
+      },
+      {
+        "path": "knowledge/topic_facet_schema.md",
+        "strength": "strong",
+        "score": 4
+      },
+      {
+        "path": "scripts/backfill_knowledge_index.py",
+        "strength": "strong",
+        "score": 4
+      },
+      {
+        "path": "scripts/backlink_analyzer.py",
+        "strength": "strong",
+        "score": 4
+      },
+      {
+        "path": "scripts/knowledge_conflict_checker.py",
+        "strength": "strong",
+        "score": 4
+      },
+      {
+        "path": "docs/session_templates/research_improvement.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "docs/session_templates/research_repo_map.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "docs/session_templates/research_summary.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "knowledge/index_variables.json",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/repo_map_check.py",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/repo_scout.py",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "Implement/04_skills.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "Implement/08_checklist.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "Implement/09_migration.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "REPO_MAP.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "docs/session_templates/storytelling_template.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/diagrams/wiki-index-sync-current-vs-fixed.svg",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/harness-reference-forking-token-agent-application-2026-05-25.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/harness_flow_20260526.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/index_sessions.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/karpathy-llm-wiki-pattern-2026-06-24.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/obsidian-style-graph-knowledge-wiki-for-llm-2026-06-24.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/wiki-index-integrity-audit-2026-06-24.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/wiki-index-sync-diagram-guide-2026-06-24.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/index_reconcile.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/rule_indexer.py",
+        "strength": "related",
+        "score": 2
+      }
+    ],
+    "rules_defined": [],
+    "rules_referenced": [],
+    "imports": [],
+    "extracted_at_hash": "5a088e3e",
+    "imported_by": []
+  },
+  "knowledge/diagrams/backlink-graph.html": {
+    "type": "artifact",
+    "description": "Generated offline artifact (do NOT hand-edit) — self-contained interactive backlink graph of the knowledge base, 209 nodes / 1202 deduped edges, color-by-topic, built by scripts/build_backlink_graph.py. Open directly in a browser; zero network refs. (T-273)",
+    "backlinks": [
+      "scripts/build_backlink_graph.py"
+    ],
+    "topics": {
+      "major": [
+        "topic_graph",
+        "knowledge_base"
+      ],
+      "minor": [
+        "index_sync"
+      ]
+    },
+    "references": [
+      "scripts/build_backlink_graph.py",
+      "knowledge/index_files.json"
+    ],
+    "related": [
+      {
+        "path": "knowledge/topic_registry.json",
+        "strength": "strong",
+        "score": 5
+      },
+      {
+        "path": "scripts/build_backlink_graph.py",
+        "strength": "strong",
+        "score": 5
+      },
+      {
+        "path": "knowledge/topic_facet_schema.md",
+        "strength": "strong",
+        "score": 4
+      },
+      {
+        "path": "scripts/backfill_knowledge_index.py",
+        "strength": "strong",
+        "score": 4
+      },
+      {
+        "path": "scripts/backlink_analyzer.py",
+        "strength": "strong",
+        "score": 4
+      },
+      {
+        "path": "scripts/knowledge_conflict_checker.py",
+        "strength": "strong",
+        "score": 4
+      },
+      {
+        "path": "docs/session_templates/research_improvement.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "docs/session_templates/research_repo_map.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "docs/session_templates/research_summary.md",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "knowledge/index_variables.json",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/repo_map_check.py",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": "scripts/repo_scout.py",
+        "strength": "related",
+        "score": 3
+      },
+      {
+        "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": ".agents/skills/knowledge/repo_researcher/SKILL.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "Implement/04_skills.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "Implement/08_checklist.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "Implement/09_migration.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "REPO_MAP.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "docs/session_templates/storytelling_template.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/diagrams/wiki-index-sync-current-vs-fixed.svg",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/harness-reference-forking-token-agent-application-2026-05-25.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/harness_flow_20260526.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/index_sessions.json",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/wiki-index-integrity-audit-2026-06-24.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "knowledge/wiki-index-sync-diagram-guide-2026-06-24.md",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/index_reconcile.py",
+        "strength": "related",
+        "score": 2
+      },
+      {
+        "path": "scripts/rule_indexer.py",
+        "strength": "related",
+        "score": 2
+      }
+    ],
+    "rules_defined": [],
+    "rules_referenced": []
+  },
+  "scripts/._build_backlink_graph.py": {
+    "imports": [],
+    "extracted_at_hash": "cea7df16",
+    "imported_by": [],
+    "related": []
   }
 }

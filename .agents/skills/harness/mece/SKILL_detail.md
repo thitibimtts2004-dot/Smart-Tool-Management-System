@@ -125,7 +125,7 @@ Section 2 — Build:                                [Cycle 2 · serial]
   Tool:     Write · Bash
   Constraints:
     - [✓ written] verify each file after creation — mandatory
-    - Do NOT edit index files directly — call file_manager + variable_manager after
+    - Do NOT edit index files directly — call index_manager after
     - Edge Runtime: no Node.js APIs · R15: src/db/ → [db-gate] → HALT
   Steps:    [B] create file(s) · [✓ written] verify each
   Verify:   files exist at correct paths
@@ -137,15 +137,15 @@ Section 2 — Build:                                [Cycle 2 · serial]
 
 Section 3 — Sync & Close:                         [Cycle 3 · serial]
   Context:  Update file + variable indexes, run symbol_indexer, mark roadmap done.
-  Skill:    file_manager
+  Skill:    index_manager (mode:file)
   Model:    model_low
   Input_From: cycle_2_S2.json (created file paths)
   Tool:     Bash · Edit
   Constraints:
     - Creation: append to backlinks[] of every imported file · size object required
     - python scripts/symbol_indexer.py mandatory · [✓ written] verify index updated
-  Steps:    [C] file_manager: update index_files.json + backlinks
-            [D] variable_manager: update index_variables.json
+  Steps:    [C] index_manager (mode:file): update index_files.json + backlinks
+            [D] index_manager (mode:symbol): update index_variables.json
             [E] python scripts/symbol_indexer.py · mark roadmap [X]
   Verify:   symbol count increased · no stale backlinks
   Rollback: restore index from last known state
@@ -192,7 +192,7 @@ Section 2 — Edit & Verify:                        [Cycle 2 · serial]
 
 Section 3 — Sync & Close:                         [Cycle 3 · serial]
   Context:  Rename the index key, run symbol_indexer, mark roadmap done.
-  Skill:    variable_manager
+  Skill:    index_manager (mode:symbol)
   Model:    model_low
   Input_From: cycle_2_S2.json (renamed sites)
   Tool:     Bash · Edit
@@ -203,7 +203,7 @@ Section 3 — Sync & Close:                         [Cycle 3 · serial]
   Verify:   grep -c "NewName" knowledge/index_variables.json ≥ 1
   Rollback: restore index_variables.json key to OldName
   Expected_Traces: index_variables.json key renamed · roadmap [X]
-  Refusal_Path: n/a (variable_manager has no refusal contract) → proceed
+  Refusal_Path: n/a (index_manager (mode:symbol) has no refusal contract) → proceed
   Data_Sent: Thai ___ch | ENG: ___ch
   Token:    ___k
 ```
@@ -220,7 +220,7 @@ Section 1 — Scope & Design:                       [Cycle 1 · serial]
     - Pre-assign ALL T-IDs before any spawn (INVARIANTS.md §I6)
     - [pre-read] T0 lookup → emit [pre-read] · [post-read] verdict
   Steps:    [A] R4 scope probe → find src/ -name "*.ts" | wc -l
-            [B] identify sections: coder vs editor vs file_manager · dependency_map[] → Cycle grouping
+            [B] identify sections: coder vs editor vs index_manager (mode:file) · dependency_map[] → Cycle grouping
             [C] pre-assign roadmap T-IDs for all sections
   Verify:   grep -c "? " .sessions/mece_plan.md = 0 (no unresolved placeholders)
   Rollback: n/a (read-only)
@@ -260,18 +260,18 @@ Section 3 — Modify Existing Code:                 [Cycle 2 · parallel]
 
 Section 4 — Sync & Close:                         [Cycle 3 · serial]
   Context:  After the S2+S3 barrier, cascade index updates, run symbol_indexer, mark all T-IDs done.
-  Skill:    file_manager + variable_manager · Tool: Bash · Edit
+  Skill:    index_manager · Tool: Bash · Edit
   Model:    model_low
   Input_From: cycle_2_S2.json, cycle_2_S3.json (created + modified paths)
   Constraints:
     - backlinks[] cascade update · size object required · python scripts/symbol_indexer.py mandatory
-  Steps:    [F] file_manager: update index_files.json + backlinks
-            [G] variable_manager: update index_variables.json
+  Steps:    [F] index_manager (mode:file): update index_files.json + backlinks
+            [G] index_manager (mode:symbol): update index_variables.json
             [H] python scripts/symbol_indexer.py · mark roadmap [X] all T-IDs
   Verify:   python scripts/symbol_indexer.py 2>&1 | grep -c "error" = 0
   Rollback: restore indexes from pre-task snapshot
   Expected_Traces: index_files.json + index_variables.json updated · roadmap [X] all T-IDs
-  Refusal_Path: n/a → proceed (no refusal contract for file_manager/variable_manager)
+  Refusal_Path: n/a → proceed (no refusal contract for index_manager)
   Data_Sent: Thai ___ch | ENG: ___ch
   Token:    ___k
 

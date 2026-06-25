@@ -72,7 +72,15 @@ Contract: MUST Read docs/harness_health_checklist.md FIRST
 Post:   [checklist-score] emitted BEFORE any [audit-finding]
 Enforce: [audit-finding] without prior [checklist-score] = [violation] BC-pre-audit → load checklist · re-score · re-emit
 ```
-3. **Proposal** — draft minimal structural fix → dry-run validate → emit `[harness-proposal]` → HALT
+3. **Proposal** — draft minimal structural fix → dry-run validate → **pin repro** → emit `[harness-proposal]` → HALT
+
+**Repro-Pin (folded into §3 · SINGLE SOURCE of the repro-pin format · consumer = `harness_editor` Stage 3.6):**
+The proposal MUST state how the fix will be validated by pinning the original failure:
+```
+repro: { trigger: "<what triggers the failure>", check: "<grep / signal / re-run that confirms it is gone>", reproducible: yes|no }
+```
+- reproducible:yes → emit `[repro-pinned] trigger:<x>` · store in `index_cfp_fix.json` fixes[].repro (§5 Fix Record)
+- reproducible:no (behavioral drift — cannot trigger on demand) → emit `[repro-missing]` → validation falls back to count-proxy (§1.4 recurrence count) + flag weak-validation → **PROCEED · NEVER block the proposal** (SOFT gate · CFP-behavioral bugs must not stall the doctor)
 4. **Approval Gate** — wait explicit user confirm ("ทำเลย" / "proceed") · no auto-proceed
 5. **Execute + Verify** — apply approved change → update index_cfp_fix.json → verify detection signal → emit `[✓ harness-fix]`
 
@@ -88,6 +96,8 @@ Enforce: [audit-finding] without prior [checklist-score] = [violation] BC-pre-au
 | §1.4 count < 3 | `[recurrence-logged] CFP-N · topic: <id> · count: N` → END |
 | §1.4 count ≥ 3 | `[fix-required] CFP-N · topic: <id> · count: N` → §2 |
 | §1.4 count ≥ 5 | `[fix-escalated] CFP-N · topic: <id> · count: N` → §2 priority=HIGH |
+
+> **§1.4 reliable WRITE (T-265 · loop stage 8 Re-open):** when you (the agent) have JUDGED a resolved CFP has recurred, do NOT hand-edit the ledger — run `python3 scripts/cfp_recurrence.py CFP-N`. It appends today to `recurred_after_fix[]`, flips `status` resolved→reopened, `count++`, and prints the matching `[recurrence-logged]`/`[fix-required]`/`[fix-escalated]` line for the table above. Detection stays YOUR judgment (R16 BC-E); the script only makes the write total + correct (no missed field). Verify after: status==reopened + today in recurred_after_fix + json valid.
 | §1 done | `[harness-diagnosis] CFP-N · topic: <id> · count: N · prior fixes: M` |
 | §2 done | `[harness-audit] gap found in <file> §<section>` |
 | §3 done | `[harness-proposal] <change>` · HALT for approval |
@@ -100,8 +110,9 @@ Enforce: [audit-finding] without prior [checklist-score] = [violation] BC-pre-au
 Pre:    §5 fix applied and verified
 Contract: MUST update index_cfp_fix.json for the target CFP with ALL of:
           (1) status: "fixed"
-          (2) fixes: append { date: YYYY-MM-DD, task: T-NNN, change: "<what changed and where>", files: ["<path>"] }
+          (2) fixes: append { date: YYYY-MM-DD, task: T-NNN, change: "<what changed and where>", files: ["<path>"], repro: <the §3 repro-pin object — or {reproducible:no} if [repro-missing]> }
           (3) approved_proposal: "<summary of approved proposal from §3>"
+          (4) repro carries the §3 pin (trigger/check/reproducible) so `harness_editor` Stage 3.6 can re-run it · [repro-missing] → repro:{reproducible:no} (consumer falls back to count-proxy)
           emit [✓ fix-recorded] CFP-N · status: fixed · files: <list>
           THEN emit [✓ harness-fix] as final signal
 Post:   index_cfp_fix.json has status=fixed + non-empty fixes[] before [✓ harness-fix] emitted

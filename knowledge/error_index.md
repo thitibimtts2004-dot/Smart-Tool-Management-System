@@ -10,6 +10,8 @@ Fields:
                trivial  = formatting / typo / cosmetic — qualifies for lightweight fix path
   problem:     <one-line description of the bug>
   trigger:     <what code pattern causes it>
+  check:       <grep / signal / re-run that confirms it is gone>  (these three fields are the flat-field form of the repro-pin object whose FORMAT is owned by harness_doctor §3 `repro:{trigger,check,reproducible}` — same keys, do not redefine the format here)
+  reproducible: yes|no  (no → validation falls back to count-proxy · NEVER blocks the fix · SOFT gate)
   fix:         <what to do instead>
   it_work:     true|false  (confirmed fix works in production)
   occurrences: list of T-ID attempts where this error appeared
