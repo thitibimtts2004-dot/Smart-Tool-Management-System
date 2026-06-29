@@ -1,38 +1,36 @@
-gather_complete — T-274 backlink-graph click-to-read panel
-date: 2026-06-25
-skill: coder (extend the existing generator + emitted HTML)
-
-## Task
-Turn the backlink graph from "look-only map" into a "walkable wiki": click a node →
-side panel showing the file's summary + clickable connected-file links (navigate in-graph)
-+ an "open file" link to read the real file. Offline single-file preserved.
-
-## G1/G2 findings (verified from index_files.json — python probe, not full read)
-- 212 entries (nodes). Per-node fields available: description, topics, references[],
-  related[{path,strength,score}], backlinks[].
-- COVERAGE (the design driver): description present on only 94/212 (avg 75 chars, max 604).
-  → panel MUST degrade gracefully: show summary if present, else "no summary — open file".
-- Connected-file list: reuse the JS `adj` set already built from edges (symmetric, covers
-  both related[] and incoming) — no new data needed for neighbor links.
-- Open-file href: HTML lives at knowledge/diagrams/ → repo root is `../../` → href = "../../"+id
-  (uniform prefix for every node; opens raw file via file:// offline). Verified path shape.
-
-## G3 design decision
-- ONLY new embedded data needed = `desc` per node (truncate ~240 chars, ascii-safe). Everything
-  else (neighbors, open-file path) is computable in-browser from existing data → minimal size add.
-- Additive: Core graph + cooling (T-273) must keep working unchanged; panel is new UI only.
-- Single file, offline, idempotent — same invariants as T-273.
-
-## Scope (1 file)
-scripts/build_backlink_graph.py only (regenerates knowledge/diagrams/backlink-graph.html).
-NOT backfilling the 118 missing descriptions (separate future task).
-
-## Affected files
-- scripts/build_backlink_graph.py (edit) → regenerates knowledge/diagrams/backlink-graph.html
-
-## Acceptance criteria
-- Click node → panel with: title · path · topic · summary-or-fallback · clickable neighbor list · open-file link
-- Click a neighbor name → focuses that node + recenters (in-graph navigation)
-- Still 0 network refs · idempotent · 212 nodes · JS syntax valid
-
-[✓ gather]
+date: 2026-06-29
+objective: Establish the initial file structure and project configuration for a Next.js App Router (TypeScript) application integrated with the Firebase SDK (Firestore) and structured with Vanilla CSS for the Smart Tool Management System.
+constraints:
+  - Do not modify or overwrite harness files in root or .agents/ or .sessions/.
+  - Must use Vanilla CSS for styling (sleek dark mode, custom fonts, glassmorphism) instead of Tailwind CSS.
+  - Must write all application files under src/.
+  - Do not touch existing harness python scripts or metadata.
+affected_files:
+  - src/app/layout.tsx
+  - src/app/page.tsx
+  - src/app/globals.css
+  - src/lib/firebase/config.ts
+  - src/lib/firebase/firestore.ts
+  - src/components/
+  - src/hooks/
+  - src/types/
+  - package.json
+  - tsconfig.json
+  - next.config.ts
+  - firestore.rules
+  - firebase.json
+out_of_scope:
+  - .agents/* (except detected.md which was already configured)
+  - .sessions/* (except standard session tracking files)
+  - scripts/*
+  - CODING_FAILURE_PATTERNS.md
+  - INVARIANTS.md
+acceptance_criteria:
+  - Next.js App Router project successfully bootstrapped and builds cleanly.
+  - Tailwind CSS configuration is omitted or fully removed, with Vanilla CSS setup.
+  - Firebase SDK config is initialized with correct environment variable bindings.
+  - Firestore database service wrapper is set up for core models: tools, borrow transactions, members, maintenance logs.
+  - Directory structure matches clean separation of concerns: App Router, Components (UI/Layout), Hooks, Types, Libs (Firebase).
+verification_intent:
+  - Run npm run build to verify TypeScript compilation and Next.js build.
+  - Run repo_map_check.py --sync and symbol_indexer.py to ensure harness indexes are updated.

@@ -1,7 +1,7 @@
 [
   {
     "session_id": "session_001",
-    "path": ".sessions/session_001_t069_t070_t071_harness_upgrade.json",
+    "path": ".sessions\\session_001_t069_t070_t071_harness_upgrade.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-01",
@@ -57,7 +57,7 @@
   },
   {
     "session_id": "session_002",
-    "path": ".sessions/session_002_t119_t120_skill_audit.json",
+    "path": ".sessions\\session_002_t119_t120_skill_audit.json",
     "tasks": [
       "T-119",
       "T-120"
@@ -104,10 +104,10 @@
   },
   {
     "session_id": "session_003",
-    "path": ".sessions/session_003.json",
+    "path": ".sessions\\session_003.json",
     "tasks": [],
     "status": "completed",
-    "date": "2026-06-08",
+    "date": "2026-06-29",
     "skill": null,
     "summary": "closed by session_close.py",
     "keywords": [
@@ -117,7 +117,7 @@
   },
   {
     "session_id": "session_004",
-    "path": ".sessions/session_004.json",
+    "path": ".sessions\\session_004.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-15",
@@ -178,7 +178,7 @@
   },
   {
     "session_id": "session_005",
-    "path": ".sessions/session_005.json",
+    "path": ".sessions\\session_005.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-15",
@@ -227,7 +227,7 @@
   },
   {
     "session_id": "session_006",
-    "path": ".sessions/session_006.json",
+    "path": ".sessions\\session_006.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-15",
@@ -282,7 +282,7 @@
   },
   {
     "session_id": "session_007",
-    "path": ".sessions/session_007.json",
+    "path": ".sessions\\session_007.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-15",
@@ -337,7 +337,7 @@
   },
   {
     "session_id": "session_008",
-    "path": ".sessions/session_008.json",
+    "path": ".sessions\\session_008.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-15",
@@ -393,7 +393,7 @@
   },
   {
     "session_id": "session_009",
-    "path": ".sessions/session_009.json",
+    "path": ".sessions\\session_009.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-15",
@@ -451,7 +451,7 @@
   },
   {
     "session_id": "session_010",
-    "path": ".sessions/session_010.json",
+    "path": ".sessions\\session_010.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-16",
@@ -526,7 +526,7 @@
   },
   {
     "session_id": "session_011",
-    "path": ".sessions/session_011.json",
+    "path": ".sessions\\session_011.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-16",
@@ -594,7 +594,7 @@
   },
   {
     "session_id": "session_012",
-    "path": ".sessions/session_012.json",
+    "path": ".sessions\\session_012.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-16",
@@ -670,7 +670,7 @@
   },
   {
     "session_id": "session_013",
-    "path": ".sessions/session_013.json",
+    "path": ".sessions\\session_013.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-16",
@@ -707,7 +707,7 @@
   },
   {
     "session_id": "session_014",
-    "path": ".sessions/session_014.json",
+    "path": ".sessions\\session_014.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-16",
@@ -765,7 +765,7 @@
   },
   {
     "session_id": "session_015",
-    "path": ".sessions/session_015.json",
+    "path": ".sessions\\session_015.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-16",
@@ -817,7 +817,7 @@
   },
   {
     "session_id": "session_016",
-    "path": ".sessions/session_016.json",
+    "path": ".sessions\\session_016.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-16",
@@ -867,7 +867,7 @@
   },
   {
     "session_id": "session_017",
-    "path": ".sessions/session_017.json",
+    "path": ".sessions\\session_017.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-16",
@@ -894,7 +894,7 @@
   },
   {
     "session_id": "session_018",
-    "path": ".sessions/session_018.json",
+    "path": ".sessions\\session_018.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-16",
@@ -926,7 +926,7 @@
   },
   {
     "session_id": "session_019",
-    "path": ".sessions/session_019.json",
+    "path": ".sessions\\session_019.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-17",
@@ -961,7 +961,7 @@
   },
   {
     "session_id": "session_020",
-    "path": ".sessions/session_020.json",
+    "path": ".sessions\\session_020.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-17",
@@ -1004,7 +1004,7 @@
   },
   {
     "session_id": "session_021",
-    "path": ".sessions/session_021.json",
+    "path": ".sessions\\session_021.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-17",
@@ -1070,7 +1070,7 @@
   },
   {
     "session_id": "session_022",
-    "path": ".sessions/session_022.json",
+    "path": ".sessions\\session_022.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-17",
@@ -1126,7 +1126,7 @@
   },
   {
     "session_id": "session_023",
-    "path": ".sessions/session_023.json",
+    "path": ".sessions\\session_023.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-17",
@@ -1191,7 +1191,7 @@
   },
   {
     "session_id": "session_024",
-    "path": ".sessions/session_024.json",
+    "path": ".sessions\\session_024.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-18",
@@ -1256,7 +1256,7 @@
   },
   {
     "session_id": "session_025",
-    "path": ".sessions/session_025.json",
+    "path": ".sessions\\session_025.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-18",
@@ -1337,7 +1337,7 @@
   },
   {
     "session_id": "session_026",
-    "path": ".sessions/session_026.json",
+    "path": ".sessions\\session_026.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-18",
@@ -1422,7 +1422,7 @@
   },
   {
     "session_id": "session_027",
-    "path": ".sessions/session_027.json",
+    "path": ".sessions\\session_027.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-18",
@@ -1547,7 +1547,7 @@
   },
   {
     "session_id": "session_028",
-    "path": ".sessions/session_028.json",
+    "path": ".sessions\\session_028.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-18",
@@ -1687,7 +1687,7 @@
   },
   {
     "session_id": "session_029",
-    "path": ".sessions/session_029.json",
+    "path": ".sessions\\session_029.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-18",
@@ -1828,7 +1828,7 @@
   },
   {
     "session_id": "session_030",
-    "path": ".sessions/session_030.json",
+    "path": ".sessions\\session_030.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-18",
@@ -1995,7 +1995,7 @@
   },
   {
     "session_id": "session_031",
-    "path": ".sessions/session_031.json",
+    "path": ".sessions\\session_031.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-19",
@@ -2176,7 +2176,7 @@
   },
   {
     "session_id": "session_032",
-    "path": ".sessions/session_032.json",
+    "path": ".sessions\\session_032.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-20",
@@ -2345,7 +2345,7 @@
   },
   {
     "session_id": "session_033",
-    "path": ".sessions/session_033.json",
+    "path": ".sessions\\session_033.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-20",
@@ -2523,7 +2523,7 @@
   },
   {
     "session_id": "session_034",
-    "path": ".sessions/session_034.json",
+    "path": ".sessions\\session_034.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-20",
@@ -2690,7 +2690,7 @@
   },
   {
     "session_id": "session_035",
-    "path": ".sessions/session_035.json",
+    "path": ".sessions\\session_035.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-20",
@@ -2867,7 +2867,7 @@
   },
   {
     "session_id": "session_036",
-    "path": ".sessions/session_036.json",
+    "path": ".sessions\\session_036.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-21",
@@ -3027,7 +3027,7 @@
   },
   {
     "session_id": "session_037",
-    "path": ".sessions/session_037.json",
+    "path": ".sessions\\session_037.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-21",
@@ -3194,7 +3194,7 @@
   },
   {
     "session_id": "session_038",
-    "path": ".sessions/session_038.json",
+    "path": ".sessions\\session_038.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-21",
@@ -3380,7 +3380,7 @@
   },
   {
     "session_id": "session_039",
-    "path": ".sessions/session_039.json",
+    "path": ".sessions\\session_039.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-22",
@@ -3567,7 +3567,7 @@
   },
   {
     "session_id": "session_040",
-    "path": ".sessions/session_040.json",
+    "path": ".sessions\\session_040.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-22",
@@ -3722,7 +3722,7 @@
   },
   {
     "session_id": "session_041",
-    "path": ".sessions/session_041.json",
+    "path": ".sessions\\session_041.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-22",
@@ -3904,7 +3904,7 @@
   },
   {
     "session_id": "session_042",
-    "path": ".sessions/session_042.json",
+    "path": ".sessions\\session_042.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-22",
@@ -4085,7 +4085,7 @@
   },
   {
     "session_id": "session_043",
-    "path": ".sessions/session_043.json",
+    "path": ".sessions\\session_043.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-22",
@@ -4268,7 +4268,7 @@
   },
   {
     "session_id": "session_044",
-    "path": ".sessions/session_044.json",
+    "path": ".sessions\\session_044.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-22",
@@ -4453,7 +4453,7 @@
   },
   {
     "session_id": "session_045",
-    "path": ".sessions/session_045.json",
+    "path": ".sessions\\session_045.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-22",
@@ -4641,7 +4641,7 @@
   },
   {
     "session_id": "session_046",
-    "path": ".sessions/session_046.json",
+    "path": ".sessions\\session_046.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-22",
@@ -4832,7 +4832,7 @@
   },
   {
     "session_id": "session_047",
-    "path": ".sessions/session_047.json",
+    "path": ".sessions\\session_047.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-22",
@@ -5035,7 +5035,7 @@
   },
   {
     "session_id": "session_048",
-    "path": ".sessions/session_048.json",
+    "path": ".sessions\\session_048.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-22",
@@ -5197,7 +5197,7 @@
   },
   {
     "session_id": "session_049",
-    "path": ".sessions/session_049.json",
+    "path": ".sessions\\session_049.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-22",
@@ -5363,7 +5363,7 @@
   },
   {
     "session_id": "session_050",
-    "path": ".sessions/session_050.json",
+    "path": ".sessions\\session_050.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-22",
@@ -5534,7 +5534,7 @@
   },
   {
     "session_id": "session_051",
-    "path": ".sessions/session_051.json",
+    "path": ".sessions\\session_051.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-22",
@@ -5700,7 +5700,7 @@
   },
   {
     "session_id": "session_052",
-    "path": ".sessions/session_052.json",
+    "path": ".sessions\\session_052.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-22",
@@ -5876,7 +5876,7 @@
   },
   {
     "session_id": "session_053",
-    "path": ".sessions/session_053.json",
+    "path": ".sessions\\session_053.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-22",
@@ -6052,7 +6052,7 @@
   },
   {
     "session_id": "session_054",
-    "path": ".sessions/session_054.json",
+    "path": ".sessions\\session_054.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-22",
@@ -6228,7 +6228,7 @@
   },
   {
     "session_id": "session_055",
-    "path": ".sessions/session_055.json",
+    "path": ".sessions\\session_055.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-22",
@@ -6406,7 +6406,7 @@
   },
   {
     "session_id": "session_056",
-    "path": ".sessions/session_056.json",
+    "path": ".sessions\\session_056.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-22",
@@ -6584,7 +6584,7 @@
   },
   {
     "session_id": "session_057",
-    "path": ".sessions/session_057.json",
+    "path": ".sessions\\session_057.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-22",
@@ -6771,7 +6771,7 @@
   },
   {
     "session_id": "session_058",
-    "path": ".sessions/session_058.json",
+    "path": ".sessions\\session_058.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-22",
@@ -6966,7 +6966,7 @@
   },
   {
     "session_id": "session_059",
-    "path": ".sessions/session_059.json",
+    "path": ".sessions\\session_059.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-22",
@@ -7165,7 +7165,7 @@
   },
   {
     "session_id": "session_060",
-    "path": ".sessions/session_060.json",
+    "path": ".sessions\\session_060.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-23",
@@ -7198,7 +7198,7 @@
   },
   {
     "session_id": "session_061",
-    "path": ".sessions/session_061.json",
+    "path": ".sessions\\session_061.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-23",
@@ -7256,7 +7256,7 @@
   },
   {
     "session_id": "session_062",
-    "path": ".sessions/session_062.json",
+    "path": ".sessions\\session_062.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-23",
@@ -7359,7 +7359,7 @@
   },
   {
     "session_id": "session_063",
-    "path": ".sessions/session_063.json",
+    "path": ".sessions\\session_063.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-23",
@@ -7450,7 +7450,7 @@
   },
   {
     "session_id": "session_064",
-    "path": ".sessions/session_064.json",
+    "path": ".sessions\\session_064.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-23",
@@ -7534,7 +7534,7 @@
   },
   {
     "session_id": "session_065",
-    "path": ".sessions/session_065.json",
+    "path": ".sessions\\session_065.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-23",
@@ -7611,7 +7611,7 @@
   },
   {
     "session_id": "session_066",
-    "path": ".sessions/session_066.json",
+    "path": ".sessions\\session_066.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-23",
@@ -7693,7 +7693,7 @@
   },
   {
     "session_id": "session_067",
-    "path": ".sessions/session_067.json",
+    "path": ".sessions\\session_067.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-24",
@@ -7783,7 +7783,7 @@
   },
   {
     "session_id": "session_068",
-    "path": ".sessions/session_068.json",
+    "path": ".sessions\\session_068.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-24",
@@ -7871,7 +7871,7 @@
   },
   {
     "session_id": "session_069",
-    "path": ".sessions/session_069.json",
+    "path": ".sessions\\session_069.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-24",
@@ -7965,7 +7965,7 @@
   },
   {
     "session_id": "session_070",
-    "path": ".sessions/session_070.json",
+    "path": ".sessions\\session_070.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-24",
@@ -8058,7 +8058,7 @@
   },
   {
     "session_id": "session_071",
-    "path": ".sessions/session_071.json",
+    "path": ".sessions\\session_071.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-24",
@@ -8159,7 +8159,7 @@
   },
   {
     "session_id": "session_072",
-    "path": ".sessions/session_072.json",
+    "path": ".sessions\\session_072.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-24",
@@ -8260,7 +8260,7 @@
   },
   {
     "session_id": "session_073",
-    "path": ".sessions/session_073.json",
+    "path": ".sessions\\session_073.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-24",
@@ -8375,7 +8375,7 @@
   },
   {
     "session_id": "session_074",
-    "path": ".sessions/session_074.json",
+    "path": ".sessions\\session_074.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-24",
@@ -8488,7 +8488,7 @@
   },
   {
     "session_id": "session_075",
-    "path": ".sessions/session_075.json",
+    "path": ".sessions\\session_075.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-24",
@@ -8604,7 +8604,7 @@
   },
   {
     "session_id": "session_076",
-    "path": ".sessions/session_076.json",
+    "path": ".sessions\\session_076.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-24",
@@ -8732,7 +8732,7 @@
   },
   {
     "session_id": "session_077",
-    "path": ".sessions/session_077.json",
+    "path": ".sessions\\session_077.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-24",
@@ -8863,7 +8863,7 @@
   },
   {
     "session_id": "session_078",
-    "path": ".sessions/session_078.json",
+    "path": ".sessions\\session_078.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-25",
@@ -8997,7 +8997,7 @@
   },
   {
     "session_id": "session_079",
-    "path": ".sessions/session_079.json",
+    "path": ".sessions\\session_079.json",
     "tasks": [],
     "status": "completed",
     "date": "2026-06-25",
@@ -9129,6 +9129,73 @@
       "variable_manager",
       "wiki-index-integrity-audit-2026-06-24.md",
       "wiki-index-sync-diagram-guide-2026-06-24.md"
+    ]
+  },
+  {
+    "session_id": "session_080",
+    "path": ".sessions\\session_080.json",
+    "tasks": [],
+    "status": "completed",
+    "date": "2026-06-29",
+    "skill": "coder",
+    "summary": "Successfully bootstrapped Next.js App Router (TypeScript), cleaned up Tailwind CSS defaults, set up customized Vanilla CSS core design system, installed and integrated Firebase Client SDK, and scaffol…",
+    "keywords": [
+      "active_thread.md",
+      "agents",
+      "app",
+      "bootstrapped",
+      "cleaned",
+      "client",
+      "components",
+      "core",
+      "css",
+      "custom",
+      "customized",
+      "defaults",
+      "design",
+      "detected.md",
+      "docs",
+      "eslint.config.mjs",
+      "firebase",
+      "firebase.json",
+      "firestore",
+      "firestore.rules",
+      "gather_complete.md",
+      "gitignore",
+      "hooks",
+      "index_files.json",
+      "index_variables.json",
+      "installed",
+      "integrated",
+      "knowledge",
+      "master_roadmap.md",
+      "mece_plan.md",
+      "next.config.ts",
+      "next.js",
+      "package-lock.json",
+      "package.json",
+      "platform",
+      "public",
+      "repo_map.md",
+      "router",
+      "rules",
+      "scaffolded",
+      "script",
+      "sdk",
+      "security",
+      "session_context_cache.md",
+      "session_tokens.md",
+      "sessions",
+      "set",
+      "src",
+      "successfully",
+      "system",
+      "tailwind",
+      "token_log.jsonl",
+      "tsconfig.json",
+      "type",
+      "types",
+      "vanilla"
     ]
   }
 ]

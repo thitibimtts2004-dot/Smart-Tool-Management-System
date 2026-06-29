@@ -1,3 +1,454 @@
 {
-  "variables": {}
+  "variables": {
+    "metadata": {
+      "type": "PageComponent",
+      "source": "src\\app\\layout.tsx",
+      "line": 15,
+      "line_end": 18,
+      "read_hint": {
+        "offset": 10,
+        "limit": 18
+      },
+      "keywords": [
+        "metadata"
+      ],
+      "used_in": []
+    },
+    "RootLayout": {
+      "type": "PageComponent",
+      "source": "src\\app\\layout.tsx",
+      "line": 20,
+      "line_end": 33,
+      "read_hint": {
+        "offset": 15,
+        "limit": 28
+      },
+      "keywords": [
+        "layout",
+        "root"
+      ],
+      "used_in": []
+    },
+    "Home": {
+      "type": "PageComponent",
+      "source": "src\\app\\page.tsx",
+      "line": 3,
+      "line_end": 65,
+      "read_hint": {
+        "offset": 1,
+        "limit": 77
+      },
+      "keywords": [
+        "home"
+      ],
+      "used_in": []
+    },
+    "Button": {
+      "type": "ReactComponent",
+      "source": "src\\components\\common\\Button.tsx",
+      "line": 8,
+      "line_end": 21,
+      "read_hint": {
+        "offset": 3,
+        "limit": 28
+      },
+      "keywords": [
+        "button"
+      ],
+      "used_in": []
+    },
+    "Card": {
+      "type": "ReactComponent",
+      "source": "src\\components\\common\\Card.tsx",
+      "line": 7,
+      "line_end": 13,
+      "read_hint": {
+        "offset": 2,
+        "limit": 21
+      },
+      "keywords": [
+        "card"
+      ],
+      "used_in": []
+    },
+    "Input": {
+      "type": "ReactComponent",
+      "source": "src\\components\\common\\Input.tsx",
+      "line": 7,
+      "line_end": 18,
+      "read_hint": {
+        "offset": 2,
+        "limit": 26
+      },
+      "keywords": [
+        "input"
+      ],
+      "used_in": []
+    },
+    "Navbar": {
+      "type": "ReactComponent",
+      "source": "src\\components\\layout\\Navbar.tsx",
+      "line": 10,
+      "line_end": 56,
+      "read_hint": {
+        "offset": 5,
+        "limit": 61
+      },
+      "keywords": [
+        "navbar"
+      ],
+      "used_in": []
+    },
+    "useAuth": {
+      "type": "Hook",
+      "source": "src\\hooks\\useAuth.ts",
+      "line": 7,
+      "line_end": 34,
+      "read_hint": {
+        "offset": 2,
+        "limit": 42
+      },
+      "keywords": [
+        "auth",
+        "use"
+      ],
+      "used_in": []
+    },
+    "useTools": {
+      "type": "Hook",
+      "source": "src\\hooks\\useTools.ts",
+      "line": 6,
+      "line_end": 35,
+      "read_hint": {
+        "offset": 1,
+        "limit": 44
+      },
+      "keywords": [
+        "tools",
+        "use"
+      ],
+      "used_in": []
+    },
+    "getTools": {
+      "type": "Function",
+      "source": "src\\lib\\firebase\\firestore.ts",
+      "line": 27,
+      "line_end": 30,
+      "read_hint": {
+        "offset": 22,
+        "limit": 18
+      },
+      "keywords": [
+        "get",
+        "tools"
+      ],
+      "used_in": []
+    },
+    "getToolById": {
+      "type": "Function",
+      "source": "src\\lib\\firebase\\firestore.ts",
+      "line": 32,
+      "line_end": 36,
+      "read_hint": {
+        "offset": 27,
+        "limit": 19
+      },
+      "keywords": [
+        "by",
+        "get",
+        "id",
+        "tool"
+      ],
+      "used_in": []
+    },
+    "addTool": {
+      "type": "Function",
+      "source": "src\\lib\\firebase\\firestore.ts",
+      "line": 38,
+      "line_end": 44,
+      "read_hint": {
+        "offset": 33,
+        "limit": 21
+      },
+      "keywords": [
+        "add",
+        "tool"
+      ],
+      "used_in": []
+    },
+    "updateTool": {
+      "type": "Function",
+      "source": "src\\lib\\firebase\\firestore.ts",
+      "line": 46,
+      "line_end": 49,
+      "read_hint": {
+        "offset": 41,
+        "limit": 18
+      },
+      "keywords": [
+        "tool",
+        "update"
+      ],
+      "used_in": []
+    },
+    "getMemberById": {
+      "type": "Function",
+      "source": "src\\lib\\firebase\\firestore.ts",
+      "line": 55,
+      "line_end": 59,
+      "read_hint": {
+        "offset": 50,
+        "limit": 19
+      },
+      "keywords": [
+        "by",
+        "get",
+        "id",
+        "member"
+      ],
+      "used_in": []
+    },
+    "createMember": {
+      "type": "Function",
+      "source": "src\\lib\\firebase\\firestore.ts",
+      "line": 61,
+      "line_end": 67,
+      "read_hint": {
+        "offset": 56,
+        "limit": 21
+      },
+      "keywords": [
+        "create",
+        "member"
+      ],
+      "used_in": []
+    },
+    "getActiveBorrows": {
+      "type": "Function",
+      "source": "src\\lib\\firebase\\firestore.ts",
+      "line": 73,
+      "line_end": 77,
+      "read_hint": {
+        "offset": 68,
+        "limit": 19
+      },
+      "keywords": [
+        "active",
+        "borrows",
+        "get"
+      ],
+      "used_in": []
+    },
+    "borrowTool": {
+      "type": "Function",
+      "source": "src\\lib\\firebase\\firestore.ts",
+      "line": 85,
+      "line_end": 133,
+      "read_hint": {
+        "offset": 80,
+        "limit": 63
+      },
+      "keywords": [
+        "borrow",
+        "tool"
+      ],
+      "used_in": []
+    },
+    "returnTool": {
+      "type": "Function",
+      "source": "src\\lib\\firebase\\firestore.ts",
+      "line": 140,
+      "line_end": 165,
+      "read_hint": {
+        "offset": 135,
+        "limit": 40
+      },
+      "keywords": [
+        "return",
+        "tool"
+      ],
+      "used_in": []
+    },
+    "getMaintenanceLogs": {
+      "type": "Function",
+      "source": "src\\lib\\firebase\\firestore.ts",
+      "line": 171,
+      "line_end": 174,
+      "read_hint": {
+        "offset": 166,
+        "limit": 18
+      },
+      "keywords": [
+        "get",
+        "logs",
+        "maintenance"
+      ],
+      "used_in": []
+    },
+    "addMaintenanceLog": {
+      "type": "Function",
+      "source": "src\\lib\\firebase\\firestore.ts",
+      "line": 176,
+      "line_end": 203,
+      "read_hint": {
+        "offset": 171,
+        "limit": 42
+      },
+      "keywords": [
+        "add",
+        "log",
+        "maintenance"
+      ],
+      "used_in": []
+    },
+    "completeMaintenanceLog": {
+      "type": "Function",
+      "source": "src\\lib\\firebase\\firestore.ts",
+      "line": 205,
+      "line_end": 230,
+      "read_hint": {
+        "offset": 200,
+        "limit": 40
+      },
+      "keywords": [
+        "complete",
+        "log",
+        "maintenance"
+      ],
+      "used_in": []
+    },
+    "ToolStatus": {
+      "type": "Interface",
+      "source": "src\\types\\index.ts",
+      "line": 1,
+      "line_end": 18,
+      "read_hint": {
+        "offset": 1,
+        "limit": 32
+      },
+      "keywords": [
+        "status",
+        "tool"
+      ],
+      "used_in": []
+    },
+    "ToolCondition": {
+      "type": "Interface",
+      "source": "src\\types\\index.ts",
+      "line": 2,
+      "line_end": 18,
+      "read_hint": {
+        "offset": 1,
+        "limit": 31
+      },
+      "keywords": [
+        "condition",
+        "tool"
+      ],
+      "used_in": []
+    },
+    "UserRole": {
+      "type": "Interface",
+      "source": "src\\types\\index.ts",
+      "line": 3,
+      "line_end": 18,
+      "read_hint": {
+        "offset": 1,
+        "limit": 30
+      },
+      "keywords": [
+        "role",
+        "user"
+      ],
+      "used_in": []
+    },
+    "BorrowStatus": {
+      "type": "Interface",
+      "source": "src\\types\\index.ts",
+      "line": 4,
+      "line_end": 18,
+      "read_hint": {
+        "offset": 1,
+        "limit": 29
+      },
+      "keywords": [
+        "borrow",
+        "status"
+      ],
+      "used_in": []
+    },
+    "MaintenanceStatus": {
+      "type": "Interface",
+      "source": "src\\types\\index.ts",
+      "line": 5,
+      "line_end": 18,
+      "read_hint": {
+        "offset": 1,
+        "limit": 28
+      },
+      "keywords": [
+        "maintenance",
+        "status"
+      ],
+      "used_in": []
+    },
+    "Tool": {
+      "type": "Interface",
+      "source": "src\\types\\index.ts",
+      "line": 7,
+      "line_end": 18,
+      "read_hint": {
+        "offset": 2,
+        "limit": 26
+      },
+      "keywords": [
+        "tool"
+      ],
+      "used_in": []
+    },
+    "Member": {
+      "type": "Interface",
+      "source": "src\\types\\index.ts",
+      "line": 20,
+      "line_end": 28,
+      "read_hint": {
+        "offset": 15,
+        "limit": 23
+      },
+      "keywords": [
+        "member"
+      ],
+      "used_in": []
+    },
+    "BorrowTransaction": {
+      "type": "Interface",
+      "source": "src\\types\\index.ts",
+      "line": 30,
+      "line_end": 43,
+      "read_hint": {
+        "offset": 25,
+        "limit": 28
+      },
+      "keywords": [
+        "borrow",
+        "transaction"
+      ],
+      "used_in": []
+    },
+    "MaintenanceLog": {
+      "type": "Interface",
+      "source": "src\\types\\index.ts",
+      "line": 45,
+      "line_end": 57,
+      "read_hint": {
+        "offset": 40,
+        "limit": 27
+      },
+      "keywords": [
+        "log",
+        "maintenance"
+      ],
+      "used_in": []
+    }
+  }
 }

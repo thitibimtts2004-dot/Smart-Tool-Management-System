@@ -76,7 +76,7 @@
     ]
   },
   "knowledge/bc_coverage.md": {
-    "description": "Behavior Contract coverage tracker — all 42 BCs across harness (CLAUDE/AGENTS/skills) with tested/untested status cross-referenced from behave_test_log.jsonl",
+    "description": "Behavior Contract coverage tracker â€” all 42 BCs across harness (CLAUDE/AGENTS/skills) with tested/untested status cross-referenced from behave_test_log.jsonl",
     "topics": {
       "major": [
         "behavioral_contract"
@@ -582,7 +582,7 @@
   },
   ".agents/skills/harness/harness_editor/SKILL.md": {
     "type": "skill",
-    "description": "Harness Editor skill — manages edits to CLAUDE.md, AGENTS.md, SKILL.md files, knowledge/, Implement/ with mandatory MECE plan gate and full close sequence.",
+    "description": "Harness Editor skill â€” manages edits to CLAUDE.md, AGENTS.md, SKILL.md files, knowledge/, Implement/ with mandatory MECE plan gate and full close sequence.",
     "backlinks": [
       ".agents/skills/skill-manifest.json",
       ".agents/skills/registry.md",
@@ -952,7 +952,7 @@
   },
   "scripts/token_estimator.py": {
     "type": "tool",
-    "description": "Token estimator — SESSION_TOTAL + CHAT_TOTAL formula per R1. Callable via Bash.",
+    "description": "Token estimator â€” SESSION_TOTAL + CHAT_TOTAL formula per R1. Callable via Bash.",
     "backlinks": [
       "CLAUDE.md",
       ".agents/skills/harness/token_tracker/SKILL.md"
@@ -1152,7 +1152,7 @@
   },
   ".agents/skills/harness/harness_doctor/SKILL.md": {
     "type": "skill",
-    "description": "Structural fix agent for recurring CFP patterns — diagnose → propose → wait approval → execute. Delegates SKILL.md file edits to harness_editor.",
+    "description": "Structural fix agent for recurring CFP patterns â€” diagnose â†’ propose â†’ wait approval â†’ execute. Delegates SKILL.md file edits to harness_editor.",
     "backlinks": [
       ".agents/skills/harness/harness_editor/SKILL.md",
       ".agents/skills/harness/mece/SKILL.md",
@@ -1481,7 +1481,7 @@
   },
   "CLAUDE.md": {
     "type": "harness",
-    "description": "Master hard constraints — R1–R16, R-Roadmap, Boot gates. Read first by every agent, every session.",
+    "description": "Master hard constraints â€” R1â€“R16, R-Roadmap, Boot gates. Read first by every agent, every session.",
     "backlinks": [
       ".agents/skills/coding/agent/SKILL.md",
       ".agents/skills/harness/harness_doctor/SKILL.md",
@@ -1712,7 +1712,7 @@
   },
   "AGENTS.md": {
     "type": "harness",
-    "description": "Agent orientation — Boot sequence B1-B4, Per-Turn Routing C0-C3, Loop Architecture Phases 1-3.",
+    "description": "Agent orientation â€” Boot sequence B1-B4, Per-Turn Routing C0-C3, Loop Architecture Phases 1-3.",
     "backlinks": [
       ".agents/skills/coding/agent/SKILL.md",
       ".agents/skills/harness/harness_doctor/SKILL.md",
@@ -1840,7 +1840,7 @@
   },
   ".agents/skills/skill-manifest.json": {
     "type": "index",
-    "description": "Machine-readable skill routing — keyword → skill mapping, on_demand_files, boot_read_policy. Read at Boot B2.",
+    "description": "Machine-readable skill routing â€” keyword â†’ skill mapping, on_demand_files, boot_read_policy. Read at Boot B2.",
     "backlinks": [
       ".agents/skills/harness/harness_editor/SKILL.md",
       ".agents/skills/harness/mece/SKILL_detail.md",
@@ -2012,7 +2012,7 @@
   },
   ".agents/skills/registry.md": {
     "type": "doc",
-    "description": "Fast-match keyword→skill table + micro-rules. Secondary routing after skill-manifest.json.",
+    "description": "Fast-match keywordâ†’skill table + micro-rules. Secondary routing after skill-manifest.json.",
     "backlinks": [
       ".agents/skills/coding/agent/SKILL.md",
       ".agents/skills/harness/harness_editor/SKILL.md",
@@ -2192,7 +2192,7 @@
   },
   "knowledge/harness_flow_20260526.md": {
     "type": "knowledge",
-    "description": "Main harness architecture flow diagram — Layer 0-3, Boot, Per-Turn Routing, Phase 1-3, signal glossary, patch history.",
+    "description": "Main harness architecture flow diagram â€” Layer 0-3, Boot, Per-Turn Routing, Phase 1-3, signal glossary, patch history.",
     "backlinks": [
       ".agents/skills/content/ascii_flow/SKILL.md",
       ".agents/skills/coding/coder/SKILL.md",
@@ -2813,7 +2813,7 @@
   },
   "knowledge/index_variables.json": {
     "type": "index",
-    "description": "Symbol index — component/function/hook definitions + used_in[] backlinks. Never-full-load: grep only.",
+    "description": "Symbol index â€” component/function/hook definitions + used_in[] backlinks. Never-full-load: grep only.",
     "backlinks": [
       ".agents/skills/coding/coder/SKILL.md",
       ".agents/skills/coding/editor/SKILL.md",
@@ -2923,7 +2923,7 @@
   },
   "knowledge/index_cfp_fix.json": {
     "type": "index",
-    "description": "CFP occurrence + fix tracking index — recurrence count, last_fixed_session, status per CFP-XXX.",
+    "description": "CFP occurrence + fix tracking index â€” recurrence count, last_fixed_session, status per CFP-XXX.",
     "backlinks": [
       ".agents/skills/harness/harness_doctor/SKILL.md",
       ".agents/skills/harness/mece/SKILL_detail.md",
@@ -3217,7 +3217,7 @@
   },
   "knowledge/index_sessions.json": {
     "type": "index",
-    "description": "Session history index — task summaries, files_changed[], lookup.py --session oracle source.",
+    "description": "Session history index â€” task summaries, files_changed[], lookup.py --session oracle source.",
     "backlinks": [
       ".agents/skills/knowledge/session_manager/SKILL.md",
       ".agents/skills/knowledge/session_manager/SKILL_detail.md",
@@ -3501,7 +3501,7 @@
   },
   "knowledge/error_index.md": {
     "type": "knowledge",
-    "description": "ERR-XXX error code registry — symptom, root cause, fix approach, failed approaches per error ID.",
+    "description": "ERR-XXX error code registry â€” symptom, root cause, fix approach, failed approaches per error ID.",
     "backlinks": [
       ".agents/skills/coding/editor/SKILL.md",
       ".agents/skills/coding/editor/SKILL_detail.md",
@@ -3619,7 +3619,7 @@
   },
   "knowledge/topic_registry.json": {
     "type": "index",
-    "description": "Controlled vocabulary for topic-graph backlink system — 20 closed topics agents must use when assigning topics[] to files",
+    "description": "Controlled vocabulary for topic-graph backlink system â€” 20 closed topics agents must use when assigning topics[] to files",
     "topics": {
       "major": [
         "topic_graph",
@@ -3923,7 +3923,7 @@
   },
   "scripts/backlink_analyzer.py": {
     "type": "tool",
-    "description": "Computes topic-graph related[] entries in index_files.json based on pairwise topic overlap (|A∩B|/|A| >= 0.5). Flags: --dry-run, --min-overlap, --show-matrix.",
+    "description": "Computes topic-graph related[] entries in index_files.json based on pairwise topic overlap (|Aâˆ©B|/|A| >= 0.5). Flags: --dry-run, --min-overlap, --show-matrix.",
     "topics": {
       "major": [
         "topic_graph",
@@ -5303,7 +5303,7 @@
   },
   ".agents/skills/content/ascii_flow/SKILL_detail.md": {
     "type": "skill",
-    "description": "Detailed reference for ascii_flow: §1 Char Palette (box-drawing chars, arrows, annotations), §2 Box Templates (outer/inner/decision/note), §3 Detail Guidelines, §4 Flow Connector Patterns, §5 Doc Structure, §6 Invoke Rule.",
+    "description": "Detailed reference for ascii_flow: Â§1 Char Palette (box-drawing chars, arrows, annotations), Â§2 Box Templates (outer/inner/decision/note), Â§3 Detail Guidelines, Â§4 Flow Connector Patterns, Â§5 Doc Structure, Â§6 Invoke Rule.",
     "topics": {
       "major": [
         "behavioral_contract"
@@ -5538,7 +5538,7 @@
     "tagged_at_hash": "2b591395"
   },
   "REPO_MAP.md": {
-    "description": "Repository structure reference — full file tree with descriptions for all agents",
+    "description": "Repository structure reference â€” full file tree with descriptions for all agents",
     "topics": {
       "major": [
         "knowledge_base"
@@ -5672,7 +5672,7 @@
     "tagged_at_hash": "94037aa7"
   },
   ".agents/skills/knowledge/session_manager/SKILL.md": {
-    "description": "session_manager skill — session open/close, topic switch, token pause, compact_state write",
+    "description": "session_manager skill â€” session open/close, topic switch, token pause, compact_state write",
     "topics": {
       "major": [
         "session_management",
@@ -6031,7 +6031,7 @@
     "tagged_at_hash": "fed24b5c"
   },
   "Implement/09_migration.md": {
-    "description": "Migration guide for users upgrading from older harness version — 4 tracks: M1 indexes, M2 tree, M3 skills/config, M4 verify",
+    "description": "Migration guide for users upgrading from older harness version â€” 4 tracks: M1 indexes, M2 tree, M3 skills/config, M4 verify",
     "topics": {
       "major": [
         "knowledge_base"
@@ -6184,7 +6184,7 @@
   },
   "docs/session_templates/mece_plan_schema.md": {
     "type": "doc",
-    "description": "Template for .sessions/mece_plan.md — Phase 0-3 blocks, Section Template (Tool/Rollback/Data_Sent/Token), Files Read tables, TOKEN CHECK runtime cmd, [mece-audit] + feedback in Phase 3 Close, PATH A/B/C.",
+    "description": "Template for .sessions/mece_plan.md â€” Phase 0-3 blocks, Section Template (Tool/Rollback/Data_Sent/Token), Files Read tables, TOKEN CHECK runtime cmd, [mece-audit] + feedback in Phase 3 Close, PATH A/B/C.",
     "topics": {
       "major": [
         "mece_planning",
@@ -6484,7 +6484,7 @@
   },
   "Implement/04_skills.md": {
     "type": "harness",
-    "description": "Full skill reference — all 15 SKILL.md contents + MECE Planner plan format + M1.5 Named Outputs (dependency_map/risk_flags) + Verify Pattern Lookup.",
+    "description": "Full skill reference â€” all 15 SKILL.md contents + MECE Planner plan format + M1.5 Named Outputs (dependency_map/risk_flags) + Verify Pattern Lookup.",
     "topics": {
       "major": [
         "knowledge_base"
@@ -6653,7 +6653,7 @@
   },
   "Implement/08_checklist.md": {
     "type": "harness",
-    "description": "Behavioral contract verification checklist — all harness features with grep-based Verify commands. Includes M1.5 named outputs, mece_plan_schema fields, [mece-audit]+feedback checks.",
+    "description": "Behavioral contract verification checklist â€” all harness features with grep-based Verify commands. Includes M1.5 named outputs, mece_plan_schema fields, [mece-audit]+feedback checks.",
     "topics": {
       "major": [
         "knowledge_base"
@@ -7113,7 +7113,7 @@
   },
   "docs/token_benchmark.md": {
     "type": "doc",
-    "description": "Token optimization benchmark — before/after safe_run.py comparison for 3 scenarios. Projects 45-65% reduction for T-041-equivalent tasks.",
+    "description": "Token optimization benchmark â€” before/after safe_run.py comparison for 3 scenarios. Projects 45-65% reduction for T-041-equivalent tasks.",
     "topics": {
       "major": [
         "token_tracking",
@@ -7319,7 +7319,7 @@
   },
   "scripts/knowledge_conflict_checker.py": {
     "type": "tool",
-    "description": "Stage 1 knowledge conflict checker — pure Python, 0 LLM tokens. Computes review_priority_score from topic overlap + phrase matching. Returns structured JSON for agent review.",
+    "description": "Stage 1 knowledge conflict checker â€” pure Python, 0 LLM tokens. Computes review_priority_score from topic overlap + phrase matching. Returns structured JSON for agent review.",
     "topics": {
       "major": [
         "knowledge_base",
@@ -7609,7 +7609,7 @@
   },
   "scripts/write_context_cache.sh": {
     "type": "tool",
-    "description": "Stop hook script — writes compact context snapshot to .sessions/session_context_cache.md and appends 1 JSON line to .sessions/token_log.jsonl every time Claude stops.",
+    "description": "Stop hook script â€” writes compact context snapshot to .sessions/session_context_cache.md and appends 1 JSON line to .sessions/token_log.jsonl every time Claude stops.",
     "topics": {
       "major": [
         "session_management",
@@ -7820,7 +7820,7 @@
   },
   "scripts/backfill_knowledge_index.py": {
     "type": "tool",
-    "description": "One-time backfill script for knowledge/index_files.json — extracts scaled excerpts (60L cap) and writes agent-generated summary/key_claims. Also auto-detects supersedes chain from _YYYYMMDD.md filename pattern.",
+    "description": "One-time backfill script for knowledge/index_files.json â€” extracts scaled excerpts (60L cap) and writes agent-generated summary/key_claims. Also auto-detects supersedes chain from _YYYYMMDD.md filename pattern.",
     "topics": {
       "major": [
         "index_sync",
@@ -8059,7 +8059,7 @@
     "imported_by": []
   },
   "knowledge/token-efficiency-agent-workflow-framework-2026-05-31.md": {
-    "description": "Token efficiency framework for agent workflows — patterns and strategies for reducing token usage.",
+    "description": "Token efficiency framework for agent workflows â€” patterns and strategies for reducing token usage.",
     "topics": {
       "major": [
         "token_efficiency",
@@ -9633,7 +9633,7 @@
   ".sessions/exec_log/": {
     "path": ".sessions/exec_log/",
     "role": "temp",
-    "description": "Tool result offload dir — full results stored per-turn, pruned by trim_exec_log.py",
+    "description": "Tool result offload dir â€” full results stored per-turn, pruned by trim_exec_log.py",
     "topics": {
       "major": [
         "session_management"
@@ -9794,7 +9794,7 @@
   "scripts/trim_exec_log.py": {
     "path": "scripts/trim_exec_log.py",
     "role": "script",
-    "description": "Prune .sessions/exec_log/ — max 50 files, max age 24h. Run before /compact.",
+    "description": "Prune .sessions/exec_log/ â€” max 50 files, max age 24h. Run before /compact.",
     "topics": {
       "major": [
         "session_management",
@@ -10055,7 +10055,7 @@
         "mece_planning"
       ]
     },
-    "description": "Canonical CFP topic registry for harness_doctor §1 matching",
+    "description": "Canonical CFP topic registry for harness_doctor Â§1 matching",
     "backlinks": [
       ".agents/skills/harness/harness_doctor/SKILL_detail.md"
     ],
@@ -10325,7 +10325,7 @@
     "tagged_at_hash": "582dcac0"
   },
   ".agents/skills/harness/self_improve/SKILL.md": {
-    "description": "Self-improve skill — CFP logging, harness update workflow",
+    "description": "Self-improve skill â€” CFP logging, harness update workflow",
     "topics": {
       "major": [
         "cfp_immunity",
@@ -10666,7 +10666,7 @@
     "tagged_at_hash": "66769daa"
   },
   ".agents/skills/harness/self_improve/SKILL_detail.md": {
-    "description": "Self-improve skill detail — §S3 CFP logging, §S4 execution steps",
+    "description": "Self-improve skill detail â€” Â§S3 CFP logging, Â§S4 execution steps",
     "topics": {
       "major": [
         "cfp_logging",
@@ -10927,7 +10927,7 @@
     "tagged_at_hash": "1844a7c2"
   },
   ".agents/skills/harness/mece/SKILL.md": {
-    "description": "MECE plan skill — Phase 2 plan creation and validation",
+    "description": "MECE plan skill â€” Phase 2 plan creation and validation",
     "topics": {
       "major": [
         "mece_planning",
@@ -11275,7 +11275,7 @@
     "tagged_at_hash": "ca998bf9"
   },
   "knowledge/error_topics.md": {
-    "description": "Error topic registry — code bug domain taxonomy for error_index.md classification",
+    "description": "Error topic registry â€” code bug domain taxonomy for error_index.md classification",
     "topics": {
       "major": [
         "error_protocol"
@@ -11378,7 +11378,7 @@
   },
   ".agents/skills/knowledge/repo_researcher/SKILL.md": {
     "type": "skill",
-    "description": "Repo Researcher skill — clones or reads local git repos, maps structure, synthesizes 3 .md output files in knowledge/research/ for TS/Next.js harness adaptation.",
+    "description": "Repo Researcher skill â€” clones or reads local git repos, maps structure, synthesizes 3 .md output files in knowledge/research/ for TS/Next.js harness adaptation.",
     "backlinks": [
       ".agents/skills/skill-manifest.json"
     ],
@@ -11711,7 +11711,7 @@
   },
   "scripts/repo_scout.py": {
     "type": "tool",
-    "description": "Repo scout tool — clone public repo or validate local path, enumerate files (skip noise dirs), detect primary language, output JSON metadata with size_tier + key_files + entry_points.",
+    "description": "Repo scout tool â€” clone public repo or validate local path, enumerate files (skip noise dirs), detect primary language, output JSON metadata with size_tier + key_files + entry_points.",
     "backlinks": [
       ".agents/skills/knowledge/repo_researcher/SKILL.md",
       ".agents/tools/tool-manifest.json"
@@ -11975,7 +11975,7 @@
   },
   "docs/session_templates/research_summary.md": {
     "type": "doc",
-    "description": "Output template for repo_researcher skill — repo summary with Overview, Architecture, Flow, Code References sections.",
+    "description": "Output template for repo_researcher skill â€” repo summary with Overview, Architecture, Flow, Code References sections.",
     "backlinks": [
       ".agents/skills/knowledge/repo_researcher/SKILL.md"
     ],
@@ -12173,7 +12173,7 @@
   },
   "docs/session_templates/research_improvement.md": {
     "type": "doc",
-    "description": "Output template for repo_researcher skill — improvement plan with findings + TS/Next.js adapted implementation plan.",
+    "description": "Output template for repo_researcher skill â€” improvement plan with findings + TS/Next.js adapted implementation plan.",
     "backlinks": [
       ".agents/skills/knowledge/repo_researcher/SKILL.md"
     ],
@@ -12412,7 +12412,7 @@
   },
   "docs/session_templates/research_repo_map.md": {
     "type": "doc",
-    "description": "Output template for repo_researcher skill — repo map with file tree, key files (reference_count), entry points, symbol index.",
+    "description": "Output template for repo_researcher skill â€” repo map with file tree, key files (reference_count), entry points, symbol index.",
     "backlinks": [
       ".agents/skills/knowledge/repo_researcher/SKILL.md"
     ],
@@ -12611,7 +12611,7 @@
   ".agents/skills/content/doc_builder/SKILL.md": {
     "path": ".agents/skills/content/doc_builder/SKILL.md",
     "type": "skill",
-    "description": "doc_builder skill — overview, trigger, refusal contract, §1 analyze, §2 storyboard (≤80L)",
+    "description": "doc_builder skill â€” overview, trigger, refusal contract, Â§1 analyze, Â§2 storyboard (â‰¤80L)",
     "topics": {
       "major": [
         "behavioral_contract",
@@ -12951,7 +12951,7 @@
   ".agents/skills/content/doc_builder/SKILL_detail.md": {
     "path": ".agents/skills/content/doc_builder/SKILL_detail.md",
     "type": "skill",
-    "description": "doc_builder detail — §1-scan grep commands, §3 screenshot plan, §4 playwright script template, §5 MECE update, §6 HTML build + PDF hook",
+    "description": "doc_builder detail â€” Â§1-scan grep commands, Â§3 screenshot plan, Â§4 playwright script template, Â§5 MECE update, Â§6 HTML build + PDF hook",
     "topics": {
       "major": [
         "behavioral_contract"
@@ -13281,7 +13281,7 @@
   ".agents/skills/content/project_presenter/SKILL.md": {
     "path": ".agents/skills/content/project_presenter/SKILL.md",
     "type": "skill",
-    "description": "project_presenter skill — §1-§5 sales presentation generator, BC-Screenshot-Check, BC-Interview-Gate",
+    "description": "project_presenter skill â€” Â§1-Â§5 sales presentation generator, BC-Screenshot-Check, BC-Interview-Gate",
     "created": "2026-06-04",
     "task": "T-090",
     "rules_defined": [],
@@ -13551,7 +13551,7 @@
   ".agents/skills/content/project_presenter/SKILL_detail.md": {
     "path": ".agents/skills/content/project_presenter/SKILL_detail.md",
     "type": "skill",
-    "description": "project_presenter detail — interview loop, HTML templates, Q&A matrix, storytelling .md construction",
+    "description": "project_presenter detail â€” interview loop, HTML templates, Q&A matrix, storytelling .md construction",
     "created": "2026-06-04",
     "task": "T-090",
     "related": [
@@ -13778,7 +13778,7 @@
   "docs/session_templates/storytelling_template.md": {
     "path": "docs/session_templates/storytelling_template.md",
     "type": "doc",
-    "description": "Storytelling template — narrative_arc, pain_points, qa_matrix, metadata for project_presenter §4",
+    "description": "Storytelling template â€” narrative_arc, pain_points, qa_matrix, metadata for project_presenter Â§4",
     "created": "2026-06-04",
     "task": "T-090",
     "related": [
@@ -13952,7 +13952,7 @@
     "tagged_at_hash": "09cc141d"
   },
   "knowledge/9arm-skills-writing-techniques-concrete-examples-2026-06-04.md": {
-    "description": "Deep dive: 9arm-skills writing techniques with concrete examples — Operating Stance, When NOT to Use, Cross-Skill Composition, Tone Guide, Quality Heuristics. Discipline vs Enforcement model comparison.",
+    "description": "Deep dive: 9arm-skills writing techniques with concrete examples â€” Operating Stance, When NOT to Use, Cross-Skill Composition, Tone Guide, Quality Heuristics. Discipline vs Enforcement model comparison.",
     "topics": {
       "major": [
         "behavioral_contract",
@@ -14234,7 +14234,7 @@
     },
     "key_claims": [
       "Harness Agent has 18 skills across 3 tiers: Core Execution, Supporting, Specialized Output",
-      "13 framework components — 7 mandatory in all skills, 6 conditional",
+      "13 framework components â€” 7 mandatory in all skills, 6 conditional",
       "BC blocks used only for irreversible/destructive actions, not judgment calls",
       "Minimal skill = 6 mandatory components (~50L); full skill = all 13 (~150-180L)"
     ],
@@ -14576,7 +14576,7 @@
     "tagged_at_hash": "b4cd685b"
   },
   "knowledge/9arm-skills-skill-building-framework-2026-06-04.md": {
-    "description": "9arm-skills skill building framework — 8 components, decision table, blank template, step-by-step guide for writing new skills in the 9arm style.",
+    "description": "9arm-skills skill building framework â€” 8 components, decision table, blank template, step-by-step guide for writing new skills in the 9arm style.",
     "topics": {
       "major": [
         "behavioral_contract",
@@ -14589,9 +14589,9 @@
       ]
     },
     "key_claims": [
-      "9arm-skills framework has 8 components — 4 always required, 4 conditional",
+      "9arm-skills framework has 8 components â€” 4 always required, 4 conditional",
       "YAML Header must embed trigger keywords in description, not just summarize",
-      "When NOT to Use prevents misuse without enforcement — as important as When to Invoke",
+      "When NOT to Use prevents misuse without enforcement â€” as important as When to Invoke",
       "Operating Stance replaces edge-case rules with transferable mindset",
       "Minimal skill ~30-40L uses 5 components; full skill ~130L uses all 8",
       "6 cross-skill connection types: Text Reference, Mandatory+Wait, BC-Gated, On-Demand, Proactive Offer, Input Sourcing",
@@ -14911,7 +14911,7 @@
     "tagged_at_hash": "bdaf1bc0"
   },
   "knowledge/audit_engine_rubric.md": {
-    "description": "Shared file-agnostic audit engine — Operating Stance, verdict format, Stop conditions (Class A/B), Failure-Mode awareness, Tier & effort, Structure Audit, Re-audit, Escalation. Referenced by skill_auditor and harness_doc_auditor.",
+    "description": "Shared file-agnostic audit engine â€” Operating Stance, verdict format, Stop conditions (Class A/B), Failure-Mode awareness, Tier & effort, Structure Audit, Re-audit, Escalation. Referenced by skill_auditor and harness_doc_auditor.",
     "topics": {
       "major": [
         "behavioral_contract"
@@ -15156,7 +15156,7 @@
     "tagged_at_hash": "a51a9cca"
   },
   ".agents/skills/harness/harness_doc_auditor/SKILL.md": {
-    "description": "harness_doc_auditor — audits rule/directive .md files (CLAUDE.md, AGENTS.md, INVARIANTS.md, REPO_MAP.md, Implement/*.md, mece_plan_schema.md) against an 8-item directive rubric on top of the shared audit engine. Declines SKILL.md (→ skill_auditor) and src/ (→ harness_editor).",
+    "description": "harness_doc_auditor â€” audits rule/directive .md files (CLAUDE.md, AGENTS.md, INVARIANTS.md, REPO_MAP.md, Implement/*.md, mece_plan_schema.md) against an 8-item directive rubric on top of the shared audit engine. Declines SKILL.md (â†’ skill_auditor) and src/ (â†’ harness_editor).",
     "topics": {
       "major": [
         "behavioral_contract",
@@ -15170,7 +15170,7 @@
     },
     "key_claims": [
       "8-item rubric: contradiction, scatter, ambiguous-trigger, dead-ref, token-density, low-tier-followability, gate/BC-correctness, link-validity",
-      "Most scope files are Never-Full-Load → mandates grep-walk in windows, never full Read",
+      "Most scope files are Never-Full-Load â†’ mandates grep-walk in windows, never full Read",
       "Gate/BC item is two-sided: flags over-enforcement (gate on judgment) AND under-enforcement (destructive action with no gate)",
       "References knowledge/audit_engine_rubric.md for the file-agnostic engine"
     ],
@@ -15433,7 +15433,7 @@
     "tagged_at_hash": "918dd4c0"
   },
   ".agents/skills/harness/skill_auditor/SKILL.md": {
-    "description": "skill_auditor — audits any SKILL.md against 9arm framework: 8 components, 6 connection types, BC over-enforcement detection. Produces verdict table + ready-to-paste suggested additions.",
+    "description": "skill_auditor â€” audits any SKILL.md against 9arm framework: 8 components, 6 connection types, BC over-enforcement detection. Produces verdict table + ready-to-paste suggested additions.",
     "topics": {
       "major": [
         "behavioral_contract",
@@ -15447,7 +15447,7 @@
     },
     "key_claims": [
       "Audits 8 components: YAML Header, When to Invoke, When NOT to Use, Operating Stance, Prerequisites, Workflow, Output Spec, Hard Rules",
-      "Flags BC over-enforcement — BC count > 2 with no irreversible action = [over-enforcement]",
+      "Flags BC over-enforcement â€” BC count > 2 with no irreversible action = [over-enforcement]",
       "Suggested Additions must be real text, not descriptions of what to write",
       "Input sourcing: reads prior audit runs from exec_log to avoid re-flagging fixed issues"
     ],
@@ -15973,7 +15973,7 @@
     "imported_by": []
   },
   "scripts/session_close.py": {
-    "purpose": "5-file session close automation — writes session JSON, tokens, thread, handoff, runs session_indexer",
+    "purpose": "5-file session close automation â€” writes session JSON, tokens, thread, handoff, runs session_indexer",
     "created": "2026-06-07",
     "task": "T-153",
     "topics": {
@@ -16257,7 +16257,7 @@
   },
   "scripts/compute_compact_size.py": {
     "type": "tool",
-    "description": "compact_size single source — prints int(CHAT_TOTAL * RETENTION=0.52) read from session_tokens.md. SSOT for the compact_size constant (Phase B); replaced 4 inline copies, one of which was broken (import open as o).",
+    "description": "compact_size single source â€” prints int(CHAT_TOTAL * RETENTION=0.52) read from session_tokens.md. SSOT for the compact_size constant (Phase B); replaced 4 inline copies, one of which was broken (import open as o).",
     "backlinks": [
       "Implement/03_config.md",
       "docs/session_templates/mece_plan_schema.md",
@@ -16404,7 +16404,7 @@
     "imported_by": []
   },
   "knowledge/behave_test_log.jsonl": {
-    "description": "Stage 3.5 behavioral-verify run log + regression suite (T-161) — one JSON record per spawn-test of an edited harness rule",
+    "description": "Stage 3.5 behavioral-verify run log + regression suite (T-161) â€” one JSON record per spawn-test of an edited harness rule",
     "topics": {
       "major": [
         "behavioral_contract"
@@ -16613,7 +16613,7 @@
     "tagged_at_hash": "9a169e9c"
   },
   "../Document_Control/kms-api-secured.js": {
-    "description": "KMS backend Cloudflare Worker (T-163) — JWT auth (WebCrypto HMAC-SHA256) + PBKDF2 password hashing + 16 API endpoints + D1 database. Deploy via wrangler; bindings: DB (D1), JWT_SECRET.",
+    "description": "KMS backend Cloudflare Worker (T-163) â€” JWT auth (WebCrypto HMAC-SHA256) + PBKDF2 password hashing + 16 API endpoints + D1 database. Deploy via wrangler; bindings: DB (D1), JWT_SECRET.",
     "topics": {
       "major": [
         "behavioral_contract",
@@ -16863,7 +16863,7 @@
   },
   "scripts/posttool_track.py": {
     "type": "tool",
-    "description": "PostToolUse hook tracker (T-177/CFP-028 fix) — increments LOOP_WEIGHT + estimates tool-I/O chars to accumulate SESSION_TOTAL+CHAT_TOTAL atomically per tool call. Fail-safe. Wired in .claude/settings.json PostToolUse.",
+    "description": "PostToolUse hook tracker (T-177/CFP-028 fix) â€” increments LOOP_WEIGHT + estimates tool-I/O chars to accumulate SESSION_TOTAL+CHAT_TOTAL atomically per tool call. Fail-safe. Wired in .claude/settings.json PostToolUse.",
     "backlinks": [
       ".claude/settings.json",
       "CLAUDE.md"
@@ -17031,7 +17031,7 @@
   },
   "scripts/rule_indexer.py": {
     "type": "tool",
-    "description": "Auto-generate cross-file rule map: extracts R/T/CFP/ERR/BC tokens from harness files, classifies defined vs referenced, writes rules_defined[]/rules_referenced[] into index_files.json. Cache only; files stay source of truth. Powers audit_engine_rubric.md §6 Scan D (T-182).",
+    "description": "Auto-generate cross-file rule map: extracts R/T/CFP/ERR/BC tokens from harness files, classifies defined vs referenced, writes rules_defined[]/rules_referenced[] into index_files.json. Cache only; files stay source of truth. Powers audit_engine_rubric.md Â§6 Scan D (T-182).",
     "backlinks": [],
     "exports": [
       "scan_file",
@@ -17738,7 +17738,7 @@
   },
   ".agents/skills/harness/harness_editor/SKILL_detail.md": {
     "type": "skill",
-    "description": "BC Selection Guide Detail — decision tree, per-tier examples, anti-patterns for harness_editor",
+    "description": "BC Selection Guide Detail â€” decision tree, per-tier examples, anti-patterns for harness_editor",
     "topics": {
       "major": [
         "harness_editing",
@@ -18257,7 +18257,7 @@
   },
   "knowledge/llm-api-pricing-comparison-2026-06.md": {
     "type": "knowledge",
-    "description": "LLM API pricing comparison table (OpenAI/Anthropic/Google) Jun 2026 — rates, cache mechanics, gotchas, coding-agent scores",
+    "description": "LLM API pricing comparison table (OpenAI/Anthropic/Google) Jun 2026 â€” rates, cache mechanics, gotchas, coding-agent scores",
     "created": "2026-06-11",
     "tags": [
       "pricing",
@@ -18402,7 +18402,7 @@
   },
   "scripts/repo_map_check.py": {
     "type": "tool",
-    "description": "REPO_MAP.md drift detector (T-185) — flags top-level files/dirs added/removed vs curated map; --append adds placeholder rows, never overwrites curated descriptions",
+    "description": "REPO_MAP.md drift detector (T-185) â€” flags top-level files/dirs added/removed vs curated map; --append adds placeholder rows, never overwrites curated descriptions",
     "topics": {
       "major": [
         "index_sync",
@@ -18749,7 +18749,7 @@
   },
   "knowledge/topic_facet_schema.md": {
     "type": "knowledge",
-    "description": "Topic-Facet Backlink Schema v2 — 2-facet (type+topic) per-file weighted model, AI-tag-once determinism (hash-lock), weighted link-strength formula.",
+    "description": "Topic-Facet Backlink Schema v2 â€” 2-facet (type+topic) per-file weighted model, AI-tag-once determinism (hash-lock), weighted link-strength formula.",
     "topics": {
       "major": [
         "topic_graph",
@@ -19081,7 +19081,7 @@
   },
   "scripts/boot_init.sh": {
     "type": "tool",
-    "description": "Boot step B1 — compact-restore check + SESSION/CHAT/LOOP_WEIGHT reset in session_tokens.md + active_thread tail + roadmap [/] + CFP_COUNT. Extracted from inline AGENTS.md bash (T-212/D1). Mirrors compact_reset.py CHAT formula — KEEP IN SYNC.",
+    "description": "Boot step B1 â€” compact-restore check + SESSION/CHAT/LOOP_WEIGHT reset in session_tokens.md + active_thread tail + roadmap [/] + CFP_COUNT. Extracted from inline AGENTS.md bash (T-212/D1). Mirrors compact_reset.py CHAT formula â€” KEEP IN SYNC.",
     "references": [
       ".sessions/compact_state.md",
       ".sessions/active_thread.md",
@@ -19139,7 +19139,7 @@
   },
   ".agents/skills/coding/delegate/SKILL.md": {
     "type": "skill",
-    "description": "Delegate skill — hands a confirmed, mechanical, self-contained MECE Phase-3 section to a cheap Haiku sub-agent instead of running it in main context. Self-verify always mandatory; retry-once-then-escalate to MODEL_MEDIUM. Refuses planning/judgment/security/R14-R15-gated paths.",
+    "description": "Delegate skill â€” hands a confirmed, mechanical, self-contained MECE Phase-3 section to a cheap Haiku sub-agent instead of running it in main context. Self-verify always mandatory; retry-once-then-escalate to MODEL_MEDIUM. Refuses planning/judgment/security/R14-R15-gated paths.",
     "backlinks": [
       ".agents/skills/skill-manifest.json",
       "Implement/03_config.md"
@@ -19167,7 +19167,7 @@
       "a confirmed mechanical MECE section is the standalone delegate prompt",
       "self-verify via the section Verify-N is always mandatory",
       "one retry then escalate to MODEL_MEDIUM + emit [delegate-escalated]",
-      "resolve model id from detected.md model_low — never hardcode",
+      "resolve model id from detected.md model_low â€” never hardcode",
       "never delegate R14/R15-gated paths or work needing chat context"
     ],
     "supersedes": null,
@@ -19207,7 +19207,7 @@
     "tagged_at_hash": "c6680a59"
   },
   "docs/session_templates/handoff_block_schema.md": {
-    "description": "Canonical spec for the ## hand-off block — skill chaining hand-off contracts (T-216 D5): producer->consumer artifact chains + standard INDEX variant. Single-source rule (T-202), required-inputs gate, on-missing HALT / on-present flow.",
+    "description": "Canonical spec for the ## hand-off block â€” skill chaining hand-off contracts (T-216 D5): producer->consumer artifact chains + standard INDEX variant. Single-source rule (T-202), required-inputs gate, on-missing HALT / on-present flow.",
     "topics": {
       "major": [
         "skill_system"
@@ -19259,7 +19259,7 @@
   },
   "scripts/tok.py": {
     "type": "tool",
-    "description": "Per-file token estimator (pull helper, T-247) — answers \"how many tokens to load this file?\" before reading. Ratio single-sourced from token_estimator (EN_MULT/THAI_MULT). Supports --lines N partial-read predictor. Callable via Bash.",
+    "description": "Per-file token estimator (pull helper, T-247) â€” answers \"how many tokens to load this file?\" before reading. Ratio single-sourced from token_estimator (EN_MULT/THAI_MULT). Supports --lines N partial-read predictor. Callable via Bash.",
     "backlinks": [
       "Implement/03_config.md"
     ],
@@ -19335,7 +19335,7 @@
     "related": []
   },
   "knowledge/glossary.md": {
-    "description": "On-demand term->plain-Thai glossary (T-229). One line per term: term(lowercase) | plain-Thai gloss | optional analogy. grep-only — NEVER always-loaded (T-226e). Appended by user-coach when a term is glossed; grepped first on recurrence to reuse the stored wording.",
+    "description": "On-demand term->plain-Thai glossary (T-229). One line per term: term(lowercase) | plain-Thai gloss | optional analogy. grep-only â€” NEVER always-loaded (T-226e). Appended by user-coach when a term is glossed; grepped first on recurrence to reuse the stored wording.",
     "topics": [
       "glossary",
       "glossing",
@@ -19405,7 +19405,7 @@
   },
   ".agents/skills/knowledge/index_manager/SKILL.md": {
     "type": "skill",
-    "description": "Index Manager skill (T-238 merge) — maintains both knowledge indices via a mode split. mode:symbol -> index_variables.json (cross-file symbol defs + used_in). mode:file -> index_files.json (file lifecycle + backlinks). Caller-driven, index-only.",
+    "description": "Index Manager skill (T-238 merge) â€” maintains both knowledge indices via a mode split. mode:symbol -> index_variables.json (cross-file symbol defs + used_in). mode:file -> index_files.json (file lifecycle + backlinks). Caller-driven, index-only.",
     "topics": {
       "major": [
         "index_sync"
@@ -19601,7 +19601,7 @@
     ]
   },
   "knowledge/user_modeling_grounding.md": {
-    "description": "Grounding spec for T-253 user-modeling / potential-development system — design rationale extending the T-225 user-coach store with a person model + coach layer: behaviors-not-labels, two-tier append-log + one-page top-sheet, self-report-as-provisional epistemics, lightweight readiness gate, and a situational-leadership verbosity dial.",
+    "description": "Grounding spec for T-253 user-modeling / potential-development system â€” design rationale extending the T-225 user-coach store with a person model + coach layer: behaviors-not-labels, two-tier append-log + one-page top-sheet, self-report-as-provisional epistemics, lightweight readiness gate, and a situational-leadership verbosity dial.",
     "topics": {
       "major": [
         "session_management"
@@ -19715,7 +19715,7 @@
     "type": "knowledge"
   },
   "knowledge/user_learning_profile.json": {
-    "description": "Canonical single-source store for the user-modeling system (schema_version 2) — person self-report, confirmed/provisional traits with tally, per-topic mastery + quiz history, weak/strong areas and dev_path. Read/written by scripts/learning_profile.py; surfaced each turn via the [learning-state] hook line.",
+    "description": "Canonical single-source store for the user-modeling system (schema_version 2) â€” person self-report, confirmed/provisional traits with tally, per-topic mastery + quiz history, weak/strong areas and dev_path. Read/written by scripts/learning_profile.py; surfaced each turn via the [learning-state] hook line.",
     "topics": {
       "major": [
         "session_management"
@@ -19797,7 +19797,7 @@
     "type": "data"
   },
   "knowledge/obsidian-style-graph-knowledge-wiki-for-llm-2026-06-24.md": {
-    "description": "Research note: building an OFFLINE single-file HTML backlink graph (Obsidian-style) of repo files, colored by topic. Key finding: index_files.json already holds nodes/edges(backlinks,references,related)/color(topics) — it is a rendering problem, not a data problem. Library comparison (force-graph wins at ~2400 nodes Canvas); ref repos quartz/ObsidianHtml. Frames the graph as the human-facing read-model of the agent index + a harness-health audit (orphan/hub/cluster) + GraphRAG adjacency.",
+    "description": "Research note: building an OFFLINE single-file HTML backlink graph (Obsidian-style) of repo files, colored by topic. Key finding: index_files.json already holds nodes/edges(backlinks,references,related)/color(topics) â€” it is a rendering problem, not a data problem. Library comparison (force-graph wins at ~2400 nodes Canvas); ref repos quartz/ObsidianHtml. Frames the graph as the human-facing read-model of the agent index + a harness-health audit (orphan/hub/cluster) + GraphRAG adjacency.",
     "topics": {
       "major": [
         "knowledge_system"
@@ -19895,7 +19895,7 @@
     "related": []
   },
   "knowledge/karpathy-llm-wiki-pattern-2026-06-24.md": {
-    "description": "Research note on Karpathy LLM-Wiki gist (gist 442a6bf): LLM incrementally builds+maintains an interlinked markdown knowledge base (vs RAG re-deriving each query). 3 layers (raw sources / wiki / schema=CLAUDE.md+AGENTS.md, named explicitly) · 3 ops (ingest/query/lint) · index.md+log.md, no embeddings at moderate scale. KEY: maps ~80% onto our harness (knowledge/+memory = wiki, index_files.json = index, index_reconcile/scrutinize = lint, the planned backlink graph = Obsidian graph view). Gaps to adopt: immutable raw-sources layer, inline contradiction-flagging, page frontmatter, qmd search at scale.",
+    "description": "Research note on Karpathy LLM-Wiki gist (gist 442a6bf): LLM incrementally builds+maintains an interlinked markdown knowledge base (vs RAG re-deriving each query). 3 layers (raw sources / wiki / schema=CLAUDE.md+AGENTS.md, named explicitly) Â· 3 ops (ingest/query/lint) Â· index.md+log.md, no embeddings at moderate scale. KEY: maps ~80% onto our harness (knowledge/+memory = wiki, index_files.json = index, index_reconcile/scrutinize = lint, the planned backlink graph = Obsidian graph view). Gaps to adopt: immutable raw-sources layer, inline contradiction-flagging, page frontmatter, qmd search at scale.",
     "topics": {
       "major": [
         "knowledge_system"
@@ -19946,7 +19946,7 @@
     ]
   },
   "knowledge/wiki-index-integrity-audit-2026-06-24.md": {
-    "description": "Verified audit: LLM-wiki index/backlink sync leaks on ADD (honor-system, no enroll script; index_reconcile.py:262/384 only PRINTS [index-drift] missing, never inserts; detector uses git status --porcelain=this-session so committed files leak forever → root cause of 76 missing entries). DELETE enforced (--check exit 2), EDIT drifts (topics never re-extracted), RENAME asymmetric. Fix: make reconciler ENROLL over git ls-files. Prioritized fix plan inside.",
+    "description": "Verified audit: LLM-wiki index/backlink sync leaks on ADD (honor-system, no enroll script; index_reconcile.py:262/384 only PRINTS [index-drift] missing, never inserts; detector uses git status --porcelain=this-session so committed files leak forever â†’ root cause of 76 missing entries). DELETE enforced (--check exit 2), EDIT drifts (topics never re-extracted), RENAME asymmetric. Fix: make reconciler ENROLL over git ls-files. Prioritized fix plan inside.",
     "topics": {
       "major": [
         "index_sync"
@@ -20115,7 +20115,7 @@
     ]
   },
   "knowledge/wiki-index-sync-diagram-guide-2026-06-24.md": {
-    "description": "Visual guide (companion to the integrity audit): flow diagram of how a new file reaches the index. Two columns current(leaky) vs fixed(complete); only steps 3-4 differ — detection porcelain->git ls-files, missing-file print->auto-enroll stub. Core principle: ADD path moves from honor-system to enforced/automatic (same reason DELETE never leaks). References the SVG + scripts/index_reconcile.py. Ties to roadmap T-269.",
+    "description": "Visual guide (companion to the integrity audit): flow diagram of how a new file reaches the index. Two columns current(leaky) vs fixed(complete); only steps 3-4 differ â€” detection porcelain->git ls-files, missing-file print->auto-enroll stub. Core principle: ADD path moves from honor-system to enforced/automatic (same reason DELETE never leaks). References the SVG + scripts/index_reconcile.py. Ties to roadmap T-269.",
     "topics": {
       "major": [
         "index_sync"
@@ -20263,7 +20263,7 @@
   },
   "knowledge/diagrams/wiki-index-sync-current-vs-fixed.svg": {
     "type": "diagram",
-    "description": "Standalone SVG: Wiki index sync current(leaky) vs fixed(complete) flow — the 4-step ADD-to-index path, steps 3-4 are the T-269 fix points (git ls-files + auto-enroll).",
+    "description": "Standalone SVG: Wiki index sync current(leaky) vs fixed(complete) flow â€” the 4-step ADD-to-index path, steps 3-4 are the T-269 fix points (git ls-files + auto-enroll).",
     "topics": {
       "major": [
         "index_sync"
@@ -21944,7 +21944,7 @@
   },
   "scripts/build_backlink_graph.py": {
     "type": "tool",
-    "description": "Generator (single source of truth) — reads knowledge/index_files.json and emits a self-contained OFFLINE HTML backlink graph (Obsidian-style force-directed view) to knowledge/diagrams/backlink-graph.html. Hand-written canvas force sim (no CDN), topic-cluster layout, score-threshold slider, click-to-focus, search, legend; Plus panel adds force sliders + settle/orphan/arrows toggles. Click-to-read detail panel (T-274): per-node embedded description preview, clickable neighbour navigation (walk backlinks in-graph), open-raw-file link. Deterministic/idempotent output. (T-273, T-274)",
+    "description": "Generator (single source of truth) â€” reads knowledge/index_files.json and emits a self-contained OFFLINE HTML backlink graph (Obsidian-style force-directed view) to knowledge/diagrams/backlink-graph.html. Hand-written canvas force sim (no CDN), topic-cluster layout, score-threshold slider, click-to-focus, search, legend; Plus panel adds force sliders + settle/orphan/arrows toggles. Click-to-read detail panel (T-274): per-node embedded description preview, clickable neighbour navigation (walk backlinks in-graph), open-raw-file link. Deterministic/idempotent output. (T-273, T-274)",
     "backlinks": [
       "knowledge/index_files.json"
     ],
@@ -22122,7 +22122,7 @@
   },
   "knowledge/diagrams/backlink-graph.html": {
     "type": "artifact",
-    "description": "Generated offline artifact (do NOT hand-edit) — self-contained interactive backlink graph of the knowledge base, 209 nodes / 1202 deduped edges, color-by-topic, built by scripts/build_backlink_graph.py. Open directly in a browser; zero network refs. (T-273)",
+    "description": "Generated offline artifact (do NOT hand-edit) â€” self-contained interactive backlink graph of the knowledge base, 209 nodes / 1202 deduped edges, color-by-topic, built by scripts/build_backlink_graph.py. Open directly in a browser; zero network refs. (T-273)",
     "backlinks": [
       "scripts/build_backlink_graph.py"
     ],

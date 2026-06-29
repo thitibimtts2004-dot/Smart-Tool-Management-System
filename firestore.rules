@@ -1,0 +1,60 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ==========================================
+    // Security Helper Functions
+    // ==========================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function getUserData() {
+      return get(/databases/$(database)/documents/members/$(request.auth.uid)).data;
+    }
+    
+    function hasRole(role) {
+      return isAuthenticated() && getUserData().role == role;
+    }
+
+    // ==========================================
+    // Collection Security Rules
+    // ==========================================
+
+    // Members collection
+    match /members/{memberId} {
+      allow read: if isAuthenticated();
+      // Users can manage their own profile, administrators can manage any profile
+      allow write: if isAuthenticated() && (request.auth.uid == memberId || hasRole('admin'));
+    }
+
+    // Tools collection
+    match /tools/{toolId} {
+      allow read: if isAuthenticated();
+      // Only administrators, central/site store admins, or technicians can add/edit tools
+      allow write: if hasRole('admin') || 
+                      hasRole('store_admin') || 
+                      hasRole('site_store_admin') || 
+                      hasRole('technician');
+    }
+
+    // Borrows (Transactions) collection
+    match /borrows/{borrowId} {
+      allow read: if isAuthenticated();
+      // Only admins and site/central store admins can register borrow actions and returns
+      allow write: if hasRole('admin') || 
+                      hasRole('store_admin') || 
+                      hasRole('site_store_admin');
+    }
+
+    // Maintenance Logs collection
+    match /maintenance/{maintenanceId} {
+      allow read: if isAuthenticated();
+      // Only central admins, store admins, or technicians can log maintenance details
+      allow write: if hasRole('admin') || 
+                      hasRole('store_admin') || 
+                      hasRole('technician');
+    }
+  }
+}

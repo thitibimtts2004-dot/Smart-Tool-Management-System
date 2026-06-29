@@ -922,3 +922,5 @@ Note: PLANNING only — each phase is a future task needing its own Phase 1→2�
 - [X] T-274: backlink-graph click-to-read panel — preview desc + neighbour-nav + open-file (offline preserved) · attempts:1 · Verify-3a-f pass (3f=real browser click-test via Claude Preview) · scope clean
   └─ scrutinize follow-up (user-requested): +ellipsis on 18 truncated descs · +</script> injection hardening (data_json.replace) · re-verified offline/idempotent/JS/212-nodes
 - [ ] T-275: backlink-graph neighbour-list vs edge-filter (scrutinize finding #2, deferred by user) — decide A(show-all·current) / B(visible-only) / C(show-all+dim-hidden+reveal-on-click). Recommended A. File: scripts/build_backlink_graph.py
+
+- [X] T-276: Firebase & Next.js Project File Structure Setup (App Router, TS, Firebase Client SDK, Firestore, Vanilla CSS) · attempts: 1 · tool_calls: 10

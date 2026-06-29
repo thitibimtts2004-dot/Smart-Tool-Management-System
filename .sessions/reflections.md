@@ -172,3 +172,11 @@ promoted_patterns: live-dogfood every command-inspecting hook before marking don
 - Verify: 3a offline=0 refs · 3b embedded==index(212) · 3c idempotent (diff empty x2) · 3d edges_kept=1257/avg_visible_degree 6.62 (~6, down from raw 26) · 3e both files in index_files.json.
 - Plan estimated 208 nodes; real index = 209 then 212 after R8 reconcile auto-enrolled the 2 new files + 1 other. Reinterpreted Verify-3b as embedded==current-index-count (the meaningful check), not the literal estimate.
 - Pre-existing repo-map drift (src/ gone from disk) surfaced by reconciler — left untouched (out of T-273 scope).
+
+## T-276 · 2026-06-29 · Firebase & Next.js Project File Structure Setup
+- intent: Bootstrap Next.js App Router with TS and Vanilla CSS, install Firebase SDK, write config & firestore helper modules, and scaffold directory structure and Firestore security rules.
+- outcome: Shipped package.json, tsconfig.json, next.config.ts, eslint.config.mjs, next-env.d.ts, src/app/globals.css, src/app/layout.tsx, src/app/page.tsx, src/lib/firebase/config.ts, src/lib/firebase/firestore.ts, src/types/index.ts, src/components/common/Button.tsx, src/components/common/Card.tsx, src/components/common/Input.tsx, src/components/layout/Navbar.tsx, src/hooks/useTools.ts, src/hooks/useAuth.ts, firebase.json, and firestore.rules.
+- friction: Python scripts (backlink_analyzer.py, session_close.py) crashed or failed to run with default commands on Windows due to encoding issues (cp1252 default on Windows) or python3 vs python alias mismatch.
+- lesson: Force UTF-8 mode globally in Python using python -Xutf8 scripts/<script_name>.py when executing scripts on Windows terminals to prevent CP1252 encoding crashes.
+- promoted_patterns: Bootstrap Next.js in a temporary directory (tmp-app) first to avoid non-empty root directory errors, and then copy/move required application files while preserving the AI agent harness files.
+
