@@ -22,6 +22,12 @@ service cloud.firestore {
     // Collection Security Rules
     // ==========================================
 
+    // Username → email lookup (public read, no sensitive data stored here)
+    match /username_lookup/{username} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
     // Members collection
     match /members/{memberId} {
       allow read: if isAuthenticated();

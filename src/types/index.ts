@@ -19,6 +19,7 @@ export interface Tool {
 
 export interface Member {
   id: string; // Firebase Auth UID
+  username: string; // unique login handle
   name: string;
   email: string;
   role: UserRole;
